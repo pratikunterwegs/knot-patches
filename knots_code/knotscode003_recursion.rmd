@@ -1,0 +1,66 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r load_libs}
+source("libs.R");source("ggplot.pub.r")
+library(readr);library(viridis)
+```
+
+```{r load_combined_data}
+#'load birds_all data
+load("birds.all.rdata")
+```
+
+```{r test_recursion_0.5km, include=FALSE}
+#'load libs
+library(recurse)
+
+#'subset for overlapping day ranges
+#birds.recurse = rbind(birds.all %>% filter(day <= 5), k2 %>% filter(day <= 5))
+
+#'round to 15 minute data
+birds.recurse.prep = birds.all %>% group_by(id, time = round_date(ts, "1 minute")) %>% summarise(x = mean(X, na.rm = T), y = mean(Y, na.rm = T), posid = first(posID), day = first(day))
+
+birds.low.n.ids = which(count(birds.recurse.prep, id)$n < 60*24)
+
+birds.recurse.prep = birds.recurse.prep %>% filter(!id %in% birds.low.n.ids)
+
+#'save data for recurses
+save(birds.recurse.prep, file = "knots_data/birds_recurse_prep.rdata")
+
+rm(birds.all);gc()
+```
+
+```{r recursions}
+#'see elephant code for the individual based recursion with workspace clearance and reloading at each step
+load("knots_data/birds_recurse_prep.rdata")
+#'get the number of knots
+n.active.birds = length(unique(birds.recurse.prep$id))
+
+#'run the loop
+for(i in 1:n.active.birds){
+  source("libs.R")
+  load("knots_data/birds_recurse_prep.rdata")
+library(recurse)
+  
+#'split df into list by id and arrange by time
+
+birds.recurse.prep = birds.recurse.prep %>% dlply("id") %>% map(function(x) arrange(x, time))
+
+birds.recurse = getRecursions(birds.recurse.prep[[i]][c("x","y","time","id")], radius = 1000, timeunits = "hours")
+  
+write.csv(cbind(revisits = birds.recurse$revisits, residence = birds.recurse$residenceTime, id = names(birds.recurse.prep)[i], time = birds.recurse.prep[[i]]$time), file = paste("knots_data/recurse_data/bird_revisit",i,".csv", sep ="_" ), row.names = F)
+  
+  write.csv(birds.recurse$revisitStats, file = paste("knots_data/recurse_data/bird_recurse_output",i,".csv", sep ="_" ), row.names = F)
+  rm(list = ls(all.names = T))
+  gc()
+  
+}
+
+```
+
+```
+
+

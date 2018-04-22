@@ -1,0 +1,39 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r load_libs}
+source("libs.R");source("ggplot.pub.r")
+library(readr);library(viridis)
+```
+
+```{r get_recurse_prepped_data}
+#'load recurse prepped data
+load("knots01_recurse.rdata")
+```
+
+```{r get_recurses}
+#'list files
+recurse_files = list.files(pattern = "knots_revisit_", full.names = T)
+
+#'read in
+recurses = recurse_files %>% map(read_csv)
+
+#'bind_rows
+recurses = recurses %>% bind_rows()
+```
+
+```{r join_data_recurses}
+#'left join by id and time
+
+k1.recurse = k1.recurse.test %>% mutate(time.num = as.numeric(time)) %>% left_join(recurses %>% mutate(id = as.character(id)), by = c("time.num" = "time", "id"))
+
+#'save as rdata
+save(k1.recurse, file = "knots01_recurse_data.rdata")
+
+#'write to csv
+write_csv(k1.recurse, "knots01_recurse_data.csv")
+
+```
+

@@ -1,0 +1,156 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r load_libs}
+source("libs.R")
+library(stringr)
+```
+
+```{r load_funcs}
+#'list files
+funcs = as.list(list.files("knots_data_functions/", pattern = "*.r", full.names = T))
+
+#'run files
+funcs[c(2,3)] %>% map(source)
+
+```
+
+# knots01
+
+```{r prep_data_sourcing_params}
+#'use data retrieval and cleaning functions
+#'get temporal limits of tracking
+
+tx<-c(150:255)#knots part 1
+#tx<-c(255:375)#knots part 2
+
+# whole season 
+from="2017-08-23 13:52:00"; to="2017-10-31 14:52:00"
+
+
+## remove beacons form tags
+tags<-tx[!tx%in%c(21,120, 253, 254, 255)]	
+
+		
+## convert tags to three characters
+tags<-str_pad(as.character(tags), 3, pad = "0")
+```
+
+```{r get_knots_1}
+#'get knots 1
+k1.raw <- lapply(tags, get_data, from=from, to=to, tag_prefix="31001000")
+
+#'assign tag id as df name
+names(k1.raw) = tags
+
+save(k1.raw, file = "knots01_raw.rdata")
+#'clean knots 1
+k1.clean <- lapply(k1.raw, clean, mwindow=5, NBS_min=3, VAR_threshold=10000)	#10000
+
+save(k1.clean, file = "knots01_clean.rdata")
+
+#'select only tracks greater than 0
+a = unlist(lapply(k1.clean, nrow))
+a = a/(as.numeric(difftime(to, from,"sec")))
+select = a>0
+
+#'subset for valid tracks
+k1.data = k1.clean[select]
+save(k1.data, file = "knots01_data.rdata")
+```
+
+# knots02
+
+```{r prep_data_sourcing_params}
+#'use data retrieval and cleaning functions
+#'get temporal limits of tracking
+
+#tx<-c(150:255)#knots part 1
+tx<-c(255:375)#knots part 2
+
+# whole season 
+from="2017-08-23 13:52:00"; to="2017-10-31 14:52:00"
+
+
+## remove beacons form tags
+tags<-tx[!tx%in%c(21,120, 253, 254, 255)]	
+
+		
+## convert tags to three characters
+tags<-str_pad(as.character(tags), 3, pad = "0")
+```
+
+```{r get_knots_1}
+#'get knots 1
+k2.raw <- lapply(tags, get_data, from=from, to=to, tag_prefix="31001000")
+
+#'assign tag id as df name
+names(k2.raw) = tags
+
+save(k2.raw, file = "~/git/knots/knots_data/knots02_raw.rdata")
+#'clean knots 1
+k2.clean <- lapply(k2.raw, clean, mwindow=5, NBS_min=3, VAR_threshold=10000)	#10000
+
+save(k2.clean, file = "~/git/knots/knots_data/knots02_clean.rdata")
+
+#'select only tracks greater than 0
+a = unlist(lapply(k2.clean, nrow))
+a = a/(as.numeric(difftime(to, from,"sec")))
+select = a>0
+
+#'subset for valid tracks
+k2.data = k2.clean[select]
+save(k2.data, file = "~/git/knots/knots_data/knots02_data.rdata")
+```
+
+# sanderlings
+
+```{r prep_data_sourcing_params}
+#'use data retrieval and cleaning functions
+#'get temporal limits of tracking
+
+#tx<-c(150:255)#knots part 1
+#tx<-c(255:375)#knots part 2
+
+tx<-1:150 #sanderlings
+
+# whole season for knots
+#from="2017-08-23 13:52:00"; to="2017-10-31 14:52:00"
+
+# whole season for sanderlings
+from="2017-07-20 18:00:00";to="2017-10-01 23:00:00"
+
+
+## remove beacons form tags
+tags<-tx[!tx%in%c(21,120, 253, 254, 255)]	
+
+		
+## convert tags to three characters
+tags<-str_pad(as.character(tags), 3, pad = "0")
+```
+
+```{r get_sanderling}
+#'get sanderlings
+sanderling.raw <- lapply(tags, get_data, from=from, to=to, tag_prefix="31001000")
+
+#'assign tag id as df name
+names(sanderling.raw) = tags
+
+save(sanderling.raw, file = "~/git/knots/knots_data/sanderling_raw.rdata")
+#'clean knots 1
+sanderling.clean <- lapply(sanderling.raw, clean, mwindow=5, NBS_min=3, VAR_threshold=10000)	#10000
+
+save(sanderling.clean, file = "~/git/knots/knots_data/sanderling_clean.rdata")
+
+#'select only tracks greater than 0
+a = unlist(lapply(sanderling.clean, nrow))
+a = a/(as.numeric(difftime(to, from,"sec")))
+select = a>0
+
+#'subset for valid tracks
+sanderling.data = sanderling.clean[select]
+save(sanderling.data, file = "~/git/knots/knots_data/sanderling_data.rdata")
+```
