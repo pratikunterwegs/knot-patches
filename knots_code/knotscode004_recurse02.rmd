@@ -10,7 +10,7 @@ library(readr);library(viridis)
 
 ```{r get_recurse_prepped_data}
 #'load recurse prepped data
-load("knots01_recurse.rdata")
+load("knots_data/knots01_recurse_data.rdata")
 ```
 
 ```{r get_recurses}
