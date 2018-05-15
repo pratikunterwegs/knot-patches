@@ -1,0 +1,25 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r load_libs}
+source("libs.R");source("ggplot.pub.r")
+library(readr);library(viridis)
+
+```
+
+```{r load_all_birds}
+#'load all birds
+load("birds.all.rdata")
+
+#'subset first day of knots 01
+knots1.day1 = birds.all %>% filter(batch == "knots01") %>% mutate(day = julian(ts, origin = min(ts))) %>% filter(day <= 1)
+
+```
+
+```{r}
+
+```
+
+

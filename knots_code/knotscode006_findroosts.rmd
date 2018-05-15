@@ -1,0 +1,51 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r load_libs}
+source("libs.R");source("ggplot.pub.r")
+library(readr);library(viridis)
+
+```
+
+```{r load_all_birds}
+load("birds.all.rdata")
+```
+
+```{r subset_and_get_meanpos}
+#'susbet for 10% of the data
+birds.all = birds.all %>% group_by(batch) %>% sample_frac(0.1)
+
+#'get the position at each 15 mins
+birds.all.meanpos = birds.all %>% group_by(id, time_round = round_date(ts, "15 minutes")) %>% summarise(x = first(X), y = first(Y))
+```
+
+```{r convert_to_spatial}
+#'make sf
+library(sf)
+birds.sf = st_as_sf(birds.all.meanpos, coords = c("x", "y"))
+
+#'assign crs
+st_crs(birds.sf) = 32631
+
+#'transform to latlong
+birds.sf = st_transform(birds.sf, 4326)
+```
+
+```{r get_solarpos}
+#'use maptools::solarpos
+library(maptools)
+
+#'assign day/night by sun angle to horizon
+birds.all.meanpos = birds.all.meanpos %>% ungroup() %>% mutate(sun_pos_horizon = solarpos(crds = st_coordinates(birds.sf), dateTime = birds.all.meanpos$time_round, proj4string = CRS(as.character(st_crs(birds.sf))[2]))[,2], phase = ifelse(sun_pos_horizon < -6, "night", "day"))
+```
+
+```{r subset_night}
+#'get night points
+birds.night = birds.all.meanpos %>% filter(phase == "night")
+
+#'check for errors
+ggplot(birds.night)+
+  geom_bar(aes(x = hour(time_round)))
+```
