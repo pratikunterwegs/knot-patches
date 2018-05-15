@@ -27,10 +27,22 @@
     <layer-tree-layer id="ne_10m_minor_islands_coastline_b0eb549c_8f0b_4a7f_8dd0_ec697c960459" expanded="1" checked="Qt::Checked" source="./knots_code/knots_data/knots_spatials/ne_10m_minor_islands_coastline/ne_10m_minor_islands_coastline.shp" name="ne_10m_minor_islands_coastline" providerKey="ogr">
       <customproperties/>
     </layer-tree-layer>
-    <layer-tree-layer id="ne_10m_admin_0_boundary_lines_land_392123bb_4d73_4e76_963e_f3e5b5c982ec" expanded="1" checked="Qt::Checked" source="../../Documents/Codes/sandbox/ne_10m_admin_0_boundary_lines_land/ne_10m_admin_0_boundary_lines_land.shp" name="ne_10m_admin_0_boundary_lines_land" providerKey="ogr">
+    <layer-tree-layer id="OUTPUT_b066b90c_7084_4eef_85ca_6023281b8d3a" expanded="1" checked="Qt::Checked" source="/tmp/processing_1a478424c06b4b8f9fdb5c2abbf72a1f/2d282d30233b404085e2d32b895625e3/OUTPUT.tif" name="Interpolated" providerKey="gdal">
       <customproperties/>
     </layer-tree-layer>
-    <layer-tree-layer id="knots01_recurse_data_f42f4af3_435d_4b05_8cb0_ef63085a17d2" expanded="1" checked="Qt::Checked" source="./knots_code/knots_data/knots_spatials/knots01_recurse_data.shp" name="knots01_recurse_data" providerKey="ogr">
+    <layer-tree-layer id="OUTPUT_e0a7c19c_d8e0_47fe_b850_a5e78b5e7ee9" expanded="1" checked="Qt::Unchecked" source="/tmp/processing_1a478424c06b4b8f9fdb5c2abbf72a1f/1a679a0edc3f4e9396281f2f7c94eb85/OUTPUT.tif" name="Interpolated" providerKey="gdal">
+      <customproperties/>
+    </layer-tree-layer>
+    <layer-tree-layer id="OUTPUT_8f27f346_d085_4908_a17e_5235cb4b149e" expanded="1" checked="Qt::Unchecked" source="/tmp/processing_1a478424c06b4b8f9fdb5c2abbf72a1f/229af23b413e417fbc8f1dfc160e6505/OUTPUT.tif" name="Interpolated" providerKey="gdal">
+      <customproperties/>
+    </layer-tree-layer>
+    <layer-tree-layer id="OUTPUT_f69e8642_e5ef_4614_b888_a15e6af1fe57" expanded="1" checked="Qt::Unchecked" source="/tmp/processing_1a478424c06b4b8f9fdb5c2abbf72a1f/00f52848a48e46018bbfefd60899a0cf/OUTPUT.tif" name="Interpolated" providerKey="gdal">
+      <customproperties/>
+    </layer-tree-layer>
+    <layer-tree-layer id="knot01_recurse_data_60956357_324c_45ae_8114_41eae1486b50" expanded="1" checked="Qt::Unchecked" source="file:///home/pratik/git/knots/knots_code/knots_data/recurse_data/knot01_recurse_data.csv?type=regexp&amp;delimiter=,&amp;xField=x&amp;yField=y&amp;crs=EPSG:32631&amp;spatialIndex=no&amp;subsetIndex=no&amp;watchFile=no" name="knot01_recurse_data" providerKey="delimitedtext">
+      <customproperties/>
+    </layer-tree-layer>
+    <layer-tree-layer id="ne_10m_admin_0_boundary_lines_land_392123bb_4d73_4e76_963e_f3e5b5c982ec" expanded="1" checked="Qt::Checked" source="../../Documents/Codes/sandbox/ne_10m_admin_0_boundary_lines_land/ne_10m_admin_0_boundary_lines_land.shp" name="ne_10m_admin_0_boundary_lines_land" providerKey="ogr">
       <customproperties/>
     </layer-tree-layer>
     <custom-order enabled="0">
@@ -38,15 +50,19 @@
       <item>ne_10m_minor_islands_coastline_b0eb549c_8f0b_4a7f_8dd0_ec697c960459</item>
       <item>ne_10m_minor_islands_b380f5f7_1943_4a79_9f13_10f78a547fd0</item>
       <item>ne_10m_coastline_56f40a15_a4b3_4fb8_b585_bfc53362896a</item>
-      <item>knots01_recurse_data_f42f4af3_435d_4b05_8cb0_ef63085a17d2</item>
+      <item>knot01_recurse_data_60956357_324c_45ae_8114_41eae1486b50</item>
+      <item>OUTPUT_f69e8642_e5ef_4614_b888_a15e6af1fe57</item>
+      <item>OUTPUT_8f27f346_d085_4908_a17e_5235cb4b149e</item>
+      <item>OUTPUT_e0a7c19c_d8e0_47fe_b850_a5e78b5e7ee9</item>
+      <item>OUTPUT_b066b90c_7084_4eef_85ca_6023281b8d3a</item>
     </custom-order>
   </layer-tree-group>
   <snapping-settings mode="2" tolerance="12" intersection-snapping="0" enabled="0" unit="1" type="1">
     <individual-layer-settings>
       <layer-setting id="ne_10m_minor_islands_b380f5f7_1943_4a79_9f13_10f78a547fd0" tolerance="12" enabled="1" type="1" units="1"/>
       <layer-setting id="ne_10m_minor_islands_coastline_b0eb549c_8f0b_4a7f_8dd0_ec697c960459" tolerance="12" enabled="1" type="1" units="1"/>
+      <layer-setting id="knot01_recurse_data_60956357_324c_45ae_8114_41eae1486b50" tolerance="12" enabled="1" type="1" units="1"/>
       <layer-setting id="ne_10m_admin_0_boundary_lines_land_392123bb_4d73_4e76_963e_f3e5b5c982ec" tolerance="12" enabled="1" type="1" units="1"/>
-      <layer-setting id="knots01_recurse_data_f42f4af3_435d_4b05_8cb0_ef63085a17d2" tolerance="12" enabled="1" type="1" units="1"/>
       <layer-setting id="ne_10m_coastline_56f40a15_a4b3_4fb8_b585_bfc53362896a" tolerance="12" enabled="1" type="1" units="1"/>
     </individual-layer-settings>
   </snapping-settings>
@@ -54,10 +70,10 @@
   <mapcanvas name="theMapCanvas" annotationsVisible="1">
     <units>meters</units>
     <extent>
-      <xmin>639222.34751973685342818</xmin>
-      <ymin>5891852.31940238364040852</ymin>
-      <xmax>661875.38732196495402604</xmax>
-      <ymax>5910368.35613755136728287</ymax>
+      <xmin>644555.52097062137909234</xmin>
+      <ymin>5897389.85225041210651398</ymin>
+      <xmax>657361.53601062134839594</xmax>
+      <ymax>5907857.17350132018327713</ymax>
     </extent>
     <rotation>0</rotation>
     <destinationsrs>
@@ -90,14 +106,34 @@
         <legendlayerfile layerid="ne_10m_minor_islands_coastline_b0eb549c_8f0b_4a7f_8dd0_ec697c960459" isInOverview="0" visible="1"/>
       </filegroup>
     </legendlayer>
+    <legendlayer showFeatureCount="0" open="true" checked="Qt::Checked" drawingOrder="-1" name="Interpolated">
+      <filegroup open="true" hidden="false">
+        <legendlayerfile layerid="OUTPUT_b066b90c_7084_4eef_85ca_6023281b8d3a" isInOverview="0" visible="1"/>
+      </filegroup>
+    </legendlayer>
+    <legendlayer showFeatureCount="0" open="true" checked="Qt::Unchecked" drawingOrder="-1" name="Interpolated">
+      <filegroup open="true" hidden="false">
+        <legendlayerfile layerid="OUTPUT_e0a7c19c_d8e0_47fe_b850_a5e78b5e7ee9" isInOverview="0" visible="0"/>
+      </filegroup>
+    </legendlayer>
+    <legendlayer showFeatureCount="0" open="true" checked="Qt::Unchecked" drawingOrder="-1" name="Interpolated">
+      <filegroup open="true" hidden="false">
+        <legendlayerfile layerid="OUTPUT_8f27f346_d085_4908_a17e_5235cb4b149e" isInOverview="0" visible="0"/>
+      </filegroup>
+    </legendlayer>
+    <legendlayer showFeatureCount="0" open="true" checked="Qt::Unchecked" drawingOrder="-1" name="Interpolated">
+      <filegroup open="true" hidden="false">
+        <legendlayerfile layerid="OUTPUT_f69e8642_e5ef_4614_b888_a15e6af1fe57" isInOverview="0" visible="0"/>
+      </filegroup>
+    </legendlayer>
+    <legendlayer showFeatureCount="0" open="true" checked="Qt::Unchecked" drawingOrder="-1" name="knot01_recurse_data">
+      <filegroup open="true" hidden="false">
+        <legendlayerfile layerid="knot01_recurse_data_60956357_324c_45ae_8114_41eae1486b50" isInOverview="0" visible="0"/>
+      </filegroup>
+    </legendlayer>
     <legendlayer showFeatureCount="0" open="true" checked="Qt::Checked" drawingOrder="-1" name="ne_10m_admin_0_boundary_lines_land">
       <filegroup open="true" hidden="false">
         <legendlayerfile layerid="ne_10m_admin_0_boundary_lines_land_392123bb_4d73_4e76_963e_f3e5b5c982ec" isInOverview="0" visible="1"/>
-      </filegroup>
-    </legendlayer>
-    <legendlayer showFeatureCount="0" open="true" checked="Qt::Checked" drawingOrder="-1" name="knots01_recurse_data">
-      <filegroup open="true" hidden="false">
-        <legendlayerfile layerid="knots01_recurse_data_f42f4af3_435d_4b05_8cb0_ef63085a17d2" isInOverview="0" visible="1"/>
       </filegroup>
     </legendlayer>
   </legend>
@@ -173,19 +209,101 @@
     <rendermaptile>0</rendermaptile>
   </mapcanvas>
   <projectlayers>
-    <maplayer maxScale="0" labelsEnabled="0" hasScaleBasedVisibilityFlag="0" refreshOnNotifyMessage="" minScale="1e+8" simplifyLocal="1" readOnly="0" simplifyDrawingTol="1" simplifyAlgorithm="0" simplifyMaxScale="1" simplifyDrawingHints="0" autoRefreshEnabled="0" refreshOnNotifyEnabled="0" autoRefreshTime="0" type="vector" geometry="Point">
+    <maplayer maxScale="0" hasScaleBasedVisibilityFlag="0" refreshOnNotifyMessage="" minScale="1e+8" autoRefreshEnabled="0" refreshOnNotifyEnabled="0" autoRefreshTime="0" type="raster">
       <extent>
-        <xmin>641580.56059505499433726</xmin>
-        <ymin>5893816.73750771954655647</ymin>
-        <xmax>658350.34220482595264912</xmax>
-        <ymax>5907523.94400377012789249</ymax>
+        <xmin>641580.56000000005587935</xmin>
+        <ymin>5893816.70000000018626451</ymin>
+        <xmax>658350.34160000004339963</xmax>
+        <ymax>5907523.90639999974519014</ymax>
       </extent>
-      <id>knots01_recurse_data_f42f4af3_435d_4b05_8cb0_ef63085a17d2</id>
-      <datasource>./knots_code/knots_data/knots_spatials/knots01_recurse_data.shp</datasource>
+      <id>OUTPUT_8f27f346_d085_4908_a17e_5235cb4b149e</id>
+      <datasource>/tmp/processing_1a478424c06b4b8f9fdb5c2abbf72a1f/229af23b413e417fbc8f1dfc160e6505/OUTPUT.tif</datasource>
       <keywordList>
         <value></value>
       </keywordList>
-      <layername>knots01_recurse_data</layername>
+      <layername>Interpolated</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs</proj4>
+          <srsid>3115</srsid>
+          <srid>32631</srid>
+          <authid>EPSG:32631</authid>
+          <description>WGS 84 / UTM zone 31N</description>
+          <projectionacronym>utm</projectionacronym>
+          <ellipsoidacronym>WGS84</ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+        <links/>
+      </resourceMetadata>
+      <customproperties>
+        <property key="identify/format" value="Value"/>
+      </customproperties>
+      <provider>gdal</provider>
+      <noData>
+        <noDataList bandNo="1" useSrcNoData="1"/>
+      </noData>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <pipe>
+        <rasterrenderer alphaBand="-1" grayBand="1" opacity="1" gradient="BlackToWhite" type="singlebandgray">
+          <rasterTransparency/>
+          <minMaxOrigin>
+            <limits>MinMax</limits>
+            <extent>WholeRaster</extent>
+            <statAccuracy>Estimated</statAccuracy>
+            <cumulativeCutLower>0.02</cumulativeCutLower>
+            <cumulativeCutUpper>0.98</cumulativeCutUpper>
+            <stdDevFactor>2</stdDevFactor>
+          </minMaxOrigin>
+          <contrastEnhancement>
+            <minValue>1.7976931348623157e+308</minValue>
+            <maxValue>-1.7976931348623157e+308</maxValue>
+            <algorithm>StretchToMinimumMaximum</algorithm>
+          </contrastEnhancement>
+        </rasterrenderer>
+        <brightnesscontrast brightness="0" contrast="0"/>
+        <huesaturation colorizeOn="0" colorizeBlue="128" colorizeGreen="128" grayscaleMode="0" colorizeStrength="100" saturation="0" colorizeRed="255"/>
+        <rasterresampler maxOversampling="2"/>
+      </pipe>
+      <blendMode>0</blendMode>
+    </maplayer>
+    <maplayer maxScale="0" hasScaleBasedVisibilityFlag="0" refreshOnNotifyMessage="" minScale="1e+8" autoRefreshEnabled="0" refreshOnNotifyEnabled="0" autoRefreshTime="0" type="raster">
+      <extent>
+        <xmin>641580.56000000005587935</xmin>
+        <ymin>5893816.70000000018626451</ymin>
+        <xmax>658350.34160000004339963</xmax>
+        <ymax>5907523.90639999974519014</ymax>
+      </extent>
+      <id>OUTPUT_b066b90c_7084_4eef_85ca_6023281b8d3a</id>
+      <datasource>/tmp/processing_1a478424c06b4b8f9fdb5c2abbf72a1f/2d282d30233b404085e2d32b895625e3/OUTPUT.tif</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>Interpolated</layername>
       <srs>
         <spatialrefsys>
           <proj4>+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs</proj4>
@@ -239,7 +357,274 @@
         </contact>
         <links/>
       </resourceMetadata>
-      <provider encoding="UTF-8">ogr</provider>
+      <customproperties>
+        <property key="WMSBackgroundLayer" value="false"/>
+        <property key="WMSPublishDataSourceUrl" value="false"/>
+        <property key="embeddedWidgets/count" value="0"/>
+        <property key="identify/format" value="Value"/>
+      </customproperties>
+      <provider>gdal</provider>
+      <noData>
+        <noDataList bandNo="1" useSrcNoData="1"/>
+      </noData>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <pipe>
+        <rasterrenderer classificationMin="1" alphaBand="-1" opacity="1" type="singlebandpseudocolor" classificationMax="24" band="1">
+          <rasterTransparency/>
+          <minMaxOrigin>
+            <limits>None</limits>
+            <extent>WholeRaster</extent>
+            <statAccuracy>Estimated</statAccuracy>
+            <cumulativeCutLower>0.02</cumulativeCutLower>
+            <cumulativeCutUpper>0.98</cumulativeCutUpper>
+            <stdDevFactor>2</stdDevFactor>
+          </minMaxOrigin>
+          <rastershader>
+            <colorrampshader classificationMode="2" clip="0" colorRampType="INTERPOLATED">
+              <colorramp name="[source]" type="gradient">
+                <prop k="color1" v="239,85,242,255"/>
+                <prop k="color2" v="237,83,243,255"/>
+                <prop k="discrete" v="0"/>
+                <prop k="rampType" v="gradient"/>
+                <prop k="stops" v="0.016;245,96,235,255:0.032;248,108,226,255:0.048;250,120,216,255:0.063;251,133,206,255:0.079;252,144,195,255:0.095;252,156,183,255:0.111;252,166,172,255:0.127;251,177,161,255:0.143;252,186,149,255:0.159;252,196,137,255:0.175;252,205,125,255:0.19;252,213,111,255:0.206;252,222,97,255:0.222;250,229,82,255:0.238;246,235,66,255:0.254;239,238,51,255:0.27;230,238,38,255:0.286;220,236,29,255:0.302;208,232,24,255:0.317;196,228,22,255:0.333;184,224,20,255:0.349;172,219,19,255:0.365;160,215,17,255:0.381;147,210,16,255:0.397;134,206,15,255:0.413;121,201,13,255:0.429;107,197,12,255:0.444;93,192,12,255:0.46;78,187,14,255:0.476;63,182,21,255:0.492;53,176,32,255:0.508;50,170,46,255:0.524;53,163,61,255:0.54;60,156,77,255:0.556;65,148,92,255:0.571;68,141,106,255:0.587;69,133,121,255:0.603;68,126,134,255:0.619;64,118,148,255:0.635;59,110,161,255:0.651;52,102,173,255:0.667;47,93,185,255:0.683;42,83,195,255:0.698;39,73,206,255:0.714;37,61,215,255:0.73;37,49,224,255:0.746;42,38,232,255:0.762;53,30,237,255:0.778;67,27,241,255:0.794;81,29,244,255:0.81;95,34,245,255:0.825;107,40,247,255:0.841;119,46,248,255:0.857;130,51,249,255:0.873;141,56,250,255:0.889;154,60,251,255:0.905;166,63,251,255:0.921;180,65,251,255:0.937;193,67,251,255:0.952;206,69,250,255:0.968;218,72,249,255:0.984;229,76,247,255"/>
+              </colorramp>
+              <item color="#ef55f2" alpha="255" label="1" value="1"/>
+              <item color="#fc99ba" alpha="255" label="3.09" value="3.09090909090909"/>
+              <item color="#fcd177" alpha="255" label="5.18" value="5.18181818181818"/>
+              <item color="#e5ee24" alpha="255" label="7.27" value="7.27272727272727"/>
+              <item color="#a1d811" alpha="255" label="9.36" value="9.36363636363636"/>
+              <item color="#53bd0d" alpha="255" label="11.5" value="11.4545454545455"/>
+              <item color="#3d9952" alpha="255" label="13.5" value="13.5454545454545"/>
+              <item color="#3a6da2" alpha="255" label="15.6" value="15.6363636363636"/>
+              <item color="#2533df" alpha="255" label="17.7" value="17.7272727272727"/>
+              <item color="#6525f7" alpha="255" label="19.8" value="19.8181818181818"/>
+              <item color="#aa3ffb" alpha="255" label="21.9" value="21.9090909090909"/>
+              <item color="#ed53f3" alpha="255" label="24" value="24"/>
+            </colorrampshader>
+          </rastershader>
+        </rasterrenderer>
+        <brightnesscontrast brightness="0" contrast="0"/>
+        <huesaturation colorizeOn="0" colorizeBlue="128" colorizeGreen="128" grayscaleMode="0" colorizeStrength="100" saturation="0" colorizeRed="255"/>
+        <rasterresampler maxOversampling="2"/>
+      </pipe>
+      <blendMode>0</blendMode>
+    </maplayer>
+    <maplayer maxScale="0" hasScaleBasedVisibilityFlag="0" refreshOnNotifyMessage="" minScale="1e+8" autoRefreshEnabled="0" refreshOnNotifyEnabled="0" autoRefreshTime="0" type="raster">
+      <extent>
+        <xmin>641580.56000000005587935</xmin>
+        <ymin>5893816.70000000018626451</ymin>
+        <xmax>658350.34160000004339963</xmax>
+        <ymax>5907523.90639999974519014</ymax>
+      </extent>
+      <id>OUTPUT_e0a7c19c_d8e0_47fe_b850_a5e78b5e7ee9</id>
+      <datasource>/tmp/processing_1a478424c06b4b8f9fdb5c2abbf72a1f/1a679a0edc3f4e9396281f2f7c94eb85/OUTPUT.tif</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>Interpolated</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs</proj4>
+          <srsid>3115</srsid>
+          <srid>32631</srid>
+          <authid>EPSG:32631</authid>
+          <description>WGS 84 / UTM zone 31N</description>
+          <projectionacronym>utm</projectionacronym>
+          <ellipsoidacronym>WGS84</ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+        <links/>
+      </resourceMetadata>
+      <customproperties>
+        <property key="identify/format" value="Value"/>
+      </customproperties>
+      <provider>gdal</provider>
+      <noData>
+        <noDataList bandNo="1" useSrcNoData="1"/>
+      </noData>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <pipe>
+        <rasterrenderer alphaBand="-1" grayBand="1" opacity="1" gradient="BlackToWhite" type="singlebandgray">
+          <rasterTransparency/>
+          <minMaxOrigin>
+            <limits>MinMax</limits>
+            <extent>WholeRaster</extent>
+            <statAccuracy>Estimated</statAccuracy>
+            <cumulativeCutLower>0.02</cumulativeCutLower>
+            <cumulativeCutUpper>0.98</cumulativeCutUpper>
+            <stdDevFactor>2</stdDevFactor>
+          </minMaxOrigin>
+          <contrastEnhancement>
+            <minValue>1.7976931348623157e+308</minValue>
+            <maxValue>-1.7976931348623157e+308</maxValue>
+            <algorithm>StretchToMinimumMaximum</algorithm>
+          </contrastEnhancement>
+        </rasterrenderer>
+        <brightnesscontrast brightness="0" contrast="0"/>
+        <huesaturation colorizeOn="0" colorizeBlue="128" colorizeGreen="128" grayscaleMode="0" colorizeStrength="100" saturation="0" colorizeRed="255"/>
+        <rasterresampler maxOversampling="2"/>
+      </pipe>
+      <blendMode>0</blendMode>
+    </maplayer>
+    <maplayer maxScale="0" hasScaleBasedVisibilityFlag="0" refreshOnNotifyMessage="" minScale="1e+8" autoRefreshEnabled="0" refreshOnNotifyEnabled="0" autoRefreshTime="0" type="raster">
+      <extent>
+        <xmin>641580.56000000005587935</xmin>
+        <ymin>5893816.70000000018626451</ymin>
+        <xmax>658350.34160000004339963</xmax>
+        <ymax>5907523.90639999974519014</ymax>
+      </extent>
+      <id>OUTPUT_f69e8642_e5ef_4614_b888_a15e6af1fe57</id>
+      <datasource>/tmp/processing_1a478424c06b4b8f9fdb5c2abbf72a1f/00f52848a48e46018bbfefd60899a0cf/OUTPUT.tif</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>Interpolated</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs</proj4>
+          <srsid>3115</srsid>
+          <srid>32631</srid>
+          <authid>EPSG:32631</authid>
+          <description>WGS 84 / UTM zone 31N</description>
+          <projectionacronym>utm</projectionacronym>
+          <ellipsoidacronym>WGS84</ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+        <links/>
+      </resourceMetadata>
+      <customproperties>
+        <property key="identify/format" value="Value"/>
+      </customproperties>
+      <provider>gdal</provider>
+      <noData>
+        <noDataList bandNo="1" useSrcNoData="1"/>
+      </noData>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <pipe>
+        <rasterrenderer alphaBand="-1" grayBand="1" opacity="1" gradient="BlackToWhite" type="singlebandgray">
+          <rasterTransparency/>
+          <minMaxOrigin>
+            <limits>MinMax</limits>
+            <extent>WholeRaster</extent>
+            <statAccuracy>Estimated</statAccuracy>
+            <cumulativeCutLower>0.02</cumulativeCutLower>
+            <cumulativeCutUpper>0.98</cumulativeCutUpper>
+            <stdDevFactor>2</stdDevFactor>
+          </minMaxOrigin>
+          <contrastEnhancement>
+            <minValue>1.0541903</minValue>
+            <maxValue>120.01177</maxValue>
+            <algorithm>StretchToMinimumMaximum</algorithm>
+          </contrastEnhancement>
+        </rasterrenderer>
+        <brightnesscontrast brightness="0" contrast="0"/>
+        <huesaturation colorizeOn="0" colorizeBlue="128" colorizeGreen="128" grayscaleMode="0" colorizeStrength="100" saturation="0" colorizeRed="255"/>
+        <rasterresampler maxOversampling="2"/>
+      </pipe>
+      <blendMode>0</blendMode>
+    </maplayer>
+    <maplayer maxScale="0" labelsEnabled="0" hasScaleBasedVisibilityFlag="0" refreshOnNotifyMessage="" minScale="1e+8" simplifyLocal="1" readOnly="0" simplifyDrawingTol="1" simplifyAlgorithm="0" simplifyMaxScale="1" simplifyDrawingHints="1" autoRefreshEnabled="0" refreshOnNotifyEnabled="0" autoRefreshTime="0" type="vector" geometry="Point">
+      <extent>
+        <xmin>641580.56059505499433726</xmin>
+        <ymin>5893816.73750771954655647</ymin>
+        <xmax>658350.34220482595264912</xmax>
+        <ymax>5907523.94400377012789249</ymax>
+      </extent>
+      <id>knot01_recurse_data_60956357_324c_45ae_8114_41eae1486b50</id>
+      <datasource>file:./knots_code/knots_data/recurse_data/knot01_recurse_data.csv?type=regexp&amp;delimiter=,&amp;xField=x&amp;yField=y&amp;crs=EPSG:32631&amp;spatialIndex=no&amp;subsetIndex=no&amp;watchFile=no</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>knot01_recurse_data</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs</proj4>
+          <srsid>3115</srsid>
+          <srid>32631</srid>
+          <authid>EPSG:32631</authid>
+          <description>WGS 84 / UTM zone 31N</description>
+          <projectionacronym>utm</projectionacronym>
+          <ellipsoidacronym>WGS84</ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+        <links/>
+      </resourceMetadata>
+      <provider encoding="UTF-8">delimitedtext</provider>
       <vectorjoins/>
       <layerDependencies/>
       <dataDependencies/>
@@ -248,19 +633,12 @@
         <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
-      <renderer-v2 symbollevels="0" attr="mean.hour" forceraster="0" graduatedMethod="GraduatedColor" type="graduatedSymbol" enableorderby="0">
-        <ranges>
-          <range render="true" lower="0.000000000000000" upper="8.727272727272727" label=" 0.0 - 8.7 " symbol="0"/>
-          <range render="true" lower="8.727272727272727" upper="10.428571428571429" label=" 8.7 - 10.4 " symbol="1"/>
-          <range render="true" lower="10.428571428571429" upper="11.818181818181818" label=" 10.4 - 11.8 " symbol="2"/>
-          <range render="true" lower="11.818181818181818" upper="13.606060606060606" label=" 11.8 - 13.6 " symbol="3"/>
-          <range render="true" lower="13.606060606060606" upper="23.000000000000000" label=" 13.6 - 23.0 " symbol="4"/>
-        </ranges>
+      <renderer-v2 symbollevels="0" forceraster="0" type="singleSymbol" enableorderby="0">
         <symbols>
           <symbol alpha="1" clip_to_extent="1" name="0" type="marker">
             <layer enabled="1" pass="0" class="SimpleMarker" locked="0">
               <prop k="angle" v="0"/>
-              <prop k="color" v="215,25,28,255"/>
+              <prop k="color" v="88,79,161,255"/>
               <prop k="horizontal_anchor_point" v="1"/>
               <prop k="joinstyle" v="bevel"/>
               <prop k="name" v="circle"/>
@@ -268,128 +646,12 @@
               <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
               <prop k="offset_unit" v="MM"/>
               <prop k="outline_color" v="35,35,35,255"/>
-              <prop k="outline_style" v="no"/>
+              <prop k="outline_style" v="solid"/>
               <prop k="outline_width" v="0"/>
               <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
               <prop k="outline_width_unit" v="MM"/>
               <prop k="scale_method" v="diameter"/>
-              <prop k="size" v="0.6"/>
-              <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="size_unit" v="MM"/>
-              <prop k="vertical_anchor_point" v="1"/>
-              <data_defined_properties>
-                <Option type="Map">
-                  <Option value="" name="name" type="QString"/>
-                  <Option name="properties"/>
-                  <Option value="collection" name="type" type="QString"/>
-                </Option>
-              </data_defined_properties>
-            </layer>
-          </symbol>
-          <symbol alpha="1" clip_to_extent="1" name="1" type="marker">
-            <layer enabled="1" pass="0" class="SimpleMarker" locked="0">
-              <prop k="angle" v="0"/>
-              <prop k="color" v="253,174,97,255"/>
-              <prop k="horizontal_anchor_point" v="1"/>
-              <prop k="joinstyle" v="bevel"/>
-              <prop k="name" v="circle"/>
-              <prop k="offset" v="0,0"/>
-              <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="offset_unit" v="MM"/>
-              <prop k="outline_color" v="35,35,35,255"/>
-              <prop k="outline_style" v="no"/>
-              <prop k="outline_width" v="0"/>
-              <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="outline_width_unit" v="MM"/>
-              <prop k="scale_method" v="diameter"/>
-              <prop k="size" v="0.6"/>
-              <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="size_unit" v="MM"/>
-              <prop k="vertical_anchor_point" v="1"/>
-              <data_defined_properties>
-                <Option type="Map">
-                  <Option value="" name="name" type="QString"/>
-                  <Option name="properties"/>
-                  <Option value="collection" name="type" type="QString"/>
-                </Option>
-              </data_defined_properties>
-            </layer>
-          </symbol>
-          <symbol alpha="1" clip_to_extent="1" name="2" type="marker">
-            <layer enabled="1" pass="0" class="SimpleMarker" locked="0">
-              <prop k="angle" v="0"/>
-              <prop k="color" v="255,255,191,255"/>
-              <prop k="horizontal_anchor_point" v="1"/>
-              <prop k="joinstyle" v="bevel"/>
-              <prop k="name" v="circle"/>
-              <prop k="offset" v="0,0"/>
-              <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="offset_unit" v="MM"/>
-              <prop k="outline_color" v="35,35,35,255"/>
-              <prop k="outline_style" v="no"/>
-              <prop k="outline_width" v="0"/>
-              <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="outline_width_unit" v="MM"/>
-              <prop k="scale_method" v="diameter"/>
-              <prop k="size" v="0.6"/>
-              <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="size_unit" v="MM"/>
-              <prop k="vertical_anchor_point" v="1"/>
-              <data_defined_properties>
-                <Option type="Map">
-                  <Option value="" name="name" type="QString"/>
-                  <Option name="properties"/>
-                  <Option value="collection" name="type" type="QString"/>
-                </Option>
-              </data_defined_properties>
-            </layer>
-          </symbol>
-          <symbol alpha="1" clip_to_extent="1" name="3" type="marker">
-            <layer enabled="1" pass="0" class="SimpleMarker" locked="0">
-              <prop k="angle" v="0"/>
-              <prop k="color" v="171,221,164,255"/>
-              <prop k="horizontal_anchor_point" v="1"/>
-              <prop k="joinstyle" v="bevel"/>
-              <prop k="name" v="circle"/>
-              <prop k="offset" v="0,0"/>
-              <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="offset_unit" v="MM"/>
-              <prop k="outline_color" v="35,35,35,255"/>
-              <prop k="outline_style" v="no"/>
-              <prop k="outline_width" v="0"/>
-              <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="outline_width_unit" v="MM"/>
-              <prop k="scale_method" v="diameter"/>
-              <prop k="size" v="0.6"/>
-              <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="size_unit" v="MM"/>
-              <prop k="vertical_anchor_point" v="1"/>
-              <data_defined_properties>
-                <Option type="Map">
-                  <Option value="" name="name" type="QString"/>
-                  <Option name="properties"/>
-                  <Option value="collection" name="type" type="QString"/>
-                </Option>
-              </data_defined_properties>
-            </layer>
-          </symbol>
-          <symbol alpha="1" clip_to_extent="1" name="4" type="marker">
-            <layer enabled="1" pass="0" class="SimpleMarker" locked="0">
-              <prop k="angle" v="0"/>
-              <prop k="color" v="43,131,186,255"/>
-              <prop k="horizontal_anchor_point" v="1"/>
-              <prop k="joinstyle" v="bevel"/>
-              <prop k="name" v="circle"/>
-              <prop k="offset" v="0,0"/>
-              <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="offset_unit" v="MM"/>
-              <prop k="outline_color" v="35,35,35,255"/>
-              <prop k="outline_style" v="no"/>
-              <prop k="outline_width" v="0"/>
-              <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="outline_width_unit" v="MM"/>
-              <prop k="scale_method" v="diameter"/>
-              <prop k="size" v="0.6"/>
+              <prop k="size" v="2"/>
               <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
               <prop k="size_unit" v="MM"/>
               <prop k="vertical_anchor_point" v="1"/>
@@ -403,172 +665,86 @@
             </layer>
           </symbol>
         </symbols>
-        <source-symbol>
-          <symbol alpha="1" clip_to_extent="1" name="0" type="marker">
-            <layer enabled="1" pass="0" class="SimpleMarker" locked="0">
-              <prop k="angle" v="0"/>
-              <prop k="color" v="104,198,78,255"/>
-              <prop k="horizontal_anchor_point" v="1"/>
-              <prop k="joinstyle" v="bevel"/>
-              <prop k="name" v="circle"/>
-              <prop k="offset" v="0,0"/>
-              <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="offset_unit" v="MM"/>
-              <prop k="outline_color" v="35,35,35,255"/>
-              <prop k="outline_style" v="no"/>
-              <prop k="outline_width" v="0"/>
-              <prop k="outline_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="outline_width_unit" v="MM"/>
-              <prop k="scale_method" v="diameter"/>
-              <prop k="size" v="0.6"/>
-              <prop k="size_map_unit_scale" v="3x:0,0,0,0,0,0"/>
-              <prop k="size_unit" v="MM"/>
-              <prop k="vertical_anchor_point" v="1"/>
-              <data_defined_properties>
-                <Option type="Map">
-                  <Option value="" name="name" type="QString"/>
-                  <Option name="properties"/>
-                  <Option value="collection" name="type" type="QString"/>
-                </Option>
-              </data_defined_properties>
-            </layer>
-          </symbol>
-        </source-symbol>
-        <colorramp name="[source]" type="gradient">
-          <prop k="color1" v="215,25,28,255"/>
-          <prop k="color2" v="43,131,186,255"/>
-          <prop k="discrete" v="0"/>
-          <prop k="rampType" v="gradient"/>
-          <prop k="stops" v="0.25;253,174,97,255:0.5;255,255,191,255:0.75;171,221,164,255"/>
-        </colorramp>
-        <mode name="quantile"/>
         <rotation/>
         <sizescale/>
-        <labelformat format=" %1 - %2 " decimalplaces="1" trimtrailingzeroes="false"/>
       </renderer-v2>
-      <customproperties>
-        <property key="embeddedWidgets/count" value="0"/>
-        <property key="variableNames"/>
-        <property key="variableValues"/>
-      </customproperties>
+      <customproperties/>
       <blendMode>0</blendMode>
       <featureBlendMode>0</featureBlendMode>
       <layerOpacity>1</layerOpacity>
-      <SingleCategoryDiagramRenderer diagramType="Histogram" attributeLegend="1">
-        <DiagramCategory backgroundAlpha="255" width="15" height="15" rotationOffset="270" scaleDependency="Area" enabled="0" diagramOrientation="Up" labelPlacementMethod="XHeight" penColor="#000000" backgroundColor="#ffffff" opacity="1" minScaleDenominator="0" lineSizeScale="3x:0,0,0,0,0,0" maxScaleDenominator="1e+8" penAlpha="255" sizeScale="3x:0,0,0,0,0,0" penWidth="0" lineSizeType="MM" scaleBasedVisibility="0" sizeType="MM" minimumSize="0" barWidth="5">
-          <fontProperties style="" description="Noto Sans,11,-1,5,50,0,0,0,0,0"/>
-        </DiagramCategory>
-      </SingleCategoryDiagramRenderer>
-      <DiagramLayerSettings zIndex="0" dist="0" placement="0" obstacle="0" linePlacementFlags="18" showAll="1" priority="0">
-        <properties>
-          <Option type="Map">
-            <Option value="" name="name" type="QString"/>
-            <Option name="properties"/>
-            <Option value="collection" name="type" type="QString"/>
-          </Option>
-        </properties>
-      </DiagramLayerSettings>
       <fieldConfiguration>
         <field name="id">
-          <editWidget type="TextEdit">
+          <editWidget type="">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="coordIdx">
-          <editWidget type="TextEdit">
+          <editWidget type="">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="x">
-          <editWidget type="TextEdit">
+          <editWidget type="">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="y">
-          <editWidget type="TextEdit">
+          <editWidget type="">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="mean.hour">
-          <editWidget type="TextEdit">
+          <editWidget type="">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="fpt">
-          <editWidget type="TextEdit">
+          <editWidget type="">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="min.hour">
-          <editWidget type="TextEdit">
+          <editWidget type="">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="max.hour">
-          <editWidget type="TextEdit">
+          <editWidget type="">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
-        <field name="visit.inte">
-          <editWidget type="TextEdit">
-            <config>
-              <Option/>
-            </config>
-          </editWidget>
-        </field>
-        <field name="time">
-          <editWidget type="TextEdit">
-            <config>
-              <Option/>
-            </config>
-          </editWidget>
-        </field>
-        <field name="posid">
-          <editWidget type="TextEdit">
-            <config>
-              <Option/>
-            </config>
-          </editWidget>
-        </field>
-        <field name="day">
-          <editWidget type="TextEdit">
-            <config>
-              <Option/>
-            </config>
-          </editWidget>
-        </field>
-        <field name="time.num">
-          <editWidget type="TextEdit">
+        <field name="visit.interval">
+          <editWidget type="">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="revisits">
-          <editWidget type="TextEdit">
+          <editWidget type="">
             <config>
               <Option/>
             </config>
           </editWidget>
         </field>
         <field name="residence">
-          <editWidget type="TextEdit">
+          <editWidget type="">
             <config>
               <Option/>
             </config>
@@ -584,13 +760,9 @@
         <alias index="5" field="fpt" name=""/>
         <alias index="6" field="min.hour" name=""/>
         <alias index="7" field="max.hour" name=""/>
-        <alias index="8" field="visit.inte" name=""/>
-        <alias index="9" field="time" name=""/>
-        <alias index="10" field="posid" name=""/>
-        <alias index="11" field="day" name=""/>
-        <alias index="12" field="time.num" name=""/>
-        <alias index="13" field="revisits" name=""/>
-        <alias index="14" field="residence" name=""/>
+        <alias index="8" field="visit.interval" name=""/>
+        <alias index="9" field="revisits" name=""/>
+        <alias index="10" field="residence" name=""/>
       </aliases>
       <excludeAttributesWMS/>
       <excludeAttributesWFS/>
@@ -603,11 +775,7 @@
         <default field="fpt" expression="" applyOnUpdate="0"/>
         <default field="min.hour" expression="" applyOnUpdate="0"/>
         <default field="max.hour" expression="" applyOnUpdate="0"/>
-        <default field="visit.inte" expression="" applyOnUpdate="0"/>
-        <default field="time" expression="" applyOnUpdate="0"/>
-        <default field="posid" expression="" applyOnUpdate="0"/>
-        <default field="day" expression="" applyOnUpdate="0"/>
-        <default field="time.num" expression="" applyOnUpdate="0"/>
+        <default field="visit.interval" expression="" applyOnUpdate="0"/>
         <default field="revisits" expression="" applyOnUpdate="0"/>
         <default field="residence" expression="" applyOnUpdate="0"/>
       </defaults>
@@ -620,11 +788,7 @@
         <constraint field="fpt" constraints="0" notnull_strength="0" exp_strength="0" unique_strength="0"/>
         <constraint field="min.hour" constraints="0" notnull_strength="0" exp_strength="0" unique_strength="0"/>
         <constraint field="max.hour" constraints="0" notnull_strength="0" exp_strength="0" unique_strength="0"/>
-        <constraint field="visit.inte" constraints="0" notnull_strength="0" exp_strength="0" unique_strength="0"/>
-        <constraint field="time" constraints="0" notnull_strength="0" exp_strength="0" unique_strength="0"/>
-        <constraint field="posid" constraints="0" notnull_strength="0" exp_strength="0" unique_strength="0"/>
-        <constraint field="day" constraints="0" notnull_strength="0" exp_strength="0" unique_strength="0"/>
-        <constraint field="time.num" constraints="0" notnull_strength="0" exp_strength="0" unique_strength="0"/>
+        <constraint field="visit.interval" constraints="0" notnull_strength="0" exp_strength="0" unique_strength="0"/>
         <constraint field="revisits" constraints="0" notnull_strength="0" exp_strength="0" unique_strength="0"/>
         <constraint field="residence" constraints="0" notnull_strength="0" exp_strength="0" unique_strength="0"/>
       </constraints>
@@ -637,11 +801,7 @@
         <constraint field="fpt" desc="" exp=""/>
         <constraint field="min.hour" desc="" exp=""/>
         <constraint field="max.hour" desc="" exp=""/>
-        <constraint field="visit.inte" desc="" exp=""/>
-        <constraint field="time" desc="" exp=""/>
-        <constraint field="posid" desc="" exp=""/>
-        <constraint field="day" desc="" exp=""/>
-        <constraint field="time.num" desc="" exp=""/>
+        <constraint field="visit.interval" desc="" exp=""/>
         <constraint field="revisits" desc="" exp=""/>
         <constraint field="residence" desc="" exp=""/>
       </constraintExpressions>
@@ -649,89 +809,24 @@
         <defaultAction key="Canvas" value="{00000000-0000-0000-0000-000000000000}"/>
       </attributeactions>
       <attributetableconfig sortOrder="0" sortExpression="" actionWidgetStyle="dropDown">
-        <columns>
-          <column width="-1" hidden="0" name="id" type="field"/>
-          <column width="-1" hidden="0" name="coordIdx" type="field"/>
-          <column width="-1" hidden="0" name="x" type="field"/>
-          <column width="-1" hidden="0" name="y" type="field"/>
-          <column width="-1" hidden="0" name="mean.hour" type="field"/>
-          <column width="-1" hidden="0" name="fpt" type="field"/>
-          <column width="-1" hidden="0" name="min.hour" type="field"/>
-          <column width="-1" hidden="0" name="max.hour" type="field"/>
-          <column width="-1" hidden="0" name="visit.inte" type="field"/>
-          <column width="-1" hidden="0" name="time" type="field"/>
-          <column width="-1" hidden="0" name="posid" type="field"/>
-          <column width="-1" hidden="0" name="day" type="field"/>
-          <column width="-1" hidden="0" name="time.num" type="field"/>
-          <column width="-1" hidden="0" name="revisits" type="field"/>
-          <column width="-1" hidden="0" name="residence" type="field"/>
-          <column width="-1" hidden="1" type="actions"/>
-        </columns>
+        <columns/>
       </attributetableconfig>
       <editform></editform>
       <editforminit/>
       <editforminitcodesource>0</editforminitcodesource>
       <editforminitfilepath></editforminitfilepath>
-      <editforminitcode><![CDATA[# -*- coding: utf-8 -*-
-"""
-QGIS forms can have a Python function that is called when the form is
-opened.
-
-Use this function to add extra logic to your forms.
-
-Enter the name of the function in the "Python Init function"
-field.
-An example follows:
-"""
-from qgis.PyQt.QtWidgets import QWidget
-
-def my_form_open(dialog, layer, feature):
-	geom = feature.geometry()
-	control = dialog.findChild(QWidget, "MyLineEdit")
-]]></editforminitcode>
+      <editforminitcode><![CDATA[]]></editforminitcode>
       <featformsuppress>0</featformsuppress>
       <editorlayout>generatedlayout</editorlayout>
-      <editable>
-        <field editable="1" name="coordIdx"/>
-        <field editable="1" name="day"/>
-        <field editable="1" name="fpt"/>
-        <field editable="1" name="id"/>
-        <field editable="1" name="max.hour"/>
-        <field editable="1" name="mean.hour"/>
-        <field editable="1" name="min.hour"/>
-        <field editable="1" name="posid"/>
-        <field editable="1" name="residence"/>
-        <field editable="1" name="revisits"/>
-        <field editable="1" name="time"/>
-        <field editable="1" name="time.num"/>
-        <field editable="1" name="visit.inte"/>
-        <field editable="1" name="x"/>
-        <field editable="1" name="y"/>
-      </editable>
-      <labelOnTop>
-        <field name="coordIdx" labelOnTop="0"/>
-        <field name="day" labelOnTop="0"/>
-        <field name="fpt" labelOnTop="0"/>
-        <field name="id" labelOnTop="0"/>
-        <field name="max.hour" labelOnTop="0"/>
-        <field name="mean.hour" labelOnTop="0"/>
-        <field name="min.hour" labelOnTop="0"/>
-        <field name="posid" labelOnTop="0"/>
-        <field name="residence" labelOnTop="0"/>
-        <field name="revisits" labelOnTop="0"/>
-        <field name="time" labelOnTop="0"/>
-        <field name="time.num" labelOnTop="0"/>
-        <field name="visit.inte" labelOnTop="0"/>
-        <field name="x" labelOnTop="0"/>
-        <field name="y" labelOnTop="0"/>
-      </labelOnTop>
+      <editable/>
+      <labelOnTop/>
       <widgets/>
       <conditionalstyles>
         <rowstyles/>
         <fieldstyles/>
       </conditionalstyles>
       <expressionfields/>
-      <previewExpression>id</previewExpression>
+      <previewExpression></previewExpression>
       <mapTip></mapTip>
     </maplayer>
     <maplayer maxScale="0" labelsEnabled="0" hasScaleBasedVisibilityFlag="0" refreshOnNotifyMessage="" minScale="1e+8" simplifyLocal="1" readOnly="0" simplifyDrawingTol="1" simplifyAlgorithm="0" simplifyMaxScale="1" simplifyDrawingHints="1" autoRefreshEnabled="0" refreshOnNotifyEnabled="0" autoRefreshTime="0" type="vector" geometry="Line">
@@ -1585,16 +1680,20 @@ def my_form_open(dialog, layer, feature):
     <layer id="ne_10m_minor_islands_coastline_b0eb549c_8f0b_4a7f_8dd0_ec697c960459"/>
     <layer id="ne_10m_minor_islands_b380f5f7_1943_4a79_9f13_10f78a547fd0"/>
     <layer id="ne_10m_coastline_56f40a15_a4b3_4fb8_b585_bfc53362896a"/>
-    <layer id="knots01_recurse_data_f42f4af3_435d_4b05_8cb0_ef63085a17d2"/>
+    <layer id="knot01_recurse_data_60956357_324c_45ae_8114_41eae1486b50"/>
+    <layer id="OUTPUT_f69e8642_e5ef_4614_b888_a15e6af1fe57"/>
+    <layer id="OUTPUT_8f27f346_d085_4908_a17e_5235cb4b149e"/>
+    <layer id="OUTPUT_e0a7c19c_d8e0_47fe_b850_a5e78b5e7ee9"/>
+    <layer id="OUTPUT_b066b90c_7084_4eef_85ca_6023281b8d3a"/>
   </layerorder>
   <properties>
     <PAL>
       <CandidatesPoint type="int">16</CandidatesPoint>
       <DrawOutlineLabels type="bool">true</DrawOutlineLabels>
       <DrawRectOnly type="bool">false</DrawRectOnly>
-      <ShowingPartialsLabels type="bool">true</ShowingPartialsLabels>
       <CandidatesPolygon type="int">30</CandidatesPolygon>
       <ShowingAllLabels type="bool">false</ShowingAllLabels>
+      <ShowingPartialsLabels type="bool">true</ShowingPartialsLabels>
       <CandidatesLine type="int">50</CandidatesLine>
       <SearchMethod type="int">0</SearchMethod>
       <ShowingCandidates type="bool">false</ShowingCandidates>
