@@ -57,8 +57,7 @@ coltemp = "#fc8d62"
 
 library(ggplot2)
 unit = unit(0, "cm")
-g1 = theme(#panel.grid = element_blank(),
- legend.position="top", plot.title = element_text(size = 14, face = "italic"), axis.title = element_text(size = 10))+theme(strip.background=element_blank(), panel.spacing.y=unit, strip.text = element_text(size = 8))+ theme(panel.border = element_rect(fill = NA, colour = 1, size = 0.2), plot.caption=element_text(hjust = 0))
+
 
  # theme(axis.ticks.length=unit(-0.1, "cm"), axis.text.x = element_text(margin=unit(rep(0.2,4), "cm")), axis.text.y = element_text(margin=unit(rep(0.2,4), "cm")))
 
