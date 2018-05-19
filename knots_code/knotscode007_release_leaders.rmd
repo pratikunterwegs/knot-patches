@@ -4,7 +4,7 @@ editor_options:
 ---
 
 ```{r load_libs}
-source("libs.R");source("ggplot.pub.r")
+source("libs.R")
 library(readr);library(viridis)
 
 ```
@@ -13,13 +13,76 @@ library(readr);library(viridis)
 #'load all birds
 load("birds.all.rdata")
 
-#'subset first day of knots 01
-knots1.day1 = birds.all %>% filter(batch == "knots01") %>% mutate(day = julian(ts, origin = min(ts))) %>% filter(day <= 1)
+#'subset for knots 02
+knots2 = birds.all %>% filter(batch == "knots02")
+#'subset for 5 days since tracking
+knots2 = knots2 %>% mutate(day = round(as.numeric(julian(ts, origin = min(ts))))) %>% filter(day <= 2)
+```
+
+```{r move_object}
+#'arrange by id and ts
+knots2 = knots2 %>% arrange(id, ts) #%>% filter(VARX <= 10, VARY <= 10)
+
+#'convert to move
+library(move)
+k2.move = move(x = knots2$X, y = knots2$Y, time = knots2$ts, data = knots2, animal = knots2$id, proj = "+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs 
+")
+```
+
+```{r get_stats}
+#'split move
+k2.move = split(k2.move)
+
+#'assign a crs
+for (i in 1:length(k2.move)) {
+  crs(k2.move[[i]]) = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs 
+")
+  
+}
+
+#'run a for loop to get stats
+for(i in 1:length(k2.move)){
+  k2.move[[i]]@data = k2.move[[i]]@data %>% mutate(speed = c(NA,speed(k2.move[[i]])),
+                                                   angle = c(NA,angle(k2.move[[i]])),
+                                                   lag = c(NA,timeLag(k2.move[[i]], "secs")))
+}
+```
+
+```{r bind_move}
+#'make dataframe and bind
+k2 = k2.move %>% map(as.data.frame) %>% bind_rows() %>% dplyr::select(posID, ts, X,Y,VARX,VARY,COVXY,speed,angle,lag,id,NBS,long=X_raw,lat=Y_raw)
+```
+
+```{r clean_data}
+#'id flight as speed >= 10m/s, remove speeds over 15m/s, remove points with variance of x and y over 100, and angles outside -120:120. this should take care of positions which show rapid oscillations (high speed, extreme angles), filter out days greater than 2
+k2.1 = k2 %>% arrange(id, ts) %>% filter(VARX <= 100, VARY <= 100, angle %between% c(-120,120)) %>% 
+  #group_by(id, time = round_date(ts, "1 minute")) %>% summarise(x = mean(X, na.rm =T), y = mean(Y, na.rm=T), speed = mean(speed, na.rm=T), angle = mean(angle, na.rm = T)) %>%
+  mutate(flight = speed >= 7) %>% filter(speed <= 15) %>% mutate(day = julian(ts, origin = min(k2$ts))) %>% filter(day < 3)
+
+write_csv(k2.1, "knots_data/knots2_5day_flights_clean.csv")
+```
+
+```{r random_q_01}
+#'how far from the centre of griend are birds at different times of day?
+k2 = k2 %>% mutate(distance_griend = spDistsN1(cbind(k2$X,k2$Y), pt = griend_centre))
+
+#'plot boxplots or smooth
+ggplot(k2)+geom_bar(aes(x = hour(ts), y = ..count../10), alpha = 0.2)+geom_smooth(aes(x = hour(ts), y = distance_griend))+theme_pub()
 
 ```
 
-```{r}
 
+```{r id_flight_traj}
+#'for each individual, what's the distribution of time intervals between flights?
+#'first, split by id, then left join to a filtered df of only flight positions
+
+k2.2 = k2.1 %>% dlply("id") %>% map(function(x){x %>% left_join(x %>% filter(flight == T) %>% mutate(flight_time_diff = c(NA,as.numeric(diff(ts))))) %>% mutate(counter = flight==T & flight_time_diff > 60*7)})
+
+#'how much time between 95th percentile of flights?
+k2.2 %>% bind_rows() %>% summarise(quantile(flight_time_diff, probs = seq(0,1,0.01), na.rm=T)[95+1])/60
+#'four minutes between flight events...unless these birds run incredibly fast.
 ```
+
+
 
 
