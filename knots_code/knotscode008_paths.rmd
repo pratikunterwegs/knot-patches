@@ -6,17 +6,18 @@ editor_options:
 ```{r load_libs}
 source("libs.R")
 library(readr);library(viridis)
+source("libs.spatial.r")
 
 ```
 
 ```{r load_data}
-#'load filtered data: varx and var y below 10 each, speed below 15
-load("k2.1_flights.rdata")
+#'loadpskf data
+load("knots_data/pskf_data.rdata")
 ```
 
 ```{r make_lines}
 #'use same template as k2-data
-k2.lines = k2.1 %>% arrange(id, ts) %>% dlply(c("id")) %>% 
+k2.lines = pskf_files %>% 
   map(function(x) Line(cbind(x$X, x$Y)))
 
 k2.lines = k2.lines %>% 
@@ -36,8 +37,7 @@ k2.lines = SpatialLines(k2.lines, proj4string = CRS("+proj=utm +zone=31 +ellps=W
 
 library(stringi)
 
-data = data_frame(id = 1:length(k2.lines), names2 = substr(names,1,3)#, days = substr(names,5,5)
-                  )
+data = data_frame(id = 1:length(k2.lines), names = names, names2 = substr(names,1,3), segment = substr(names, 5,5))
 
 rownames(data) = names
 
@@ -45,6 +45,6 @@ k2.lines = SpatialLinesDataFrame(k2.lines, data = data)
 
 #'export
 library(rgdal)
-writeOGR(k2.lines, dsn = "knots_data/knots_spatials/", layer = "k2.1_clean_5day_lines", driver = "ESRI Shapefile", overwrite_layer = T)
+writeOGR(k2.lines, dsn = "knots_data/knots_spatials/", layer = "k2_pskflines2", driver = "ESRI Shapefile", overwrite_layer = T)
 ```
 
