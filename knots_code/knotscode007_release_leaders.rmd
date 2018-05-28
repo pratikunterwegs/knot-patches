@@ -1,5 +1,5 @@
 ---
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -25,8 +25,7 @@ knots2 = knots2 %>% arrange(id, ts) #%>% filter(VARX <= 10, VARY <= 10)
 
 #'convert to move
 library(move)
-k2.move = move(x = knots2$X, y = knots2$Y, time = knots2$ts, data = knots2, animal = knots2$id, proj = "+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs 
-")
+k2.move = move(x = knots2$X, y = knots2$Y, time = knots2$ts, data = knots2, animal = knots2$id, proj = "+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 ```
 
 ```{r get_stats}
@@ -35,9 +34,9 @@ k2.move = split(k2.move)
 
 #'assign a crs
 for (i in 1:length(k2.move)) {
-  crs(k2.move[[i]]) = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs 
+  crs(k2.move[[i]]) = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs
 ")
-  
+
 }
 
 #'run a for loop to get stats
@@ -55,7 +54,7 @@ k2 = k2.move %>% map(as.data.frame) %>% bind_rows() %>% dplyr::select(posID, ts,
 
 ```{r clean_data}
 #'id flight as speed >= 10m/s, remove speeds over 15m/s, remove points with variance of x and y over 100, and angles outside -120:120. this should take care of positions which show rapid oscillations (high speed, extreme angles), filter out days greater than 2
-k2.1 = k2 %>% arrange(id, ts) %>% filter(VARX <= 100, VARY <= 100, angle %between% c(-120,120)) %>% 
+k2.1 = k2 %>% arrange(id, ts) %>% filter(VARX <= 100, VARY <= 100, angle %between% c(-120,120)) %>%
   #group_by(id, time = round_date(ts, "1 minute")) %>% summarise(x = mean(X, na.rm =T), y = mean(Y, na.rm=T), speed = mean(speed, na.rm=T), angle = mean(angle, na.rm = T)) %>%
   mutate(flight = speed >= 7) %>% filter(speed <= 15) %>% mutate(day = julian(ts, origin = min(k2$ts))) %>% filter(day < 3)
 
@@ -82,7 +81,3 @@ k2.2 = k2.1 %>% dlply("id") %>% map(function(x){x %>% left_join(x %>% filter(fli
 k2.2 %>% bind_rows() %>% summarise(quantile(flight_time_diff, probs = seq(0,1,0.01), na.rm=T)[95+1])/60
 #'four minutes between flight events...unless these birds run incredibly fast.
 ```
-
-
-
-

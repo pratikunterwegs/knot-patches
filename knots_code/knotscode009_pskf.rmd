@@ -11,59 +11,54 @@ library(readr);library(viridis)
 ```{r load_all_birds}
 #'load all birds
 load("birds.all.rdata")
+```
 
+```{r prep_data}
 #'subset for knots 02
 knots2 = birds.all %>% filter(batch == "knots02")
 #'subset for 5 days since tracking
-knots2 = knots2 %>% mutate(day = round(as.numeric(julian(ts, origin = min(ts))))) %>% filter(day <= 2)
-
-#'get knots with at least 0.006% of points recorded
-filtered_data_ids = knots2 %>% dlply("id") %>% map(function(x) nrow(x)/abs(x$TIME[1] - x$TIME[nrow(x)])) %>% bind_rows() %>% t() %>% data.frame() %>% rename(prop = ".") %>%  bind_cols(count(knots2, id)) %>% filter(prop> 6e-5) %>% .$id
+knots2 = knots2 %>% mutate(day = round_any(as.numeric(julian(ts, origin = min(ts))), 0.1)) %>% filter(day <= 3)
 
 #'remove all birds
 rm(birds.all)
-#'filter the data for only these ids
-knots2 = knots2 %>% filter(id %in% filtered_data_ids)
 ```
 
-```{r get_extent_centroid}
-#'get the spatial extent and the centroid, make a circular polygon of some reasonable radius
-library(sf)
-k2.sf = st_as_sf(knots2, coords = c("X","Y"))
-k2.centroid = st_centroid(st_as_sfc(st_bbox(k2.sf)))
-#'4km buffer
-k2.buffer = st_buffer(k2.centroid, dist = 4e3)
-
-#'write buffer to file
-library(rgdal)
-st_write(k2.buffer, dsn = ".", layer = "griend_4km_buffer", driver = "ESRI Shapefile", delete_layer = T)
+```{r make_move}
+library(move)
+k2 = move(x = knots2$X, y = knots2$Y, time = knots2$ts, data = knots2, animal = knots2$id, proj = "+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
 ```
 
-```{r check_for_points_inside}
-#'check if the points are within 4km of the centroid, which should be the centre of griend
-k2.within = st_intersects(k2.buffer, k2.sf)
+```{r get_stats}
+#'split move
+k2 = split(k2)
 
-#'assign index to k2.sf
-k2.sf$index = seq(1, nrow(k2.sf), 1)
+#'assign a crs
+for (i in 1:length(k2)) {
+  crs(k2[[i]]) = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs
+")}
 
-#'inner join with k2.within
-k2.pts.within = knots2 %>% mutate(index = seq(1, nrow(knots2))) %>% left_join(data_frame(pts = k2.within[[1]], within = T), by = c("index" = "pts")) %>% mutate(within = ifelse(is.na(within), F, T))
-```
-
-```{r classify_segments}
-#'convert to list
-k2.pts.within = k2.pts.within %>% dlply("id")
-
-#'run inside a list
-for(i in 1:length(k2.pts.within)){
-  x = k2.pts.within[[i]]
-  a = data.frame(unclass(rle(x$within)))
-  x = x %>% filter(within == T) %>% mutate(segment = rep(c(1:nrow(a[a$values==T,])), c(a[a$values ==T,]$lengths)))
-  k2.pts.within[[i]] = x
+#'run a for loop to get stats
+for(i in 1:length(k2)){
+  k2[[i]]@data = k2[[i]]@data %>% mutate(speed = c(NA,speed(k2[[i]])), angle = c(NA,angle(k2[[i]])), lag = c(NA,timeLag(k2[[i]], "secs")))
 }
+```
 
-#'save data
-#save(k2.pts.within, file = "k2.segments.rdata")
+```{r bind_move}
+#'make dataframe and bind
+k2 = k2 %>% map(as.data.frame) %>% bind_rows() %>% dplyr::select(posID, ts, X,Y,VARX,VARY,COVXY,speed,angle,lag,id,NBS,TIME)
+
+#'load rollapply from zoo
+library(zoo)
+
+#'split by id and find the variance of the angle for each individual
+k2 = k2 %>% split("id") %>% map(function(x) x %>% arrange(TIME) %>% mutate(speed_var = rollapply(speed, 10, fill = T, "var"), angle_var = rollapply(angle, 10, fill = T, "var"))) %>% bind_rows()
+
+#'complete cases
+k2.1 = k2[complete.cases(k2),]
+```
+
+```{r segment_lowangle_points}
+
 ```
 
 
@@ -74,7 +69,7 @@ source("~/git/huji_atlas_pskf_code/PSKF/PSKFForATLAS.R")
 
 ```{r run_pskf}
 #'get only data with a greater than 0.006% recording rate
-pskf_data_ids = k2.pts.within %>% rbind_list() %>% group_by(id, segment) %>% summarise(prop = length(TIME)/(max(TIME) - min(TIME))) %>%  filter(prop> 0.005) %>% mutate(id.seg = paste(id,segment, sep =".")) %>% .$id.seg
+pskf_data_ids = k2.pts.within %>% rbind_list() %>% group_by(id, segment) %>% summarise(prop = length(TIME)/((max(TIME) - min(TIME))/1e3)) %>%  filter(prop> 0.005) %>% mutate(id.seg = paste(id,segment, sep =".")) %>% .$id.seg
 
 pskf_data = k2.pts.within %>% rbind_list() %>% mutate(id.seg = paste(id, segment, sep = ".")) %>% filter(id.seg %in% pskf_data_ids) %>% dlply(c("id.seg")) %>% 
   map(function(x) x %>% arrange(TIME) %>% select(X,Y,COVXY,VARX,VARY,TIME))
