@@ -1,0 +1,19 @@
+
+```{r load_libs_data}
+source("libs.R")
+load("knots2_nnd_tide.rdata")
+source("ggplot.pub.r")
+```
+
+```{r mod_data}
+#mod data for use
+k2.data2 = k2.data %>% mutate(time_round = round_any(time, 600), exp_round = as.factor(round_any(exp, 0.2))) %>% melt(id.vars = c("time_round", "exp_round"),measure.vars = c("nnd","n5d")) %>% group_by(time_round, exp_round, variable) %>% summarise(mean = mean(value)) %>% dcast(time_round + exp_round ~ variable, mean)# %>% 
+```
+
+```{r plot_data}
+ggplot(k2.data2)+geom_smooth(aes(x = time_round, y = n5d, group = exp_round, col = exp_round), method = "glm", se = F)+
+  scale_color_brewer(palette = "PiYG")+
+  theme_pub()+theme(legend.position = "top", legend.key = element_blank())
+```
+
+
