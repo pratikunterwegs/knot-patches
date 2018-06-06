@@ -1,3 +1,8 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
 
 ```{r}
 #'load libs
@@ -7,10 +12,15 @@ library(readr)
 
 ```{r}
 #'load data
-waterlevel = read_delim("knots_data/waterdata-HAR_WTER_VLIE-201706010000_201711012359.txt", delim = ";", skip = 3) %>% filter(datum %between% c("2017-09-01", "2017-10-31"))
-waterlevel = waterlevel %>% mutate(time = as.POSIXct(paste(datum,tijd,sep = " "), format = "%Y-%m-%d %H:%M:%S"))
+waterlevel.harlingen = read_delim("knots_data/waterdata-HAR_WTER_VLIE-201706010000_201711012359.txt", delim = ";", skip = 3) %>% select(date = datum, time = tijd, level = waarde, site = locatie) %>% mutate(date = as.character(date))
 
-waterlevel.k2 = waterlevel %>% filter(time %between% c("2017-09-15","2017-09-20"))
+waterlevel.terschelling = read_delim("knots_data/08-14-2017 - 09-09-2017 - gemeten waterhoogte west terschelling.csv", delim = ";") %>% select(date = Datum, time = Tijd, level = Meting, site = Locatie)
+
+waterlevels = bind_rows(waterlevel.harlingen, waterlevel.terschelling) %>%
+  mutate(date_time = as.POSIXct(paste(date,time,sep = " "), format = "%Y-%m-%d %H:%M:%S")) %>% 
+  arrange(date_time) %>% 
+  filter(date_time %between% c("2017-08-23","2017-09-23")) %>% 
+  filter(duplicated(date_time) == F)
 ```
 
 ```{r}
@@ -20,12 +30,12 @@ source("knots_data_functions/high_low_tide.R")
 
 ```{r}
 #'pass data to function
-tide = HL(level = waterlevel.k2$waarde, time = waterlevel.k2$time, period =13)
+tide = HL(level = waterlevels$level, time = waterlevels$date_time)
 ```
 
 ```{r}
 #'save data
-save(tide, file = "k2.tides.rdata")
+save(tide, file = "k1.tides.rdata")
 ```
 
 

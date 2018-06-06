@@ -15,8 +15,12 @@ ToPlot=0#can be 0 (no plot) or 1 (create plots)- note this will slow the procces
 
 Color_indv=c(brewer.pal(12, "Paired"))#if ToPlot=01 this determines how many individfuals to plot (currently 12). The colors for plotted individuas: 2-=red 3=green 5= light green 6 purpule 7 yelow 8 grey
 
-DayLength=50;#how many time step for each day (currently it is limited to 59 since i considered it as minutes within an hour)
-DaysToSimulate=100 ;#how many days to simulate
+DayLength=59;#how many time step for each day (currently it is limited to 59 since i considered it as minutes within an hour)
+
+#'prg: 1 minute positions as here
+
+DaysToSimulate=6 ;#how many days to simulate
+
 N_indv=60#number of individuals in the population
 
 Social_Pecrt_rng= 5
@@ -62,9 +66,15 @@ StpSize_ind=6 #Mean step lengths of individuals;
 #'prg: in what units? the map? in which case it should be 1cm/s, the same speed as the tide. with a simulation running at 10 minute intervals, that's 6m per step, assuming all indiviudals are identical.
 
 
-StpStd_ind=5 # Sandard deviations of step lengths of individuals
-Kappa_ind=3 #oncentration parameters of von Mises directional distributions used for individuals' movement
-# plotting step size distribution:
+StpStd_ind=1.5 # Sandard deviations of step lengths of individuals
+
+#'prg: what is a reasonable limit? 5 appears too high, let's make it 1.5
+
+Kappa_ind=3 #concentration parameters of von Mises directional distributions used for individuals' movement
+
+#'prg: what is a reasonable limit? not clear, leave it as is
+
+# plotting step size distribution: #'prg: plot option is off
 if (ToPlot==1) {plot(density(rgamma(10000, shape = StpSize_ind^2/StpStd_ind^2,scale = StpStd_ind^2/StpSize_ind)))  
     rose.diag(rvm(n=10000, mean = 0, k = Kappa_ind),bins=72, pch = 16, cex = 1, shrink = 1)  }
 
@@ -73,7 +83,11 @@ if (ToPlot==1) {plot(density(rgamma(10000, shape = StpSize_ind^2/StpStd_ind^2,sc
 if (PairedAgents==1){Social_Pecrt_rng=0}#if i work in a paired design than no social perception range for other agents
 
 N_tmStp=DaysToSimulate*DayLength #  total namber of time steps that witll be simulated for each iteration
+
 N_Rows=N_indv*N_tmStp
+#'prg: set the number of rows in the df
+
+#'prg: create a dataframe to hold the eventual values?
 XYind_log2=as.data.frame(t(rbind(
   rep(seq(1:N_indv),length.out=N_Rows,each=N_tmStp),#indiviuals within iteration
   rep(seq(1:N_tmStp),length.out=N_Rows),#cumul time steps for each indiv
@@ -82,13 +96,17 @@ XYind_log2=as.data.frame(t(rbind(
   rep(seq(1:(DaysToSimulate*N_indv)),length.out=N_Rows,each=DayLength),#day in the simulation#burst (i.e., each day as a unique value, not same for two indiv)
   matrix(data=NA,nrow=3,ncol=N_Rows))));#state, x, y pseudoSex
 
+##df ends here
+#'assign names to the df and make some factors
 names(XYind_log2)=c("indiv","step","Day","StepInDay","burst","x","y","pseudoSex")
 XYind_log2$indiv=as.factor(XYind_log2$indiv);
 XYind_log2$burst=as.factor(XYind_log2$burst);
+#'set start index
 startIndx=1;
 Phi_ind <- rep(0, N_indv) #dierction of the last step for the individuals
 XYind <- vector("list")#this list will store the matrixes of locations of all individual
 HRCnt=matrix(data=NA,nrow=N_indv,ncol=3)
+#'this is related to the paired individuals scenario
 HRCnt[,3]=rep(c(1,2),N_indv/2) #since sex is listed in this parameter i update it to be pairs of diferent sexes for the paired design
 HRcenterDist=rep(0,N_indv/2);#Distance between pairs of agents at the begining
 
@@ -107,8 +125,8 @@ if (DriftasOnce==0){ #0 it will drift daily;
   Ydrift=rep(DriftStrength[2]*DaysToSimulate,N_tmStp);
   #print('using drift from start')
 }else{print('check your params')}
-DrifByStep=rbind(Xdrift,Ydrift)
 
+DrifByStep=rbind(Xdrift,Ydrift)
 
 #Determining indivduals to drift.
 DriftingYorN=c(rep(1,PropDriftIndiv*N_indv),rep(-1,N_indv-PropDriftIndiv*N_indv))
@@ -125,6 +143,7 @@ PointsStrc <- rsyst(nx=sqrt(N_FoodPatches))#generation of a uniform landscape
 FoodItems=SpatialPoints(coords(PointsStrc)*Scl-Scl/2) # These are the points on scale of 0 to 1 no -Scl/2 to Scl/2
 if (ToPlot==1) {plot(FoodItems,col='white',pch=1); title('the simulated landscape')}#the number of point will be more or less kappa*mu    
 
+#### examined thus far ####
 
 #### a loop on individuals for initial conditions ####
 for (k in 1:N_indv) {

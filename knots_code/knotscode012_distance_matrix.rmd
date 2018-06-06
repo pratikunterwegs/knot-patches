@@ -51,9 +51,6 @@ a = a %>% map(function(x) x %>% mutate(id = NULL)) %>% map(as.matrix)
 
 #'bind the matrices into an array along the third dimension
 b = abind::abind(a, along = 3)
-
-#'create an empty holding array of the same dimensions as the bound array
-d = array(dim = dim(b))
 ```
 
 ```{r}

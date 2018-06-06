@@ -1,0 +1,124 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+```{r}
+#'source libs
+source("libs.R");source("ggplot.pub.r")
+```
+
+```{r}
+#'load data from sim
+load("xyFromSimulationForSNanalysis_354_40_70_6_1_.rdata")
+data = XYind_log2
+```
+
+```{r}
+#'plot data with ggplot and export
+
+png(filename = "knots_figs/bcrw_sim01.png", height = 1600, width = 1600, res = 350)
+
+#data %>% 
+ggplot()+
+  #geom_rect(aes(xmin = -2500, xmax = 2500, ymin = -2500, ymax = 2500), fill = "transparent", col = 1, lty = 2)+
+  geom_path(data = data, aes(x,y, col = indiv, frame = time))+
+  geom_point(data = data %>% group_by(indiv) %>% summarise(x = first(x), y = first(y)), aes(x, y), size = 3, col = 4, shape = 1)+
+  geom_point(data = data %>% group_by(indiv) %>% summarise(x = last(x), y = last(y)), aes(x, y), size = 3, col = 2, shape = 13)+
+    labs(list(x = NULL, y = NULL))+
+  theme_minimal()+theme(legend.position = "none")
+  
+dev.off()
+```
+
+```{r}
+#convert to array of positions
+a = data %>% rename(id = indiv)
+a = a %>% dlply("id") %>% map(function(x)x %>% select(id,x,y))
+
+#'convert to matrix
+a = a %>% map(function(x) x %>% mutate(id = NULL)) %>% map(as.matrix)
+
+#'bind the matrices into an array along the third dimension
+b = abind::abind(a, along = 3)
+```
+
+```{r make_holding_array}
+#'make a holding array and run the dist function
+#'now run the spdists functions through a for loop
+#'load libs
+#library(geosphere)
+
+d = array(dim = c(nrow(a[[1]]), length(a)-1, length(a)))
+#id.array = array(dim = c(nrow(k2.time), 5, length(a)))
+
+for (i in 1:length(a)) {
+  x = a[!names(a) %in% names(a)[i]]
+  for(j in 1:length(x)){
+    d[,j,i] = (diag(spDists(a[[i]], x[[j]])))
+  }
+  #e = d[,,i]
+  #z = apply(e, c(1), function(y){which(y %in% head(sort(y), 5))})
+  #z2 = which(unlist(lapply(z, length)) < 5)
+
+  #for (k in 1:length(z)) {
+  #  z[[k]] = c(z[[k]], rep(NA, 5 - length(z[[k]])))
+  #  id.array[k,,i] = names(x)[z[[k]]]
+ # }
+
+}
+
+#'make each matrix of each array a df
+e = d %>% apply(3, data.frame)
+
+#id.array = id.array %>% apply(3, data.frame)
+
+#'assign names
+names(e) = names(a)
+```
+
+```{r}
+#'for each element get the nnd at each timestep
+e.nnd = e %>% map(function(x) apply(x, 1, min)) %>% map(data.frame)
+
+#'assign names
+for (i in 1:length(e)) {
+  e.nnd[[i]]$id = names(e.nnd)[i]
+  e.nnd[[i]]$time = seq(1, nrow(d))
+  colnames(e.nnd[[i]]) = c("nnd","id","time")
+}
+
+#'bind rows
+e.nnd = e.nnd %>% bind_rows()
+```
+
+```{r}
+png(filename = "knots_figs/bcrw_nnd_timeclasses.png", res = 300, height = 800, width = 1600)
+
+#plot nnd distribution
+e.nnd %>% mutate(time_round = cut(time, breaks = seq(0,300,100))) %>% filter(!is.na(time_round)) %>% 
+  ggplot()+
+  stat_density(aes(x = nnd, fill = time_round), geom = "area", size =1)+
+  facet_wrap(~time_round)+
+  theme_pub()
+
+dev.off()
+```
+
+```{r}
+#'assign time to the data
+data = data %>% mutate(time = rep(1:nrow(d), dim(d)[3]))
+#'animate it
+library(gganimate)
+
+tracks =  ggplot()+
+  #geom_rect(aes(xmin = -2500, xmax = 2500, ymin = -2500, ymax = 2500), fill = "transparent", col = 1, lty = 2)+
+  geom_point(data = data, aes(x,y, col = indiv, frame = time, cumulative = T))+
+  #geom_point(data = data %>% group_by(indiv) %>% summarise(x = first(x), y = first(y)), aes(x, y), size = 3, col = 4, shape = 1)+
+  #geom_point(data = data %>% group_by(indiv) %>% summarise(x = last(x), y = last(y)), aes(x, y), size = 3, col = 2, shape = 13)+
+    labs(list(x = NULL, y = NULL))+
+  theme_minimal()
+
+gganimate(tracks, filename = "bcrw_sim.gif")
+
+```
+

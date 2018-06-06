@@ -10,56 +10,128 @@ library(readr);library(viridis)
 
 ```{r load_combined_data}
 #'load birds_all data
-load("birds.all.rdata")
+load("knots_data/knots01_data.rdata")
 ```
 
-```{r test_recursion_0.5km, include=FALSE}
-#'load libs
-library(recurse)
+```{r load_tides}
+#'load tides and segment the individuals by high tide
+load("k1.tides.rdata")
+library(stringi)
 
-#'subset for overlapping day ranges
-#birds.recurse = rbind(birds.all %>% filter(day <= 5), k2 %>% filter(day <= 5))
+#'add tide data
+k1.prep = k1.data %>% 
+  map(function(x){
+    x %>% 
+      filter(ts %between% c("2017-08-24","2017-09-23")) %>% 
+      mutate(time_round = TIME/1e3, time_round = round_any(time_round, 60)) %>% 
+      melt(id.vars = c("time_round")) %>% 
+      dcast(time_round ~ variable, fun.aggregate = mean) %>% 
+      arrange(time_round) %>% 
+      mutate(ts = as.POSIXct(ts, origin = "1970-01-01")) %>% 
+      full_join(tide, by = c("ts" = "time")) %>% 
+      arrange(ts) %>% 
+      mutate(tide = ifelse(is.na(tide), "other", tide),
+             ht = cumsum(tide == "H"),
+             ht = stri_pad(ht, 3, pad = "0"))
+  })
 
-#'round to 15 minute data
-birds.recurse.prep = birds.all %>% group_by(id, time = round_date(ts, "1 minute")) %>% summarise(x = mean(X, na.rm = T), y = mean(Y, na.rm = T), posid = first(posID), day = first(day))
+for (i in 1:length(k1.prep)) {
+  k1.prep[[i]]$id = names(k1.prep)[i]
+  
+}
+```
 
-birds.low.n.ids = which(count(birds.recurse.prep, id)$n < 60*24)
+```{r get_metrics}
+#'get tidal duration
+tide.met = tide %>% filter(tide == "H") %>% mutate(tide.diff = c(12*60, diff(as.numeric(time)/60)), ht = seq(1:length(tide)))
 
-birds.recurse.prep = birds.recurse.prep %>% filter(!id %in% birds.low.n.ids)
+#'get metrics
+metrics = k1.prep %>%
+  bind_rows() %>% 
+  mutate(ht = as.numeric(ht)) %>% 
+  filter(as.numeric(ht) > 1, complete.cases(time_round) == T) %>% 
+  group_by(id, ht) %>% 
+  summarise(dur.track = last(time_round) - first(time_round),
+            real.npos = length(ts)) %>% 
+  left_join(tide.met %>% select(tide.diff, ht)) %>% 
+  mutate(prop = real.npos/tide.diff) %>% 
+  group_by(ht) %>% 
+  mutate(nbirds = sum(prop > 0.3)) %>% 
+  group_by(id,ht) %>% 
+  mutate(include = prop > 0.3 & nbirds > 5,
+         id.ht = paste(id,stri_pad(ht, 3, pad = "0"), sep = "."))
 
-#'save data for recurses
-save(birds.recurse.prep, file = "knots_data/birds_recurse_prep.rdata")
+#'include the whole tide?
+metrics = metrics %>% group_by(ht) %>% 
+  mutate(include.tide = nbirds > 5)
 
-rm(birds.all);gc()
+a = melt(metrics, measure.vars = "include.tide") %>% group_by(ht, variable) %>% summarise(value = first(value))
+```
+
+```{r}
+#'plot which birds are okay to use
+pdf(file = "knots_figs/id_tide_sampling2.pdf", height = 8, width = 11)
+
+ggplot(metrics)+
+  geom_tile(aes(x = id, y = ht, fill = prop > 0.3), col = "grey50", lwd = 0.1)+
+  geom_tile(data = a, aes(x = variable, y = ht, fill = value), col = "grey50", lwd = 0.1)+
+  geom_point(data = a, aes(x = variable, y = ht, group = variable, shape = value), size = 2)+
+  geom_text(data = metrics, aes(x = id, y = ht, label = round_any(prop, 0.1)), hjust = "middle", size = 2)+
+  scale_y_reverse(breaks = c(1:max(as.numeric(metrics$ht))))+
+  scale_x_discrete(position = "top")+
+  scale_fill_manual(values = brewer.pal(3, "RdBu")[c(1,3)])+
+  scale_shape_manual(values = c(4, 1))+
+  theme_bw()+
+  theme(legend.position = "top", panel.grid= element_blank(), panel.grid.minor = element_blank())+
+  labs(list(y = "high tide #", fill = "proportion sampled > 0.3",
+            shape = "inclue tide?"))
+
+dev.off()
+```
+
+```{r}
+#'prep data by splitting by id and time and then select only those from metrics where include = T
+
+k1.prep2 = k1.prep %>%
+  bind_rows() %>% 
+  filter(as.numeric(ht) > 1, complete.cases(time_round) == T) %>% 
+  select(x= X, y = Y, time = ts, id, ht) %>% 
+  dlply(c("id","ht")) %>% 
+  map(function(x)x %>% select(-ht))
+
+k1.prep2 = k1.prep2[metrics$include]
+save(k1.prep2, file = "knots1.recurse.prep.rdata")
 ```
 
 ```{r recursions}
 #'see elephant code for the individual based recursion with workspace clearance and reloading at each step
-load("knots_data/birds_recurse_prep.rdata")
-#'get the number of knots
-n.active.birds = length(unique(birds.recurse.prep$id))
+load("knots1.recurse.prep.rdata")
 
 #'run the loop
-for(i in 1:n.active.birds){
+for(i in 1:length(k1.prep2)){
   source("libs.R")
-  load("knots_data/birds_recurse_prep.rdata")
-library(recurse)
+  load("knots1.recurse.prep.rdata")
+library(recurse);library(stringr)
   
 #'split df into list by id and arrange by time
-
-birds.recurse.prep = birds.recurse.prep %>% dlply("id") %>% map(function(x) arrange(x, time))
-
-birds.recurse = getRecursions(birds.recurse.prep[[i]][c("x","y","time","id")], radius = 1000, timeunits = "hours")
+k1.recurse = getRecursions(k1.prep2[[i]][c("x","y","time","id")], radius = 1000, timeunits = "hours")
   
-write.csv(cbind(revisits = birds.recurse$revisits, residence = birds.recurse$residenceTime, id = names(birds.recurse.prep)[i], time = birds.recurse.prep[[i]]$time), file = paste("knots_data/recurse_data/bird_revisit",i,".csv", sep ="_" ), row.names = F)
+write.csv(cbind(revisits = k1.recurse$revisits, 
+                residence = k1.recurse$residenceTime, 
+                id.ht = names(k1.prep2)[i],
+                id = substr(names(k1.prep2)[i], 1,3),
+                ht = substr(names(k1.prep2)[i], 5,7),
+                time = k1.prep2[[i]]$time, 
+                fpt = as.numeric(k1.recurse$revisitStats$timeInside[k1.recurse$revisitStats$visitIdx==1]),
+                x = k1.recurse$revisitStats$x[k1.recurse$revisitStats$visitIdx==1],
+                y = k1.recurse$revisitStats$y[k1.recurse$revisitStats$visitIdx==1]), 
+          file = paste("knots_data/recurse_data/k1_revisit",names(k1.prep2)[i],".csv", sep ="_" ), row.names = F)
   
-  write.csv(birds.recurse$revisitStats, file = paste("knots_data/recurse_data/bird_recurse_output",i,".csv", sep ="_" ), row.names = F)
-  rm(list = ls(all.names = T))
+write.csv(k1.recurse$revisitStats, file = paste("knots_data/recurse_data/k1_recurse_output",names(k1.prep2)[i],".csv", sep ="_" ), row.names = F)
+  #rm(list = ls(all.names = T))
   gc()
   
 }
-
-```
 
 ```
 
