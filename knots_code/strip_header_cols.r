@@ -28,6 +28,6 @@ data = data %>%
   })
 
 #write to file
-for(i in 1:length(data)){
-  write_csv(data[[i]], path = paste("knots_data/recurse_data/", names(data)[i], "residence_data.csv"), col_names = F)
-}
+#for(i in 1:length(data)){
+#  write_csv(data[[i]], path = paste("knots_data/recurse_data/", names(data)[i], "residence_data#.csv"), col_names = F)
+#}

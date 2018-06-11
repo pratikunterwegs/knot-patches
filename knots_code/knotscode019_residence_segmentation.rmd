@@ -1,0 +1,71 @@
+---
+chunk_output_type: console
+---
+```{r}
+#'source libs
+source("libs.R")
+library(readr)
+```
+
+```{r}
+#'read in segmented files
+files = list.files("knots_data/segmented_residence_data/", pattern = ".csv", full.names = T)
+
+data.segments = files %>%
+  map(function(x) read_csv(x, col_names = F))
+
+#'load prepped data
+load("knots_data/knots01_for_residence_segments.rdata")
+```
+
+```{r}
+#'assign names to data.segments
+names(data.segments) = names(data)
+#'identify segments where there is no data, ie, no change in segments
+which(unlist(lapply(data.segments, ncol)) == 0)
+#'remove bad dfs
+data.segments = data.segments[unlist(lapply(data.segments, ncol)) == 6]
+#'make colnames
+colnames = colnames(data[[1]])
+#'assign id.ht to the dfs
+for(i in 1:length(data.segments)){
+  colnames(data.segments[[i]]) = colnames; 
+  data.segments[[i]] = data.segments[[i]] %>% 
+    mutate(id.ht = names(data.segments)[i],
+           index = 1)
+}
+
+#'assign id.ht to the prepped data
+for(i in 1:length(data)){
+  data[[i]]$id.ht = names(data)[i]
+}
+```
+
+```{r}
+#'bind rows and merge
+data = data %>%
+  bind_rows() %>% 
+  full_join(data.segments %>% 
+              bind_rows())
+```
+
+```{r}
+#'bind by id.ht and split again
+data = data %>% 
+  arrange(id.ht, time) %>% 
+  mutate(index = ifelse(is.na(index), 0, index)) %>% 
+  mutate(id = substr(id.ht, 1, 3), ht = substr(id.ht, 5, 7))
+  
+#'id the run lengths
+a = unclass(rle(data$index)) %>% bind_rows()
+
+#'
+```
+
+```{r}
+#'plot segments
+ggplot()+
+  geom_line(data = data %>% filter(id.ht == "151.003"), aes(x = time, y = residence, col = !is.na(index)))+
+  facet_wrap(~id, scales = "fixed")
+```
+
