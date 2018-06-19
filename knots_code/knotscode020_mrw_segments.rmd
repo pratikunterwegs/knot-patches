@@ -1,0 +1,35 @@
+```{r}
+source("libs.R")
+```
+
+```{r}
+library(moveHMM)
+```
+
+```{r}
+#load data
+load("knots_data/knots01_for_residence_segments.rdata")
+```
+
+```{r}
+#'prep for mrw for one df, which is one id in one high tide
+a = data[["234.004"]]
+data.mrw = prepData(a, type = "UTM", coordNames = c("x","y"))
+```
+
+```{r}
+#'get the movement parameters' distributions
+weibullShape = c(3, 0.5)
+weibullScale = c(10, 10)
+wcauchyMu = c(0, pi)
+wcauchyRho = c(0.7, 0.2)
+```
+
+```{r}
+#'fit a two state model
+doubleStateModel = fitHMM(data.mrw, nbStates = 2, 
+            stepPar0 = c(weibullShape, weibullScale), 
+            anglePar0 = c(wcauchyMu, wcauchyRho),
+            stepDist = "weibull", angleDist = "wrpcauchy")
+```
+

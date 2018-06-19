@@ -54,18 +54,37 @@ data = data %>%
 data = data %>% 
   arrange(id.ht, time) %>% 
   mutate(index = ifelse(is.na(index), 0, index)) %>% 
-  mutate(id = substr(id.ht, 1, 3), ht = substr(id.ht, 5, 7))
-  
-#'id the run lengths
-a = unclass(rle(data$index)) %>% bind_rows()
-
-#'
+  mutate(id = substr(id.ht, 1, 3), 
+         ht = substr(id.ht, 5, 7))
 ```
 
 ```{r}
+#'split by id.ht and prep the segment ids from reps of rle
+data = data %>%
+  dlply("id.ht")
+
+seg.rle = vector("list", length=length(data))
+
+#'run a for loop to id the segs
+for(i in 1:length(data)){
+  x = unclass(rle(data[[i]]$index)) %>% 
+    bind_rows() %>% 
+    filter(values == 0)
+  seg.rle[[i]] = data_frame(seg = rep(1:nrow(x), x$lengths))
+  data[[i]] = data[[i]] %>% 
+    filter(index == 0) %>% 
+    bind_cols(seg.rle[[i]])
+}
+```
+
+
+```{r}
 #'plot segments
+data2 = data %>% rbind_list() 
+
+data2 %>% filter(id.ht == "151.003") %>% 
 ggplot()+
-  geom_line(data = data %>% filter(id.ht == "151.003"), aes(x = time, y = residence, col = !is.na(index)))+
-  facet_wrap(~id, scales = "fixed")
+  geom_line(aes(x = as.POSIXct(time, origin = "1970-01-01"), y = residence, col = as.factor(seg)), lwd = 2)+
+  facet_grid(id~ht, scales = "free")
 ```
 
