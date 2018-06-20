@@ -57,3 +57,10 @@ ggplot()+
   #facet_grid(id~ht, scales = "free")
 ```
 
+```{r}
+#'save segmented data as rdata and csv
+save(data.segmented, file = "knots_data/foraging_segments.rdata")
+
+write_csv(data.segmented, "knots_data/k01_foraging_segments.csv")
+```
+

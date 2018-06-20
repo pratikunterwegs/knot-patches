@@ -1,30 +1,19 @@
 ```{r}
-
 #### data for array based pairwise distances
-
 source("libs.R")
-load("birds.all.rdata")
+library(readr)
 
-k2 = birds.all %>% filter(batch == "knots02")
+load("knots_data/foraging_segments.rdata")
 ```
 
 ```{r}
-#'set the time to group by in seconds
-sample_interval = 60
-
-#filter the first three days and round to 2 seconds
-k2.1 = k2 %>% mutate(day = julian(ts, origin = min(ts))) %>% filter(day < 3) %>% mutate(time_round = round_any(TIME/1e3, sample_interval))
-
-#'round data to 2s
-k2.2 = k2.1 %>% melt(id.vars = c("time_round","id"), measure.vars = c("X","Y")) %>% group_by(id, time_round, variable) %>% summarise(mean = mean(value, na.rm = T)) %>% dcast(id + time_round ~ variable, mean)
-
 #'convert to geographic coordinates for the geosphere package
 library(sf)
-k2.2sf = st_as_sf(k2.2, coords = c("X","Y")); st_crs(k2.2sf) = 32631
-k2.2sfgeo = st_transform(k2.2sf, 4326)
-k2.2sfgeo = k2.2sfgeo %>% mutate(X = st_coordinates(k2.2sfgeo)[,1], Y = st_coordinates(k2.2sfgeo)[,2])
-
-k2.2 = st_set_geometry(k2.2sfgeo, NULL)
+k1.sf = st_as_sf(data.segmented, coords = c("x","y")) %>% 
+  `st_crs<-`(32631) %>% 
+  st_transform(4326) %>% bind_cols(data.frame(st_coordinates(.))) %>%
+  `st_geometry<-`(NULL) %>% 
+  unclass() %>% as.data.frame()
 
 #'create a sequence of tiemstamps from min TIME to max TIME, in increments of 1000, or divide by 1e3 and have increments of 1s
 #'
