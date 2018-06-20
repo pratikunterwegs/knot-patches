@@ -114,7 +114,7 @@ for(i in 1:length(k1.prep2)){
 library(recurse);library(stringr)
   
 #'split df into list by id and arrange by time
-k1.recurse = getRecursions(k1.prep2[[i]][c("x","y","time","id")], radius = 1000, timeunits = "hours")
+k1.recurse = getRecursions(k1.prep2[[i]][c("x","y","time","id")], radius = 250, timeunits = "hours")
   
 write.csv(cbind(revisits = k1.recurse$revisits, 
                 residence = k1.recurse$residenceTime, 

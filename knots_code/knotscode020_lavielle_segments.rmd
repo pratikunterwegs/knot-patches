@@ -1,0 +1,67 @@
+```{r}
+source("libs.R")
+library(adehabitatLT)
+```
+
+```{r load_data}
+#load data
+load("knots_data/knots01_for_residence_segments.rdata")
+```
+
+```{r prep_ltraj}
+#'prep as ltraj
+data.prep = data %>% dlply("id.ht")
+
+#'map as.ltraj on to each id.ht
+data.prep = data.prep %>% 
+  map(function(x){
+    as.ltraj(xy = x[,c("x","y")],
+                     date = as.POSIXct(x$time, origin = "1970-01-01"),
+                     id = x$id,
+                     infolocs = x)
+  })
+
+```
+
+```{r segment_lavielle}
+#'segment using lavielle
+data.seg = data.prep %>% 
+  map(function(x){
+    lavielle(x = x,
+                    Lmin = 3, Kmax =  10, ld = 1,
+                    type = "var", which = "fpt")
+  })
+```
+
+```{r choose_n_segs}
+#'choose, by graphing the decrease in the contrast function, the number of breaks
+data.choosesegs = data.seg %>% 
+  map(function(x){
+    chooseseg(x, S = 0.75, draw = F)
+  })
+
+#'plot the decrease overall
+#'check the number of rows in each df
+unique(unlist(lapply(data.choosesegs, nrow)))
+
+#'get df and plot
+data.choosesegs %>% 
+  bind_rows() %>% 
+  ggplot(aes(x = as.factor(K), y = Jk))+
+  geom_boxplot(notch = T)+ylim(0,-1e3)
+```
+
+```{r find_segs}
+#'find the segs in data.seg
+data.segpaths = data.seg %>% 
+  map(function(x){
+    findpath(x, K = 5, plotit = F)
+  })
+
+
+```
+
+```{r save_data}
+save(data.segpaths, file = "knots_data/segmented_residence_data/fpt_var_segmented_data.rdata")
+```
+
