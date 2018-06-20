@@ -6,7 +6,7 @@ Code and figures for red knots *Calidris canutus islandica* tracking data and an
 
 ## Who?
 
-Contact
+Contact:
 - Pratik Gupte: p.r.gupte@rug.nl, pratik.gupte@nioz.nl
 
 GELIFES-RUG & COS-NIOZ
