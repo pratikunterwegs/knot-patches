@@ -6,40 +6,30 @@ library(readr)
 load("knots_data/foraging_segments.rdata")
 ```
 
-```{r}
-#'convert to geographic coordinates for the geosphere package
-library(sf)
-k1.sf = st_as_sf(data.segmented, coords = c("x","y")) %>% 
-  `st_crs<-`(32631) %>% 
-  st_transform(4326) %>% bind_cols(data.frame(st_coordinates(.))) %>%
-  `st_geometry<-`(NULL) %>% 
-  unclass() %>% as.data.frame()
-
-#'create a sequence of tiemstamps from min TIME to max TIME, in increments of 1000, or divide by 1e3 and have increments of 1s
-#'
-
-k2.time = data_frame(time_calc = seq(min(k2.2$time_round), max(k2.2$time_round), sample_interval))
-#'make df again by removing geometry
-```
-
 ```{r assign_timestamps}
 #'split into lsit, and then merge each element to the timestamps df.
-k2.3 = k2.2 %>% dlply("id") %>% map(function(x) full_join(k2.time, x, by = c("time_calc" = "time_round")))
+segment.list = data.segmented %>% 
+  filter(seg == 1) %>% 
+  dlply(c("id.ht","seg"))
 
-#'assign id
-for (i in 1:length(k2.3)) {
-  k2.3[[i]]$id = names(k2.3)[i]
+#this needs a for loop
+for(i in 1:length(segment.list)){
+  x = segment.list[[i]]
+  x.id.ht = unique(x$id.ht)
+  x.time.range = range(x$time)
+  x = x %>% 
+    bind_rows(data.segmented %>% 
+                filter(id.ht != x.id.ht,
+                       time %between% c(x.time.range))) %>% 
+    dlply("id.ht") %>% 
+    map(function(x){
+      x %>% select(x,y)
+    }) %>% 
+    map(as.matrix)
+  x = abind::abind(x, along = 3)
+  segment.list[[i]] = x
 }
 
-#'select a sample of the dfs, and select only x,y and id
-a = k2.3 #%>% filter(id %in% c("151", "157","231"))
-a = a %>% map(function(x)x %>% select(id,X,Y))
-
-#'convert to matrix
-a = a %>% map(function(x) x %>% mutate(id = NULL)) %>% map(as.matrix)
-
-#'bind the matrices into an array along the third dimension
-b = abind::abind(a, along = 3)
 ```
 
 ```{r}
