@@ -1,0 +1,51 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#'load data
+load("knots_data/proximity.matrix.rdata")
+```
+
+```{r}
+#'load libs
+source("libs.R")
+```
+
+```{r}
+#'in a list, with one element per tide, store matrices of segs per id in tide
+id.obs = 
+  data.segpaths %>% count(id.ht) %>% 
+  separate(id.ht, c("id","ht")) %>% 
+  mutate(ht = stri_pad(ht, 3, side = "left", pad = "0"))
+
+```
+
+```{r}
+#'join id.obs and proxmat2 by id and ht, then variable and ht
+prox.df = prox.mat2 %>% left_join(id.obs) %>% left_join(id.obs %>% rename(n2 = n), by = c("variable" = "id","ht"))
+```
+
+```{r}
+#'calculate the association index as used in Myers 1983
+prox.df = prox.df %>% 
+  mutate(index = value/(n+n2-value))
+
+#'group by id~var pair and average across tides
+prox.df = prox.df %>% 
+  group_by(id, variable) %>% 
+  summarise(index = mean(index, na.rm = T))
+
+#'find the max
+w = prox.df %>% group_by(id) %>% summarise(index = max(index, na.rm = T))
+```
+
+```{r}
+ggplot()+
+  geom_col(data = w, aes(x = reorder(id, index, FUN = median), y = index), fill = "grey90")+
+  geom_boxplot(data = prox.df, aes(x = id, y = index))+
+  theme_pub()+
+  theme(axis.text.x = element_text(angle = 30))
+```
+

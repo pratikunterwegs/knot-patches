@@ -1,5 +1,5 @@
 ---
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -18,14 +18,14 @@ source("libs.spatial.r")
 ```{r make_lines}
 #'use same template as k2-data
 k2.lines = k2.1 %>% filter(angle_var < 100) %>%
-  dlply("id") %>% 
-  #map(function(x) x %>% filter(Std<100)) %>% 
+  dlply("id") %>%
+  #map(function(x) x %>% filter(Std<100)) %>%
   map(function(x) Line(cbind(x$X, x$Y)))
 
-k2.lines = k2.lines %>% 
+k2.lines = k2.lines %>%
   map(function(x) Lines(x, ID = "a"))
 
-for(i in 1:length(k2.lines)){
+for(i in 1:length(k2.lines)) {
   k2.lines[[i]]@ID = names(k2.lines)[i]
 }
 ```
@@ -49,4 +49,3 @@ k2.lines = SpatialLinesDataFrame(k2.lines, data = data)
 library(rgdal)
 writeOGR(k2.lines, dsn = "knots_data/knots_spatials/", layer = "k2_low_angle_vars", driver = "ESRI Shapefile", overwrite_layer = T)
 ```
-
