@@ -185,6 +185,6 @@ prox.mat2 = melt(prox.mat, id.vars = c("id","ht")) %>%
 ```
 
 ```{r}
-save(prox.mat2, file = "knots_data/proximity.matrix.rdata")
+save(prox.mat2, data.segpaths, file = "knots_data/proximity.matrix.rdata")
 ```
 

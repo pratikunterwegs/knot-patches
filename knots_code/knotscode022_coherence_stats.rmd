@@ -1,0 +1,102 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+```{r}
+#'load randomised coherence matrix data
+load("knots_data/coherence_test_data.rdata")
+```
+
+```{r}
+#'load libs
+source("libs.R"); library(stringi)
+```
+
+```{r}
+#'join dfs, remove cases of self testing, split by id-variable pair (focal-nonfocal pairwise test), map ks.test (Kolmogorov-Smirnov two-sample test). output is a list of test value
+test.data = prox.df %>% left_join(coherence.rand.df %>% mutate(value = as.numeric(value))) %>% 
+  filter(id != variable) %>% 
+  na.omit() %>% 
+  rename(coherence.emp = index, coherence.rand = value) %>% 
+  dlply(c("id","variable"))
+
+#'remove data with less than 5 obs
+test.data = test.data[unlist(lapply(test.data, nrow)) >= 5]
+
+#'get the empirical - random coherence difference
+test.diff = test.data %>% 
+  rbind_list() %>% 
+  group_by(id, variable) %>% 
+  summarise(coherence.diff = mean(coherence.emp) - mean(coherence.rand))
+```
+
+```{r}
+#'map the KS test 
+test.result = test.data %>% 
+  map(function(x){
+    ks.test(x$coherence.emp, y = x$coherence.rand)
+  }) %>% 
+  map(function(x){
+    bind_cols(unclass(x))
+  }) %>% 
+  bind_rows() %>% 
+  bind_cols(test.diff)
+  
+```
+
+```{r}
+#'plot and see
+test.result %>% 
+  ggplot()+
+  geom_tile(aes(x = id, y = reorder(variable, 1-as.numeric(variable)), fill = coherence.diff, alpha = p.value < 0.05), col = "transparent", lwd = 0.2)+
+  #geom_point(aes(x = id, y = reorder(variable, 1-as.numeric(variable)), shape = p.value < 0.05))+
+  scale_fill_gradient2(low = colb2, mid = "white", high = cola2)+
+  scale_alpha_manual(values = c(0.1,1), guide = F)+
+  scale_shape_manual(values = c("", "*"), guide = F)+
+  labs(list(x = "focal id", y = "nonfocal id", fill = "observed - expected coherence"))+
+  theme_void()+theme(legend.position = "top", panel.grid.major = element_blank(), axis.text.x = element_text())+coord_polar()
+```
+
+```{r}
+test.result = test.result %>% left_join(
+  prox.df %>% group_by(id, variable) %>% summarise(interactions = mean(index, na.rm = T))
+)
+```
+
+```{r}
+a = sample(colorRampPalette(brewer.pal(12, "Spectral"))(30), 30)
+test.result%>% 
+  filter(interactions > 0, p.value < 0.05, id %in% unique(id)[1:30],variable%in% unique(id)[1:30]) %>% 
+  ggplot()+
+  geom_col(aes(x = id, y = interactions, fill = variable), position = position_fill())+
+  theme_bw()+
+  scale_fill_manual(values = a[1:30])
+```
+
+
+```{r}
+#'how many friendly knots
+test.summary = count(test.result, sig = p.value < 0.05, friend = coherence.diff > 0)
+
+test.summary %>% 
+  ggplot()+
+  geom_tile(aes(x = friend, y = sig, fill = friend, alpha = sig))+
+  geom_text(aes(x = friend, y = sig, label = round_any(n/720, 0.01)))+
+  scale_fill_manual(values = c(colb2, cola2))+
+  scale_alpha_manual(values = c(0.3,1))+
+  scale_x_discrete(labels = c("less than \n expected coherence","more than \n expected coherence"))+
+  scale_y_discrete(labels = c("p > 0.05","p < 0.05"))+
+  theme_pub()+
+  labs(list(x = NULL, y = NULL, title = "Kolmogorov-Smirnov pairwise 2-sample test \n Proportion of tests (n = 720)"))+
+  theme(plot.title = element_text(size = 8))
+```
+
+```{r}
+#'which knots are friendly and with whom?
+test.result %>% filter(p.value < 0.05) %>% count(id, friend = coherence.diff > 0) %>% 
+  group_by(id) %>% 
+  mutate(unfriend.prop = n[friend == F]/sum(n)) %>% 
+  ggplot()+
+  stat_density(aes(x = unfriend.prop), geom = "line")
+```
+
