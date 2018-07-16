@@ -1,5 +1,5 @@
 ---
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -19,17 +19,17 @@ load("k1.tides.rdata")
 library(stringi)
 
 #'add tide data
-k1.prep = k1.data %>% 
+k1.prep = k1.data %>%
   map(function(x){
-    x %>% 
-      filter(ts %between% c("2017-08-24","2017-09-23")) %>% 
-      mutate(time_round = TIME/1e3, time_round = round_any(time_round, 60)) %>% 
-      melt(id.vars = c("time_round")) %>% 
-      dcast(time_round ~ variable, fun.aggregate = mean) %>% 
-      arrange(time_round) %>% 
-      mutate(ts = as.POSIXct(ts, origin = "1970-01-01")) %>% 
-      full_join(tide, by = c("ts" = "time")) %>% 
-      arrange(ts) %>% 
+    x %>%
+      filter(ts %between% c("2017-08-24","2017-09-23")) %>%
+      mutate(time_round = TIME/1e3, time_round = round_any(time_round, 60)) %>%
+      melt(id.vars = c("time_round")) %>%
+      dcast(time_round ~ variable, fun.aggregate = mean) %>%
+      arrange(time_round) %>%
+      mutate(ts = as.POSIXct(ts, origin = "1970-01-01")) %>%
+      full_join(tide, by = c("ts" = "time")) %>%
+      arrange(ts) %>%
       mutate(tide = ifelse(is.na(tide), "other", tide),
              ht = cumsum(tide == "H"),
              ht = stri_pad(ht, 3, pad = "0"))
@@ -37,7 +37,7 @@ k1.prep = k1.data %>%
 
 for (i in 1:length(k1.prep)) {
   k1.prep[[i]]$id = names(k1.prep)[i]
-  
+
 }
 ```
 
@@ -47,22 +47,22 @@ tide.met = tide %>% filter(tide == "H") %>% mutate(tide.diff = c(12*60, diff(as.
 
 #'get metrics
 metrics = k1.prep %>%
-  bind_rows() %>% 
-  mutate(ht = as.numeric(ht)) %>% 
-  filter(as.numeric(ht) > 1, complete.cases(time_round) == T) %>% 
-  group_by(id, ht) %>% 
+  bind_rows() %>%
+  mutate(ht = as.numeric(ht)) %>%
+  filter(as.numeric(ht) > 1, complete.cases(time_round) == T) %>%
+  group_by(id, ht) %>%
   summarise(dur.track = last(time_round) - first(time_round),
-            real.npos = length(ts)) %>% 
-  left_join(tide.met %>% select(tide.diff, ht)) %>% 
-  mutate(prop = real.npos/tide.diff) %>% 
-  group_by(ht) %>% 
-  mutate(nbirds = sum(prop > 0.3)) %>% 
-  group_by(id,ht) %>% 
+            real.npos = length(ts)) %>%
+  left_join(tide.met %>% select(tide.diff, ht)) %>%
+  mutate(prop = real.npos/tide.diff) %>%
+  group_by(ht) %>%
+  mutate(nbirds = sum(prop > 0.3)) %>%
+  group_by(id,ht) %>%
   mutate(include = prop > 0.3 & nbirds > 5,
          id.ht = paste(id,stri_pad(ht, 3, pad = "0"), sep = "."))
 
 #'include the whole tide?
-metrics = metrics %>% group_by(ht) %>% 
+metrics = metrics %>% group_by(ht) %>%
   mutate(include.tide = nbirds > 5)
 
 a = melt(metrics, measure.vars = "include.tide") %>% group_by(ht, variable) %>% summarise(value = first(value))
@@ -93,10 +93,10 @@ dev.off()
 #'prep data by splitting by id and time and then select only those from metrics where include = T
 
 k1.prep2 = k1.prep %>%
-  bind_rows() %>% 
-  filter(as.numeric(ht) > 1, complete.cases(time_round) == T) %>% 
-  select(x= X, y = Y, time = ts, id, ht) %>% 
-  dlply(c("id","ht")) %>% 
+  bind_rows() %>%
+  filter(as.numeric(ht) > 1, complete.cases(time_round) == T) %>%
+  select(x= X, y = Y, time = ts, id, ht) %>%
+  dlply(c("id","ht")) %>%
   map(function(x)x %>% select(-ht))
 
 k1.prep2 = k1.prep2[metrics$include]
@@ -112,27 +112,25 @@ for(i in 1:length(k1.prep2)){
   source("libs.R")
   load("knots1.recurse.prep.rdata")
 library(recurse);library(stringr)
-  
+
 #'split df into list by id and arrange by time
 k1.recurse = getRecursions(k1.prep2[[i]][c("x","y","time","id")], radius = 250, timeunits = "hours")
-  
-write.csv(cbind(revisits = k1.recurse$revisits, 
-                residence = k1.recurse$residenceTime, 
+
+write.csv(cbind(revisits = k1.recurse$revisits,
+                residence = k1.recurse$residenceTime,
                 id.ht = names(k1.prep2)[i],
                 id = substr(names(k1.prep2)[i], 1,3),
                 ht = substr(names(k1.prep2)[i], 5,7),
-                time = k1.prep2[[i]]$time, 
+                time = k1.prep2[[i]]$time,
                 fpt = as.numeric(k1.recurse$revisitStats$timeInside[k1.recurse$revisitStats$visitIdx==1]),
                 x = k1.recurse$revisitStats$x[k1.recurse$revisitStats$visitIdx==1],
-                y = k1.recurse$revisitStats$y[k1.recurse$revisitStats$visitIdx==1]), 
+                y = k1.recurse$revisitStats$y[k1.recurse$revisitStats$visitIdx==1]),
           file = paste("knots_data/recurse_data/k1_revisit",names(k1.prep2)[i],".csv", sep ="_" ), row.names = F)
-  
+
 write.csv(k1.recurse$revisitStats, file = paste("knots_data/recurse_data/k1_recurse_output",names(k1.prep2)[i],".csv", sep ="_" ), row.names = F)
   #rm(list = ls(all.names = T))
   gc()
-  
+
 }
 
 ```
-
-

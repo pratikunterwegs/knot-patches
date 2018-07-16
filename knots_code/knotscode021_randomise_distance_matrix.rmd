@@ -53,7 +53,7 @@ prox.df = prox.df %>%
 #'get the coherence matrix
 coherence.matrix = spread(prox.df, variable, index) %>% 
   dlply("ht") %>% 
-  map(function(x) x %>% select(-ht))
+  map(function(x) x %>% dplyr::select(-ht))
 
 ids = coherence.matrix[[1]]$id
 
@@ -69,7 +69,7 @@ coherence.matrix.emp = coherence.matrix
 
 ```{r random_coherence_matrix}
 #'randomise the coherence matrix 1000 times
-#'create a 1000 element array
+#'create a 100 element array
 rand.cmat.array = array(dim = c(dim(coherence.matrix.emp[[1]]), 1e2))
 
 #'for each tide get an array of 100 elements

@@ -1,0 +1,25 @@
+---
+title: 'Foraging associations in shorebirds'
+subtitle:
+author:
+  - Pratik R. Gupte
+  - Selin Ersoy
+  - Allert I. Bijleveld
+geometry: margin=2cm
+fontsize: 10pt
+documentclass: paper
+bibliography: /home/pratik/git/knots/knots_texts/knots_cite.bib
+csl: oikos.csl
+mainfont: ETBembo
+indent: true
+abstract: Shorebirds feeding on the intertidal mudflats of the Wadden Sea often forage socially; this allows them to avoid predation, and increase efficiency in locating food patches and assessing their quality. Foraging is restricted to brief windows of opportunity created by the tidal cycle, when waders such as red knots *Calidris canutus islandica* can access the buried macrozoobenthos. Like other waders, red knots form large foraging flocks, and have been shown to use social information in lab studies to find food. However, it remains unresolved whether knot flocks show fission-fusion dynamics, where individual association is random and fleeting, or if there is some social structure in the form of non-random association, where individuals have an affinity for certain neighbours over others. Modern tracking methods enable the investigation of this aspect of wader sociality in more detail than was available to previous studies. Here, we present work that uses high frequency (1 minute interval) tracking with the ATLAS system of 38 adult red knots from the summer of 2017, and addresses the question of whether knots form non-random foraging associations, i.e., do red knots have friends? Ultimately, our work aims at a better understanding of the social dynamics of group-living foragers.
+header-includes:
+  - \usepackage{textcomp}
+  - \providecommand{\tabularnewline}{\\}
+  - \usepackage{supertabular}
+  - \usepackage{caption}
+  - \usepackage{booktabs}
+  - \usepackage{graphicx}
+  - \usepackage{float}
+  - \usepackage{wrapfig}
+---

@@ -69,8 +69,8 @@ test.result%>%
   filter(interactions > 0, p.value < 0.05, id %in% unique(id)[1:30],variable%in% unique(id)[1:30]) %>% 
   ggplot()+
   geom_col(aes(x = id, y = interactions, fill = variable), position = position_fill())+
-  theme_bw()+
-  scale_fill_manual(values = a[1:30])
+  theme_void()+
+  scale_fill_manual(values = a[1:30])+theme(legend.position = "none", plot.background = element_rect(fill = "grey20"))
 ```
 
 

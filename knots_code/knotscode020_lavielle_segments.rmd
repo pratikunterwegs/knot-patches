@@ -1,3 +1,7 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
 ```{r}
 source("libs.R")
 library(adehabitatLT)
@@ -12,15 +16,18 @@ load("knots_data/knots01_for_residence_segments.rdata")
 ```
 
 ```{r prep_for_segments}
-#'prep as ltraj
-data.prep = data %>% dlply("id.ht")
+#'prep data, remove point with fpt less than 10 mins
+data.prep = data %>% filter(fpt > 10/60) %>% dlply("id.ht")
+
+#'remove tracks with less than 60 positions remaining , ie, data.prep with less than 60 positions
+data.prep = data.prep[unlist(map(data.prep, nrow))>= 60]
 ```
 
 ```{r segment_lavielle_segclust2d}
-#'segment using lavielle
+#'segment using lavielle method
 data.seg = data.prep %>%
   map(function(x){
-    segmentation(x, lmin = 10, Kmax = 40, type = "behavior", seg.var = "fpt")
+    segmentation(x, lmin = 10, Kmax = 30, type = "behavior", seg.var = "fpt")
   })
 ```
 
