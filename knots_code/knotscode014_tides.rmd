@@ -36,5 +36,5 @@ tide = HL(level = waterlevels$level, time = waterlevels$date_time)
 
 ```{r}
 #'save data
-save(tide, file = "k1.tides.rdata")
+save(tide, file = "knots_data/k1.tides.rdata")
 ```

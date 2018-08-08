@@ -14,7 +14,6 @@ load("knots_data/knots01_segmented.rdata")
 
 ```{r}
 #'identify segments where the median position of the next segment is less than 250m away, and assign a new segment number.
-#'there has to be a temporal component to this. if a segment's median is > 5mins from the prev segment median, AND if the proximity criterion is satisfied, count a new segments
 
 for(i in 1:length(data.segpaths)){
   a = data.segpaths[[i]]
@@ -118,21 +117,21 @@ for(i in 1:length(a)){
     #'get the time difference between the median timestamp of each segment
     #'i think of this as the temporal matrix, how close in time each segment
     #'of focal and non-focal bird are
-    
+
     #### this is the new method of looking for overlap ####
     #'check if the focal segment start time is less than non-focal end time, and if focal end time is greater than non-focal start time
-    
+
     time.matrix1 = outer(a[[i]]$time.start, b[[j]]$time.end, FUN = "<")
     time.matrix2 = outer(a[[i]]$time.end, b[[j]]$time.start, FUN = ">")
-    
+
     time.matrix = (time.matrix1 + time.matrix2)
-    
+
     #temp.prox = apply(time.matrix, 2, function(x) abs(x) <= a[[i]]$seg.dur/2)
 
     #'if the distance between 2 segments is too great in EITHER space OR time, assign a 0
     dist.matrix[dist.matrix >= 250] = 0
     dist.matrix[time.matrix < 2] = 0
-    
+
     #'find the sum of events in which the focal and non-focal birds were BOTH temporally
     #'AND spatially proximate
     seg.prox.count = apply(dist.matrix, 1, function(x) sum(x > 0))

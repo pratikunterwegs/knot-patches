@@ -1,0 +1,87 @@
+---
+chunk_output_type: console
+---
+```{r}
+source("libs.R")
+```
+
+```{r load_data}
+#load data
+load("knots_data/knots01_for_residence_segments.rdata")
+```
+
+```{r}
+#'floor the time to the minute
+data <- data %>%
+  mutate(timenum = time,
+         time = as.POSIXct(time, origin = "1970-01-01"),
+         time = round_date(time, unit = "minute"))
+```
+
+
+```{r prep_for_segments}
+#'prep data, remove point with fpt less than 10 mins
+data.prep = data %>% filter(fpt > 10/60) %>% dlply("id.ht")
+
+#'remove tracks with less than 60 positions remaining , ie, data.prep with less than 60 positions
+data.prep = data.prep[unlist(map(data.prep, nrow))>= 60]
+```
+
+```{r}
+#'in each tide get the list of potential times in mins
+tide.mins <- data %>% 
+  dlply("ht") %>% 
+  map(function(x){
+    seq(min(x$time), max(x$time), 60)
+  })
+```
+
+```{r}
+#'left bind the tracking data with the expected minutes by tide
+data.tide <- data.prep %>% 
+  map(function(x){
+    x %>% mutate(timenum = as.numeric(time)) %>% right_join(data_frame(timenum = as.numeric(unlist(tide.mins[names(tide.mins) == x$ht]))))
+  })
+
+#'save this data
+save(data.tide, file = "knots_data/knots01_tide_minute_matched.rdata")
+```
+
+```{r}
+#'assign tide and id to each element of the list
+data.tide <- data.tide %>% 
+  map(function(x) {x %>% mutate(ht = first(ht[!is.na(ht)]),
+      id = first(id[!is.na(id)]))})
+```
+
+```{r}
+#'bind rows and select a tide
+data.tide <- rbind_list(data.tide) %>% filter(ht == "002") %>% mutate(x = ifelse(is.na(x), 9e9,x),
+                                                                     y = ifelse(is.na(y), 9e9,y))
+
+#'split again by id
+data.tide <- dlply(data.tide, "id")
+```
+
+```{r}
+#'implement method from knotscode019
+for(i in 1:length(data.tide)){
+  #'get the nonfocal birds
+  nonfocals = data.tide[!names(data.tide) %in% names(data.tide)[i]]
+  
+  #'loop over nonfocals
+  for(i in 1:length(nonfocals)){
+    distances <- spDists(as.matrix(data.tide[[i]][,c("x","y")]),
+                          as.matrix(nonfocals[[j]][,c("x","y")]), diagonal = T)
+    distances[distances >=9e9] <- NA
+    interactions <- data.frame(i10 = sum(distances<=10, na.rm = T),
+                              i25 = sum(distances<=25, na.rm = T),
+                              i50 = sum(distances<=50, na.rm = T),
+                              i100 = sum(distances<=100, na.rm = T),
+                              i200 = sum(distances<=200, na.rm = T),
+                              i500 = sum(distances<=500, na.rm = T),
+                              i1000 = sum(distances<=1e3, na.rm = T))
+  }
+}
+```
+

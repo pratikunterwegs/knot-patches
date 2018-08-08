@@ -15,7 +15,7 @@ load("knots_data/knots01_data.rdata")
 
 ```{r load_tides}
 #'load tides and segment the individuals by high tide
-load("k1.tides.rdata")
+load("knots_data/k1.tides.rdata")
 library(stringi)
 
 #'add tide data
@@ -69,21 +69,23 @@ a = melt(metrics, measure.vars = "include.tide") %>% group_by(ht, variable) %>% 
 ```
 
 ```{r}
+yorno = brewer.pal(3, "Set2")[c(1,2)]
 #'plot which birds are okay to use
-pdf(file = "knots_figs/id_tide_sampling2.pdf", height = 8, width = 11)
+pdf(file = "knots_figs/id_tide_sampling.pdf", height = 8, width = 11)
 
 ggplot(metrics)+
-  geom_tile(aes(x = id, y = ht, fill = prop > 0.3), col = "grey50", lwd = 0.1)+
-  geom_tile(data = a, aes(x = variable, y = ht, fill = value), col = "grey50", lwd = 0.1)+
-  geom_point(data = a, aes(x = variable, y = ht, group = variable, shape = value), size = 2)+
-  geom_text(data = metrics, aes(x = id, y = ht, label = round_any(prop, 0.1)), hjust = "middle", size = 2)+
+  geom_tile(aes(x = id, y = ht, fill = prop), col = "grey50", lwd = 0.1)+
+  geom_tile(data = a, aes(x = variable, y = ht, fill = value), fill = ifelse(a$value == T, yorno[1], yorno[2]), col = "grey50", lwd = 0.1)+
+  geom_point(data = a, aes(x = variable, y = ht, group = variable, shape = value), size = 1)+
+  geom_text(data = metrics, aes(x = id, y = ht, label = round_any(prop, 0.1), col = prop > 0.3), hjust = "middle", size = 2)+
   scale_y_reverse(breaks = c(1:max(as.numeric(metrics$ht))))+
   scale_x_discrete(position = "top")+
-  scale_fill_manual(values = brewer.pal(3, "RdBu")[c(1,3)])+
+  scale_fill_viridis()+
+  scale_colour_manual(values = c("white",1), guide = F)+
   scale_shape_manual(values = c(4, 1))+
   theme_bw()+
   theme(legend.position = "top", panel.grid= element_blank(), panel.grid.minor = element_blank())+
-  labs(list(y = "high tide #", fill = "proportion sampled > 0.3",
+  labs(list(y = "high tide #", fill = "proportion sampled",
             shape = "inclue tide?"))
 
 dev.off()
@@ -127,9 +129,7 @@ write.csv(cbind(revisits = k1.recurse$revisits,
                 y = k1.recurse$revisitStats$y[k1.recurse$revisitStats$visitIdx==1]),
           file = paste("knots_data/recurse_data/k1_revisit",names(k1.prep2)[i],".csv", sep ="_" ), row.names = F)
 
-write.csv(k1.recurse$revisitStats, file = paste("knots_data/recurse_data/k1_recurse_output",names(k1.prep2)[i],".csv", sep ="_" ), row.names = F)
-  #rm(list = ls(all.names = T))
-  gc()
+gc()
 
 }
 

@@ -10,6 +10,12 @@ library(segclust2d)
 
 ```
 
+```{r}
+#source strip header cols function
+source("strip_header_cols.r")
+```
+
+
 ```{r load_data}
 #load data
 load("knots_data/knots01_for_residence_segments.rdata")
