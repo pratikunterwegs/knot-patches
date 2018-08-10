@@ -1,8 +1,10 @@
 ---
 chunk_output_type: console
+editor_options: 
+  chunk_output_type: console
 ---
 ```{r}
-source("libs.R")
+source("libs.R");library(sp)
 ```
 
 ```{r load_data}
@@ -44,7 +46,7 @@ data.tide <- data.prep %>%
   })
 
 #'save this data
-save(data.tide, file = "knots_data/knots01_tide_minute_matched.rdata")
+#save(data.tide, file = "knots_data/knots01_tide_minute_matched.rdata")
 ```
 
 ```{r}
@@ -55,33 +57,133 @@ data.tide <- data.tide %>%
 ```
 
 ```{r}
-#'bind rows and select a tide
-data.tide <- rbind_list(data.tide) %>% filter(ht == "002") %>% mutate(x = ifelse(is.na(x), 9e9,x),
-                                                                     y = ifelse(is.na(y), 9e9,y))
-
-#'split again by id
-data.tide <- dlply(data.tide, "id")
+#'bind rows and split by tide
+data.tide <- rbind_list(data.tide) %>% 
+  #filter(ht == "002") %>% 
+  mutate(x = ifelse(is.na(x), 9e9,x),                                                                     y = ifelse(is.na(y), 9e9,y)) %>% 
+  dlply("ht")
 ```
 
 ```{r}
+#'this method is simpler than in knotscode019.
+proximity <- data_frame()
+
+for(z in 1:length(data.tide)){
+#'split again by id
+focals <- dlply(data.tide[[z]], "id")  
 #'implement method from knotscode019
-for(i in 1:length(data.tide)){
+for(i in 1:length(focals)){
   #'get the nonfocal birds
-  nonfocals = data.tide[!names(data.tide) %in% names(data.tide)[i]]
+  nonfocals <- focals[!names(focals) %in% names(focals)[i]]
   
   #'loop over nonfocals
-  for(i in 1:length(nonfocals)){
-    distances <- spDists(as.matrix(data.tide[[i]][,c("x","y")]),
+  for(j in 1:length(nonfocals)){
+    distances <- spDists(as.matrix(focals[[i]][,c("x","y")]),
                           as.matrix(nonfocals[[j]][,c("x","y")]), diagonal = T)
-    distances[distances >=9e9] <- NA
-    interactions <- data.frame(i10 = sum(distances<=10, na.rm = T),
-                              i25 = sum(distances<=25, na.rm = T),
-                              i50 = sum(distances<=50, na.rm = T),
-                              i100 = sum(distances<=100, na.rm = T),
-                              i200 = sum(distances<=200, na.rm = T),
-                              i500 = sum(distances<=500, na.rm = T),
-                              i1000 = sum(distances<=1e3, na.rm = T))
+    #'get only distances where both focal and nonfocal positions are known
+    distances <- distances[focals[[1]]$x < 9e9 & nonfocals[[1]]$x < 9e9]
+    dist_class <- data_frame(distances = sum(distances <= 25)) %>%
+      #count(class) %>% 
+      mutate(focal = unique(focals[[i]]$id), 
+             nonfocal = unique(nonfocals[[j]]$id), 
+             ht = unique(focals[[i]]$ht), 
+             pos_focal = sum(focals[[i]]$x < 9e9), 
+             pos_nonfocal = sum(nonfocals[[j]]$x < 9e9))
+    proximity <- rbind(proximity, dist_class)
+    }
   }
 }
+```
+
+
+```{r}
+#'calculate coherence scores for under 100m
+proximity100 <- proximity %>%
+  dlply("ht") %>% 
+  map(function(x){
+    x %>% group_by(focal, nonfocal, ht) %>% 
+  summarise(interactions = sum(distances),
+            coherence_emp = interactions/(first(pos_focal) + first(pos_nonfocal) - interactions))
+})
+```
+
+```{r random_coherence_matrix}
+#'get the tide wise coherence arrays for randomisation
+coherence <- proximity100 %>% 
+  bind_rows() %>% 
+  select(-interactions) %>% 
+  spread(nonfocal, coherence_emp, drop = F) %>% 
+  dlply("ht") %>% 
+  map(function(x) {
+    x %>% select(-ht,-focal) %>% as.matrix()})
+
+#'get a holder array
+
+
+#'get a 100 simulation mean array for each tide
+for(i in 1:length(coherence)){
+  rand.holder = array(dim = c(36,36,100))
+  a <- coherence[[i]]
+  for(j in 1:1e2){
+    rand.holder[,,j] <- a[sample.int(nrow(a)), sample.int(ncol(a))]
+  }
+  coherence[[i]] <- apply(rand.holder, c(1,2), function(x) mean(x, na.rm = T)) %>% 
+    as.data.frame() %>% mutate(focal = colnames(a), ht = names(coherence)[i])
+  colnames(coherence[[i]]) <- c(colnames(a), "focal", "ht")
+}
+
+#'gather
+coherence.sim <- coherence %>% 
+  map(function(x){
+    x %>% gather(nonfocal, coherence_sim, -focal,-ht)
+  }) %>% bind_rows()
+```
+
+```{r}
+#'bind emp and sim scores
+coherence.scores <- proximity100 %>% 
+  bind_rows() %>% 
+  ungroup() %>% 
+  mutate(focal = as.character(focal),
+         nonfocal = as.character(nonfocal)) %>% 
+  left_join(coherence.sim) %>% 
+  filter(focal != nonfocal) %>% 
+  mutate(diff = coherence_emp - coherence_sim)
+```
+
+```{r}
+#'run the KS test
+coherence.test <- coherence.scores %>% 
+  dlply(c("focal","nonfocal")) %>% 
+  map(function(x){
+    ks.test(x$coherence_emp, x$coherence_sim)
+  }) %>% 
+  map(function(x){
+    bind_cols(unclass(x))
+  }) %>% 
+  bind_rows() %>% 
+  bind_cols(coherence.scores %>% 
+              group_by(focal,nonfocal) %>% 
+              summarise(mean_coherence_emp = mean(coherence_emp),
+                        mean_coherence_sim = mean(coherence_sim),
+                        coherence_diff = mean(diff))) %>% 
+  select(-data.name,-alternative,-method)
+```
+
+```{r}
+#'plot and see
+coherence.test %>% 
+  filter(abs(coherence_diff) < 1) %>% 
+  ggplot()+
+  geom_tile(aes(x = focal, y = nonfocal, fill = coherence_diff), col = "transparent", lwd = 0.2)+
+  scale_fill_gradient2(low = "red", mid = "white", high = "blue")+
+  #scale_alpha_manual(values = c(0.1,1), guide = F)+
+  scale_shape_manual(values = c("", "*"), guide = F)
+```
+
+```{r}
+coherence.test %>% 
+  filter(abs(coherence_diff) < 1) %>% 
+  count(p.value <= 0.05, coherence_diff > 0)
 ```
 

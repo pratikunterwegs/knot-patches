@@ -16,7 +16,7 @@ Run _knotscode003_recursion.rmd_ for 1-minute FPT and residence metrics between 
 Run _knotscode020_lavielle_segments.rmd_ to handle individual recursion analyses -- gather recurse _.csv_ files, bind them to the raw data, filter for presumed foraging patches, and Lavielle segment each track in each tidal period using the _segclust2d_ package.
 
 Run _knots_code019_segment_reorder_and_distance_matrix.rmd_ to merge spatially proximate segments -- an example is plotted. Then get the foraging segment summaries for each id in each tidal period.
-Convert to a list structure with names. Prepare a list to hold proximity data. Create the interaction matrix conditioned on the cell values of the distance matrix and the temporal overlap. Convert to a df with a pairwise structure with the focal and non-focal individual, and the tide and number of interactions. Save as _.rdata_.
+Convert to a list structure with names. Prepare a list to hold proximity data. Create the interaction matrix conditioned on the cell values of the distance matrix and the temporal overlap. Convert to a df with a pairwise structure with the focal and non-focal individual, and the tide and number of interactions. Save as _.rdata_. °
 
 ## Coherence scores
 

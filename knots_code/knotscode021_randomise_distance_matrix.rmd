@@ -95,7 +95,6 @@ for (i in 1:length(coherence.matrix)) {
   #'fill the mean random coherence matrix in the list
   coherence.matrix[[i]] = b
 }
-
 ```
 
 ```{r mean_coherence_matrix}
