@@ -1,0 +1,51 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r load_libs}
+source("libs.R");source("ggplot.pub.r")
+library(readr);library(viridis)
+```
+
+```{r load_combined_data}
+#'load 3 days of knots 2 with added metrics
+load("knots2_3day_move.rdata")
+```
+
+```{r test_recursion_0.5km, include=FALSE}
+#'load libs
+library(recurse)
+
+#'
+birds.recurse.prep = k2.1 %>% dlply("id") %>% map(function(x)x %>% arrange(TIME))
+```
+
+```{r recursions}
+#'see elephant code for the individual based recursion with workspace clearance and reloading at each step
+#save(birds.recurse.prep, file = "knots_data/birds_recurse_prep.rdata")
+
+#'run the loop
+for(i in 1:length(birds.recurse.prep)){
+  source("libs.R")
+  load("knots_data/birds_recurse_prep.rdata")
+library(recurse)
+  
+#'split df into list by id and arrange by time
+
+#birds.recurse.prep = birds.recurse.prep %>% dlply("id") %>% map(function(x) arrange(x, time))
+
+birds.recurse = getRecursions(birds.recurse.prep[[i]][c("X","Y","ts","id")], radius = 100, timeunits = "secs", threshold = 60)
+  
+write.csv(cbind(revisits = birds.recurse$revisits, residence = birds.recurse$residenceTime, id = names(birds.recurse.prep)[i], time = birds.recurse.prep[[i]]$time, fpt = birds.recurse$revisitStats %>% filter(visitIdx == 1) %>% .$timeInside), file = paste("knots_data/recurse_data/k2_rev",i,".csv", sep ="_" ), row.names = F)
+  
+  rm(list = ls(all.names = T))
+  gc()
+  
+}
+
+```
+
+```
+
+

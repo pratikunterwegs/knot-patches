@@ -1,0 +1,52 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r load_libs}
+source("libs.R");source("ggplot.pub.r")
+library(readr);library(viridis)
+```
+
+```{r get_recurse_prepped_data}
+#'load recurse prepped data
+load("knots_data/knots01_recurse_data.rdata")
+```
+
+```{r revisits_id}
+#'plot by id
+ggplot(k1.recurse)+
+  geom_boxplot(aes(x = reorder(id, revisits, FUN=median), y = revisits), fill = "grey", outlier.size = 0.1)+
+ # facet_wrap(~ifelse(hour(time) %in% c(6:20), "day (06 -- 20)", "night (20 -- 06)"))+
+  scale_fill_manual(values = (plasma(length(unique(k1.recurse$id)))))+
+  coord_cartesian(ylim = c(0, 75))+
+  theme_pub()+
+  labs(list(title = "Revisits ~ individual", x = "id"))
+```
+
+```{r save_fig}
+dev.copy2eps(file = "knots_figs/revisits_knots01.eps")
+
+dev.copy2eps(file = "knots_figs/residence_knots01.eps")
+```
+
+```{r read_recurse_stats}
+#'load knots revisit stats file names
+recurse.files = list.files(path = "knots_data/", pattern = "knots_recurse_output_*", full.names = T)
+#'read in
+k1.recurse.stats = recurse.files %>% map(read_csv)
+```
+
+```{r recurse_stats_time_summary}
+#'summarise when knots enter a point, the fpt, and the mean revisit interval
+k1.recurse.summary = k1.recurse.stats %>% bind_rows() %>% mutate(id = as.character(id)) %>% group_by(id, coordIdx, x,y) %>% summarise(mean.hour = mean(hour(entranceTime)), fpt = mean(timeInside), min.hour = min(hour(entranceTime)), max.hour = max(hour(entranceTime)), visit.interval = mean(timeSinceLastVisit, na.rm = T), revisits = length(visitIdx), residence = sum(as.numeric(timeInside)))
+```
+
+```{r export_stats_time_summary}
+#'join to main summary
+#k1.recurse.summary = k1.recurse.summary %>% left_join(k1.recurse)
+#'export above summary
+
+write_csv(k1.recurse.summary, "knots_data/recurse_data/knot01_recurse_data.csv")
+```
+

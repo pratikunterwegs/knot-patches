@@ -73,26 +73,32 @@ for(z in 1:length(data.tide)){
 focals <- dlply(data.tide[[z]], "id")  
 #'implement method from knotscode019
 for(i in 1:length(focals)){
+  #'get focals
   #'get the nonfocal birds
   nonfocals <- focals[!names(focals) %in% names(focals)[i]]
   
   #'loop over nonfocals
   for(j in 1:length(nonfocals)){
-    distances <- spDists(as.matrix(focals[[i]][,c("x","y")]),
-                          as.matrix(nonfocals[[j]][,c("x","y")]), diagonal = T)
+    distances <- spDists(as.matrix(focals[[i]][,c("x","y")]), as.matrix(nonfocals[[j]][,c("x","y")]), diagonal = T)
     #'get only distances where both focal and nonfocal positions are known
-    distances <- distances[focals[[1]]$x < 9e9 & nonfocals[[1]]$x < 9e9]
-    dist_class <- data_frame(distances = sum(distances <= 25)) %>%
+    #'set all distances greater than 9e6 = 0, and all rows where focal pos and all cols where nonfocal pos are > 9e6
+    distances[focals[[i]]$x > 9e6 | nonfocals[[j]]$x > 9e6] <- NA
+    #distances <- diag(distances)
+    interactions <- data_frame(distances = sum(distances <= 25, na.rm = T)) %>%
       #count(class) %>% 
       mutate(focal = unique(focals[[i]]$id), 
              nonfocal = unique(nonfocals[[j]]$id), 
              ht = unique(focals[[i]]$ht), 
              pos_focal = sum(focals[[i]]$x < 9e9), 
              pos_nonfocal = sum(nonfocals[[j]]$x < 9e9))
-    proximity <- rbind(proximity, dist_class)
+    proximity <- rbind(proximity, interactions)
     }
   }
 }
+```
+
+```{r}
+#'
 ```
 
 
@@ -116,9 +122,6 @@ coherence <- proximity100 %>%
   dlply("ht") %>% 
   map(function(x) {
     x %>% select(-ht,-focal) %>% as.matrix()})
-
-#'get a holder array
-
 
 #'get a 100 simulation mean array for each tide
 for(i in 1:length(coherence)){
