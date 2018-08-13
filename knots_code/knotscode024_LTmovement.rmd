@@ -69,13 +69,23 @@ data.nonfocal.move <- data.tide.move.summary %>%
 coherence.correlation <- 
   coherence.scores %>% 
   left_join(data.focal.move) %>% 
-  left_join(data.nonfocal.move, by = c("focal" = "nonfocal","ht")) %>% 
+  left_join(data.focal.move, by = c("nonfocal" = "focal","ht")) %>% 
   filter(tidal_state.x == "lt",
          tidal_state.y == "lt")
 ```
 
 ```{r}
 #'get data for model
+lm.data <- coherence.correlation %>% 
+  group_by(focal, nonfocal) %>% 
+  mutate(#ht.time = ht - first(ht),
+         #c1 = first(coherence_emp),
+         cn_1 = c(NA,coherence_emp[2:length(coherence_emp)]))# %>% 
+  ungroup() #%>% 
+  mutate(dist_diff = abs(distance_sum.x - distance_sum.y),
+         speed_diff = abs(speed_exp.x - speed_exp.y),
+         fpt_diff = abs(fpt_exp.x - fpt_exp.y)) %>% 
+  select(focal, nonfocal, ht.time, dist_diff, speed_diff, fpt_diff)
 ```
 
 
