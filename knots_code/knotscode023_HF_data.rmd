@@ -23,30 +23,42 @@ data <- data %>%
 
 ```{r prep_for_segments}
 #'prep data, remove point with fpt less than 10 mins
-data.prep = data %>% filter(fpt > 10/60) %>% dlply("id.ht")
+data.prep = data %>% #filter(fpt > 10/60) %>% 
+  dlply("id.ht")
 
 #'remove tracks with less than 60 positions remaining , ie, data.prep with less than 60 positions
 data.prep = data.prep[unlist(map(data.prep, nrow))>= 60]
 ```
 
 ```{r}
+#'load tides
+load("knots_data/k1.tides.rdata")
 #'in each tide get the list of potential times in mins
-tide.mins <- data %>% 
-  dlply("ht") %>% 
-  map(function(x){
-    seq(min(x$time), max(x$time), 60)
-  })
+tide.mins <- tide %>%
+  filter(tide == "H") %>% 
+  mutate(ht = cumsum(tide == "H"),
+         time = round_date(time, "minute")) %>% 
+  dlply("ht")
+
+#'get minute sequence
+for (i in 1:(length(tide.mins)-1)){
+  tide.mins[[i]] <- data_frame(time = seq(tide.mins[[i]]$time, tide.mins[[(i+1)]]$time, 60), ht = as.numeric(names(tide.mins)[i]))
+}
+
+#'bind rows
+tide.mins <- rbind_list(tide.mins)
 ```
 
 ```{r}
 #'left bind the tracking data with the expected minutes by tide
 data.tide <- data.prep %>% 
   map(function(x){
-    x %>% mutate(timenum = as.numeric(time)) %>% right_join(data_frame(timenum = as.numeric(unlist(tide.mins[names(tide.mins) == x$ht]))))
+    x %>% mutate(ht = as.numeric(ht)) %>%
+      right_join(tide.mins %>% filter(ht == as.numeric(x$ht)), by = c("time","ht"))
   })
 
 #'save this data
-#save(data.tide, file = "knots_data/knots01_tide_minute_matched.rdata")
+save(data.tide, file = "knots_data/knots01_tide_minute_matched.rdata")
 ```
 
 ```{r}
@@ -57,20 +69,34 @@ data.tide <- data.tide %>%
 ```
 
 ```{r}
-#'bind rows and split by tide
+#'bind rows, get the time since high tide, ungroup, assign values in pplace of NAs
 data.tide <- rbind_list(data.tide) %>% 
-  #filter(ht == "002") %>% 
+  group_by(ht) %>% 
+  mutate(ht.time = as.numeric(time) - as.numeric(min(time))) %>% 
+  ungroup() %>% 
   mutate(x = ifelse(is.na(x), 9e9,x),                                                                     y = ifelse(is.na(y), 9e9,y)) %>% 
   dlply("ht")
+```
+
+# Select LT +/- 3 hours
+
+```{r}
+#'filter for ht.time between 3.5 and 9.5 hours
+data.lt <- data.tide %>% 
+  map(function(x){
+    x <- x %>% filter(ht.time %between% c(3.5*3600,9.5*3600))
+  })
+
+save(data.lt, data.tide, file = "knots_data/knots01_lowtide_data.rdata")
 ```
 
 ```{r}
 #'this method is simpler than in knotscode019.
 proximity <- data_frame()
 
-for(z in 1:length(data.tide)){
+for(z in 1:length(data.lt)){
 #'split again by id
-focals <- dlply(data.tide[[z]], "id")  
+focals <- dlply(data.lt[[z]], "id")  
 #'implement method from knotscode019
 for(i in 1:length(focals)){
   #'get focals
@@ -96,11 +122,6 @@ for(i in 1:length(focals)){
   }
 }
 ```
-
-```{r}
-#'
-```
-
 
 ```{r}
 #'calculate coherence scores for under 100m
@@ -149,7 +170,7 @@ coherence.scores <- proximity100 %>%
   ungroup() %>% 
   mutate(focal = as.character(focal),
          nonfocal = as.character(nonfocal)) %>% 
-  left_join(coherence.sim) %>% 
+  left_join(coherence.sim %>% mutate(ht = as.numeric(ht))) %>% 
   filter(focal != nonfocal) %>% 
   mutate(diff = coherence_emp - coherence_sim)
 ```
@@ -183,10 +204,3 @@ coherence.test %>%
   #scale_alpha_manual(values = c(0.1,1), guide = F)+
   scale_shape_manual(values = c("", "*"), guide = F)
 ```
-
-```{r}
-coherence.test %>% 
-  filter(abs(coherence_diff) < 1) %>% 
-  count(p.value <= 0.05, coherence_diff > 0)
-```
-

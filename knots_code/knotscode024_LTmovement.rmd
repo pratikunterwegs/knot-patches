@@ -1,0 +1,81 @@
+---
+chunk_output_type: console
+editor_options: 
+  chunk_output_type: console
+---
+```{r}
+#'load tide minute matched data
+load("knots_data/knots01_lowtide_data.rdata")
+```
+
+```{r}
+#'remove NA positions from data.tide and make move object, get distance, speed, angle, etc
+data.tide <- data.tide %>% unclass() %>% 
+  bind_rows() %>% 
+  filter(!is.na(fpt))
+
+#'make move: raster is attached, detach after processing
+library(move)
+data.tide.move <- move(x = data.tide$x,
+                     y = data.tide$y,
+                     time = data.tide$time,
+                     data = data.tide,
+                     proj = "+proj=utm +zone=31 +datum=WGS84 +units=m +no_defs",
+                     animal = data.tide$id.ht)
+
+data.tide.move <- split(data.tide.move)
+
+#'now get distance, speed, angle
+for(i in 1:length(data.tide.move)){
+  data.tide.move[[i]]$distance = c(NA,distance(data.tide.move[[i]]))
+  data.tide.move[[i]]$speed = c(NA,speed(data.tide.move[[i]]))
+}
+
+#'rejoin with main data
+data.tide.move <- data.tide.move %>% 
+  map(as.data.frame)
+
+data.tide.move <- data.tide.move %>% 
+  bind_rows() %>% 
+  dplyr::select(revisits, residence, time, fpt, x, y, timenum, ht.time, distance, speed, id.ht, id, ht)
+```
+
+```{r}
+#'get low tide data
+data.tide.move <- data.tide.move %>% 
+  mutate(tidal_state = ifelse(ht.time %between% c(3.5*3600,9.5*3600), "lt","ht"))
+
+#'summarise by id and tide
+data.tide.move.summary <- 
+  data.tide.move %>% 
+  group_by(id, ht, tidal_state) %>% 
+  summarise_at(vars(distance, speed, fpt), funs(exp(mean(log(.),na.rm = T)), max(.,na.rm = T), min(.,na.rm = T), sum(., na.rm = T)))
+```
+
+```{r}
+#'link with pairwise coherence
+data.focal.move <- data.tide.move.summary %>% 
+  ungroup() %>% 
+  select(focal = id, ht, tidal_state, fpt_exp, distance_sum, speed_exp) %>% 
+  mutate(focal = as.character(focal))
+
+#'nonfocal
+data.nonfocal.move <- data.tide.move.summary %>% 
+  ungroup() %>% 
+  select(nonfocal = id, ht, tidal_state, fpt_exp, distance_sum, speed_exp) %>% 
+  mutate(nonfocal = as.character(nonfocal))
+
+#'join
+coherence.correlation <- 
+  coherence.scores %>% 
+  left_join(data.focal.move) %>% 
+  left_join(data.nonfocal.move, by = c("focal" = "nonfocal","ht")) %>% 
+  filter(tidal_state.x == "lt",
+         tidal_state.y == "lt")
+```
+
+```{r}
+#'get data for model
+```
+
+
