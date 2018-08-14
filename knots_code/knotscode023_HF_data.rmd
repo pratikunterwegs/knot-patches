@@ -62,6 +62,12 @@ save(data.tide, file = "knots_data/knots01_tide_minute_matched.rdata")
 ```
 
 ```{r}
+#'load data from here
+load("knots_data/knots01_tide_minute_matched.rdata")
+```
+
+
+```{r}
 #'assign tide and id to each element of the list
 data.tide <- data.tide %>% 
   map(function(x) {x %>% mutate(ht = first(ht[!is.na(ht)]),
@@ -87,7 +93,7 @@ data.lt <- data.tide %>%
     x <- x %>% filter(ht.time %between% c(3.5*3600,9.5*3600))
   })
 
-save(data.lt, data.tide, file = "knots_data/knots01_lowtide_data.rdata")
+#save(data.lt, data.tide, file = "knots_data/knots01_lowtide_data.rdata")
 ```
 
 ```{r}

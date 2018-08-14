@@ -9,6 +9,10 @@ load("knots_data/knots01_lowtide_data.rdata")
 ```
 
 ```{r}
+source("libs.R")
+```
+
+```{r}
 #'remove NA positions from data.tide and make move object, get distance, speed, angle, etc
 data.tide <- data.tide %>% unclass() %>% 
   bind_rows() %>% 
@@ -41,6 +45,12 @@ data.tide.move <- data.tide.move %>%
 ```
 
 ```{r}
+#'save move data to rdata file
+save(data.tide.move, file = "knots01_data_tide_move.rdata")
+```
+
+
+```{r}
 #'get low tide data
 data.tide.move <- data.tide.move %>% 
   mutate(tidal_state = ifelse(ht.time %between% c(3.5*3600,9.5*3600), "lt","ht"))
@@ -49,21 +59,21 @@ data.tide.move <- data.tide.move %>%
 data.tide.move.summary <- 
   data.tide.move %>% 
   group_by(id, ht, tidal_state) %>% 
-  summarise_at(vars(distance, speed, fpt), funs(exp(mean(log(.),na.rm = T)), max(.,na.rm = T), min(.,na.rm = T), sum(., na.rm = T)))
+  summarise_at(vars(distance, speed, fpt), funs(exp(mean(log(.),na.rm = T)), max(.,na.rm = T), min(.,na.rm = T), sum(., na.rm = T), count = sum(. > 2e2, na.rm = T)))
 ```
+
+```{r}
+#'detach move and raster
+detach(package:move);detach(package:raster)
+```
+
 
 ```{r}
 #'link with pairwise coherence
 data.focal.move <- data.tide.move.summary %>% 
   ungroup() %>% 
-  select(focal = id, ht, tidal_state, fpt_exp, distance_sum, speed_exp) %>% 
+  select(focal = id, ht, tidal_state, fpt_exp, distance_sum, speed_exp, segs = distance_count) %>% 
   mutate(focal = as.character(focal))
-
-#'nonfocal
-data.nonfocal.move <- data.tide.move.summary %>% 
-  ungroup() %>% 
-  select(nonfocal = id, ht, tidal_state, fpt_exp, distance_sum, speed_exp) %>% 
-  mutate(nonfocal = as.character(nonfocal))
 
 #'join
 coherence.correlation <- 
@@ -77,26 +87,34 @@ coherence.correlation <-
 ```{r}
 #'get data for model
 lm.data <- coherence.correlation %>% 
+  left_join(count(coherence.correlation, focal, nonfocal)) %>% 
+  filter(n > 2) %>% 
   group_by(focal, nonfocal) %>% 
   mutate(ht.time = ht - first(ht),
-         c1 = first(coherence_emp)) %>% 
+         c1 = first(coherence_emp),
+         cn_1 = c(NA, coherence_emp[2:length(coherence_emp)])) %>% 
   ungroup() %>% 
-  mutate(dist_diff = sqrt(abs(distance_sum.x - distance_sum.y)),
-         speed_diff = log(abs(speed_exp.x - speed_exp.y))+9,
-         fpt_diff = log(abs(fpt_exp.x - fpt_exp.y))+8) %>% 
-  select(focal, nonfocal, ht.time, dist_diff, speed_diff, fpt_diff, interactions, coherence_emp, c1, ht)
+  mutate(dist_diff = abs(distance_sum.x - distance_sum.y)/1e3,
+         speed_diff = speed_exp.x - speed_exp.y,
+         fpt_diff = abs(fpt_exp.x - fpt_exp.y),
+         #cn_1 = abs(log(cn_1)),
+         #cn_1 = cn_1/max(cn_1),
+         ht = as.factor(ht)
+         #coherence_emp = abs(log(coherence_emp)),
+         #coherence_emp = coherence_emp/max(coherence_emp)
+         ) %>% 
+  select(ht, focal, nonfocal, ht.time, dist_diff, speed_diff, fpt_diff, interactions, coherence_emp, c1, cn_1, fpt = fpt_exp.x, segs = segs.x) %>% 
+  filter(!is.na(focal))
 ```
 
 ```{r}
-library(lme4)
-#'run glmm
-mod.coherence.consistency = lmer(coherence_emp ~ 
-                                   c1 + 
-                                   ht.time + 
-                                   dist_diff +
-                                   fpt_diff + 
-                                   (1|focal) + 
-                                   (1|ht), 
-                                 data = lm.data)
+library(glmmTMB)
+#'runglmm
+mod.coherence.consistency = glmmTMB(coherence_emp ~ cn_1 + sqrt(segs) + sqrt(dist_diff) + (1|focal) + (1|ht), data = lm.data, family = binomial, ziformula = ~coherence_emp)
+```
+
+```{r}
+#'check model
+summary(mod.coherence.consistency)
 ```
 

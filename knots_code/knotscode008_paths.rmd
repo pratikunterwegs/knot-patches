@@ -17,35 +17,36 @@ source("libs.spatial.r")
 
 ```{r make_lines}
 #'use same template as k2-data
-k2.lines = k2.1 %>% filter(angle_var < 100) %>%
-  dlply("id") %>%
+k1.lines = data.tide.move %>%
+  filter(ht.time %between% c(3.5*3600,9.5*3600), distance < 2e3, fpt > 10/60) %>% 
+  dlply(c("id","ht")) %>%
   #map(function(x) x %>% filter(Std<100)) %>%
-  map(function(x) Line(cbind(x$X, x$Y)))
+  map(function(x) Line(cbind(x$x, x$y)))
 
-k2.lines = k2.lines %>%
+k1.lines = k1.lines %>%
   map(function(x) Lines(x, ID = "a"))
 
-for(i in 1:length(k2.lines)) {
-  k2.lines[[i]]@ID = names(k2.lines)[i]
+for(i in 1:length(k1.lines)) {
+  k1.lines[[i]]@ID = names(k1.lines)[i]
 }
 ```
 
 ```{r make_spatial_lines}
-names = names(k2.lines)
+names = names(k1.lines)
 
 #'use the UTM 31N CRS
-k2.lines = SpatialLines(k2.lines, proj4string = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs
+k1.lines = SpatialLines(k1.lines, proj4string = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs
 +towgs84=0,0,0"))
 
 library(stringi)
 
-data = data_frame(index = 1:length(k2.lines),names)# %>% left_join(pskf_data_ids[[1]], by = c("names2" = "id.seg"))
+data = data_frame(index = 1:length(k1.lines),names)# %>% left_join(pskf_data_ids[[1]], by = c("names2" = "id.seg"))
 
 rownames(data) = names
 
-k2.lines = SpatialLinesDataFrame(k2.lines, data = data)
+k1.lines = SpatialLinesDataFrame(k1.lines, data = data)
 
 #'export
 library(rgdal)
-writeOGR(k2.lines, dsn = "knots_data/knots_spatials/", layer = "k2_low_angle_vars", driver = "ESRI Shapefile", overwrite_layer = T)
+writeOGR(k1.lines, dsn = "knots_data/knots_spatials/", layer = "k1_low_tide", driver = "ESRI Shapefile", overwrite_layer = T)
 ```
