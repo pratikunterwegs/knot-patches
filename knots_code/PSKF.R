@@ -4,14 +4,13 @@
 # Original code by Sivan Toledo 2017
 # Converted to R by Ingo Schiffner 2017
 source('InvChol.R')
-PSKF <- function (S, S_cov, O, observations)
-{
+PSKF <- function (S, S_cov, O, observations) {
   SDIM = nrow(S)          #state dimensions
   ODIM = nrow(O)          #observed dimensions
   L = InvChol(S_cov)      #doesnt do anything here
   K = -t(L) %*% S         #cross product
   n = length(observations)
-  
+
   #estimate list array
   tmp <- matrix(NA,1,1)
   estimates = rep(list(list(Riipo=tmp,Rii=tmp,Rhs=tmp)),n)
@@ -19,7 +18,7 @@ PSKF <- function (S, S_cov, O, observations)
   c = 1;
   Bimo = matrix(0,SDIM,SDIM)
   bimo = matrix(0,SDIM,1)
-  
+
   for (i in 1:n)
   {
     observation_cov = observations[[i]]$cov
@@ -28,7 +27,7 @@ PSKF <- function (S, S_cov, O, observations)
       Ltilde = InvChol(observation_cov)
       C = t(Ltilde) %*% O
       r = r + ODIM
-      
+
       # recursive/sparse formulation
       if (i < n)
       {
@@ -61,10 +60,10 @@ PSKF <- function (S, S_cov, O, observations)
         rhs_col = SDIM+1
       }
     }
-    
+
     c = c + SDIM
     r = r + SDIM
-    
+
     # recursive/sparse formulation
     R = qr.R(qr(B), complete = T)
     estimates[[i]]$Rhs = R[1:SDIM, rhs_col]
@@ -77,7 +76,7 @@ PSKF <- function (S, S_cov, O, observations)
       estimates[[i]]$Riipo = R[1:SDIM, (1+SDIM):(SDIM+SDIM)]
     }
   }
-  
+
   n = i
   Rtildeii = estimates[[n]]$Rii
   for (i in n:1)
@@ -88,11 +87,11 @@ PSKF <- function (S, S_cov, O, observations)
     {
       rhs = rhs - estimates[[i]]$Riipo %*% estimates[[i+1]]$estimate;
     }
-    
+
     #works perfectly
     s = solve(estimates[[i]]$Rii,rhs)
     estimates[[i]]$estimate = s
-    
+
     #Compute the covariance of the smoothed estimate
     estimates[[i]]$estimateCov = solve(t(Rtildeii) %*% Rtildeii);
     if (i>1)
