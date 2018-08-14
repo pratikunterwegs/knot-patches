@@ -10,73 +10,35 @@ library(readr);library(viridis)
 
 ```{r load_all_birds}
 #'load all birds
-load("birds.all.rdata")
-```
+load("knots_data/knots01_data.rdata")
+day30 <- as.numeric(as.POSIXct("2017-09-24", tz = "CEST", origin = "1970-01-01"))
 
-```{r prep_data}
-#'subset for knots 02
-knots2 = birds.all %>% filter(batch == "knots02")
-#'subset for 5 days since tracking
-knots2 = knots2 %>% mutate(day = round_any(as.numeric(julian(ts, origin = min(ts))), 0.1)) %>% filter(day <= 3)
-
-#'remove all birds
-rm(birds.all)
-```
-
-```{r make_move}
-library(move)
-k2 = move(x = knots2$X, y = knots2$Y, time = knots2$ts, data = knots2, animal = knots2$id, proj = "+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs")
-```
-
-```{r get_stats}
-#'split move
-k2 = split(k2)
-
-#'assign a crs
-for (i in 1:length(k2)) {
-  crs(k2[[i]]) = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs
-")}
-
-#'run a for loop to get stats
-for(i in 1:length(k2)){
-  k2[[i]]@data = k2[[i]]@data %>% mutate(speed = c(NA,speed(k2[[i]])), angle = c(NA,angle(k2[[i]])), lag = c(NA,timeLag(k2[[i]], "secs")))
+for(i in 1:length(k1.data)){
+  k1.data[[i]]$id = names(k1.data)[i]
 }
+
+#'filter one month
+k1.data <- k1.data %>% rbind_list() %>% filter(ts < "2017-09-23")
+
+#'get 1 minute means
+k1 <- k1.data %>% mutate(time_round = round_date(ts, "minute")) %>% 
+  group_by(id, time_round) %>% 
+  summarise_all(funs(mean(., na.rm = T)))
 ```
-
-```{r bind_move}
-#'make dataframe and bind
-k2 = k2 %>% map(as.data.frame) %>% bind_rows() %>% dplyr::select(posID, ts, X,Y,VARX,VARY,COVXY,speed,angle,lag,id,NBS,TIME)
-
-#'load rollapply from zoo
-library(zoo)
-
-#'split by id and find the variance of the angle for each individual
-k2 = k2 %>% split("id") %>% map(function(x) x %>% arrange(TIME) %>% mutate(speed_var = rollapply(speed, 10, fill = T, "var"), angle_var = rollapply(angle, 10, fill = T, "var"))) %>% bind_rows()
-
-#'complete cases
-k2.1 = k2[complete.cases(k2),]
-```
-
-```{r segment_lowangle_points}
-
-```
-
 
 ```{r load_pskf_functions}
 #'source from file
-source("~/git/huji_atlas_pskf_code/PSKF/PSKFForATLAS.R")
+source("PSKF.R")
 ```
 
 ```{r run_pskf}
-#'get only data with a greater than 0.006% recording rate
-pskf_data_ids = k2.pts.within %>% rbind_list() %>% group_by(id, segment) %>% summarise(prop = length(TIME)/((max(TIME) - min(TIME))/1e3)) %>%  filter(prop> 0.005) %>% mutate(id.seg = paste(id,segment, sep =".")) %>% .$id.seg
-
-pskf_data = k2.pts.within %>% rbind_list() %>% mutate(id.seg = paste(id, segment, sep = ".")) %>% filter(id.seg %in% pskf_data_ids) %>% dlply(c("id.seg")) %>% 
+#'get pskf data
+pskf_data = k1 %>% dlply("id") %>% 
   map(function(x) x %>% arrange(TIME) %>% select(X,Y,COVXY,VARX,VARY,TIME))
 
 #"run pskf and write to csv"
-for(i in 67:length(pskf_data)){
-  x = PSKFForATLAS(pskf_data[[i]])
+for(i in 1:length(pskf_data)){
+  x <- PSKF(pskf_data[[i]])
   write_csv(x, path = paste("knots_data/knots_pskf/",names(pskf_data)[i],"pskf.csv", sep=""))
   rm(x)
   gc()
