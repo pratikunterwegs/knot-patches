@@ -7,24 +7,75 @@ editor_options:
 source("libs.R");library(sp)
 ```
 
-```{r load_data}
-#load data
-load("knots_data/knots01_for_residence_segments.rdata")
+# Data filtering here
+
+```{r load_all_birds}
+#'load all birds
+load("knots_data/knots01_data.rdata")
+day30 <- as.numeric(as.POSIXct("2017-09-24", tz = "CEST", origin = "1970-01-01"))
+
+for(i in 1:length(k1.data)){
+  k1.data[[i]]$id = names(k1.data)[i]
+}
+
+#'filter one month
+k1.data <- k1.data %>% rbind_list() %>% filter(ts < "2017-09-23", NBS > 3)
+
+#'get 1 minute means
+k1 <- k1.data %>% mutate(time_round = round_date(ts, "minute")) %>% 
+  group_by(id, time_round) %>% 
+  summarise_all(funs(mean(., na.rm = T)))
+
+load("knots_data/k1.tides.rdata")
+
+k1.tide <- k1 %>% dlply("id") %>% 
+  map(function(x){
+    full_join(x, tide, by = c("time_round" = "time")) %>% arrange(time_round) %>% mutate(tide = ifelse(is.na(tide), "other", tide)) %>% mutate(ht = cumsum(tide == "H")+1)
+  }) %>% bind_rows() %>% dlply(c("id","ht"))
 ```
 
 ```{r}
-#'floor the time to the minute
-data <- data %>%
-  mutate(timenum = time,
-         time = as.POSIXct(time, origin = "1970-01-01"),
-         time = round_date(time, unit = "minute"))
+#'get distances and remove unrealistic distances
+k1.tide <- k1.tide[unlist(lapply(k1.tide, function(x) sum(!is.na(x$X)))) > 3]
+
+for(i in 1:length(k1.tide)){
+  a <- k1.tide[[i]]
+  a$distance <- c(NA, spDists(x = a[,c("X","Y")], segments = T))
+  k1.tide[[i]] <- a
+}
+
+#'identify segments as moves over 95th percentile
+k1.tide <- k1.tide %>% 
+  map(function(x){
+    filter(x, !is.na(distance)) %>% mutate(segment = cumsum(distance > 120))
+  })
+
+#'split by segment, remove small segments under 5 positions
+k1.tide <- k1.tide %>% 
+  bind_rows() %>% 
+  dlply(c("id","ht","segment"))
+k1.tide <- k1.tide[unlist(lapply(k1.tide, nrow)) > 3]
 ```
 
+```{r}
+#'this looks great! but not worth a PSKF right now.
+#'save for use with the HF proximity code
+k1.tide <- bind_rows(unclass(k1.tide)) %>% dlply(c("id","ht"))
+save(k1.tide, file = "knots_data/knots01_short_segs.rdata")
+```
+
+# Proximity analysis here
 
 ```{r prep_for_segments}
 #'prep data, remove point with fpt less than 10 mins
-data.prep = data %>% #filter(fpt > 10/60) %>% 
-  dlply("id.ht")
+#data.prep = data %>% filter(fpt > 10/60) %>% 
+#  dlply("id.ht")
+
+#'get dummy data, and time since high tide
+data.prep <- k1.tide %>% 
+  map(function(x){
+    arrange(x, TIME) %>% mutate(ht.time = round(TIME/1e3 - first(TIME/1e3)))
+  })
 
 #'remove tracks with less than 60 positions remaining , ie, data.prep with less than 60 positions
 data.prep = data.prep[unlist(map(data.prep, nrow))>= 60]
@@ -36,7 +87,7 @@ load("knots_data/k1.tides.rdata")
 #'in each tide get the list of potential times in mins
 tide.mins <- tide %>%
   filter(tide == "H") %>% 
-  mutate(ht = cumsum(tide == "H"),
+  mutate(ht = cumsum(tide == "H")+1,
          time = round_date(time, "minute")) %>% 
   dlply("ht")
 
@@ -54,11 +105,11 @@ tide.mins <- rbind_list(tide.mins)
 data.tide <- data.prep %>% 
   map(function(x){
     x %>% mutate(ht = as.numeric(ht)) %>%
-      right_join(tide.mins %>% filter(ht == as.numeric(x$ht)), by = c("time","ht"))
+      right_join(tide.mins %>% filter(ht == as.numeric(x$ht)), by = c("time_round"="time","ht"))
   })
 
 #'save this data
-save(data.tide, file = "knots_data/knots01_tide_minute_matched.rdata")
+#save(data.tide, file = "knots_data/knots01_tide_minute_matched.rdata")
 ```
 
 ```{r}
@@ -77,10 +128,10 @@ data.tide <- data.tide %>%
 ```{r}
 #'bind rows, get the time since high tide, ungroup, assign values in pplace of NAs
 data.tide <- rbind_list(data.tide) %>% 
-  group_by(ht) %>% 
-  mutate(ht.time = as.numeric(time) - as.numeric(min(time))) %>% 
+  group_by(ht = as.factor(ht)) %>% 
+  mutate(ht.time = as.numeric(time_round) - min(as.numeric(time_round), na.rm = T)) %>% 
   ungroup() %>% 
-  mutate(x = ifelse(is.na(x), 9e9,x),                                                                     y = ifelse(is.na(y), 9e9,y)) %>% 
+  mutate(X = ifelse(is.na(X), 9e9,X),                                                                     Y = ifelse(is.na(Y), 9e9,Y)) %>% 
   dlply("ht")
 ```
 
@@ -90,13 +141,15 @@ data.tide <- rbind_list(data.tide) %>%
 #'filter for ht.time between 3.5 and 9.5 hours
 data.lt <- data.tide %>% 
   map(function(x){
-    x <- x %>% filter(ht.time %between% c(3.5*3600,9.5*3600))
+    x <- x %>% filter(round(ht.time) %between% c(3.5*3600,9.5*3600))
   })
 
 #save(data.lt, data.tide, file = "knots_data/knots01_lowtide_data.rdata")
 ```
 
 ```{r}
+#'include only tides where 5 birds are present
+data.lt <- data.lt[unlist(lapply(data.lt, function(x){length(unique(x$id))})) > 2]
 #'this method is simpler than in knotscode019.
 proximity <- data_frame()
 
@@ -111,18 +164,18 @@ for(i in 1:length(focals)){
   
   #'loop over nonfocals
   for(j in 1:length(nonfocals)){
-    distances <- spDists(as.matrix(focals[[i]][,c("x","y")]), as.matrix(nonfocals[[j]][,c("x","y")]), diagonal = T)
+    distances <- spDists(as.matrix(focals[[i]][,c("X","Y")]), as.matrix(nonfocals[[j]][,c("X","Y")]), diagonal = T)
     #'get only distances where both focal and nonfocal positions are known
     #'set all distances greater than 9e6 = 0, and all rows where focal pos and all cols where nonfocal pos are > 9e6
-    distances[focals[[i]]$x > 9e6 | nonfocals[[j]]$x > 9e6] <- NA
+    distances[focals[[i]]$X > 9e6 | nonfocals[[j]]$Y > 9e6] <- NA
     #distances <- diag(distances)
     interactions <- data_frame(distances = sum(distances <= 25, na.rm = T)) %>%
       #count(class) %>% 
       mutate(focal = unique(focals[[i]]$id), 
              nonfocal = unique(nonfocals[[j]]$id), 
              ht = unique(focals[[i]]$ht), 
-             pos_focal = sum(focals[[i]]$x < 9e9), 
-             pos_nonfocal = sum(nonfocals[[j]]$x < 9e9))
+             pos_focal = sum(focals[[i]]$X < 9e9), 
+             pos_nonfocal = sum(nonfocals[[j]]$X < 9e9))
     proximity <- rbind(proximity, interactions)
     }
   }
@@ -150,9 +203,12 @@ coherence <- proximity100 %>%
   map(function(x) {
     x %>% select(-ht,-focal) %>% as.matrix()})
 
+#'remove matrices with no data
+coherence <- coherence[unlist(lapply(coherence, function(x){sum(!is.na(x))})) != 0]
+
 #'get a 100 simulation mean array for each tide
 for(i in 1:length(coherence)){
-  rand.holder = array(dim = c(36,36,100))
+  rand.holder = array(dim = c(34,34,100))
   a <- coherence[[i]]
   for(j in 1:1e2){
     rand.holder[,,j] <- a[sample.int(nrow(a)), sample.int(ncol(a))]
@@ -176,7 +232,7 @@ coherence.scores <- proximity100 %>%
   ungroup() %>% 
   mutate(focal = as.character(focal),
          nonfocal = as.character(nonfocal)) %>% 
-  left_join(coherence.sim %>% mutate(ht = as.numeric(ht))) %>% 
+  left_join(coherence.sim %>% mutate(ht = as.factor(ht))) %>% 
   filter(focal != nonfocal) %>% 
   mutate(diff = coherence_emp - coherence_sim)
 ```
@@ -205,8 +261,8 @@ coherence.test <- coherence.scores %>%
 coherence.test %>% 
   filter(abs(coherence_diff) < 1) %>% 
   ggplot()+
-  geom_tile(aes(x = focal, y = nonfocal, fill = coherence_diff), col = "transparent", lwd = 0.2)+
-  scale_fill_gradient2(low = "red", mid = "white", high = "blue")+
+  geom_tile(aes(x = focal, y = nonfocal, fill = mean_coherence_emp), col = "transparent", lwd = 0.2)+
+  #scale_fill_gradient2(low = "red", mid = "white", high = "blue")+
   #scale_alpha_manual(values = c(0.1,1), guide = F)+
   scale_shape_manual(values = c("", "*"), guide = F)
 ```
