@@ -70,6 +70,7 @@ save(k1.tide, file = "knots_data/knots01_short_segs.rdata")
 #'prep data, remove point with fpt less than 10 mins
 #data.prep = data %>% filter(fpt > 10/60) %>% 
 #  dlply("id.ht")
+load("knots_data/knots01_short_segs.rdata")
 
 #'get dummy data, and time since high tide
 data.prep <- k1.tide %>% 
@@ -169,7 +170,7 @@ for(i in 1:length(focals)){
     #'set all distances greater than 9e6 = 0, and all rows where focal pos and all cols where nonfocal pos are > 9e6
     distances[focals[[i]]$X > 9e6 | nonfocals[[j]]$Y > 9e6] <- NA
     #distances <- diag(distances)
-    interactions <- data_frame(distances = sum(distances <= 25, na.rm = T)) %>%
+    interactions <- data_frame(distances = sum(distances <= 200, na.rm = T)) %>%
       #count(class) %>% 
       mutate(focal = unique(focals[[i]]$id), 
              nonfocal = unique(nonfocals[[j]]$id), 

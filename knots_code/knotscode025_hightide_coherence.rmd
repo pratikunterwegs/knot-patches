@@ -4,12 +4,13 @@ editor_options:
   chunk_output_type: console
 ---
 ```{r}
+library(stringi)
 #'get ht data
 data.ht <- unclass(data.tide) %>% 
   bind_rows() %>% 
-  anti_join(unclass(data.lt) %>% bind_rows()) %>% 
-  mutate(ht.hr = stri_pad(round(ht.time/3600), width = 2, pad = "0"),
-         ht = stri_pad(ht, width = 2, pad = "0"))
+  #anti_join(unclass(data.lt) %>% bind_rows()) %>% 
+  mutate(ht.hr = stri_pad(round_any(ht.time/1800, 2), width = 4, pad = "0"),
+         ht = stri_pad(ht, width = 3, pad = "0"))
 
 #'assign a tidal interval
 data.ht <- data.ht %>% 
@@ -44,7 +45,7 @@ for(i in 1:length(focals)){
     #'set all distances greater than 9e6 = 0, and all rows where focal pos and all cols where nonfocal pos are > 9e6
     distances[focals[[i]]$X > 9e6 | nonfocals[[j]]$Y > 9e6] <- NA
     #distances <- diag(distances)
-    interactions <- data_frame(distances = sum(distances <= 25, na.rm = T)) %>%
+    interactions <- data_frame(distances = sum(distances <= 100, na.rm = T)) %>%
       #count(class) %>% 
       mutate(focal = unique(focals[[i]]$id), 
              nonfocal = unique(nonfocals[[j]]$id), 
@@ -117,7 +118,9 @@ coherence.scores.ht <- proximity100.ht %>%
 ```{r}
 #'run the KS test
 coherence.test.ht <- coherence.scores.ht %>% 
-  dlply(c("focal","nonfocal","ht.hr")) %>% 
+  group_by(focal, nonfocal, ht.hr) %>% mutate(n = length(!is.na(coherence_emp))) %>% 
+  filter(n >= 5) %>%
+  dlply(c("focal","nonfocal","ht.hr")) %>%
   map(function(x){
     ks.test(x$coherence_emp, x$coherence_sim, exact = F)
   }) %>% 
@@ -126,7 +129,8 @@ coherence.test.ht <- coherence.scores.ht %>%
   }) %>% 
   bind_rows() %>% 
   bind_cols(coherence.scores.ht %>%  
-              group_by(focal,nonfocal,hr) %>% 
+              group_by(focal, nonfocal, ht.hr) %>% mutate(n = length(!is.na(coherence_emp))) %>% 
+  filter(n >= 5) %>% 
               summarise(mean_coherence_emp = mean(coherence_emp),
                         mean_coherence_sim = mean(coherence_sim),
                         coherence_diff = mean(diff))) %>% 
