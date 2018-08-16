@@ -1,0 +1,156 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+```{r}
+#'get ht data
+data.ht <- unclass(data.tide) %>% 
+  bind_rows() %>% 
+  anti_join(unclass(data.lt) %>% bind_rows()) %>% 
+  mutate(ht.hr = stri_pad(round(ht.time/3600), width = 2, pad = "0"),
+         ht = stri_pad(ht, width = 2, pad = "0"))
+
+#'assign a tidal interval
+data.ht <- data.ht %>% 
+ # map(function(x){
+ #   mutate(x, tide = ifelse(is.na(tide),"other",tide),
+ #          lt = cumsum(tide == "L")+1) %>% 
+ #     filter(tide != "L")
+ #}) %>% unclass() %>% bind_rows() %>% 
+  dlply(c("ht","ht.hr"))
+
+#'remove tides with < 3 birds
+data.ht <- data.ht[unlist(lapply(data.ht, function(x) length(unique(x$id[!is.na(x$id)])))) > 2]
+```
+
+```{r}
+#'this method is simpler than in knotscode019.
+proximity <- data_frame()
+
+for(z in 1:length(data.ht)){
+#'split again by id
+focals <- dlply(data.ht[[z]], "id")  
+#'implement method from knotscode019
+for(i in 1:length(focals)){
+  #'get focals
+  #'get the nonfocal birds
+  nonfocals <- focals[!names(focals) %in% names(focals)[i]]
+  
+  #'loop over nonfocals
+  for(j in 1:length(nonfocals)){
+    distances <- spDists(as.matrix(focals[[i]][,c("X","Y")]), as.matrix(nonfocals[[j]][,c("X","Y")]), diagonal = T)
+    #'get only distances where both focal and nonfocal positions are known
+    #'set all distances greater than 9e6 = 0, and all rows where focal pos and all cols where nonfocal pos are > 9e6
+    distances[focals[[i]]$X > 9e6 | nonfocals[[j]]$Y > 9e6] <- NA
+    #distances <- diag(distances)
+    interactions <- data_frame(distances = sum(distances <= 25, na.rm = T)) %>%
+      #count(class) %>% 
+      mutate(focal = unique(focals[[i]]$id), 
+             nonfocal = unique(nonfocals[[j]]$id), 
+             ht = unique(focals[[i]]$ht),
+             ht.hr = unique(focals[[i]]$ht.hr),
+             pos_focal = sum(focals[[i]]$X < 9e9), 
+             pos_nonfocal = sum(nonfocals[[j]]$X < 9e9))
+    proximity <- rbind(proximity, interactions)
+    }
+  }
+}
+```
+
+```{r}
+#'calculate coherence scores for under 100m
+proximity100.ht <- proximity %>%
+  dlply(c("ht","ht.hr")) %>% 
+  map(function(x){
+    x %>% group_by(focal, nonfocal, ht, ht.hr) %>% 
+  summarise(interactions = sum(distances),
+            coherence_emp = interactions/(first(pos_focal) + first(pos_nonfocal) - interactions))
+})
+```
+
+```{r random_coherence_matrix}
+#'get the tide wise coherence arrays for randomisation
+coherence.ht <- proximity100.ht %>% 
+  bind_rows() %>% 
+  select(-interactions) %>% 
+  spread(nonfocal, coherence_emp, drop = F) %>% 
+  dlply(c("ht","ht.hr")) %>% 
+  map(function(x) {
+    x %>% select(-ht,-focal,-ht.hr) %>% as.matrix()})
+
+#'remove matrices with no data
+coherence.ht <- coherence.ht[unlist(lapply(coherence.ht, function(x){sum(!is.na(x))})) > 0]
+
+#'get a 100 simulation mean array for each tide
+for(i in 1:length(coherence.ht)){
+  rand.holder = array(dim = c(34,34,100))
+  a <- coherence.ht[[i]]
+  for(j in 1:1e2){
+    rand.holder[,,j] <- a[sample.int(nrow(a)), sample.int(ncol(a))]
+  }
+  coherence.ht[[i]] <- apply(rand.holder, c(1,2), function(x) mean(x, na.rm = T)) %>% 
+    as.data.frame() %>% mutate(focal = colnames(a), ht = names(coherence.ht)[i])
+  colnames(coherence.ht[[i]]) <- c(colnames(a), "focal", "ht")
+}
+
+#'gather
+coherence.sim.ht <- coherence.ht %>% 
+  map(function(x){
+    x %>% gather(nonfocal, coherence_sim, -focal,-ht)
+  }) %>% bind_rows()
+```
+
+```{r}
+#'bind emp and sim scores
+coherence.scores.ht <- proximity100.ht %>% 
+  bind_rows() %>% 
+  ungroup() %>% 
+  mutate(focal = as.character(focal),
+         nonfocal = as.character(nonfocal),
+         ht = paste(ht,ht.hr, sep = ".")) %>% 
+  left_join(coherence.sim.ht %>% mutate(ht = as.factor(ht))) %>% 
+  filter(focal != nonfocal) %>% 
+  mutate(diff = coherence_emp - coherence_sim)
+```
+
+```{r}
+#'run the KS test
+coherence.test.ht <- coherence.scores.ht %>% 
+  dlply(c("focal","nonfocal","ht.hr")) %>% 
+  map(function(x){
+    ks.test(x$coherence_emp, x$coherence_sim, exact = F)
+  }) %>% 
+  map(function(x){
+    bind_cols(unclass(x))
+  }) %>% 
+  bind_rows() %>% 
+  bind_cols(coherence.scores.ht %>%  
+              group_by(focal,nonfocal,hr) %>% 
+              summarise(mean_coherence_emp = mean(coherence_emp),
+                        mean_coherence_sim = mean(coherence_sim),
+                        coherence_diff = mean(diff))) %>% 
+  select(-data.name,-alternative,-method)
+```
+
+```{r}
+#'plot and see
+coherence.test.ht %>% 
+  filter(abs(coherence_diff) < 1) %>% 
+  ggplot()+
+  geom_tile(aes(x = focal, y = nonfocal, fill = mean_coherence_emp), col = "transparent", lwd = 0.2)+
+  #scale_fill_gradient2(low = "red", mid = "white", high = "blue")+
+  #scale_alpha_manual(values = c(0.1,1), guide = F)+
+  scale_shape_manual(values = c("", "*"), guide = F)
+```
+
+```{r}
+#'plot coherence by time
+b <- na.omit(coherence.scores.ht, "coherence_emp")
+
+ggplot(b)+
+  stat_density(aes(x = coherence_emp, y = ..count..), geom = "line")+
+  facet_wrap(~ht.hr, ncol = 4)+
+  scale_x_log10()
+```
+
