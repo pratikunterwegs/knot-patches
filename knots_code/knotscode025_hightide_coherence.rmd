@@ -9,7 +9,7 @@ library(stringi)
 data.ht <- unclass(data.tide) %>% 
   bind_rows() %>% 
   #anti_join(unclass(data.lt) %>% bind_rows()) %>% 
-  mutate(ht.hr = stri_pad(round_any(ht.time/1800, 2), width = 4, pad = "0"),
+  mutate(ht.hr = stri_pad(round_any(ht.time/3600, 1), width = 4, pad = "0"),
          ht = stri_pad(ht, width = 3, pad = "0"))
 
 #'assign a tidal interval
@@ -26,6 +26,7 @@ data.ht <- data.ht[unlist(lapply(data.ht, function(x) length(unique(x$id[!is.na(
 ```
 
 ```{r}
+library(sp)
 #'this method is simpler than in knotscode019.
 proximity <- data_frame()
 
@@ -65,12 +66,40 @@ proximity100.ht <- proximity %>%
   dlply(c("ht","ht.hr")) %>% 
   map(function(x){
     x %>% group_by(focal, nonfocal, ht, ht.hr) %>% 
-  summarise(interactions = sum(distances),
-            coherence_emp = interactions/(first(pos_focal) + first(pos_nonfocal) - interactions))
+  summarise(pos_focal = first(pos_focal),
+            pos_nonfocal = first(pos_nonfocal),
+    interactions = sum(distances),
+            coherence_emp = case_when(
+    pos_focal == 0 & pos_nonfocal == 0 ~ as.double(NA),
+    T ~ interactions/(first(pos_focal) + first(pos_nonfocal) - interactions)))
 })
 ```
 
-```{r random_coherence_matrix}
+```{r what_explains_coherence}
+#'get a df of coherences
+cij <- bind_rows(proximity100.ht)
+
+data.ht.summary <- bind_rows(unclass(data.ht)) %>% 
+  ungroup() %>% 
+  group_by(id, ht, ht.hr) %>%
+  summarise(dist_sum = sum(distance, na.rm = T),
+            x1 = first(X[X < 9e9]),
+            y1 = first(Y[Y < 9e9]),
+            x2 = last(X[X < 9e9]),
+            y2 = last(Y[Y < 9e9]),
+            displacement = spDists(x = as.ma)) %>% 
+  select(-X_sum, -Y_sum)
+
+#'get coherence n-1, remove pairs with less than 3 tides of presence
+cij <- group_by(cij, focal, nonfocal) %>% 
+  mutate(n = length(interactions)) %>% 
+  filter(n > 2) %>% 
+  mutate(cn1 = c(NA, coherence_emp[2:length(coherence_emp)]))
+
+
+```
+
+```{r rand_cohere_matriz}
 #'get the tide wise coherence arrays for randomisation
 coherence.ht <- proximity100.ht %>% 
   bind_rows() %>% 
