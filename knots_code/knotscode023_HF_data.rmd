@@ -134,6 +134,8 @@ data.tide <- rbind_list(data.tide) %>%
   ungroup() %>% 
   mutate(X = ifelse(is.na(X), 9e9,X),                                                                     Y = ifelse(is.na(Y), 9e9,Y)) %>% 
   dlply("ht")
+
+save(data.tide, file = "knots_data/kntoscode023_tidematched_data.rdata")
 ```
 
 # Select LT +/- 3 hours

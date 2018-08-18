@@ -4,6 +4,8 @@ editor_options:
   chunk_output_type: console
 ---
 ```{r}
+source("libs.R");library(sp)
+load("knots_data/kntoscode023_tidematched_data.rdata")
 library(stringi)
 #'get ht data
 data.ht <- unclass(data.tide) %>% 
