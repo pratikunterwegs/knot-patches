@@ -73,7 +73,7 @@ proximity100.ht <- proximity %>%
     interactions = sum(distances),
             coherence_emp = case_when(
     pos_focal == 0 & pos_nonfocal == 0 ~ as.double(NA),
-    T ~ interactions/(first(pos_focal) + first(pos_nonfocal) - interactions)))
+    T ~ interactions/(first(pos_focal))))
 })
 ```
 
@@ -84,32 +84,35 @@ cij <- bind_rows(proximity100.ht)
 data.ht.summary <- bind_rows(unclass(data.ht)) %>% 
   ungroup() %>% 
   group_by(id, ht, ht.hr) %>%
-  summarise(dist_sum = sum(distance, na.rm = T),
-            x1 = first(X[X < 9e9]),
-            y1 = first(Y[Y < 9e9]),
-            x2 = last(X[X < 9e9]),
-            y2 = last(Y[Y < 9e9]),
-            displacement = spDists(x = as.ma)) %>% 
-  select(-X_sum, -Y_sum)
+  summarise(dist_sum = sum(distance, na.rm = T))
 
 #'get coherence n-1, remove pairs with less than 3 tides of presence
 cij <- group_by(cij, focal, nonfocal) %>% 
   mutate(n = length(interactions)) %>% 
   filter(n > 2) %>% 
-  mutate(cn1 = c(NA, coherence_emp[2:length(coherence_emp)]))
-
-
+  mutate(cn1 = c(NA, coherence_emp[2:length(coherence_emp)]),
+         hour = as.numeric(ht.hr)) %>% 
+  left_join(data.ht.summary, by = c("focal" = "id","ht","ht.hr"))
 ```
+
+```{r}
+library(glmmTMB)
+#'run zero inflated glmm for coherence consistency
+mod.coherence.consistency = glmmTMB(coherence_emp ~ cn1 + pos_focal + pos_nonfocal + hour + dist_sum + (1|focal) + (1|ht), data = cij, family = binomial, ziformula = ~coherence_emp)
+```
+
 
 ```{r rand_cohere_matriz}
 #'get the tide wise coherence arrays for randomisation
 coherence.ht <- proximity100.ht %>% 
   bind_rows() %>% 
   select(-interactions) %>% 
+  group_by(focal, nonfocal, ht) %>% 
+  summarise(coherence_emp = mean(coherence_emp, na.rm = T)) %>% 
   spread(nonfocal, coherence_emp, drop = F) %>% 
-  dlply(c("ht","ht.hr")) %>% 
+  dlply(c("ht")) %>% 
   map(function(x) {
-    x %>% select(-ht,-focal,-ht.hr) %>% as.matrix()})
+    x %>% select(-ht,-focal) %>% as.matrix()})
 
 #'remove matrices with no data
 coherence.ht <- coherence.ht[unlist(lapply(coherence.ht, function(x){sum(!is.na(x))})) > 0]
@@ -137,10 +140,12 @@ coherence.sim.ht <- coherence.ht %>%
 #'bind emp and sim scores
 coherence.scores.ht <- proximity100.ht %>% 
   bind_rows() %>% 
+  select(-interactions) %>% 
+  group_by(focal, nonfocal, ht) %>% 
+  summarise(coherence_emp = mean(coherence_emp, na.rm = T)) %>% 
   ungroup() %>% 
   mutate(focal = as.character(focal),
-         nonfocal = as.character(nonfocal),
-         ht = paste(ht,ht.hr, sep = ".")) %>% 
+         nonfocal = as.character(nonfocal)) %>% 
   left_join(coherence.sim.ht %>% mutate(ht = as.factor(ht))) %>% 
   filter(focal != nonfocal) %>% 
   mutate(diff = coherence_emp - coherence_sim)
@@ -149,9 +154,9 @@ coherence.scores.ht <- proximity100.ht %>%
 ```{r}
 #'run the KS test
 coherence.test.ht <- coherence.scores.ht %>% 
-  group_by(focal, nonfocal, ht.hr) %>% mutate(n = length(!is.na(coherence_emp))) %>% 
+  group_by(focal, nonfocal) %>% mutate(n = length(!is.na(coherence_emp))) %>% 
   filter(n >= 5) %>%
-  dlply(c("focal","nonfocal","ht.hr")) %>%
+  dlply(c("focal","nonfocal")) %>%
   map(function(x){
     ks.test(x$coherence_emp, x$coherence_sim, exact = F)
   }) %>% 
@@ -160,7 +165,7 @@ coherence.test.ht <- coherence.scores.ht %>%
   }) %>% 
   bind_rows() %>% 
   bind_cols(coherence.scores.ht %>%  
-              group_by(focal, nonfocal, ht.hr) %>% mutate(n = length(!is.na(coherence_emp))) %>% 
+              group_by(focal, nonfocal) %>% mutate(n = length(!is.na(coherence_emp))) %>% 
   filter(n >= 5) %>% 
               summarise(mean_coherence_emp = mean(coherence_emp),
                         mean_coherence_sim = mean(coherence_sim),
