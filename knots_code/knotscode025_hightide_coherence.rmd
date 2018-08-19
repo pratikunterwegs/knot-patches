@@ -93,14 +93,46 @@ cij <- group_by(cij, focal, nonfocal) %>%
   mutate(cn1 = c(NA, coherence_emp[2:length(coherence_emp)]),
          hour = as.numeric(ht.hr)) %>% 
   left_join(data.ht.summary, by = c("focal" = "id","ht","ht.hr"))
+
+#'add focal and non-focal distances and get mismatch, and mismatch in rate of change of position (speed)
+cij <- left_join(cij, data.ht.summary, by = c("nonfocal" = "id","ht","ht.hr")) %>% 
+  mutate(dist.mismatch = abs(dist_sum.x - dist_sum.y),
+         speed.mismatch = abs((dist_sum.x/pos_focal) - (dist_sum.y/pos_nonfocal)))
+
+#'only consider rows with 10+ positions focal and nonfocal
+cij <- filter(cij, pos_focal >= 10, pos_nonfocal >= 10, dist.mismatch <= 1200)
 ```
+
+```{r}
+#'get unique pairs
+pairs <- expand(ungroup(cij), focal, nonfocal) %>% filter(focal < nonfocal) %>% ungroup() %>% mutate(pair = 1:nrow(.))
+
+cij <- left_join(cij, pairs) %>% filter(!is.na(pair))
+```
+
+```{r}
+cairo_ps(filename = "knots_data/figure_coherence_hour.eps", width = 200/25.4, height = 200/25.4)
+
+cij %>% 
+  ggplot()+
+  geom_jitter(aes(x = hour, y = coherence_emp), col = "grey80", shape = 1)+
+  geom_smooth(aes(x = hour, y = coherence_emp*3), fill = cola1)+
+  scale_y_continuous(sec.axis = sec_axis(~.*(1/3), name = "Mean pairwise coherence"))+
+  scale_x_continuous(breaks = c(0,7,13), labels = c("High tide","Low tide","High tide"))+
+  scale_colour_viridis_d(guide = F)+
+  labs(list(x = "Hours post high tide", y = "Pairwise coherence"))+
+  theme_pub()+
+  theme(axis.text = element_text(size = 16), axis.title = element_text(size = 20))
+
+dev.off()
+```
+
 
 ```{r}
 library(glmmTMB)
 #'run zero inflated glmm for coherence consistency
-mod.coherence.consistency = glmmTMB(coherence_emp ~ cn1 + pos_focal + pos_nonfocal + hour + dist_sum + (1|focal) + (1|ht), data = cij, family = binomial, ziformula = ~coherence_emp)
+mod.coherence.consistency = glmmTMB(coherence_emp ~ cn1 + sqrt(hour) + log(dist.mismatch) + (1|focal) + (1|nonfocal) + (1|ht), data = cij, family = binomial, ziformula = ~ coherence_emp)
 ```
-
 
 ```{r rand_cohere_matriz}
 #'get the tide wise coherence arrays for randomisation
