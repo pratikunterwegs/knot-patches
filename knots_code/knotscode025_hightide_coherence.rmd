@@ -111,7 +111,7 @@ cij <- left_join(cij, pairs) %>% filter(!is.na(pair))
 ```
 
 ```{r}
-cairo_ps(filename = "knots_data/figure_coherence_hour.eps", width = 200/25.4, height = 200/25.4)
+cairo_ps(filename = "figure_coherence_hour.eps", width = 200/25.4, height = 200/25.4)
 
 cij %>% 
   ggplot()+
@@ -130,24 +130,26 @@ dev.off()
 
 ```{r}
 library(glmmTMB)
+cij$pair = as.factor(cij$pair)
 #'run zero inflated glmm for coherence consistency
-mod.coherence.consistency = glmmTMB(coherence_emp ~ cn1 + sqrt(hour) + log(dist.mismatch) + (1|focal) + (1|nonfocal) + (1|ht), data = cij, family = binomial, ziformula = ~ coherence_emp)
+mod.coherence.consistency = glmmTMB(coherence_emp ~ cn1 + sqrt(hour) + log(dist.mismatch) + (1|ht), data = cij, family = binomial, ziformula = ~1)
 ```
 
 ```{r rand_cohere_matriz}
 #'get the tide wise coherence arrays for randomisation
 coherence.ht <- proximity100.ht %>% 
   bind_rows() %>% 
-  select(-interactions) %>% 
-  group_by(focal, nonfocal, ht) %>% 
+  mutate(hour = as.numeric(ht.hr)) %>% 
+  group_by(focal, nonfocal, hour) %>% 
   summarise(coherence_emp = mean(coherence_emp, na.rm = T)) %>% 
   spread(nonfocal, coherence_emp, drop = F) %>% 
-  dlply(c("ht")) %>% 
+  dlply(c("hour")) %>%
   map(function(x) {
-    x %>% select(-ht,-focal) %>% as.matrix()})
+    x %>% 
+      select(-focal,-hour) %>% as.matrix()})
 
 #'remove matrices with no data
-coherence.ht <- coherence.ht[unlist(lapply(coherence.ht, function(x){sum(!is.na(x))})) > 0]
+#coherence.ht <- coherence.ht[unlist(lapply(coherence.ht, function(x){sum(!is.na(x))})) > 0]
 
 #'get a 100 simulation mean array for each tide
 for(i in 1:length(coherence.ht)){
@@ -158,13 +160,13 @@ for(i in 1:length(coherence.ht)){
   }
   coherence.ht[[i]] <- apply(rand.holder, c(1,2), function(x) mean(x, na.rm = T)) %>% 
     as.data.frame() %>% mutate(focal = colnames(a), ht = names(coherence.ht)[i])
-  colnames(coherence.ht[[i]]) <- c(colnames(a), "focal", "ht")
+  colnames(coherence.ht[[i]]) <- c(colnames(a), "focal", "hour")
 }
 
 #'gather
 coherence.sim.ht <- coherence.ht %>% 
   map(function(x){
-    x %>% gather(nonfocal, coherence_sim, -focal,-ht)
+    x %>% gather(nonfocal, coherence_sim, -focal,-hour) %>% mutate(hour = as.numeric(hour))
   }) %>% bind_rows()
 ```
 
@@ -172,36 +174,40 @@ coherence.sim.ht <- coherence.ht %>%
 #'bind emp and sim scores
 coherence.scores.ht <- proximity100.ht %>% 
   bind_rows() %>% 
-  select(-interactions) %>% 
-  group_by(focal, nonfocal, ht) %>% 
+  mutate(hour = as.numeric(ht.hr)) %>% 
+  #select(-interactions) %>% 
+  group_by(focal, nonfocal, hour) %>% 
   summarise(coherence_emp = mean(coherence_emp, na.rm = T)) %>% 
   ungroup() %>% 
   mutate(focal = as.character(focal),
          nonfocal = as.character(nonfocal)) %>% 
-  left_join(coherence.sim.ht %>% mutate(ht = as.factor(ht))) %>% 
-  filter(focal != nonfocal) %>% 
+  left_join(coherence.sim.ht) %>% 
   mutate(diff = coherence_emp - coherence_sim)
+
+#'retain only pairs
+coherence.scores.ht <- coherence.scores.ht %>% left_join(pairs) %>% filter(!is.na(pair))
 ```
 
 ```{r}
 #'run the KS test
 coherence.test.ht <- coherence.scores.ht %>% 
-  group_by(focal, nonfocal) %>% mutate(n = length(!is.na(coherence_emp))) %>% 
-  filter(n >= 5) %>%
-  dlply(c("focal","nonfocal")) %>%
+  group_by(focal, nonfocal) %>% mutate(n = length(!is.na(coherence_emp)), n1 = length(!is.na(coherence_sim))) %>% 
+  filter(n >= 10, n1 >= 10)# %>%
+
+coherence.test <- coherence.test.ht %>% 
+  dlply(c("focal","nonfocal","hour")) %>% 
   map(function(x){
-    ks.test(x$coherence_emp, x$coherence_sim, exact = F)
+    ks.test(x = x$coherence_emp, y = x$coherence_sim, exact = F)
   }) %>% 
   map(function(x){
     bind_cols(unclass(x))
   }) %>% 
   bind_rows() %>% 
-  bind_cols(coherence.scores.ht %>%  
-              group_by(focal, nonfocal) %>% mutate(n = length(!is.na(coherence_emp))) %>% 
-  filter(n >= 5) %>% 
+  bind_cols(coherence.test.ht %>%
               summarise(mean_coherence_emp = mean(coherence_emp),
                         mean_coherence_sim = mean(coherence_sim),
-                        coherence_diff = mean(diff))) %>% 
+                        coherence_diff = mean(diff),
+                        hour)) %>% 
   select(-data.name,-alternative,-method)
 ```
 
