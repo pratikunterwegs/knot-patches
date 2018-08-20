@@ -8,23 +8,23 @@ source("libs.R");library(sp)
 load("knots_data/kntoscode023_tidematched_data.rdata")
 library(stringi)
 #'get ht data
-data.ht <- unclass(data.tide) %>% 
+data <- unclass(data.tide) %>% 
   bind_rows() %>% 
   #anti_join(unclass(data.lt) %>% bind_rows()) %>% 
-  mutate(ht.hr = stri_pad(round_any(ht.time/3600, 1), width = 4, pad = "0"),
-         ht = stri_pad(ht, width = 3, pad = "0"))
+  mutate(hour = stri_pad(round_any(ht.time/3600, 1), width = 2, pad = "0"),
+         ht = stri_pad(ht, width = 2, pad = "0"))
 
 #'assign a tidal interval
-data.ht <- data.ht %>% 
+data <- data %>% 
  # map(function(x){
  #   mutate(x, tide = ifelse(is.na(tide),"other",tide),
  #          lt = cumsum(tide == "L")+1) %>% 
  #     filter(tide != "L")
  #}) %>% unclass() %>% bind_rows() %>% 
-  dlply(c("ht","ht.hr"))
+  dlply(c("ht","hour"))
 
 #'remove tides with < 3 birds
-data.ht <- data.ht[unlist(lapply(data.ht, function(x) length(unique(x$id[!is.na(x$id)])))) > 2]
+data <- data[unlist(lapply(data, function(x) length(unique(x$id[!is.na(x$id)])))) > 2]
 ```
 
 ```{r}
@@ -32,9 +32,9 @@ library(sp)
 #'this method is simpler than in knotscode019.
 proximity <- data_frame()
 
-for(z in 1:length(data.ht)){
+for(z in 1:length(data)){
 #'split again by id
-focals <- dlply(data.ht[[z]], "id")  
+focals <- dlply(data[[z]], "id")  
 #'implement method from knotscode019
 for(i in 1:length(focals)){
   #'get focals
@@ -64,8 +64,8 @@ for(i in 1:length(focals)){
 
 ```{r}
 #'calculate coherence scores for under 100m
-proximity100.ht <- proximity %>%
-  dlply(c("ht","ht.hr")) %>% 
+proximity100 <- proximity %>%
+  dlply(c("ht","hour")) %>% 
   map(function(x){
     x %>% group_by(focal, nonfocal, ht, ht.hr) %>% 
   summarise(pos_focal = first(pos_focal),
@@ -78,29 +78,16 @@ proximity100.ht <- proximity %>%
 ```
 
 ```{r what_explains_coherence}
-#'get a df of coherences
-cij <- bind_rows(proximity100.ht)
-
-data.ht.summary <- bind_rows(unclass(data.ht)) %>% 
-  ungroup() %>% 
-  group_by(id, ht, ht.hr) %>%
-  summarise(dist_sum = sum(distance, na.rm = T))
-
 #'get coherence n-1, remove pairs with less than 3 tides of presence
 cij <- group_by(cij, focal, nonfocal) %>% 
   mutate(n = length(interactions)) %>% 
   filter(n > 2) %>% 
   mutate(cn1 = c(NA, coherence_emp[2:length(coherence_emp)]),
          hour = as.numeric(ht.hr)) %>% 
-  left_join(data.ht.summary, by = c("focal" = "id","ht","ht.hr"))
-
-#'add focal and non-focal distances and get mismatch, and mismatch in rate of change of position (speed)
-cij <- left_join(cij, data.ht.summary, by = c("nonfocal" = "id","ht","ht.hr")) %>% 
-  mutate(dist.mismatch = abs(dist_sum.x - dist_sum.y),
-         speed.mismatch = abs((dist_sum.x/pos_focal) - (dist_sum.y/pos_nonfocal)))
+  left_join(data.summary, by = c("focal" = "id","ht","hour"))
 
 #'only consider rows with 10+ positions focal and nonfocal
-cij <- filter(cij, pos_focal >= 10, pos_nonfocal >= 10, dist.mismatch <= 1200)
+cij <- filter(cij, pos_focal >= 10, pos_nonfocal >= 10)
 ```
 
 ```{r}
@@ -137,9 +124,8 @@ mod.coherence.consistency = glmmTMB(coherence_emp ~ cn1 + sqrt(hour) + log(dist.
 
 ```{r rand_cohere_matriz}
 #'get the tide wise coherence arrays for randomisation
-coherence.ht <- proximity100.ht %>% 
+coherence <- proximity100 %>% 
   bind_rows() %>% 
-  mutate(hour = as.numeric(ht.hr)) %>% 
   group_by(focal, nonfocal, hour) %>% 
   summarise(coherence_emp = mean(coherence_emp, na.rm = T)) %>% 
   spread(nonfocal, coherence_emp, drop = F) %>% 
@@ -148,23 +134,20 @@ coherence.ht <- proximity100.ht %>%
     x %>% 
       select(-focal,-hour) %>% as.matrix()})
 
-#'remove matrices with no data
-#coherence.ht <- coherence.ht[unlist(lapply(coherence.ht, function(x){sum(!is.na(x))})) > 0]
-
 #'get a 100 simulation mean array for each tide
-for(i in 1:length(coherence.ht)){
+for(i in 1:length(coherence)){
   rand.holder = array(dim = c(34,34,100))
-  a <- coherence.ht[[i]]
+  a <- coherence[[i]]
   for(j in 1:1e2){
     rand.holder[,,j] <- a[sample.int(nrow(a)), sample.int(ncol(a))]
   }
-  coherence.ht[[i]] <- apply(rand.holder, c(1,2), function(x) mean(x, na.rm = T)) %>% 
-    as.data.frame() %>% mutate(focal = colnames(a), ht = names(coherence.ht)[i])
-  colnames(coherence.ht[[i]]) <- c(colnames(a), "focal", "hour")
+  coherence[[i]] <- apply(rand.holder, c(1,2), function(x) mean(x, na.rm = T)) %>% 
+    as.data.frame() %>% mutate(focal = colnames(a), ht = names(coherence)[i])
+  colnames(coherence[[i]]) <- c(colnames(a), "focal", "hour")
 }
 
 #'gather
-coherence.sim.ht <- coherence.ht %>% 
+coherence.sim <- coherence %>% 
   map(function(x){
     x %>% gather(nonfocal, coherence_sim, -focal,-hour) %>% mutate(hour = as.numeric(hour))
   }) %>% bind_rows()
@@ -172,29 +155,26 @@ coherence.sim.ht <- coherence.ht %>%
 
 ```{r}
 #'bind emp and sim scores
-coherence.scores.ht <- proximity100.ht %>% 
+coherence.scores <- proximity100 %>% 
   bind_rows() %>% 
-  mutate(hour = as.numeric(ht.hr)) %>% 
-  #select(-interactions) %>% 
   group_by(focal, nonfocal, hour) %>% 
   summarise(coherence_emp = mean(coherence_emp, na.rm = T)) %>% 
   ungroup() %>% 
   mutate(focal = as.character(focal),
          nonfocal = as.character(nonfocal)) %>% 
-  left_join(coherence.sim.ht) %>% 
-  mutate(diff = coherence_emp - coherence_sim)
+  left_join(coherence.sim)
 
-#'retain only pairs
-coherence.scores.ht <- coherence.scores.ht %>% left_join(pairs) %>% filter(!is.na(pair))
+#'retain only unique pairs
+coherence.scores <- coherence.scores %>% left_join(pairs) %>% filter(!is.na(pair))
 ```
 
 ```{r}
 #'run the KS test
-coherence.test.ht <- coherence.scores.ht %>% 
+coherence.test <- coherence.scores %>% 
   group_by(focal, nonfocal) %>% mutate(n = length(!is.na(coherence_emp)), n1 = length(!is.na(coherence_sim))) %>% 
   filter(n >= 10, n1 >= 10)# %>%
 
-coherence.test <- coherence.test.ht %>% 
+coherence.test <- coherence.test %>% 
   dlply(c("focal","nonfocal","hour")) %>% 
   map(function(x){
     ks.test(x = x$coherence_emp, y = x$coherence_sim, exact = F)
@@ -203,7 +183,7 @@ coherence.test <- coherence.test.ht %>%
     bind_cols(unclass(x))
   }) %>% 
   bind_rows() %>% 
-  bind_cols(coherence.test.ht %>%
+  bind_cols(coherence.test %>%
               summarise(mean_coherence_emp = mean(coherence_emp),
                         mean_coherence_sim = mean(coherence_sim),
                         coherence_diff = mean(diff),
@@ -213,7 +193,7 @@ coherence.test <- coherence.test.ht %>%
 
 ```{r}
 #'plot and see
-coherence.test.ht %>% 
+coherence.test %>% 
   filter(abs(coherence_diff) < 1) %>% 
   ggplot()+
   geom_tile(aes(x = focal, y = nonfocal, fill = mean_coherence_emp), col = "transparent", lwd = 0.2)+
@@ -224,7 +204,7 @@ coherence.test.ht %>%
 
 ```{r}
 #'plot coherence by time
-b <- na.omit(coherence.scores.ht, "coherence_emp")
+b <- na.omit(coherence.scores, "coherence_emp")
 
 ggplot(b)+
   stat_density(aes(x = coherence_emp, y = ..count..), geom = "line")+

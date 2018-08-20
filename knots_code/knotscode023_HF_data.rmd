@@ -110,7 +110,7 @@ data.tide <- data.prep %>%
   })
 
 #'save this data
-#save(data.tide, file = "knots_data/knots01_tide_minute_matched.rdata")
+save(data.tide, file = "knots_data/knots01_tide_minute_matched.rdata")
 ```
 
 ```{r}
