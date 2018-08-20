@@ -213,17 +213,38 @@ coherence.test <- coherence.test %>%
 ```
 
 ```{r}
-#'plot and see
+cairo_ps(filename = "figure_coherence_test.eps", width = 200/25.4, height = 200/25.4)
+
+#'plot
 coherence.test %>% 
   #filter(abs(coherence_diff) < 1) %>% 
   ggplot()+
   geom_tile(aes(x = focal, y = nonfocal, fill = mean_coherence_emp*1e2, alpha = p.value<=0.05), col = "white", lwd = 0.2)+
-  scale_fill_viridis_c()+
+  scale_fill_viridis_c(option = "plasma")+
   #scale_alpha_continuous()+
   scale_alpha_manual(values = c(0.4,1), guide = F)+
   #scale_shape_manual(values = c("", "*"), guide = F)+
     theme_bw()+
   coord_flip()+
-  theme(legend.position = "top",panel.border = element_blank(), axis.ticks.length = unit(2,"mm"), axis.text.x = element_text(angle = 30))+
+  theme(legend.position = "top",panel.border = element_blank(), axis.ticks.length = unit(2,"mm"), axis.text.x = element_text(angle = 30), axis.title = element_text(size = 20), legend.title = element_text(size = 20))+
   labs(list(x = "Knot id",y ="Knot id", fill = "Coherence %"))
+
+dev.off()
 ```
+
+```{r}
+cairo_ps(filename = "coherence_distribution.eps", width = 200/25.4, height = 200/25.4, fallback_resolution = 600)
+
+coherence.test %>% 
+  melt(measure.vars = c("mean_coherence_emp","mean_coherence_sim")) %>% 
+  ggplot()+
+  geom_density(aes(x = value*1e2, fill = variable), alpha = 0.8)+
+  coord_cartesian(xlim =c(0,40), expand = F)+
+  theme_pub()+
+  scale_fill_economist(labels = c("Empirical","Simulated"))+
+  theme(legend.position ="top", axis.title = element_text(size = 20), legend.title = element_text(size = 20), legend.text = element_text(size = 15), axis.text = element_text(size = 12))+
+  labs(list(x = "Coherence %", y = "Density", fill = "Coherence"))
+
+dev.off()
+```
+
