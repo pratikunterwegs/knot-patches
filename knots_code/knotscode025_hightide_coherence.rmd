@@ -21,7 +21,7 @@ data <- data %>%
  #          lt = cumsum(tide == "L")+1) %>% 
  #     filter(tide != "L")
  #}) %>% unclass() %>% bind_rows() %>% 
-  dlply(c("ht","hour"))
+  dlply(c("ht"))
 
 #'remove tides with < 3 birds
 data <- data[unlist(lapply(data, function(x) length(unique(x$id[!is.na(x$id)])))) > 2]
@@ -53,7 +53,6 @@ for(i in 1:length(focals)){
       mutate(focal = unique(focals[[i]]$id), 
              nonfocal = unique(nonfocals[[j]]$id), 
              ht = unique(focals[[i]]$ht),
-             ht.hr = unique(focals[[i]]$ht.hr),
              pos_focal = sum(focals[[i]]$X < 9e9), 
              pos_nonfocal = sum(nonfocals[[j]]$X < 9e9))
     proximity <- rbind(proximity, interactions)
@@ -63,11 +62,19 @@ for(i in 1:length(focals)){
 ```
 
 ```{r}
+#'which pairs are proximate (<= 100m) for 0.25 or more of positions, at <= 3 hours after high tide
+#'what proportion of pairwise positions are under 100m between 0 and 3 hours after high tide, and which pairs have a proportion of 0.25 or more?
+
+proximate.pairs <- filter(proximity, focal < nonfocal, as.numeric(ht.hr) <=5, pos_focal > 10, pos_nonfocal > 10) %>% group_by(focal, nonfocal) %>% summarise(prop.proximity = mean(distances/pos_focal)) %>% filter(prop.proximity >= 0.25) %>% ungroup() %>% mutate(pair = 1:nrow(.))
+```
+
+
+```{r}
 #'calculate coherence scores for under 100m
 proximity100 <- proximity %>%
-  dlply(c("ht","hour")) %>% 
+  dlply(c("ht")) %>% 
   map(function(x){
-    x %>% group_by(focal, nonfocal, ht, ht.hr) %>% 
+    x %>% group_by(focal, nonfocal, ht) %>% 
   summarise(pos_focal = first(pos_focal),
             pos_nonfocal = first(pos_nonfocal),
     interactions = sum(distances),
@@ -83,7 +90,7 @@ cij <- group_by(cij, focal, nonfocal) %>%
   mutate(n = length(interactions)) %>% 
   filter(n > 2) %>% 
   mutate(cn1 = c(NA, coherence_emp[2:length(coherence_emp)]),
-         hour = as.numeric(ht.hr)) %>% 
+         hour = as.numeric(hour)) %>% 
   left_join(data.summary, by = c("focal" = "id","ht","hour"))
 
 #'only consider rows with 10+ positions focal and nonfocal
@@ -103,10 +110,10 @@ cairo_ps(filename = "figure_coherence_hour.eps", width = 200/25.4, height = 200/
 cij %>% 
   ggplot()+
   geom_jitter(aes(x = hour, y = coherence_emp), col = "grey80", shape = 1)+
-  geom_smooth(aes(x = hour, y = coherence_emp*3), fill = cola1)+
+  geom_smooth(aes(x = hour, y = coherence_emp*3), fill = cola1, size = 2)+
   scale_y_continuous(sec.axis = sec_axis(~.*(1/3), name = "Mean pairwise coherence"))+
   scale_x_continuous(breaks = c(0,7,13), labels = c("High tide","Low tide","High tide"))+
-  scale_colour_viridis_d(guide = F)+
+  #scale_colour_viridis_d(guide = F)+
   labs(list(x = "Hours post high tide", y = "Pairwise coherence"))+
   theme_pub()+
   theme(axis.text = element_text(size = 16), axis.title = element_text(size = 20))
@@ -116,40 +123,59 @@ dev.off()
 
 
 ```{r}
+#'model for coherence consistency
 library(glmmTMB)
 cij$pair = as.factor(cij$pair)
 #'run zero inflated glmm for coherence consistency
-mod.coherence.consistency = glmmTMB(coherence_emp ~ cn1 + sqrt(hour) + log(dist.mismatch) + (1|ht), data = cij, family = binomial, ziformula = ~1)
+mod.coherence.consistency = glmmTMB(coherence_emp ~ cn1 + sqrt(hour) + (1|pair) + (1|ht), data = cij, family = binomial, ziformula = ~1)
 ```
+
+```{r}
+#'coherence consistency in close pairs
+cij.prox <- inner_join(cij %>% select(-pair), proximate.pairs)
+
+mod.c.cons.prox = glmmTMB(coherence_emp ~ cn1 + log(dist.mismatch) + sqrt(hour) + (1|ht), data = cij, family = binomial, ziformula = ~coherence_emp)
+```
+
+```{r}
+#'advancing - receding coherence
+cij.state <- filter(cij, !hour %between% c(4:8)) %>% mutate(state = ifelse(hour < 4, "receding","advancing")) %>% group_by(pair, state, ht) %>% summarise(c = mean(coherence_emp)) %>% spread(state, c)
+
+#'handle factors
+cij.state <- cij.state %>% filter(!is.na(advancing), !is.na(receding)) %>% 
+  left_join(cij %>% group_by(pair, ht) %>% summarise(dist.m = sum(dist.mismatch), speed.m = mean(speed.mismatch, na.rm = T)))
+
+mod.c.cons.state <- glmmTMB(advancing ~ receding * log(speed.m) + (1|pair)+(1|ht), data = cij.state, family = binomial, ziformula = ~1)
+```
+
 
 ```{r rand_cohere_matriz}
 #'get the tide wise coherence arrays for randomisation
 coherence <- proximity100 %>% 
   bind_rows() %>% 
-  group_by(focal, nonfocal, hour) %>% 
+  group_by(focal, nonfocal,ht) %>% 
   summarise(coherence_emp = mean(coherence_emp, na.rm = T)) %>% 
   spread(nonfocal, coherence_emp, drop = F) %>% 
-  dlply(c("hour")) %>%
+  dlply(c("ht")) %>%
   map(function(x) {
-    x %>% 
-      select(-focal,-hour) %>% as.matrix()})
+    x %>% select(-focal,-ht) %>% as.matrix()})
 
 #'get a 100 simulation mean array for each tide
 for(i in 1:length(coherence)){
   rand.holder = array(dim = c(34,34,100))
   a <- coherence[[i]]
   for(j in 1:1e2){
-    rand.holder[,,j] <- a[sample.int(nrow(a)), sample.int(ncol(a))]
+    rand.holder[,,j] <- a[sample.int(nrow(a)),sample.int(ncol(a))]
   }
   coherence[[i]] <- apply(rand.holder, c(1,2), function(x) mean(x, na.rm = T)) %>% 
     as.data.frame() %>% mutate(focal = colnames(a), ht = names(coherence)[i])
-  colnames(coherence[[i]]) <- c(colnames(a), "focal", "hour")
+  colnames(coherence[[i]]) <- c(colnames(a), "focal", "ht")
 }
 
 #'gather
 coherence.sim <- coherence %>% 
   map(function(x){
-    x %>% gather(nonfocal, coherence_sim, -focal,-hour) %>% mutate(hour = as.numeric(hour))
+    x %>% gather(nonfocal, coherence_sim, -focal,-ht)
   }) %>% bind_rows()
 ```
 
@@ -157,7 +183,7 @@ coherence.sim <- coherence %>%
 #'bind emp and sim scores
 coherence.scores <- proximity100 %>% 
   bind_rows() %>% 
-  group_by(focal, nonfocal, hour) %>% 
+  group_by(focal, nonfocal, ht) %>% 
   summarise(coherence_emp = mean(coherence_emp, na.rm = T)) %>% 
   ungroup() %>% 
   mutate(focal = as.character(focal),
@@ -165,17 +191,13 @@ coherence.scores <- proximity100 %>%
   left_join(coherence.sim)
 
 #'retain only unique pairs
-coherence.scores <- coherence.scores %>% left_join(pairs) %>% filter(!is.na(pair))
+coherence.scores <- coherence.scores %>% filter(focal < nonfocal)
 ```
 
 ```{r}
 #'run the KS test
-coherence.test <- coherence.scores %>% 
-  group_by(focal, nonfocal) %>% mutate(n = length(!is.na(coherence_emp)), n1 = length(!is.na(coherence_sim))) %>% 
-  filter(n >= 10, n1 >= 10)# %>%
-
 coherence.test <- coherence.test %>% 
-  dlply(c("focal","nonfocal","hour")) %>% 
+  dlply(c("focal","nonfocal")) %>% 
   map(function(x){
     ks.test(x = x$coherence_emp, y = x$coherence_sim, exact = F)
   }) %>% 
@@ -186,29 +208,22 @@ coherence.test <- coherence.test %>%
   bind_cols(coherence.test %>%
               summarise(mean_coherence_emp = mean(coherence_emp),
                         mean_coherence_sim = mean(coherence_sim),
-                        coherence_diff = mean(diff),
-                        hour)) %>% 
+                        coherence_diff = mean(diff))) %>% 
   select(-data.name,-alternative,-method)
 ```
 
 ```{r}
 #'plot and see
 coherence.test %>% 
-  filter(abs(coherence_diff) < 1) %>% 
+  #filter(abs(coherence_diff) < 1) %>% 
   ggplot()+
-  geom_tile(aes(x = focal, y = nonfocal, fill = mean_coherence_emp), col = "transparent", lwd = 0.2)+
-  #scale_fill_gradient2(low = "red", mid = "white", high = "blue")+
-  #scale_alpha_manual(values = c(0.1,1), guide = F)+
-  scale_shape_manual(values = c("", "*"), guide = F)
+  geom_tile(aes(x = focal, y = nonfocal, fill = mean_coherence_emp*1e2, alpha = p.value<=0.05), col = "white", lwd = 0.2)+
+  scale_fill_viridis_c()+
+  #scale_alpha_continuous()+
+  scale_alpha_manual(values = c(0.4,1), guide = F)+
+  #scale_shape_manual(values = c("", "*"), guide = F)+
+    theme_bw()+
+  coord_flip()+
+  theme(legend.position = "top",panel.border = element_blank(), axis.ticks.length = unit(2,"mm"), axis.text.x = element_text(angle = 30))+
+  labs(list(x = "Knot id",y ="Knot id", fill = "Coherence %"))
 ```
-
-```{r}
-#'plot coherence by time
-b <- na.omit(coherence.scores, "coherence_emp")
-
-ggplot(b)+
-  stat_density(aes(x = coherence_emp, y = ..count..), geom = "line")+
-  facet_wrap(~ht.hr, ncol = 4)+
-  scale_x_log10()
-```
-
