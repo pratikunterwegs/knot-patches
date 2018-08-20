@@ -238,11 +238,12 @@ cairo_ps(filename = "coherence_distribution.eps", width = 200/25.4, height = 200
 coherence.test %>% 
   melt(measure.vars = c("mean_coherence_emp","mean_coherence_sim")) %>% 
   ggplot()+
-  geom_density(aes(x = value*1e2, fill = variable), alpha = 0.8)+
-  coord_cartesian(xlim =c(0,40), expand = F)+
+  geom_histogram(aes(x = value*1e2, fill = rev(variable)), alpha = 0.8, bins = 30, position = "identity")+
+  coord_cartesian(xlim =c(0,30), expand = F)+
   theme_pub()+
-  scale_fill_economist(labels = c("Empirical","Simulated"))+
+  scale_fill_economist(labels = c("Simulated","Empirical"))+
   theme(legend.position ="top", axis.title = element_text(size = 20), legend.title = element_text(size = 20), legend.text = element_text(size = 15), axis.text = element_text(size = 12))+
+  #facet_wrap(~variable)
   labs(list(x = "Coherence %", y = "Density", fill = "Coherence"))
 
 dev.off()
