@@ -259,7 +259,7 @@ coherence.test %>% mutate(cdiff = mean_coherence_emp - mean_coherence_sim) %>% f
   
   ggplot()+
   geom_tile(aes(x = friends, y = p, fill = prop))+
-  geom_text(aes(x = friends, y = p, label = paste(round(prop*100), "%")), col = c(1,1,1,"white"), size = 12)+
+  geom_text(aes(x = friends, y = p, label = paste(round_any(prop*100,0.1), "%")), col = c(1,1,1,"white"), size = 12)+
   scale_fill_viridis(option = "plasma", guide = F)+
   theme_bw()+theme(legend.position ="top", axis.title = element_text(size = 20), legend.title = element_text(size = 20), legend.text = element_text(size = 10, angle = 30), axis.text = element_text(size = 12))+
   labs(list(x = "Coherence", y = "P-value ≤ 0.05"))
