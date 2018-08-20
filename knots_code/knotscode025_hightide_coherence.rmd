@@ -145,7 +145,25 @@ cij.state <- filter(cij, !hour %between% c(4:8)) %>% mutate(state = ifelse(hour 
 cij.state <- cij.state %>% filter(!is.na(advancing), !is.na(receding)) %>% 
   left_join(cij %>% group_by(pair, ht) %>% summarise(dist.m = sum(dist.mismatch), speed.m = mean(speed.mismatch, na.rm = T)))
 
-mod.c.cons.state <- glmmTMB(advancing ~ receding * log(speed.m) + (1|pair)+(1|ht), data = cij.state, family = binomial, ziformula = ~1)
+mod.c.cons.state <- glmmTMB(advancing ~ receding * log(dist.m) + (1|pair)+(1|ht), data = cij.state, family = binomial, ziformula = ~1)
+
+mccs <- visreg(mod.c.cons.state, xvar = "dist.m",scale = "response", plot = F)$fit
+```
+
+```{r}
+#'plot cij ~ distm
+cairo_ps(filename = "figure_coherence_friendsfound.eps", width = 200/25.4, height = 200/25.4)
+
+
+ggplot()+
+  geom_ribbon(data = mccs, aes(x = dist.m, ymin = visregLwr*1e2, ymax = visregUpr*1e2), fill = cola1, alpha = 0.4)+
+  geom_line(data = mccs, aes(x = dist.m, y = visregFit*1e2), col = cola2, size = 2)+
+  geom_text(aes(x = 4e3,y=60, label = "GLMM \n z-statistic = -3.85 \n P-value < 0.001"), size = 10, vjust = "inward")+
+  theme_pub()+
+  theme(axis.text = element_text(size = 16), axis.title = element_text(size = 20))+
+  labs(list(x = "Pairwise distance mismatch (m)", y = "Predicted pairwise coherence (%)"))
+
+dev.off()
 ```
 
 
