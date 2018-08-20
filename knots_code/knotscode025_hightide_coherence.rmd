@@ -249,3 +249,21 @@ coherence.test %>%
 dev.off()
 ```
 
+```{r}
+cairo_ps(filename = "coherence_test_prop.eps", width = 200/25.4, height = 200/25.4, fallback_resolution = 600)
+
+#'get plot of coherence positive or negative
+coherence.test %>% mutate(cdiff = mean_coherence_emp - mean_coherence_sim) %>% filter(!is.na(cdiff)) %>% 
+  count(p = p.value <= 0.05, friends = cdiff >0) %>% 
+  mutate(prop = n/sum(n)) %>% 
+  
+  ggplot()+
+  geom_tile(aes(x = friends, y = p, fill = prop))+
+  geom_text(aes(x = friends, y = p, label = paste(round(prop*100), "%")), col = c(1,1,1,"white"), size = 12)+
+  scale_fill_viridis(option = "plasma", guide = F)+
+  theme_bw()+theme(legend.position ="top", axis.title = element_text(size = 20), legend.title = element_text(size = 20), legend.text = element_text(size = 10, angle = 30), axis.text = element_text(size = 12))+
+  labs(list(x = "Coherence", y = "P-value ≤ 0.05"))
+
+dev.off()
+```
+
