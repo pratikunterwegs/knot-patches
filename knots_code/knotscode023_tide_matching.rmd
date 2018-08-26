@@ -19,7 +19,7 @@ for(i in 1:length(k1.data)){
 }
 
 #'filter one month
-k1.data <- k1.data %>% rbind_list() %>% filter(ts < "2017-09-23", NBS > 3)
+k1.data <- k1.data %>% rbind_list() %>% filter(ts < "2017-09-23")
 
 #'get 1 minute means
 k1 <- k1.data %>% mutate(time_round = round_date(ts, "minute")) %>% 
@@ -34,10 +34,21 @@ k1.tide <- k1 %>% dlply("id") %>%
   }) %>% bind_rows() %>% dlply(c("id","ht"))
 ```
 
-```{r}
+```{r median_filter}
 #'get distances and remove unrealistic distances
-k1.tide <- k1.tide[unlist(lapply(k1.tide, function(x) sum(!is.na(x$X)))) > 3]
+k1.tide <- k1.tide[unlist(lapply(k1.tide, function(x) sum(!is.na(x$X)))) > 0.3*12*60]
 
+#'apply a 5-point median filter
+k1.tide <- map(k1.tide, function(x){
+  filter(x, abs(COVXY) < 1e3) %>% 
+  mutate(X = runmed(X, 5), Y = runmed(Y, 5))
+})
+
+#'remove low data tides
+k1.tide <- k1.tide[unlist(lapply(k1.tide, function(x) sum(!is.na(x$X)))) > 0.3*12*60]
+```
+
+```{r distances_hist}
 for(i in 1:length(k1.tide)){
   a <- k1.tide[[i]]
   a$distance <- c(NA, spDists(x = a[,c("X","Y")], segments = T))
@@ -61,10 +72,12 @@ k1.tide <- k1.tide[unlist(lapply(k1.tide, nrow)) > 3]
 #'this looks great! but not worth a PSKF right now.
 #'save for use with the HF proximity code
 k1.tide <- bind_rows(unclass(k1.tide)) %>% dlply(c("id","ht"))
-save(k1.tide, file = "knots_data/knots01_short_segs.rdata")
+
+#'note. knots01_short_segs has been saved as the same df, delete it
+save(k1.tide, file = "knots_data/knots01_median_filter.rdata")
 ```
 
-# Proximity analysis here
+# Tide matching here
 
 ```{r prep_for_segments}
 #'prep data, remove point with fpt less than 10 mins
@@ -79,7 +92,7 @@ data.prep <- k1.tide %>%
   })
 
 #'remove tracks with less than 60 positions remaining , ie, data.prep with less than 60 positions
-data.prep = data.prep[unlist(map(data.prep, nrow))>= 60]
+#data.prep = data.prep[unlist(map(data.prep, nrow))>= 60]
 ```
 
 ```{r}

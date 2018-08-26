@@ -1,0 +1,87 @@
+# Cohrence within the tidal interval
+
+```{r what_explains_coherence}
+#'get coherence n-1, remove pairs with less than 3 tides of presence
+cij <- group_by(cij, focal, nonfocal) %>% 
+  mutate(n = length(interactions)) %>% 
+  filter(n > 2) %>% 
+  mutate(cn1 = c(NA, coherence_emp[2:length(coherence_emp)]),
+         hour = as.numeric(hour)) %>% 
+  left_join(data.summary, by = c("focal" = "id","ht","hour"))
+
+#'only consider rows with 10+ positions focal and nonfocal
+#cij <- filter(cij, pos_focal >= 10, pos_nonfocal >= 10)
+```
+
+```{r pairs_per_time_plot}
+pairs_per_tide <- ungroup(proximity) %>% distinct(ht,pair) %>% count(ht)
+
+cairo_ps(filename = "figure_pairs_per_time.eps", width = 200/25.4, height = 200/25.4)
+
+ggplot()+
+  #geom_path(data = pairs_per_time,aes(x = time, y = nn, col = "Pairs per hour"), size = 1)+
+  geom_path(data = pairs_per_tide, aes(x = as.numeric(ht), y = n, col = "Pairs per tidal interval"), size = 2)+
+  #scale_y_continuous(sec.axis = sec_axis(~.*(1/561)*100, name = "% potential pairs"))+
+  xlim(3,NA)+
+  theme_poster()+
+  labs(list(colour = NULL, x = "tidal interval", y = "# pairs"))+
+  scale_color_solarized(accent = "yellow")
+
+dev.off()
+```
+
+```{r}
+cairo_ps(filename = "figure_coherence_hour.eps", width = 200/25.4, height = 200/25.4)
+
+cij %>% 
+  ggplot()+
+  geom_jitter(aes(x = hour, y = coherence_emp*1e2), col = "grey80", shape = 1)+
+  geom_smooth(aes(x = hour, y = coherence_emp*3*1e2), fill = cola1, size = 2)+
+  scale_y_continuous(sec.axis = sec_axis(~.*(1/3), name = "Mean pairwise coherence"))+
+  scale_x_continuous(breaks = c(0:13), labels = c("High tide",NULL,"",3,4,5,6,"", "Low tide","",9,10,11,"", "High tide"))+
+  #scale_colour_viridis_d(guide = F)+
+  labs(list(x = "Hours post high tide", y = "Pairwise coherence"))+
+  theme_pub()+
+  theme(axis.text = element_text(size = 16), axis.title = element_text(size = 20))
+
+dev.off()
+```
+
+
+```{r}
+#'model for coherence consistency
+library(glmmTMB)
+cij$pair = as.factor(cij$pair)
+#'run zero inflated glmm for coherence consistency
+mod.coherence.consistency = glmmTMB(coherence_emp ~ cn1 + sqrt(hour) + (1|pair) + (1|ht), data = cij, family = binomial, ziformula = ~1)
+```
+
+```{r}
+#'advancing - receding coherence
+cij.state <- filter(cij, !hour %between% c(4:8)) %>% mutate(state = ifelse(hour < 4, "receding","advancing")) %>% group_by(pair, state, ht) %>% summarise(c = mean(coherence_emp)) %>% spread(state, c)
+
+#'handle factors
+cij.state <- cij.state %>% filter(!is.na(advancing), !is.na(receding)) %>% 
+  left_join(cij %>% group_by(pair, ht) %>% summarise(dist.m = sum(dist.mismatch), speed.m = mean(speed.mismatch, na.rm = T)))
+
+mod.c.cons.state <- glmmTMB(advancing ~ receding * log(dist.m) + (1|pair)+(1|ht), data = cij.state, family = binomial, ziformula = ~1)
+
+mccs <- visreg(mod.c.cons.state, xvar = "dist.m",scale = "response", plot = F)$fit
+```
+
+```{r}
+#'plot cij ~ distm
+cairo_ps(filename = "figure_coherence_friendsfound.eps", width = 200/25.4, height = 200/25.4)
+
+
+ggplot()+
+  geom_point(data = cij.state, aes(x = dist.m, y = advancing*1e2), col = "grey70", shape = 1)+
+  geom_ribbon(data = mccs, aes(x = dist.m, ymin = visregLwr*1e2, ymax = visregUpr*1e2), fill = cola1, alpha = 0.4)+
+  geom_line(data = mccs, aes(x = dist.m, y = visregFit*1e2), col = cola2, size = 2)+
+  geom_text(aes(x = 3.9e3,y=100, label = "GLMM \n z-statistic = -3.85 \n P-value < 0.001"), size = 8, vjust = "inward", hjust = "outward")+
+  theme_pub()+
+  theme(axis.text = element_text(size = 16), axis.title = element_text(size = 20))+
+  labs(list(x = "Pairwise distance mismatch (m)", y = "Predicted pairwise coherence (%)"))
+
+dev.off()
+```

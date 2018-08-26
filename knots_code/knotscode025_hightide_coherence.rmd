@@ -7,11 +7,11 @@ editor_options:
 source("libs.R");library(sp)
 load("knots_data/kntoscode023_tidematched_data.rdata")
 library(stringi)
-#'get ht data
+#'get ht data, get the FLOORed hour, not the rounded
 data <- unclass(data.tide) %>% 
   bind_rows() %>% 
   #anti_join(unclass(data.lt) %>% bind_rows()) %>% 
-  mutate(hour = stri_pad(round_any(ht.time/3600, 1), width = 2, pad = "0"),
+  mutate(hour = stri_pad(floor(ht.time/3600), width = 2, pad = "0"),
          ht = stri_pad(ht, width = 2, pad = "0"))
 
 #'assign a tidal interval
@@ -23,8 +23,8 @@ data <- data %>%
  #}) %>% unclass() %>% bind_rows() %>% 
   dlply(c("ht"))
 
-#'remove tides with < 3 birds
-data <- data[unlist(lapply(data, function(x) length(unique(x$id[!is.na(x$id)])))) > 2]
+#'remove tides with < 5 birds
+data <- data[unlist(lapply(data, function(x) length(unique(x$id[!is.na(x$id)])))) >= 5]
 ```
 
 ```{r}
@@ -48,7 +48,7 @@ for(i in 1:length(focals)){
     #'set all distances greater than 9e6 = 0, and all rows where focal pos and all cols where nonfocal pos are > 9e6
     distances[focals[[i]]$X > 9e6 | nonfocals[[j]]$Y > 9e6] <- NA
     #distances <- diag(distances)
-    interactions <- data_frame(distances = sum(distances <= 100, na.rm = T)) %>%
+    interactions <- data_frame(distances = sum(distances <= 250, na.rm = T)) %>%
       #count(class) %>% 
       mutate(focal = unique(focals[[i]]$id), 
              nonfocal = unique(nonfocals[[j]]$id), 
@@ -62,16 +62,8 @@ for(i in 1:length(focals)){
 ```
 
 ```{r}
-#'which pairs are proximate (<= 100m) for 0.25 or more of positions, at <= 3 hours after high tide
-#'what proportion of pairwise positions are under 100m between 0 and 3 hours after high tide, and which pairs have a proportion of 0.25 or more?
-
-proximate.pairs <- filter(proximity, focal < nonfocal, as.numeric(ht.hr) <=5, pos_focal > 10, pos_nonfocal > 10) %>% group_by(focal, nonfocal) %>% summarise(prop.proximity = mean(distances/pos_focal)) %>% filter(prop.proximity >= 0.25) %>% ungroup() %>% mutate(pair = 1:nrow(.))
-```
-
-
-```{r}
-#'calculate coherence scores for under 100m
-proximity100 <- proximity %>%
+#'calculate coherence scores for under 250m
+proximity <- proximity %>%
   dlply(c("ht")) %>% 
   map(function(x){
     x %>% group_by(focal, nonfocal, ht) %>% 
@@ -81,96 +73,19 @@ proximity100 <- proximity %>%
             coherence_emp = case_when(
     pos_focal == 0 & pos_nonfocal == 0 ~ as.double(NA),
     T ~ interactions/(first(pos_focal))))
-})
+}) %>% 
+  bind_rows()
+
+#'get all possible pairs
+pairs <- expand(ungroup(bind_rows(proximity)), focal, nonfocal) %>% mutate(pair = 1:nrow(.))
+
+#'assign pairs, do not remove non-unique pairs, ie, keep both a-b and b-a FOR NOW to construct the simulated coherence matrices
+proximity <- left_join(proximity, pairs)
 ```
-
-```{r what_explains_coherence}
-#'get coherence n-1, remove pairs with less than 3 tides of presence
-cij <- group_by(cij, focal, nonfocal) %>% 
-  mutate(n = length(interactions)) %>% 
-  filter(n > 2) %>% 
-  mutate(cn1 = c(NA, coherence_emp[2:length(coherence_emp)]),
-         hour = as.numeric(hour)) %>% 
-  left_join(data.summary, by = c("focal" = "id","ht","hour"))
-
-#'only consider rows with 10+ positions focal and nonfocal
-cij <- filter(cij, pos_focal >= 10, pos_nonfocal >= 10)
-```
-
-```{r}
-#'get unique pairs
-pairs <- expand(ungroup(cij), focal, nonfocal) %>% filter(focal < nonfocal) %>% ungroup() %>% mutate(pair = 1:nrow(.))
-
-cij <- left_join(cij, pairs) %>% filter(!is.na(pair))
-```
-
-```{r}
-cairo_ps(filename = "figure_coherence_hour.eps", width = 200/25.4, height = 200/25.4)
-
-cij %>% 
-  ggplot()+
-  geom_jitter(aes(x = hour, y = coherence_emp*1e2), col = "grey80", shape = 1)+
-  geom_smooth(aes(x = hour, y = coherence_emp*3*1e2), fill = cola1, size = 2)+
-  scale_y_continuous(sec.axis = sec_axis(~.*(1/3), name = "Mean pairwise coherence"))+
-  scale_x_continuous(breaks = c(0:13), labels = c("High tide",NULL,"",3,4,5,6,"", "Low tide","",9,10,11,"", "High tide"))+
-  #scale_colour_viridis_d(guide = F)+
-  labs(list(x = "Hours post high tide", y = "Pairwise coherence"))+
-  theme_pub()+
-  theme(axis.text = element_text(size = 16), axis.title = element_text(size = 20))
-
-dev.off()
-```
-
-
-```{r}
-#'model for coherence consistency
-library(glmmTMB)
-cij$pair = as.factor(cij$pair)
-#'run zero inflated glmm for coherence consistency
-mod.coherence.consistency = glmmTMB(coherence_emp ~ cn1 + sqrt(hour) + (1|pair) + (1|ht), data = cij, family = binomial, ziformula = ~1)
-```
-
-```{r}
-#'coherence consistency in close pairs
-cij.prox <- inner_join(cij %>% select(-pair), proximate.pairs)
-
-mod.c.cons.prox = glmmTMB(coherence_emp ~ cn1 + log(dist.mismatch) + sqrt(hour) + (1|ht), data = cij, family = binomial, ziformula = ~coherence_emp)
-```
-
-```{r}
-#'advancing - receding coherence
-cij.state <- filter(cij, !hour %between% c(4:8)) %>% mutate(state = ifelse(hour < 4, "receding","advancing")) %>% group_by(pair, state, ht) %>% summarise(c = mean(coherence_emp)) %>% spread(state, c)
-
-#'handle factors
-cij.state <- cij.state %>% filter(!is.na(advancing), !is.na(receding)) %>% 
-  left_join(cij %>% group_by(pair, ht) %>% summarise(dist.m = sum(dist.mismatch), speed.m = mean(speed.mismatch, na.rm = T)))
-
-mod.c.cons.state <- glmmTMB(advancing ~ receding * log(dist.m) + (1|pair)+(1|ht), data = cij.state, family = binomial, ziformula = ~1)
-
-mccs <- visreg(mod.c.cons.state, xvar = "dist.m",scale = "response", plot = F)$fit
-```
-
-```{r}
-#'plot cij ~ distm
-cairo_ps(filename = "figure_coherence_friendsfound.eps", width = 200/25.4, height = 200/25.4)
-
-
-ggplot()+
-  geom_point(data = cij.state, aes(x = dist.m, y = advancing*1e2), col = "grey70", shape = 1)+
-  geom_ribbon(data = mccs, aes(x = dist.m, ymin = visregLwr*1e2, ymax = visregUpr*1e2), fill = cola1, alpha = 0.4)+
-  geom_line(data = mccs, aes(x = dist.m, y = visregFit*1e2), col = cola2, size = 2)+
-  geom_text(aes(x = 3.9e3,y=100, label = "GLMM \n z-statistic = -3.85 \n P-value < 0.001"), size = 8, vjust = "inward", hjust = "outward")+
-  theme_pub()+
-  theme(axis.text = element_text(size = 16), axis.title = element_text(size = 20))+
-  labs(list(x = "Pairwise distance mismatch (m)", y = "Predicted pairwise coherence (%)"))
-
-dev.off()
-```
-
 
 ```{r rand_cohere_matriz}
 #'get the tide wise coherence arrays for randomisation
-coherence <- proximity100 %>% 
+coherence <- proximity %>% 
   bind_rows() %>% 
   group_by(focal, nonfocal,ht) %>% 
   summarise(coherence_emp = mean(coherence_emp, na.rm = T)) %>% 
@@ -181,7 +96,7 @@ coherence <- proximity100 %>%
 
 #'get a 100 simulation mean array for each tide
 for(i in 1:length(coherence)){
-  rand.holder = array(dim = c(34,34,100))
+  rand.holder = array(dim = c(35,35,100))
   a <- coherence[[i]]
   for(j in 1:1e2){
     rand.holder[,,j] <- a[sample.int(nrow(a)),sample.int(ncol(a))]
@@ -198,37 +113,55 @@ coherence.sim <- coherence %>%
   }) %>% bind_rows()
 ```
 
-```{r}
-#'bind emp and sim scores
-coherence.scores <- proximity100 %>% 
-  bind_rows() %>% 
-  group_by(focal, nonfocal, ht) %>% 
-  summarise(coherence_emp = mean(coherence_emp, na.rm = T)) %>% 
-  ungroup() %>% 
-  mutate(focal = as.character(focal),
-         nonfocal = as.character(nonfocal)) %>% 
-  left_join(coherence.sim)
+```{r run KS test}
+proximity_compare <- proximity %>% 
+  filter(focal < nonfocal) %>% 
+  dlply("pair")
 
-#'retain only unique pairs
-coherence.scores <- coherence.scores %>% filter(focal < nonfocal)
+proximity_compare <- proximity_compare[unlist(lapply(proximity_compare, nrow)) >=10]
+
+for(i in 1:length(proximity_compare)){
+  
+x <- proximity_compare[[i]]
+y <- proximity %>% anti_join(x) %>% .$coherence_emp
+  #'run the KS test
+ks.res <- bind_cols(unclass(ks.test(x = x$coherence_emp, y = y)))
+    
+#'get emp mean and sim mean
+x <- summarise(x, c_emp = mean(coherence_emp, na.rm = T),
+                 c_sim = mean(y, na.rm = T))
+proximity_compare[[i]] <- x %>% bind_cols(ks.res)
+}
+
+#'get tested pairs df
+pairs_test <- data_frame(pair = as.numeric(names(proximity_compare))) %>% left_join(pairs)
+
+#'bind the list rows
+pairs_test <- bind_rows(unclass(proximity_compare)) %>% 
+  #'bind the test data to the pairs data
+  bind_cols(pairs_test) %>% 
+  dplyr::select(statistic, p.value, pair, focal, nonfocal, c_emp, c_sim)
 ```
 
-```{r}
-#'run the KS test
-coherence.test <- coherence.test %>% 
-  dlply(c("focal","nonfocal")) %>% 
-  map(function(x){
-    ks.test(x = x$coherence_emp, y = x$coherence_sim, exact = F)
-  }) %>% 
-  map(function(x){
-    bind_cols(unclass(x))
-  }) %>% 
-  bind_rows() %>% 
-  bind_cols(coherence.test %>%
-              summarise(mean_coherence_emp = mean(coherence_emp),
-                        mean_coherence_sim = mean(coherence_sim),
-                        coherence_diff = mean(diff))) %>% 
-  select(-data.name,-alternative,-method)
+```{r coherence_test_plot}
+count(pairs_test, sig = p.value <= 0.05, friends = c_emp > c_sim)
+
+cairo_ps(filename = "figure_coherence_test.eps", width = 200/25.4, height = 200/25.4)
+
+#'visualise for poster
+ggplot(pairs_test)+
+  geom_tile(aes(x = focal, y = nonfocal, fill = c_emp, alpha = p.value <= 0.05), col = "white", size = 1)+
+  scale_fill_viridis(option = "plasma")+
+  scale_alpha_manual(values = c(0.3,1), guide = F)+
+  theme_poster()+
+  theme(axis.text = element_text(size = 8, angle = 40),
+        legend.text = element_text(size = 12, angle = 30),
+        axis.ticks = element_blank(),
+        panel.grid.major = element_line(colour = "grey90"),
+        legend.title = element_text(size = 14))+
+  labs(list(fill = "Pair-wise coherence"))
+
+dev.off()
 ```
 
 ```{r}
