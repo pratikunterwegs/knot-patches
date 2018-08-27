@@ -142,7 +142,7 @@ solcol = solarized_pal(accent = "blue")(9)
 ggplot()+
  # stat_density(data = proximity, aes(x = coherence_emp, col = as.factor(pair)), geom = "line", position = "identity")+ 
   theme_poster()+
-  stat_density(data = proximity, aes(x = coherence_emp), geom = "line", size = 2, col = solcol[2])+
+  stat_density(data = proximity, aes(x = coherence_emp), geom = "line", size = 2, col = solcol[1])+
   theme(legend.position = "none")+
   labs(list(x = "Pairwise coherence", y = "Density"))
 
