@@ -83,36 +83,6 @@ pairs <- expand(ungroup(bind_rows(proximity)), focal, nonfocal) %>% mutate(pair 
 proximity <- left_join(proximity, pairs)
 ```
 
-```{r rand_cohere_matriz}
-#'get the tide wise coherence arrays for randomisation
-coherence <- proximity %>% 
-  bind_rows() %>% 
-  group_by(focal, nonfocal,ht) %>% 
-  summarise(coherence_emp = mean(coherence_emp, na.rm = T)) %>% 
-  spread(nonfocal, coherence_emp, drop = F) %>% 
-  dlply(c("ht")) %>%
-  map(function(x) {
-    x %>% select(-focal,-ht) %>% as.matrix()})
-
-#'get a 100 simulation mean array for each tide
-for(i in 1:length(coherence)){
-  rand.holder = array(dim = c(35,35,100))
-  a <- coherence[[i]]
-  for(j in 1:1e2){
-    rand.holder[,,j] <- a[sample.int(nrow(a)),sample.int(ncol(a))]
-  }
-  coherence[[i]] <- apply(rand.holder, c(1,2), function(x) mean(x, na.rm = T)) %>% 
-    as.data.frame() %>% mutate(focal = colnames(a), ht = names(coherence)[i])
-  colnames(coherence[[i]]) <- c(colnames(a), "focal", "ht")
-}
-
-#'gather
-coherence.sim <- coherence %>% 
-  map(function(x){
-    x %>% gather(nonfocal, coherence_sim, -focal,-ht)
-  }) %>% bind_rows()
-```
-
 ```{r run KS test}
 proximity_compare <- proximity %>% 
   filter(focal < nonfocal) %>% 
@@ -150,9 +120,10 @@ cairo_ps(filename = "figure_coherence_test.eps", width = 200/25.4, height = 200/
 
 #'visualise for poster
 ggplot(pairs_test)+
+  geom_tile(aes(x = focal, y = nonfocal), fill = "white",col = "white", size = 1)+
   geom_tile(aes(x = focal, y = nonfocal, fill = c_emp, alpha = p.value <= 0.05), col = "white", size = 1)+
   scale_fill_viridis(option = "plasma")+
-  scale_alpha_manual(values = c(0.3,1), guide = F)+
+  scale_alpha_manual(values = c(0.1,1), guide = F)+
   theme_poster()+
   theme(axis.text = element_text(size = 8, angle = 40),
         legend.text = element_text(size = 12, angle = 30),
@@ -165,38 +136,15 @@ dev.off()
 ```
 
 ```{r}
-cairo_ps(filename = "figure_coherence_test.eps", width = 200/25.4, height = 200/25.4)
-
-#'plot
-coherence.test %>% 
-  #filter(abs(coherence_diff) < 1) %>% 
-  ggplot()+
-  geom_tile(aes(x = focal, y = nonfocal, fill = mean_coherence_emp*1e2, alpha = p.value<=0.05), col = "white", lwd = 0.2)+
-  scale_fill_viridis_c(option = "plasma")+
-  #scale_alpha_continuous()+
-  scale_alpha_manual(values = c(0.4,1), guide = F)+
-  #scale_shape_manual(values = c("", "*"), guide = F)+
-    theme_bw()+
-  coord_flip()+
-  theme(legend.position = "top",panel.border = element_blank(), axis.ticks.length = unit(2,"mm"), axis.text.x = element_text(angle = 30), axis.title = element_text(size = 20), legend.title = element_text(size = 20))+
-  labs(list(x = "Knot id",y ="Knot id", fill = "Coherence %"))
-
-dev.off()
-```
-
-```{r}
 cairo_ps(filename = "coherence_distribution.eps", width = 200/25.4, height = 200/25.4, fallback_resolution = 600)
+solcol = solarized_pal(accent = "blue")(9)
 
-coherence.test %>% 
-  melt(measure.vars = c("mean_coherence_emp","mean_coherence_sim")) %>% 
-  ggplot()+
-  geom_histogram(aes(x = value*1e2, fill = rev(variable)), alpha = 0.8, bins = 30, position = "identity")+
-  coord_cartesian(xlim =c(0,30), expand = F)+
-  theme_pub()+
-  scale_fill_economist(labels = c("Simulated","Empirical"))+
-  theme(legend.position ="top", axis.title = element_text(size = 20), legend.title = element_text(size = 20), legend.text = element_text(size = 15), axis.text = element_text(size = 12))+
-  #facet_wrap(~variable)
-  labs(list(x = "Coherence %", y = "Density", fill = "Coherence"))
+ggplot()+
+ # stat_density(data = proximity, aes(x = coherence_emp, col = as.factor(pair)), geom = "line", position = "identity")+ 
+  theme_poster()+
+  stat_density(data = proximity, aes(x = coherence_emp), geom = "line", size = 2, col = solcol[2])+
+  theme(legend.position = "none")+
+  labs(list(x = "Pairwise coherence", y = "Density"))
 
 dev.off()
 ```
@@ -205,16 +153,14 @@ dev.off()
 cairo_ps(filename = "coherence_test_prop.eps", width = 200/25.4, height = 200/25.4, fallback_resolution = 600)
 
 #'get plot of coherence positive or negative
-coherence.test %>% mutate(cdiff = mean_coherence_emp - mean_coherence_sim) %>% filter(!is.na(cdiff)) %>% 
-  count(p = p.value <= 0.05, friends = cdiff >0) %>% 
-  mutate(prop = n/sum(n)) %>% 
-  
+count(pairs_test, friends = c_emp > c_sim, sig = p.value <=0.05) %>% mutate(prop = n/(sum(n))) %>% 
   ggplot()+
-  geom_tile(aes(x = friends, y = p, fill = prop))+
-  geom_text(aes(x = friends, y = p, label = paste(round_any(prop*100,0.1), "%")), col = c(1,1,1,"white"), size = 12)+
-  scale_fill_viridis(option = "plasma", guide = F)+
-  theme_bw()+theme(legend.position ="top", axis.title = element_text(size = 20), legend.title = element_text(size = 20), legend.text = element_text(size = 10, angle = 30), axis.text = element_text(size = 12))+
-  labs(list(x = "Coherence", y = "P-value ≤ 0.05"))
+  geom_tile(aes(x = friends, y = sig, fill = prop), col = "white", size = 2)+
+  geom_text(aes(x = friends, y = sig, label = paste(round_any(prop*100,0.1), "%")), col = c(1,"white",1,"white"), size = 12)+
+  #scale_fill_viridis()+
+  theme_poster()+
+  theme(legend.position = "none")+
+  labs(list(x = "Pairwise coherence", y = "K-S test significance \n P-value ≤ 0.05"))
 
 dev.off()
 ```
