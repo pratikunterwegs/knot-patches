@@ -91,14 +91,19 @@ cairo_ps(filename = "figure_pairs_per_time.eps", width = 200/25.4, height = 200/
 
 ggplot()+
   geom_jitter(data = proximity_compare,
-              aes(x = hour, y = c_emp),
-              col = "grey80", shape = 1)+
-  geom_smooth(data = proximity_compare,
-              aes(x = hour, y = c_emp, colour = "Mean pairwise coherence"),
+              aes(x = hour, y = c_emp,
+                  fill = as.numeric(ht)), shape = 21,
+              col = "transparent")+
+  geom_smooth(data = proximity_compare %>% 
+                group_by(focal,hour) %>% 
+                summarise(c_emp = mean(head(sort(c_emp, decreasing = T), n = 5))),
+              aes(x = hour, y = c_emp,
+                  colour = "Mean 5 highest coherences"),
               size = 2)+
-  scale_colour_manual(values = solcol[1])+
+  scale_colour_manual(values = cola)+
+  scale_fill_viridis(option = "plasma", guide = F)+
   theme_poster()+
-  xlim(0,11.5)+
+  xlim(-0.5,11.5)+
   labs(list(x = "Hours after high tide", y = "Pairwise coherence", colour = NULL))
 
 dev.off()

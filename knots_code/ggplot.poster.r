@@ -28,6 +28,7 @@ theme_poster <- function(base_size=10) {
           #  legend.key.size= unit(0.2, "cm"),
           #  legend.margin = unit(0, "cm"),
            legend.text = element_text(size = 14),
+           legend.title = element_text(size = 14),
            plot.margin=unit(c(5,5,5,5),"mm"),
             strip.background=element_blank(),
             #element_rect(colour="#f0f0f0",fill="#f0f0f0"),
