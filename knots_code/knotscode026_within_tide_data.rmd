@@ -1,4 +1,109 @@
-# Cohrence within the tidal interval
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+```{r}
+source("libs.R");library(sp)
+load("knots_data/kntoscode023_tidematched_data.rdata")
+library(stringi)
+#'get ht data, get the FLOORed hour, not the rounded
+data <- unclass(data.tide) %>% 
+  bind_rows() %>% 
+  #anti_join(unclass(data.lt) %>% bind_rows()) %>% 
+  mutate(hour = stri_pad(floor(ht.time/3600), width = 2, pad = "0"),
+         ht = stri_pad(ht, width = 2, pad = "0"))
+
+#'assign a tidal interval
+data <- data %>% 
+ # map(function(x){
+ #   mutate(x, tide = ifelse(is.na(tide),"other",tide),
+ #          lt = cumsum(tide == "L")+1) %>% 
+ #     filter(tide != "L")
+ #}) %>% unclass() %>% bind_rows() %>% 
+  dlply(c("ht","hour"))
+
+#'remove tides with < 5 birds
+data <- data[unlist(lapply(data, function(x) length(unique(x$id[!is.na(x$id)])))) >= 5]
+```
+
+```{r get_proximities}
+library(sp)
+#'this method is simpler than in knotscode019.
+proximity <- data_frame()
+
+for(z in 1:length(data)){
+#'split again by id
+focals <- dlply(data[[z]], "id")  
+#'implement method from knotscode019
+for(i in 1:length(focals)){
+  #'get focals
+  #'get the nonfocal birds
+  nonfocals <- focals[!names(focals) %in% names(focals)[i]]
+  
+  #'loop over nonfocals
+  for(j in 1:length(nonfocals)){
+    distances <- spDists(as.matrix(focals[[i]][,c("X","Y")]), as.matrix(nonfocals[[j]][,c("X","Y")]), diagonal = T)
+    #'get only distances where both focal and nonfocal positions are known
+    #'set all distances greater than 9e6 = 0, and all rows where focal pos and all cols where nonfocal pos are > 9e6
+    distances[focals[[i]]$X > 9e6 | nonfocals[[j]]$Y > 9e6] <- NA
+    #distances <- diag(distances)
+    interactions <- data_frame(distances = sum(distances <= 250, na.rm = T)) %>%
+      #count(class) %>% 
+      mutate(focal = unique(focals[[i]]$id), 
+             nonfocal = unique(nonfocals[[j]]$id), 
+             ht = unique(focals[[i]]$ht),
+             hour = unique(focals[[i]]$hour),
+             pos_focal = sum(focals[[i]]$X < 9e9), 
+             pos_nonfocal = sum(nonfocals[[j]]$X < 9e9))
+    proximity <- rbind(proximity, interactions)
+    }
+  }
+}
+```
+
+```{r get_unique_pairs}
+#'find unique pairs
+pairs <- expand(proximity, focal, nonfocal) %>% 
+  filter(focal < nonfocal) %>% mutate(pair = 1:nrow(.))
+#'remove non-unique pairs
+proximity_compare <- proximity %>% 
+  left_join(pairs) %>% filter(!is.na(pair))
+```
+
+```{r remove_few_pairs}
+#'remove pairs with less than 30 positions overall and hour-tide-wise data with under 5 focal bird positions
+
+proximity_compare <- proximity_compare %>% 
+  group_by(pair) %>% 
+  mutate(n = length(distances)) %>% 
+  filter(n >= 30, pos_focal > 5)
+
+#'get hour-tide-wise coherence
+proximity_compare <- mutate(proximity_compare,
+                            c_emp = distances/pos_focal,
+                            hour = as.numeric(hour))
+```
+
+```{r coherence_over_time}
+#plot coherence over tidal time
+cairo_ps(filename = "figure_pairs_per_time.eps", width = 200/25.4, height = 200/25.4)
+
+ggplot()+
+  geom_jitter(data = proximity_compare,
+              aes(x = hour, y = c_emp),
+              col = "grey80", shape = 1)+
+  geom_smooth(data = proximity_compare,
+              aes(x = hour, y = c_emp, colour = "Mean pairwise coherence"),
+              size = 2)+
+  scale_colour_manual(values = solcol[1])+
+  theme_poster()+
+  xlim(0,11.5)+
+  labs(list(x = "Hours after high tide", y = "Pairwise coherence", colour = NULL))
+
+dev.off()
+```
+
 
 ```{r what_explains_coherence}
 #'get coherence n-1, remove pairs with less than 3 tides of presence
@@ -14,39 +119,24 @@ cij <- group_by(cij, focal, nonfocal) %>%
 ```
 
 ```{r pairs_per_time_plot}
-pairs_per_tide <- ungroup(proximity) %>% distinct(ht,pair) %>% count(ht)
+pairs_per_tide <- ungroup(proximity_compare) %>% distinct(ht,pair) %>% count(ht)
+
+pairs_per_hour <- ungroup(proximity_compare) %>% distinct(ht,hour,pair) %>% count(ht,hour) %>% mutate(time = as.numeric(ht)+(hour/max(hour)))
 
 cairo_ps(filename = "figure_pairs_per_time.eps", width = 200/25.4, height = 200/25.4)
 
 ggplot()+
-  #geom_path(data = pairs_per_time,aes(x = time, y = nn, col = "Pairs per hour"), size = 1)+
+  #geom_point(data = pairs_per_hour, aes(x = time, y = n, col = "Pairs per hour"), size = 1, shape = 1)+
+  geom_path(data = pairs_per_hour, aes(x = time, y = n, col = "Pairs per hour"))+
   geom_path(data = pairs_per_tide, aes(x = as.numeric(ht), y = n, col = "Pairs per tidal interval"), size = 2)+
   #scale_y_continuous(sec.axis = sec_axis(~.*(1/561)*100, name = "% potential pairs"))+
   xlim(3,NA)+
   theme_poster()+
   labs(list(colour = NULL, x = "tidal interval", y = "# pairs"))+
-  scale_color_solarized(accent = "yellow")
+  scale_color_solarized(accent = "blue")
 
 dev.off()
 ```
-
-```{r}
-cairo_ps(filename = "figure_coherence_hour.eps", width = 200/25.4, height = 200/25.4)
-
-cij %>% 
-  ggplot()+
-  geom_jitter(aes(x = hour, y = coherence_emp*1e2), col = "grey80", shape = 1)+
-  geom_smooth(aes(x = hour, y = coherence_emp*3*1e2), fill = cola1, size = 2)+
-  scale_y_continuous(sec.axis = sec_axis(~.*(1/3), name = "Mean pairwise coherence"))+
-  scale_x_continuous(breaks = c(0:13), labels = c("High tide",NULL,"",3,4,5,6,"", "Low tide","",9,10,11,"", "High tide"))+
-  #scale_colour_viridis_d(guide = F)+
-  labs(list(x = "Hours post high tide", y = "Pairwise coherence"))+
-  theme_pub()+
-  theme(axis.text = element_text(size = 16), axis.title = element_text(size = 20))
-
-dev.off()
-```
-
 
 ```{r}
 #'model for coherence consistency
