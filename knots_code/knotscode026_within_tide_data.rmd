@@ -66,6 +66,7 @@ for(i in 1:length(focals)){
 #'find unique pairs
 pairs <- expand(proximity, focal, nonfocal) %>% 
   filter(focal < nonfocal) %>% mutate(pair = 1:nrow(.))
+
 #'remove non-unique pairs
 proximity_compare <- proximity %>% 
   left_join(pairs) %>% filter(!is.na(pair))
@@ -75,30 +76,75 @@ proximity_compare <- proximity %>%
 #'remove pairs with less than 30 positions overall and hour-tide-wise data with under 5 focal bird positions
 
 proximity_compare <- proximity_compare %>% 
-  group_by(pair) %>% 
-  mutate(n = length(distances)) %>% 
-  filter(n >= 30, pos_focal > 5)
+  group_by(pair,hour) %>% 
+  mutate(n = length(distances))# %>% 
+  #filter(n >= 30, pos_focal > 5)
 
 #'get hour-tide-wise coherence
-proximity_compare <- mutate(proximity_compare,
+proximity_compare <- mutate(ungroup(proximity_compare),
                             c_emp = distances/pos_focal,
                             hour = as.numeric(hour))
 ```
 
+# KS test
+
+```{r run hourwise KS test}
+#'prep proximity for testing anti-join
+proximity_aj <- proximity_compare
+
+#'split prox_compare by id and hour
+proximity_compare <- proximity_compare %>%
+  filter(n >= 10) %>% 
+  dlply(c("pair","hour"))
+
+#proximity_compare <- proximity_compare[unlist(lapply(proximity_compare, nrow)) >= 10]
+
+for(i in 1:length(proximity_compare)){
+
+x <- proximity_compare[[i]]
+y <- proximity_aj %>% anti_join(x) %>% filter(hour == unique(x$hour)) %>% .$c_emp
+
+#'run the KS test
+ks.res <- bind_cols(unclass(ks.test(x = x$c_emp, y = y)))
+
+#'get emp mean and sim mean
+x <- summarise(x, c_emp = mean(c_emp, na.rm = T),
+                 c_sim = mean(y, na.rm = T),
+               hour = unique(hour),
+               pair = unique(pair))
+proximity_compare[[i]] <- x %>% bind_cols(ks.res)
+}
+
+#'bind the list rows
+pairs_test <- bind_rows(unclass(proximity_compare)) %>%
+  #'bind the test data to the pairs data
+  left_join(pairs) %>%
+  dplyr::select(statistic, hour, p.value, pair, focal, nonfocal, c_emp, c_sim)
+```
+
+
 ```{r coherence_over_time}
+cij_5_top <- proximity_aj %>% 
+                group_by(focal,hour) %>% 
+                summarise(c_emp = mean(head(sort(c_emp, decreasing = T), n = 10))) %>%
+  ungroup() %>% 
+               group_by(hour) %>% 
+               summarise(c_empm = mean(c_emp, na.rm = T),
+                         sd = sd(c_emp, na.rm = T),
+                         n = sum(!is.na(c_emp))) %>% 
+               mutate(ci = qnorm(0.975)*sd/sqrt(n))
+
 #plot coherence over tidal time
-cairo_ps(filename = "figure_pairs_per_time.eps", width = 200/25.4, height = 200/25.4)
+cairo_ps(filename = "figure_coherence_hour.eps", width = 200/25.4, height = 200/25.4)
 
 ggplot()+
-  geom_jitter(data = proximity_compare,
-              aes(x = hour, y = c_emp), shape = 16,
-              col = "grey90")+
-  geom_smooth(data = proximity_compare %>% 
-                group_by(focal,hour) %>% 
-                summarise(c_emp = mean(head(sort(c_emp, decreasing = T), n = 5))),
-              aes(x = hour, y = c_emp,
-                  colour = "Mean 5 highest coherences"),
-              size = 2)+
+  geom_jitter(data = proximity_aj,
+              aes(x = hour, y = c_emp), shape = 1,
+              col = "grey80")+
+  geom_pointrange(data = cij_5_top,
+              aes(x = hour, y = c_empm, ymin = c_empm-ci,ymax = c_empm+ci,
+                  colour = "Mean 10 highest \n coherences per id \n ± 95% CI"),
+              size = 1)+
   scale_colour_manual(values = solcol[1])+
   scale_fill_viridis(option = "plasma", guide = F)+
   theme_poster()+
@@ -111,13 +157,10 @@ dev.off()
 
 ```{r what_explains_coherence}
 #'get coherence n-1, remove pairs with less than 3 tides of presence
-cij <- group_by(cij, focal, nonfocal) %>% 
-  mutate(n = length(interactions)) %>% 
-  filter(n > 2) %>% 
-  mutate(cn1 = c(NA, coherence_emp[2:length(coherence_emp)]),
-         hour = as.numeric(hour)) %>% 
-  left_join(data.summary, by = c("focal" = "id","ht","hour"))
-
+cij <- group_by(proximity_aj, pair, ht, hour) %>% 
+  mutate(nn = length(c_emp)) %>% 
+  filter(nn >= 2)# %>% 
+  mutate(cij, cn1 = c(NA, c_emp[2:length(c_emp)]))
 #'only consider rows with 10+ positions focal and nonfocal
 #cij <- filter(cij, pos_focal >= 10, pos_nonfocal >= 10)
 ```

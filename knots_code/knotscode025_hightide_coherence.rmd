@@ -1,6 +1,6 @@
 ---
 output: html_document
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 ```{r}
@@ -8,19 +8,19 @@ source("libs.R");library(sp)
 load("knots_data/kntoscode023_tidematched_data.rdata")
 library(stringi)
 #'get ht data, get the FLOORed hour, not the rounded
-data <- unclass(data.tide) %>% 
-  bind_rows() %>% 
-  #anti_join(unclass(data.lt) %>% bind_rows()) %>% 
+data <- unclass(data.tide) %>%
+  bind_rows() %>%
+  #anti_join(unclass(data.lt) %>% bind_rows()) %>%
   mutate(hour = stri_pad(floor(ht.time/3600), width = 2, pad = "0"),
          ht = stri_pad(ht, width = 2, pad = "0"))
 
 #'assign a tidal interval
-data <- data %>% 
+data <- data %>%
  # map(function(x){
  #   mutate(x, tide = ifelse(is.na(tide),"other",tide),
- #          lt = cumsum(tide == "L")+1) %>% 
+ #          lt = cumsum(tide == "L")+1) %>%
  #     filter(tide != "L")
- #}) %>% unclass() %>% bind_rows() %>% 
+ #}) %>% unclass() %>% bind_rows() %>%
   dlply(c("ht"))
 
 #'remove tides with < 5 birds
@@ -34,13 +34,13 @@ proximity <- data_frame()
 
 for(z in 1:length(data)){
 #'split again by id
-focals <- dlply(data[[z]], "id")  
+focals <- dlply(data[[z]], "id")
 #'implement method from knotscode019
 for(i in 1:length(focals)){
   #'get focals
   #'get the nonfocal birds
   nonfocals <- focals[!names(focals) %in% names(focals)[i]]
-  
+
   #'loop over nonfocals
   for(j in 1:length(nonfocals)){
     distances <- spDists(as.matrix(focals[[i]][,c("X","Y")]), as.matrix(nonfocals[[j]][,c("X","Y")]), diagonal = T)
@@ -49,11 +49,11 @@ for(i in 1:length(focals)){
     distances[focals[[i]]$X > 9e6 | nonfocals[[j]]$Y > 9e6] <- NA
     #distances <- diag(distances)
     interactions <- data_frame(distances = sum(distances <= 250, na.rm = T)) %>%
-      #count(class) %>% 
-      mutate(focal = unique(focals[[i]]$id), 
-             nonfocal = unique(nonfocals[[j]]$id), 
+      #count(class) %>%
+      mutate(focal = unique(focals[[i]]$id),
+             nonfocal = unique(nonfocals[[j]]$id),
              ht = unique(focals[[i]]$ht),
-             pos_focal = sum(focals[[i]]$X < 9e9), 
+             pos_focal = sum(focals[[i]]$X < 9e9),
              pos_nonfocal = sum(nonfocals[[j]]$X < 9e9))
     proximity <- rbind(proximity, interactions)
     }
@@ -64,16 +64,16 @@ for(i in 1:length(focals)){
 ```{r}
 #'calculate coherence scores for under 250m
 proximity <- proximity %>%
-  dlply(c("ht")) %>% 
+  dlply(c("ht")) %>%
   map(function(x){
-    x %>% group_by(focal, nonfocal, ht) %>% 
+    x %>% group_by(focal, nonfocal, ht) %>%
   summarise(pos_focal = first(pos_focal),
             pos_nonfocal = first(pos_nonfocal),
     interactions = sum(distances),
             coherence_emp = case_when(
     pos_focal == 0 & pos_nonfocal == 0 ~ as.double(NA),
     T ~ interactions/(first(pos_focal))))
-}) %>% 
+}) %>%
   bind_rows()
 
 #'get all possible pairs
@@ -84,19 +84,19 @@ proximity <- left_join(proximity, pairs)
 ```
 
 ```{r run KS test}
-proximity_compare <- proximity %>% 
-  filter(focal < nonfocal) %>% 
+proximity_compare <- proximity %>%
+  filter(focal < nonfocal) %>%
   dlply("pair")
 
-proximity_compare <- proximity_compare[unlist(lapply(proximity_compare, nrow)) >=10]
+proximity_compare <- proximity_compare[unlist(lapply(proximity_compare, nrow)) >= 10]
 
 for(i in 1:length(proximity_compare)){
-  
+
 x <- proximity_compare[[i]]
 y <- proximity %>% anti_join(x) %>% .$coherence_emp
   #'run the KS test
 ks.res <- bind_cols(unclass(ks.test(x = x$coherence_emp, y = y)))
-    
+
 #'get emp mean and sim mean
 x <- summarise(x, c_emp = mean(coherence_emp, na.rm = T),
                  c_sim = mean(y, na.rm = T))
@@ -107,9 +107,9 @@ proximity_compare[[i]] <- x %>% bind_cols(ks.res)
 pairs_test <- data_frame(pair = as.numeric(names(proximity_compare))) %>% left_join(pairs)
 
 #'bind the list rows
-pairs_test <- bind_rows(unclass(proximity_compare)) %>% 
+pairs_test <- bind_rows(unclass(proximity_compare)) %>%
   #'bind the test data to the pairs data
-  bind_cols(pairs_test) %>% 
+  bind_cols(pairs_test) %>%
   dplyr::select(statistic, p.value, pair, focal, nonfocal, c_emp, c_sim)
 ```
 
@@ -140,7 +140,7 @@ cairo_ps(filename = "coherence_distribution.eps", width = 200/25.4, height = 200
 solcol = solarized_pal(accent = "blue")(9)
 
 ggplot()+
- # stat_density(data = proximity, aes(x = coherence_emp, col = as.factor(pair)), geom = "line", position = "identity")+ 
+ # stat_density(data = proximity, aes(x = coherence_emp, col = as.factor(pair)), geom = "line", position = "identity")+
   theme_poster()+
   stat_density(data = proximity, aes(x = coherence_emp), geom = "line", size = 2, col = solcol[1])+
   theme(legend.position = "none")+
@@ -153,7 +153,7 @@ dev.off()
 cairo_ps(filename = "coherence_test_prop.eps", width = 200/25.4, height = 200/25.4, fallback_resolution = 600)
 
 #'get plot of coherence positive or negative
-count(pairs_test, friends = c_emp > c_sim, sig = p.value <=0.05) %>% mutate(prop = n/(sum(n))) %>% 
+count(pairs_test, friends = c_emp > c_sim, sig = p.value <=0.05) %>% mutate(prop = n/(sum(n))) %>%
   ggplot()+
   geom_tile(aes(x = friends, y = sig, fill = prop), col = "white", size = 2)+
   geom_text(aes(x = friends, y = sig, label = paste(round_any(prop*100,0.1), "%")), col = c(1,"white",1,"white"), size = 12)+
@@ -164,4 +164,3 @@ count(pairs_test, friends = c_emp > c_sim, sig = p.value <=0.05) %>% mutate(prop
 
 dev.off()
 ```
-
