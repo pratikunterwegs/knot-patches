@@ -175,12 +175,13 @@ cairo_ps(filename = "figure_pairs_per_time.eps", width = 200/25.4, height = 200/
 ggplot()+
   #geom_point(data = pairs_per_hour, aes(x = time, y = n, col = "Pairs per hour"), size = 1, shape = 1)+
   geom_path(data = pairs_per_hour, aes(x = time, y = n, col = "Pairs per hour"))+
-  geom_path(data = pairs_per_tide, aes(x = as.numeric(ht), y = n, col = "Pairs per tidal interval"), size = 2)+
+  #geom_point(data = pairs_per_hour, aes(x = time, y = n, col = "Pairs per hour"),shape = 21, fill = "white", size = 2)+
+  geom_path(data = pairs_per_tide, aes(x = as.numeric(ht), y = n, col = "Pairs per tidal interval"), size = 1)+
   #scale_y_continuous(sec.axis = sec_axis(~.*(1/561)*100, name = "% potential pairs"))+
   xlim(3,NA)+
   theme_poster()+
   labs(list(colour = NULL, x = "tidal interval", y = "# pairs"))+
-  scale_color_solarized(accent = "blue")
+  scale_color_manual(values = brewer.pal(9, "Blues")[c(5,9)])
 
 dev.off()
 ```

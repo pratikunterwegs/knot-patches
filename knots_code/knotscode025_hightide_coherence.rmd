@@ -122,7 +122,7 @@ cairo_ps(filename = "figure_coherence_test.eps", width = 200/25.4, height = 200/
 ggplot(pairs_test)+
   geom_tile(aes(x = focal, y = nonfocal), fill = "white",col = "white", size = 1)+
   geom_tile(aes(x = focal, y = nonfocal, fill = c_emp, alpha = p.value <= 0.05), col = "white", size = 1)+
-  scale_fill_viridis(option = "plasma")+
+  scale_fill_gradientn(colors = brewer.pal(9,"YlOrBr"))+
   scale_alpha_manual(values = c(0.1,1), guide = F)+
   theme_poster()+
   theme(axis.text = element_text(size = 8, angle = 40),
@@ -130,7 +130,7 @@ ggplot(pairs_test)+
         axis.ticks = element_blank(),
         panel.grid.major = element_line(colour = "grey90"),
         legend.title = element_text(size = 14))+
-  labs(list(fill = "Pair-wise coherence"))
+  labs(list(fill = "Pair-wise co-occurrence"))
 
 dev.off()
 ```
@@ -140,11 +140,13 @@ cairo_ps(filename = "coherence_distribution.eps", width = 200/25.4, height = 200
 solcol = solarized_pal(accent = "blue")(9)
 
 ggplot()+
- # stat_density(data = proximity, aes(x = coherence_emp, col = as.factor(pair)), geom = "line", position = "identity")+
+  
   theme_poster()+
-  stat_density(data = proximity, aes(x = coherence_emp), geom = "line", size = 2, col = solcol[1])+
+  geom_histogram(data = proximity, aes(x = coherence_emp, y = ..count../sum(..count..)), geom = "line", fill = colb1, col = solcol[3])+
+ # scale_fill_manual(values = brewer.pal(9,"YlOrBr")[5])+
   theme(legend.position = "none")+
-  labs(list(x = "Pairwise coherence", y = "Density"))
+  #coord_cartesian(ylim = c(0,0.1))+
+  labs(list(x = "Pairwise co-occurrence", y = "Proportion"))
 
 dev.off()
 ```
@@ -156,11 +158,11 @@ cairo_ps(filename = "coherence_test_prop.eps", width = 200/25.4, height = 200/25
 count(pairs_test, friends = c_emp > c_sim, sig = p.value <=0.05) %>% mutate(prop = n/(sum(n))) %>%
   ggplot()+
   geom_tile(aes(x = friends, y = sig, fill = prop), col = "white", size = 2)+
-  geom_text(aes(x = friends, y = sig, label = paste(round_any(prop*100,0.1), "%")), col = c(1,"white",1,"white"), size = 12)+
-  #scale_fill_viridis()+
+  geom_text(aes(x = friends, y = sig, label = paste(round_any(prop*100,0.1), "%")), col ="white", size = 12)+
+  scale_fill_gradientn(colors = (brewer.pal(4,"RdGy")))+
   theme_poster()+
   theme(legend.position = "none")+
-  labs(list(x = "Pairwise coherence", y = "K-S test significance \n P-value ≤ 0.05"))
+  labs(list(x = "Pairwise co-occurrence \n > random co-occurrence", y = "K-S test significance \n P-value ≤ 0.05"))
 
 dev.off()
 ```
