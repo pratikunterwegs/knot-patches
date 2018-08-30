@@ -145,8 +145,8 @@ ggplot()+
               aes(x = hour, y = c_empm, ymin = c_empm-ci,ymax = c_empm+ci,
                   colour = "Mean 10 highest \n coherences per id \n ± 95% CI"),
               size = 1)+
-  scale_colour_manual(values = solcol[1])+
-  scale_fill_viridis(option = "plasma", guide = F)+
+  scale_colour_manual(values = solcol[4])+
+  #scale_fill_viridis(option = "plasma", guide = F)+
   theme_poster()+
   xlim(-0.5,11.5)+
   labs(list(x = "Hours after high tide", y = "Pairwise coherence", colour = NULL))
@@ -157,7 +157,7 @@ dev.off()
 
 ```{r what_explains_coherence}
 #'get coherence n-1, remove pairs with less than 3 tides of presence
-cij <- group_by(proximity_aj, pair, ht, hour) %>% 
+cij <- group_by(proximity, pair, ht, hour) %>% 
   mutate(nn = length(c_emp)) %>% 
   filter(nn >= 2)# %>% 
   mutate(cij, cn1 = c(NA, c_emp[2:length(c_emp)]))
@@ -196,15 +196,13 @@ mod.coherence.consistency = glmmTMB(coherence_emp ~ cn1 + sqrt(hour) + (1|pair) 
 
 ```{r}
 #'advancing - receding coherence
-cij.state <- filter(cij, !hour %between% c(4:8)) %>% mutate(state = ifelse(hour < 4, "receding","advancing")) %>% group_by(pair, state, ht) %>% summarise(c = mean(coherence_emp)) %>% spread(state, c)
+cij.state <- filter(proximity_aj, !hour %between% c(4:8)) %>% mutate(state = ifelse(hour < 4, "receding","advancing")) %>% group_by(pair, state, ht) %>% summarise(c = mean(c_emp, na.rm = T)) %>% spread(state, c)
 
 #'handle factors
 cij.state <- cij.state %>% filter(!is.na(advancing), !is.na(receding)) %>% 
   left_join(cij %>% group_by(pair, ht) %>% summarise(dist.m = sum(dist.mismatch), speed.m = mean(speed.mismatch, na.rm = T)))
 
-mod.c.cons.state <- glmmTMB(advancing ~ receding * log(dist.m) + (1|pair)+(1|ht), data = cij.state, family = binomial, ziformula = ~1)
-
-mccs <- visreg(mod.c.cons.state, xvar = "dist.m",scale = "response", plot = F)$fit
+mod.c.cons.state <- glmmTMB(advancing ~ receding + (1|pair)+(1|ht), data = cij.state, family = binomial, ziformula = ~1)
 ```
 
 ```{r}
