@@ -194,9 +194,15 @@ cij$pair = as.factor(cij$pair)
 mod.coherence.consistency = glmmTMB(coherence_emp ~ cn1 + sqrt(hour) + (1|pair) + (1|ht), data = cij, family = binomial, ziformula = ~1)
 ```
 
+# Coherence and distance mismatch
+
 ```{r}
 #'advancing - receding coherence
-cij.state <- filter(proximity_aj, !hour %between% c(4:8)) %>% mutate(state = ifelse(hour < 4, "receding","advancing")) %>% group_by(pair, state, ht) %>% summarise(c = mean(c_emp, na.rm = T)) %>% spread(state, c)
+cij.state <- filter(proximity_aj, !hour %between% c(4:8)) %>% 
+  mutate(state = ifelse(hour < 4, "receding","advancing")) %>% 
+  group_by(pair, state, ht) %>% 
+  summarise(c = mean(c_emp, na.rm = T)) %>% 
+  spread(state, c)
 
 #'handle factors
 cij.state <- cij.state %>% filter(!is.na(advancing), !is.na(receding)) %>% 
