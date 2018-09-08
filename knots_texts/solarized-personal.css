@@ -1,0 +1,56 @@
+slides > slide.title-slide hgroup h1 {
+    font-weight: regular;
+    font-family: 'Marcellus SC';
+    font-size: 50pt;
+    color: #2d2d2d;
+    bottom: 10%;
+}
+
+slides > slide.title-slide hgroup h2 {
+    font-weight: regular;
+    font-family: 'Marcellus';
+    font-size: 40pt;
+    color: #2d2d2d;
+    bottom: 10%;
+}
+
+slides > slide.title-slide p {
+    font-weight: regular;
+    font-family: 'Marcellus';
+    font-size: 20pt;
+    color: #2d2d2d;
+    bottom: 10%;
+}
+
+h1,h2{
+  font-family: "Marcellus SC"
+}
+
+p,li {
+  font-family: "TeX Gyre Bonum"
+}
+
+body{
+  background-color: #1d2021
+}
+slides > slide.backdrop {
+  background: #f9f9f9;
+}
+
+.gdbar img{
+  width: 275px !important;
+  height: 150px !important;
+  margin: 8px 8px;
+}
+
+.gdbar {
+  width: 400px !important;
+  height: 170px !important;
+  background: #f9f9f9 !important;
+}
+
+slides > slide:not(.nobackground):before{
+  width: 130px;
+  height: 75px;
+  background-size: 150px 75px;
+}

@@ -16,8 +16,12 @@ source("libs.spatial.r")
 ```
 
 ```{r make_lines}
+library(sp)
 #'use same template as k2-data
-k1.lines = k1.tide %>%
+k1.lines = unclass(data.tide) %>%
+  bind_rows() %>% 
+  filter(X<9e9,Y<9e9) %>% 
+  dlply(c("id","segment")) %>% 
   #filter(ht.time %between% c(3.5*3600,9.5*3600), distance < 2e3, fpt > 10/60) %>% 
   #dlply(c("id","ht")) %>%
   #map(function(x) x %>% filter(Std<100)) %>%
@@ -48,5 +52,5 @@ k1.lines = SpatialLinesDataFrame(k1.lines, data = data)
 
 #'export
 library(rgdal)
-writeOGR(k1.lines, dsn = "knots_data/knots_spatials/", layer = "k1_segments", driver = "ESRI Shapefile", overwrite_layer = T)
+writeOGR(k1.lines, dsn = "knots_data/knots_spatials/", layer = "k1_5pt_median", driver = "ESRI Shapefile", overwrite_layer = T)
 ```

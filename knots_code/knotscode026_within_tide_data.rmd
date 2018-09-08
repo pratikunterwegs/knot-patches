@@ -125,9 +125,10 @@ pairs_test <- bind_rows(unclass(proximity_compare)) %>%
 
 ```{r coherence_over_time}
 cij_5_top <- proximity_aj %>% 
-                group_by(focal,hour) %>% 
-                summarise(c_emp = mean(head(sort(c_emp, decreasing = T), n = 10))) %>%
-  ungroup() %>% 
+    #filter(c_emp>0) %>% 
+                #group_by(focal,hour) %>% 
+                #summarise(c_emp = mean(head(sort(c_emp, decreasing = T), n = 10))) %>%
+ # ungroup() %>% 
                group_by(hour) %>% 
                summarise(c_empm = mean(c_emp, na.rm = T),
                          sd = sd(c_emp, na.rm = T),
@@ -135,21 +136,40 @@ cij_5_top <- proximity_aj %>%
                mutate(ci = qnorm(0.975)*sd/sqrt(n))
 
 #plot coherence over tidal time
-cairo_ps(filename = "figure_coherence_hour.eps", width = 200/25.4, height = 200/25.4)
+cairo_ps(filename = "figure_coherence_hour_handout.eps", width = 100/25.4, height = 100/25.4)
 
 ggplot()+
-  geom_jitter(data = proximity_aj,
-              aes(x = hour, y = c_emp), shape = 1,
-              col = "grey80")+
-  geom_pointrange(data = cij_5_top,
-              aes(x = hour, y = c_empm, ymin = c_empm-ci,ymax = c_empm+ci,
-                  colour = "Mean 10 highest \n coherences per id \n ± 95% CI"),
-              size = 1)+
-  scale_colour_manual(values = solcol[4])+
+  
+  
+  geom_segment(aes(x = 6.5, xend = 6.5, y=0, yend = .3), colour =1, lty = 2)+
+  geom_segment(aes(x = c(-0.2, 3.8, 9.8), xend = c(3.3,9.2, 12.2), y=.32, yend = .32), colour =1, lty = 1)+
+  #geom_rect(aes(xmin = 3.5, xmax = 9.5, ymin = 0, ymax = 1), fill = cola1, alpha = 0.3)+
+ # geom_flat_violin(data = proximity_aj,
+       #       aes(x = (hour), y = c_emp, group = hour), colour= "transparent",fill = "orange", width = 3)+
+  #geom_boxplot(data = proximity_aj,aes(x = as.factor(hour), y = c_emp), shape = 1, size = 0.1, colour = "grey80", width = 0.2)+
+  #geom_line(data = cij_5_top,
+              #aes(x = (hour), y = (c_empm+ci),
+              #     colour = "10 highest \n co-occurrences per id \n ± 95% CI"),
+             # shape = 1, lty=1, col ="grey")+
+  geom_ribbon(data = cij_5_top,
+              aes(x = (hour), ymin = (c_empm-ci),ymax = (c_empm+ci)),
+              shape = 1, lty=1, fill ="grey90", colour = "transparent")+
+  geom_line(data = cij_5_top,
+              aes(x = (hour), y = c_empm),
+            shape = 16)+
+ # geom_point(data = cij_5_top,aes(x = (hour), y = c_empm*3, colour = "10 highest \n co-occurrences per id \n ± 95% CI"),shape = 16)+
+  #scale_y_continuous(sec.axis = dup_axis(~./3, name = "Mean pair-wise co-occurrence ± 95% CI"))+
+  
+  geom_text(aes(x = c(0,6,12), y = .33, label = c("Receding tide","Low tide","Advancing tide")), hjust = c("inward","inward","right"),size = 4, family = "serif")+
+  #scale_colour_manual(values = 1)+
   #scale_fill_viridis(option = "plasma", guide = F)+
-  theme_poster()+
-  xlim(-0.5,11.5)+
-  labs(list(x = "Hours after high tide", y = "Pairwise coherence", colour = NULL))
+  theme_tufte(base_family = "TeX Gyre Bonum",base_size = 10)+
+  theme(legend.position = "none")+
+  #theme(panel.grid.major = element_line(size = 0.2), panel.ontop = T)+
+  coord_cartesian(ylim = c(-.05,0.35), xlim = c(0,12), expand = F)+
+ # scale_x_continuous(breaks = c(0:12))+
+  #xlim(-0.5,11.5)+
+  labs(list(x = "Hours after high tide", y = "Mean pair-wise co-occurrence", colour = NULL))
 
 dev.off()
 ```
@@ -196,9 +216,23 @@ mod.coherence.consistency = glmmTMB(coherence_emp ~ cn1 + sqrt(hour) + (1|pair) 
 
 # Coherence and distance mismatch
 
-```{r}
+```{r cooc and distance mismatch}
+#'get distances travelled during foraging in each tide by each bird
+forage.distances <- ungroup(bind_rows(unclass(data))) %>% filter(as.numeric(hour) %in% c(4:9)) %>% group_by(id, ht) %>% summarise(dist_forage = sum(distance, na.rm = T))
+
+#'get distance mismatch
+dist.mismatch <- (proximity_aj) %>% 
+  filter(pos_focal > 10, pos_nonfocal > 10) %>% 
+  left_join(forage.distances, by = c("focal" = "id","ht")) %>% 
+  rename(dist_forage_focal = dist_forage) %>% 
+  left_join(forage.distances, by = c("nonfocal" = "id","ht")) %>% 
+  rename(dist_forage_nf = dist_forage) %>% 
+  select(focal, nonfocal, pair, ht, dist_forage_focal, dist_forage_nf, pos_focal,pos_nonfocal) %>% 
+  mutate(mismatch = abs(dist_forage_nf - dist_forage_focal)) %>% 
+  filter(dist_forage_focal > 0, dist_forage_nf > 0)
+
 #'advancing - receding coherence
-cij.state <- filter(proximity_aj, !hour %between% c(4:8)) %>% 
+cij.state <- filter(proximity_aj, !hour %in% c(4:9)) %>% 
   mutate(state = ifelse(hour < 4, "receding","advancing")) %>% 
   group_by(pair, state, ht) %>% 
   summarise(c = mean(c_emp, na.rm = T)) %>% 
@@ -206,24 +240,33 @@ cij.state <- filter(proximity_aj, !hour %between% c(4:8)) %>%
 
 #'handle factors
 cij.state <- cij.state %>% filter(!is.na(advancing), !is.na(receding)) %>% 
-  left_join(cij %>% group_by(pair, ht) %>% summarise(dist.m = sum(dist.mismatch), speed.m = mean(speed.mismatch, na.rm = T)))
+  inner_join(ungroup(dist.mismatch), by = c("pair","ht")) %>% 
+    distinct(pair, ht, mismatch, advancing, receding) %>% 
+  ungroup() %>% 
+  mutate(pair = as.factor(pair), ht = as.factor(ht))
+```
 
-mod.c.cons.state <- glmmTMB(advancing ~ receding + (1|pair)+(1|ht), data = cij.state, family = binomial, ziformula = ~1)
+```{r}
+library(glmmTMB)
+mod.c.cons.state <- glmmTMB(advancing ~ receding + sqrt(mismatch) + (1|pair)+(1|ht), data = cij.state, family = binomial, ziformula = ~1)
+
+mccs = visreg::visreg(mod.c.cons.state, xvar = "mismatch", scale = "response", plot = F)$fit
 ```
 
 ```{r}
 #'plot cij ~ distm
-cairo_ps(filename = "figure_coherence_friendsfound.eps", width = 200/25.4, height = 200/25.4)
+cairo_ps(filename = "figure_coherence_friends_handout.eps", width = 100/25.4, height = 100/25.4)
 
 
 ggplot()+
-  geom_point(data = cij.state, aes(x = dist.m, y = advancing*1e2), col = "grey70", shape = 1)+
-  geom_ribbon(data = mccs, aes(x = dist.m, ymin = visregLwr*1e2, ymax = visregUpr*1e2), fill = cola1, alpha = 0.4)+
-  geom_line(data = mccs, aes(x = dist.m, y = visregFit*1e2), col = cola2, size = 2)+
-  geom_text(aes(x = 3.9e3,y=100, label = "GLMM \n z-statistic = -3.85 \n P-value < 0.001"), size = 8, vjust = "inward", hjust = "outward")+
-  theme_pub()+
-  theme(axis.text = element_text(size = 16), axis.title = element_text(size = 20))+
-  labs(list(x = "Pairwise distance mismatch (m)", y = "Predicted pairwise coherence (%)"))
+  #geom_point(data = cij.state, aes(x = mismatch, y = abs(receding - advancing)), col = "grey80", shape = 1, size = 0.1)+
+  geom_ribbon(data = mccs, aes(x = mismatch, ymin = visregLwr, ymax = visregUpr), fill = "grey50", alpha = 0.3)+
+  geom_line(data = mccs, aes(x = mismatch, y = visregFit), col = 1)+
+  #geom_text(aes(x = 3.9e3,y=100, label = "GLMM \n z-statistic = -3.85 \n P-value < 0.001"), size = 8, vjust = "inward", hjust = "outward")+
+  theme_tufte(base_family = "Linux Libertine O")+
+  xlim(0,5e3)+
+  #theme(axis.text = element_text(size = 16), axis.title = element_text(size = 20))+
+  labs(list(x = "Pairwise distance mismatch during foraging (m)", y = "Pairwise co-occurrence after foraging"))
 
 dev.off()
 ```

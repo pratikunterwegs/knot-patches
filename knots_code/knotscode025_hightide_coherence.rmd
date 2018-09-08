@@ -88,7 +88,7 @@ proximity_compare <- proximity %>%
   filter(focal < nonfocal) %>%
   dlply("pair")
 
-proximity_compare <- proximity_compare[unlist(lapply(proximity_compare, nrow)) >= 10]
+#proximity_compare <- proximity_compare[unlist(lapply(proximity_compare, nrow)) >= 10]
 
 for(i in 1:length(proximity_compare)){
 
@@ -114,52 +114,71 @@ pairs_test <- bind_rows(unclass(proximity_compare)) %>%
 ```
 
 ```{r coherence_test_plot}
-count(pairs_test, sig = p.value <= 0.05, friends = c_emp > c_sim)
+#count(pairs_test, sig = p.value <= 0.05, friends = c_emp > c_sim)
 
-cairo_ps(filename = "figure_coherence_test.eps", width = 200/25.4, height = 200/25.4)
+cairo_ps(filename = "figure_coherence_test.eps", width = 150/25.4, height = 150/25.4)
 
 #'visualise for poster
-ggplot(pairs_test)+
-  geom_tile(aes(x = focal, y = nonfocal), fill = "white",col = "white", size = 1)+
-  geom_tile(aes(x = focal, y = nonfocal, fill = c_emp, alpha = p.value <= 0.05), col = "white", size = 1)+
-  scale_fill_gradientn(colors = brewer.pal(9,"YlOrBr"))+
-  scale_alpha_manual(values = c(0.1,1), guide = F)+
-  theme_poster()+
-  theme(axis.text = element_text(size = 8, angle = 40),
-        legend.text = element_text(size = 12, angle = 30),
+ggplot()+
+  geom_point(data =expand(data_frame(x = c(1:35),y = c(1:35)), x,y) %>% filter(x<y), aes(x = as.factor(x), y = as.factor(y)), size = 1, shape = 4, col = "grey30")+
+ 
+  geom_tile(data = pairs_test, aes(x = as.numeric(as.factor(focal)), y = as.numeric(as.factor(nonfocal)), fill = c_emp), col = "white", size = 1)+
+  geom_tile(data = pairs_test, aes(x = as.numeric(as.factor(focal)), y = as.numeric(as.factor(nonfocal)), fill = c_emp, alpha = p.value <= 0.05), col = "white", size = 1)+
+  #scale_x_discrete(labels = c(1:35))+
+  #scale_y_discrete(labels = c(1:35))+
+    theme_poster()+
+  theme(axis.text.x = element_blank(),
+        axis.text.y = element_text(size = 11, colour = "grey30"),
+        axis.line.x = element_blank(),
+        axis.line.y = element_blank(),
+        legend.text = element_text(size = 12, angle = 0),
         axis.ticks = element_blank(),
-        panel.grid.major = element_line(colour = "grey90"),
-        legend.title = element_text(size = 14))+
-  labs(list(fill = "Pair-wise co-occurrence"))
+        axis.ticks.y = element_line(color = "grey"),
+       # panel.grid.major = element_line(colour = "grey90"),
+       # legend.title = element_text(size = 14),
+       legend.position = c(0.6,0.5),
+       legend.background = element_blank(),
+       legend.justification = c(0,1))+
+
+  scale_fill_viridis(option = "inferno", direction = -1)+
+  scale_alpha_manual(values = c(0,1), guide = F)+
+  
+  geom_text(aes(x = 1:34, y = c(1:34)-2, label = c(1:34)), col = "grey30")+
+  geom_text(aes(x = 1:34, y = 0:33, label = "|"), col= "grey")+
+ # scale_x_discrete(labels = c(0:33))+
+  
+  labs(list(fill = "Association", x = "individual i", y = "individual j"))+
+  coord_cartesian(xlim = c(0,36), ylim =c(-2,36))
 
 dev.off()
 ```
 
 ```{r}
-cairo_ps(filename = "coherence_distribution.eps", width = 200/25.4, height = 200/25.4, fallback_resolution = 600)
+cairo_ps(filename = "coherence_distribution.eps", width = 150/25.4, height = 150/25.4, fallback_resolution = 600)
 solcol = solarized_pal(accent = "blue")(9)
 
 ggplot()+
   
-  theme_poster()+
-  geom_histogram(data = proximity, aes(x = coherence_emp, y = ..count../sum(..count..)), geom = "line", fill = colb1, col = solcol[3])+
+  geom_histogram(data = proximity, aes(x = coherence_emp, y = ..count../sum(..count..)), geom = "line", fill = inferno(9)[6], col = "white", size=1.2)+
  # scale_fill_manual(values = brewer.pal(9,"YlOrBr")[5])+
   theme(legend.position = "none")+
   #coord_cartesian(ylim = c(0,0.1))+
-  labs(list(x = "Pairwise co-occurrence", y = "Proportion"))
+  labs(list(x = "Pairwise association", y = "Proportion"))+
+  theme_poster()
 
 dev.off()
 ```
 
 ```{r}
-cairo_ps(filename = "coherence_test_prop.eps", width = 200/25.4, height = 200/25.4, fallback_resolution = 600)
+cairo_ps(filename = "coherence_test_prop.eps", width = 150/25.4, height = 150/25.4, fallback_resolution = 600)
 
 #'get plot of coherence positive or negative
 count(pairs_test, friends = c_emp > c_sim, sig = p.value <=0.05) %>% mutate(prop = n/(sum(n))) %>%
   ggplot()+
-  geom_tile(aes(x = friends, y = sig, fill = prop), col = "white", size = 2)+
-  geom_text(aes(x = friends, y = sig, label = paste(round_any(prop*100,0.1), "%")), col ="white", size = 12)+
-  scale_fill_gradientn(colors = (brewer.pal(4,"RdGy")))+
+  
+  geom_tile(aes(x = friends, y = sig, fill = prop), col = "white", size = 3)+
+  geom_text(aes(x = friends, y = sig, label = paste(round_any(prop*100,0.1), "%")), col =1, size = 12)+
+  scale_fill_gradientn(colors = rev(brewer.pal(4,"YlOrBr")))+
   theme_poster()+
   theme(legend.position = "none")+
   labs(list(x = "Pairwise co-occurrence \n > random co-occurrence", y = "K-S test significance \n P-value ≤ 0.05"))

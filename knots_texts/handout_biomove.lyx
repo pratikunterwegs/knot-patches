@@ -1,0 +1,371 @@
+#LyX 2.2 created this file. For more info see http://www.lyx.org/
+\lyxformat 508
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass tufte-handout
+\begin_preamble
+\setmathfont{TeX Gyre Bonum Math}
+\end_preamble
+\options nohyper,9pt,A4
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "tgbonum" "TeX Gyre Bonum"
+\font_sans "iwonac" "Marcellus SC"
+\font_typewriter "default" "Fira Code"
+\font_math "auto" "default"
+\font_default_family default
+\use_non_tex_fonts true
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date true
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 2
+\tocdepth 2
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle fancy
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+
+\family sans
+\series bold
+Bound together or loose ends?
+\begin_inset Newline newline
+\end_inset
+
+Foraging association in Red Knots
+\end_layout
+
+\begin_layout Author
+
+\family sans
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+textsf{Pratik R Gupte}$^{1,2}$, 
+\backslash
+textsf{Selin Ersoy}$^{1,2}$ 
+\backslash
+& 
+\backslash
+textsf{Allert I Bijleveld}$^{2}$
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Address
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+${^1}$ 
+\backslash
+textsf{GELIFES --- University of Groningen}
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+${^2}$ 
+\backslash
+textsf{COS --- NIOZ Netherlands Inst.
+ Sea Research}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Address
+
+\family sans
+Contact: p.r.gupte@rug.nl; Twitter: @pratikunterwegs
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+small
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Do knots have 'friends'? ATLAS tracking might have answers
+\end_layout
+
+\begin_layout Standard
+Waders such as red knots 
+\emph on
+Calidris canutus
+\emph default
+ are highly social, and gather in large non-breeding flocks in the Wadden
+ Sea, where they feed on the macrozoobenthos buried in intertidal mudflats.
+ Knots have been shown to use social information in lab settings
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Bijleveld et al.
+ 2015.
+
+\emph on
+ Behav.
+ Processes
+\end_layout
+
+\end_inset
+
+, and are hypothesised to use communal roosts as information centres
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Bijleveld et al.
+ 2010.
+
+\emph on
+ Oikos
+\end_layout
+
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Standard
+Persistent association with specific individuals could help knots make use
+ of collective sensing, or exploit an informed flockmate.
+ We used high frequency
+\emph on
+ (1 minute interval) 
+\emph default
+ATLAS
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Time of Arrival radio tracking using 4.2 g tags glued to dorsal surface;
+ 5-point median filter applied.
+\end_layout
+
+\end_inset
+
+ tracking data to test whether knots have non-random associations — in a
+ sense, do knots have 'friends'?
+\end_layout
+
+\begin_layout Subsection
+Knot association is low, but 10% of knot pairs are 'friends'
+\end_layout
+
+\begin_layout Standard
+We found that of 556 unique knot pairs tracked over 44 tidal intervals 
+\emph on
+(high tide to high tide, ~19 days)
+\emph default
+, ~10% were associated 
+\emph on
+(proportion of positions in proximity)
+\emph default
+ higher than expected by chance.
+ 10% were associated less than expected.
+ 
+\end_layout
+
+\begin_layout Subsection
+Association is largely environmentally driven
+\end_layout
+
+\begin_layout Standard
+Within tidal intervals, knot association was highest in the hours just before
+ 
+\emph on
+(advancing tide)
+\emph default
+ and after 
+\emph on
+(receding tide)
+\emph default
+ high tide, and lowest around low tide (Fig.
+ 1).
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{marginfigure}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+includegraphics[width=1
+\backslash
+textwidth]{/home/pratik/git/knots/knots_code/figure_coherence_hour_handout.eps}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+caption{
+\backslash
+emph{Mean pair-wise association over the tidal interval ${
+\backslash
+pm}$ 95${
+\backslash
+%}$ CI.
+ Low tide at dashed line.}}
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{marginfigure}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Personality may matter more than identity
+\end_layout
+
+\begin_layout Standard
+Our results align with the idea that wader flocks are good examples of random
+ mixing driven by environmental effects
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Myers 1983.
+ 
+\emph on
+Behav.
+ Ecol.
+ Sociobiol.
+\emph default
+; Conklin & Colwell 2007.
+ 
+\emph on
+JOFO.
+\end_layout
+
+\end_inset
+
+ — possibly, individual presence is sufficient to inform about the resource
+ landscape without individual identity being key.
+\end_layout
+
+\begin_layout Standard
+Red knots have been shown to have consistent individual differences in explorato
+ry behaviour, which may be linked to different foraging needs and movement
+ patterns
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Bijleveld et al.
+ 2014.
+ 
+\emph on
+Proc.
+ Royal Soc.
+ B.
+\end_layout
+
+\end_inset
+
+.
+ It remains to be tested whether knots are more discriminating about the
+ 
+\emph on
+kind
+\emph default
+, rather than identity, of individuals with which they associate.
+\end_layout
+
+\end_body
+\end_document
