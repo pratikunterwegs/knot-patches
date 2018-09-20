@@ -11,12 +11,12 @@
 \options nohyper,9pt,A4
 \use_default_options false
 \maintain_unincluded_children false
-\language english
-\language_package default
+\language british
+\language_package auto
 \inputencoding auto
 \fontencoding global
 \font_roman "tgbonum" "TeX Gyre Bonum"
-\font_sans "iwonac" "Marcellus SC"
+\font_sans "iwonac" "Marcellus"
 \font_typewriter "default" "Fira Code"
 \font_math "auto" "default"
 \font_default_family default
@@ -118,7 +118,7 @@ status open
 
 ${^1}$ 
 \backslash
-textsf{GELIFES --- University of Groningen}
+textsf{Evolutionary Life Sciences --- University of Groningen}
 \backslash
 
 \backslash
@@ -129,7 +129,7 @@ textsf{GELIFES --- University of Groningen}
 
 ${^2}$ 
 \backslash
-textsf{COS --- NIOZ Netherlands Inst.
+textsf{Coastal Systems --- NIOZ Netherlands Inst.
  Sea Research}
 \end_layout
 
@@ -161,7 +161,19 @@ small
 \end_layout
 
 \begin_layout Subsection
-Do knots have 'friends'? ATLAS tracking might have answers
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+textsf{Do knots have `friends'? ATLAS may provide answers}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -171,7 +183,7 @@ Calidris canutus
 \emph default
  are highly social, and gather in large non-breeding flocks in the Wadden
  Sea, where they feed on the macrozoobenthos buried in intertidal mudflats.
- Knots have been shown to use social information in lab settings
+ Knots have been shown to use social information in lab settings,
 \begin_inset Foot
 status open
 
@@ -186,7 +198,7 @@ Bijleveld et al.
 
 \end_inset
 
-, and are hypothesised to use communal roosts as information centres
+ and are hypothesised to use communal roosts as information centres.
 \begin_inset Foot
 status open
 
@@ -200,8 +212,7 @@ Bijleveld et al.
 
 \end_inset
 
-.
- 
+
 \end_layout
 
 \begin_layout Standard
@@ -223,11 +234,25 @@ Time of Arrival radio tracking using 4.2 g tags glued to dorsal surface;
 \end_inset
 
  tracking data to test whether knots have non-random associations — in a
- sense, do knots have 'friends'?
+ sense, do knots have `friends'?
 \end_layout
 
 \begin_layout Subsection
-Knot association is low, but 10% of knot pairs are 'friends'
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+textsf{Knot association is low, but 10
+\backslash
+% of pairs are `friends'}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -237,30 +262,10 @@ We found that of 556 unique knot pairs tracked over 44 tidal intervals
 \emph default
 , ~10% were associated 
 \emph on
-(proportion of positions in proximity)
+(proportion of positions in proximity, Kolmogorov-Smirnov test)
 \emph default
  higher than expected by chance.
  10% were associated less than expected.
- 
-\end_layout
-
-\begin_layout Subsection
-Association is largely environmentally driven
-\end_layout
-
-\begin_layout Standard
-Within tidal intervals, knot association was highest in the hours just before
- 
-\emph on
-(advancing tide)
-\emph default
- and after 
-\emph on
-(receding tide)
-\emph default
- high tide, and lowest around low tide (Fig.
- 1).
- 
 \end_layout
 
 \begin_layout Standard
@@ -278,7 +283,7 @@ begin{marginfigure}
 
 
 \backslash
-includegraphics[width=1
+includegraphics[width=1.4
 \backslash
 textwidth]{/home/pratik/git/knots/knots_code/figure_coherence_hour_handout.eps}
 \end_layout
@@ -310,12 +315,56 @@ end{marginfigure}
 \end_layout
 
 \begin_layout Subsection
-Personality may matter more than identity
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+textsf{Association is largely environmentally driven}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Within tidal intervals, knot association was highest in the hours just before
+ 
+\emph on
+(advancing tide)
+\emph default
+ and after 
+\emph on
+(receding tide)
+\emph default
+ high tide, and lowest around low tide (Fig.
+ 1).
+\end_layout
+
+\begin_layout Subsection
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+textsf{Conclusion 
+\backslash
+& future work}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
 Our results align with the idea that wader flocks are good examples of random
- mixing driven by environmental effects
+ mixing driven by environmental effects.
 \begin_inset Foot
 status open
 
@@ -335,14 +384,13 @@ JOFO.
 
 \end_inset
 
- — possibly, individual presence is sufficient to inform about the resource
- landscape without individual identity being key.
+
 \end_layout
 
 \begin_layout Standard
-Red knots have been shown to have consistent individual differences in explorato
-ry behaviour, which may be linked to different foraging needs and movement
- patterns
+However, red knots have been shown to have consistent individual differences
+ in exploratory behaviour, which may be linked to different foraging needs
+ and movement patterns.
 \begin_inset Foot
 status open
 
@@ -358,13 +406,8 @@ Proc.
 
 \end_inset
 
-.
- It remains to be tested whether knots are more discriminating about the
- 
-\emph on
-kind
-\emph default
-, rather than identity, of individuals with which they associate.
+ It remains to be tested whether knot personality is a factor in determining
+ association in the dynamic Wadden Sea landscape.
 \end_layout
 
 \end_body
