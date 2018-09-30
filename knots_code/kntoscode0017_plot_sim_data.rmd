@@ -4,7 +4,7 @@ editor_options:
 ---
 ```{r}
 #'source libs
-source("libs.R");source("ggplot.pub.r")
+source("libs.R");source("ggplot.pub_geese.r")
 ```
 
 ```{r}
