@@ -116,18 +116,18 @@ pairs_test <- bind_rows(unclass(proximity_compare)) %>%
 ```{r coherence_test_plot}
 #count(pairs_test, sig = p.value <= 0.05, friends = c_emp > c_sim)
 
-cairo_ps(filename = "figure_coherence_test.eps", width = 150/25.4, height = 150/25.4)
+cairo_ps(filename = "figure_coherence_test_improved.eps", width = 150/25.4, height = 150/25.4)
 
 #'visualise for poster
 ggplot()+
-  geom_point(data =expand(data_frame(x = c(1:35),y = c(1:35)), x,y) %>% filter(x<y), aes(x = as.factor(x), y = as.factor(y)), size = 1, shape = 4, col = "grey30")+
+  #geom_point(data =expand(data_frame(x = c(1:35),y = c(1:35)), x,y) %>% filter(x<y), aes(x = as.factor(x), y = as.factor(y)), size = 1, shape = 4, col = "grey30")+
  
-  geom_tile(data = pairs_test, aes(x = as.numeric(as.factor(focal)), y = as.numeric(as.factor(nonfocal)), fill = c_emp), col = "white", size = 1)+
-  geom_tile(data = pairs_test, aes(x = as.numeric(as.factor(focal)), y = as.numeric(as.factor(nonfocal)), fill = c_emp, alpha = p.value <= 0.05), col = "white", size = 1)+
+  geom_tile(data = pairs_test, aes(x = (as.factor(focal)), y = (as.factor(nonfocal)), fill = c_emp), col = "white", size = 1)+
+  geom_tile(data = pairs_test, aes(x = (as.factor(focal)), y = (as.factor(nonfocal)), fill = c_emp, alpha = p.value <= 0.05), col = "white", size = 1)+
   #scale_x_discrete(labels = c(1:35))+
   #scale_y_discrete(labels = c(1:35))+
     theme_poster()+
-  theme(axis.text.x = element_blank(),
+  theme(axis.text.x = element_text(size = 8, angle = 90),
         axis.text.y = element_text(size = 11, colour = "grey30"),
         axis.line.x = element_blank(),
         axis.line.y = element_blank(),
