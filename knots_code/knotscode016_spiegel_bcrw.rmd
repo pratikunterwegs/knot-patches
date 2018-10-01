@@ -15,6 +15,7 @@ writen by Orr Spiegel Jan 2016. contact me at orr.spiegel@mail.huji.ac.il if you
 rm(list=ls())
 require(CircStats); require(spatstat); require(sp); require(R.matlab);
 library(RColorBrewer);library(scico)
+source("libs.R")
 ```
 
 ```{r set model parameters}
@@ -170,6 +171,7 @@ XYind <- vector("list")
 HRCnt=matrix(data=NA,nrow=N_indv,ncol=3)
 
 #'this is related to the paired individuals scenario
+
 #HRCnt[,3]=rep(c(1,2),N_indv/2) #since sex is listed in this parameter i update it to be pairs of diferent sexes for the paired design
 #HRcenterDist=rep(0,N_indv/2);#Distance between pairs of agents at the begining
 ```
@@ -306,7 +308,7 @@ rm("Phi_ind","step","step.len","mu","mu.av","coo","StepAsLine","Dist", "endIndx"
 
 
 ###### Saving results for matlab and R#####
-Name1=paste("xyFromSimulationForSNanalysis", N_tmStp , N_indv,  100*EtaCRW, StpSize_ind,DriftHRCenters,".rdata",sep="_")
+Name1=paste("spiegel_sim_01", N_tmStp , N_indv,  100*EtaCRW, StpSize_ind,DriftHRCenters,".rdata",sep="_")
 Name2="xyFromSimulationForSNanalysis.mat"
 save(list=ls(),file=Name1)
 #writeMat(Name2,XY=XYind_log2,HRCntXY=HRCnt) 
