@@ -1,5 +1,6 @@
 
-sim <- function(ts_primary, ts_secondary, n_id, perception_range, EtaCRW, step_length_mean, step_length_sd, Kappa, landscape_size){
+sim <- function(param_list){
+  ts_primary <- param_list[[1]]; ts_secondary <- param_list[[2]]; n_id <- param_list[[3]]; perception_range <- param_list[[4]]; EtaCRW <- param_list[[5]]; step_length_mean <- param_list[[6]]; step_length_sd <- param_list[[7]]; Kappa <- param_list[[8]]; landscape_size <- param_list[[9]]
   #'ts_primary = day length, ts_secondary = days to simulate in original code
   #'load the tidyverse
   library(tidyverse); library(CircStats); library(dplyr)

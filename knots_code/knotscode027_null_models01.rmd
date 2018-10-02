@@ -1,0 +1,60 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r source_funs}
+#'source scripts for funs
+source(libs.R); source(spiegel_bcrw_sim02.r)
+```
+
+```{r define_params}
+#'get parameter combinations for the simulation
+#'primary time steps
+params <- tibble(ts_primary = c(59),
+                 ts_secondary = list(1:12),
+                 n_id = list(1:10*10), 
+                 perception_range = list(0:9*10), 
+                 EtaCRW = list(1:10/10), 
+                 step_length_mean = list(1:10*10), 
+                 step_length_sd = list(1:10/20),
+                 Kappa = list(1:3/10),
+                 landscape_size = c(5*1e3))
+
+#'get order of params
+par_order <- colnames(params)
+names(par_order) = par_order
+
+#'yet to add the number of hours, and the various von Mises centres
+params <- unnest(params, .preserve = c(ts_secondary, Kappa)) %>% 
+  unnest(ts_secondary, .preserve = Kappa) %>%
+  unnest(Kappa) %>% 
+  expand_(par_order) %>% 
+  select(par_order)
+
+#'make the params a list of lists for use by the function
+#'there has to be a better way of passing the function arguments
+```
+
+```{r}
+#'test data for 2 dfs
+save(params, file = "knots_data/null_crw_params.rdata")
+```
+
+```{r}
+#'load params and libs and run in a loop, periodically saving
+rm(list = ls())
+
+source("libs.R"); source("spiegel_bcrw_sim02.r")
+load("knots_data/null_crw_params.rdata")
+scenario_length <- seq(1,nrow(params), length.out = 3600)
+rm(params)
+
+for(scenario in 1:scenario_length){
+  load("knots_data/null_crw_params.rdata")
+  params <- 
+}
+
+```
+
