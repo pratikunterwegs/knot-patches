@@ -15,9 +15,9 @@
 \language_package auto
 \inputencoding auto
 \fontencoding global
-\font_roman "tgbonum" "TeX Gyre Bonum"
+\font_roman "tgbonum" "Latin Modern Roman"
 \font_sans "iwonac" "Marcellus"
-\font_typewriter "default" "Fira Code"
+\font_typewriter "default" "Fantasque Sans Mono"
 \font_math "auto" "default"
 \font_default_family default
 \use_non_tex_fonts true
@@ -30,7 +30,7 @@
 \output_sync 0
 \bibtex_command default
 \index_command default
-\paperfontsize default
+\paperfontsize 12
 \spacing single
 \use_hyperref false
 \papersize default
@@ -96,15 +96,13 @@ status open
 
 
 \backslash
-textbf{
-\backslash
 textsf{Pratik R Gupte}$^{1,2}$, 
 \backslash
 textsf{Selin Ersoy}$^{1,2}$ 
 \backslash
 & 
 \backslash
-textsf{Allert I Bijleveld}$^{2}$}
+textsf{Allert I Bijleveld}$^{2}$
 \end_layout
 
 \end_inset
@@ -285,9 +283,9 @@ begin{marginfigure}
 
 
 \backslash
-includegraphics[width=1.4
+includegraphics[width=1.1
 \backslash
-textwidth]{/home/pratik/git/knots/knots_code/figure_coherence_hour_handout.eps}
+textwidth]{/home/pratik/git/knots/knots_texts/figure_coherence_hour_handout.eps}
 \end_layout
 
 \begin_layout Plain Layout
