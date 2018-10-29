@@ -1,15 +1,15 @@
 ---
 title: "Key talks from the Biomove Symposium 2018"
-mainfont: TeX Gyre Schola
-monofont: Fira Code
-fontsize: 10pt
+monofont: Inconsolata
 papersize: A4
+fontsize: 10pt
 geometry: margin=2cm
 document-class: article
 bibliography: [knots_texts/knots_cite.bib]
 csl: knots_texts/frontiers-in-ecology-and-the-environment.csl
 header-includes:
   - \usepackage{multicol}
+  - \usepackage{crimson}
 ---
 
 # Session 1: From individuality to biodiversity
