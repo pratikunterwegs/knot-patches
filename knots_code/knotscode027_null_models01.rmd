@@ -6,19 +6,20 @@ editor_options:
 
 ```{r source_funs}
 #'source scripts for funs
-source(libs.R); source(spiegel_bcrw_sim02.r)
+source("libs.R"); source("spiegel_bcrw_sim02.r")
 ```
 
 ```{r define_params}
 #'get parameter combinations for the simulation
 #'primary time steps
-params <- tibble(ts_primary = c(59),
-                 ts_secondary = list(6:12),
-                 n_id = list(1:10*10), 
-                 perception_range = list(0:9*10), 
-                 EtaCRW = c(0.6), 
-                 step_length_mean = list(1:10*10), 
-                 step_length_sd = list(1:10/20),
+params <- tibble(ts_primary = c(60),
+                 ts_secondary = c(12),
+                 ts_tertiary = c(12),
+                 n_id = c(10), 
+                 perception_range = c(0), 
+                 EtaCRW = c(0.3), 
+                 step_length_mean = c(7), 
+                 step_length_sd = c(3.5),
                  Kappa = c(0.3),
                  landscape_size = c(5*1e3))
 
@@ -30,9 +31,7 @@ names(par_order) = par_order
 params <- unnest(params, .preserve = c(ts_secondary, Kappa)) %>% 
   unnest(ts_secondary, .preserve = Kappa) %>%
   unnest(Kappa) %>% 
-  expand_(par_order) #%>% 
-  select(par_order)
-
+  expand_(par_order) 
 #'make the params a list of lists for use by the function
 #'there has to be a better way of passing the function arguments
 ```
@@ -48,13 +47,13 @@ save(params, file = "knots_data/null_crw_params.rdata")
 ```
 
 ```{r}
-#'load params and libs and run in a loop, periodically saving
+#'lo ad params and libs and run in a loop, periodically saving
 rm(list = ls())
 
-source("libs.R"); source("spiegel_bcrw_sim02.r")
+source("libs.R"); source("spiegel_bcrw_sim02.r");library(stringi)
 load("knots_data/null_crw_params.rdata")
 scenario_length <- length(params)
-
+ 
 for(set in 1:scenario_length){
   source("libs.R"); source("spiegel_bcrw_sim02.r")
   load("knots_data/null_crw_params.rdata")
@@ -65,8 +64,25 @@ for(set in 1:scenario_length){
   sim_out <- map(param_op, sim)
   
   save(sim_out, file = paste("knots_data/crw_sim_set",stri_pad(set, width = 4, pad = 0),".rdata"))
-  rm(param_op, params, sim_out); gc()
+ # rm(param_op, params, sim_out); gc()
 }
 
+```
+
+```{r}
+sim <- flatten(sim_out)[[1]] %>% 
+  group_by(id) %>% 
+  mutate(tide = as.factor(cumsum(step %% 720 ==0)+1))
+#water <- data_frame(id = 1:length(flatten(sim_out)[[2]]), coords = flatten(sim_out)[[2]] %>% map(function(x){ st_coordinates(x) %>% as.data.frame()})) %>% unnest()
+
+p <- ggplot(sim)+
+  geom_path(aes(x,y, group = id, col = tide), size = 0.2)
+p
+#gganimate::gganimate(p)
+```
+
+```{r}
+ggplot(water %>% filter(Y == 0))+
+  geom_point(aes(x = id, y = X))
 ```
 
