@@ -11,7 +11,7 @@ sim <- function(param_list){
   data_length <- time_steps*n_id
 
   #'create an empty df for positions
-  data <- data_frame(id = as.factor(1:n_id), step = list(1:(ts_primary*ts_secondary*ts_tertiary))) %>% unnest() %>% group_by(id) %>% mutate(day = cumsum(step %% ts_primary == 0)+1, x = NA, y = NA)
+  data <- data_frame(id = as.factor(1:n_id), step = list(1:(ts_primary*ts_secondary*ts_tertiary))) %>% unnest() %>% group_by(id) %>% mutate(hour = cumsum(step %% ts_primary == 0)+1, tide = cumsum(step %% (ts_secondary*ts_primary) == 0)+1, x = NA, y = NA)
 
   #'set starting parameters
   startIndx <- 1
@@ -130,6 +130,8 @@ rm("Phi_ind","step","step.len","mu","mu.av","coo","StepAsLine","Dist", "endIndx"
 
 data[,c("x","y")] = data2 %>% map(as.data.frame) %>% bind_rows()
 
-return(list(data, water_edge))
+rm(water_edge)
+
+return(data)
 
 }
