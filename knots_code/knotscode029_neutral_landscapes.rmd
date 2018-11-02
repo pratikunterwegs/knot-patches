@@ -1,0 +1,32 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+```{r}
+source("libs.R")
+library(NLMR);library(rasterVis)
+library(sf)
+```
+
+```{r}
+a <- nlm_gaussianfield(100,100)
+
+coord.a <- coordinates(a)
+val.a <- a@data@values
+
+b <- contourLines(x = 1:1e2, y = 1:1e2, z = as.matrix(a), levels = seq(0,1, length.out = 120))
+
+c <- map(b, function(x){
+  enframe(x) %>% spread(name, value) %>% unnest(.preserve = level) %>% unnest()
+})
+
+d <- bind_rows(c) %>% 
+  dlply("level")
+```
+
+```{r}
+ggplot(d)+
+  geom_sf(aes(col = as.factor(level)))+
+  scale_color_viridis_d()
+```
+
