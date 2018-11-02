@@ -1,6 +1,6 @@
 ---
 output: html_document
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -12,13 +12,13 @@ source("libs.R"); source("spiegel_bcrw_sim02.r")
 ```{r define_params}
 #'get parameter combinations for the simulation
 #'primary time steps
-params <- tibble(ts_primary = c(60),
+params <- tibble(ts_primary = c(10),
                  ts_secondary = c(12),
                  ts_tertiary = c(12),
-                 n_id = c(10), 
-                 perception_range = c(0), 
-                 EtaCRW = c(0.3), 
-                 step_length_mean = c(7), 
+                 n_id = c(10),
+                 perception_range = c(0),
+                 EtaCRW = c(0.3),
+                 step_length_mean = c(7),
                  step_length_sd = c(3.5),
                  Kappa = c(0.3),
                  landscape_size = c(5*1e3))
@@ -28,18 +28,18 @@ par_order <- colnames(params)
 names(par_order) = par_order
 
 #'yet to add the number of hours, and the various von Mises centres
-params <- unnest(params, .preserve = c(ts_secondary, Kappa)) %>% 
+params <- unnest(params, .preserve = c(ts_secondary, Kappa)) %>%
   unnest(ts_secondary, .preserve = Kappa) %>%
-  unnest(Kappa) %>% 
-  expand_(par_order) 
+  unnest(Kappa) %>%
+  expand_(par_order)
 #'make the params a list of lists for use by the function
 #'there has to be a better way of passing the function arguments
 ```
 
 ```{r}
 #'make params list of 1000 cominations each
-params <- params %>% 
-  mutate(set = cumsum(1:nrow(params) %% 1e3 == 0)) %>% 
+params <- params %>%
+  mutate(set = cumsum(1:nrow(params) %% 1e3 == 0)) %>%
   group_by(set) %>%
   nest(.key = set) %>% .$set
 #'test data for 2 dfs
@@ -53,16 +53,16 @@ rm(list = ls())
 source("libs.R"); source("spiegel_bcrw_sim02.r");library(stringi)
 load("knots_data/null_crw_params.rdata")
 scenario_length <- length(params)
- 
+
 for(set in 1:scenario_length){
   source("libs.R"); source("spiegel_bcrw_sim02.r")
   load("knots_data/null_crw_params.rdata")
   param_op <- params[[set]]
   rm(params)
   param_op <- pmap(param_op, list)
-  
+
   sim_out <- map(param_op, sim)
-  
+
   save(sim_out, file = paste("knots_data/crw_sim_set",stri_pad(set, width = 4, pad = 0),".rdata"))
  # rm(param_op, params, sim_out); gc()
 }
@@ -70,8 +70,8 @@ for(set in 1:scenario_length){
 ```
 
 ```{r}
-sim <- flatten(sim_out)[[1]] %>% 
-  group_by(id) %>% 
+sim <- flatten(sim_out)[[1]] %>%
+  group_by(id) %>%
   mutate(tide = as.factor(cumsum(step %% 720 ==0)+1))
 #water <- data_frame(id = 1:length(flatten(sim_out)[[2]]), coords = flatten(sim_out)[[2]] %>% map(function(x){ st_coordinates(x) %>% as.data.frame()})) %>% unnest()
 
@@ -85,4 +85,3 @@ p
 ggplot(water %>% filter(Y == 0))+
   geom_point(aes(x = id, y = X))
 ```
-
