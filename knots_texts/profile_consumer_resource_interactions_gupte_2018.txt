@@ -1,0 +1,8 @@
+Consumer Resource Interactions participant profile
+
+Pratik Gupte
+
+I'm Pratik and I'm a PhD student at the Theoretical Biology group at the Univsersity of Groningen, and the Department of Coastal Systems at the Netherlands Institute for Sea Research. I work on the ecology and evolution of red knot (_Calidris canutus_) movement using both empirical data from high-frequency tracking with the ATLAS system, and individual based model simulations.
+The red knot system is interesting because when these Arctic-breeding shorebirds arrive each summer in the Wadden Sea, they must contend with essentially a novel landscape where conditions change at different scales -- the periodic tide, patchily distributed resources, and vast numbers of other waders. Knots show consistent individual differences in exploratory behaviour, which dictate resource requirements. Movement strategies could help knots balance conflicting drivers such as the benefits of foraging in groups against the costs of competition. At this course, I'd like to explore the use of simulation models to understand the ecological and evolutionary consequences of following simple movement rules in patchy and unpredictable resource landscapes --- for example, how are movement polymorphisms created and maintained, and once present, what kinds of emergent population patterns (eg. frequency dependence, assortative association) can we expect?
+
+Outside the office and off the field site, I'm a fan of science-fiction, badminton, cycling, and generally roaming around in the wilderness. You can find my (often strong) opinions on Twitter @pratikunterwegs.
