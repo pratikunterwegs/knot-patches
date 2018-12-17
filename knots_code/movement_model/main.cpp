@@ -27,8 +27,6 @@ using namespace std;
 //system params
 const int nAgents = 20; //how many birds
 const int gridSize = 100; //grid size
-//const double dIntake = 0.1; //intake rate per unit time is constant
-//const int maxStepLength = 3.5; //max cells a bird can move
 const int nSims = 500;
 const int nIterations = 500;
 const double unitstepLength = 0.001;
