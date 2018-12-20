@@ -743,7 +743,7 @@ double benford_cdf ( int x )
 //
 //  Parameters:
 //
-//    Input, int X, the string of significant digits to be 
+//    Input, int X, the string of significant digits to be
 //    checked.  If X is 1, then we are asking for the Benford probability that
 //    a value will have first digit 1.  If X is 123, we are asking for
 //    the probability that the first three digits will be 123, and so on.
@@ -2495,7 +2495,7 @@ double beta_cdf_inv ( double cdf, double p, double q )
 //
 //  Licensing:
 //
-//    This code is distributed under the GNU LGPL license. 
+//    This code is distributed under the GNU LGPL license.
 //
 //  Modified:
 //
@@ -2523,7 +2523,7 @@ double beta_cdf_inv ( double cdf, double p, double q )
 //    Input, double P, Q, the parameters of the incomplete
 //    Beta function.
 //
-//    Output, double BETA_CDF_INV, the argument of the Beta CDF which 
+//    Output, double BETA_CDF_INV, the argument of the Beta CDF which
 //    produces the value CDF.
 //
 //  Local Parameters:
@@ -2621,7 +2621,7 @@ double beta_cdf_inv ( double cdf, double p, double q )
 //
   r = sqrt ( - log ( a * a ) );
 
-  y = r - ( 2.30753 + 0.27061 * r ) 
+  y = r - ( 2.30753 + 0.27061 * r )
     / ( 1.0 + ( 0.99229 + 0.04481 * r ) * r );
 
   if ( 1.0 < pp && 1.0 < qq )
@@ -2630,7 +2630,7 @@ double beta_cdf_inv ( double cdf, double p, double q )
     s = 1.0 / ( pp + pp - 1.0 );
     t = 1.0 / ( qq + qq - 1.0 );
     h = 2.0 / ( s + t );
-    w = y * sqrt ( h + r ) / h - ( t - s ) 
+    w = y * sqrt ( h + r ) / h - ( t - s )
       * ( r + 5.0 / 6.0 - 2.0 / ( 3.0 * h ) );
     value = pp / ( pp + qq * exp ( w + w ) );
   }
@@ -3130,8 +3130,8 @@ void beta_cdf_values ( int &n_data, double &a, double &b, double &x,
       0.2E+01,
       0.2E+01,
       0.2E+01,
-     11.7562, 
-     11.7562, 
+     11.7562,
+     11.7562,
      11.7562 };
 
   static double fx_vec[N_MAX] = {
@@ -3617,8 +3617,8 @@ void beta_inc_values ( int &n_data, double &a, double &b, double &x,
       0.2E+01,
       0.2E+01,
       0.2E+01,
-     11.7562, 
-     11.7562, 
+     11.7562,
+     11.7562,
      11.7562 };
 
   static double fx_vec[N_MAX] = {
@@ -3829,7 +3829,7 @@ double beta_pdf ( double x, double a, double b )
   }
   else
   {
-    pdf = pow ( x, ( a - 1.0 ) ) * pow ( ( 1.0 - x ), ( b - 1.0 ) ) 
+    pdf = pow ( x, ( a - 1.0 ) ) * pow ( ( 1.0 - x ), ( b - 1.0 ) )
       / r8_beta ( a, b );
   }
 
@@ -5804,7 +5804,7 @@ double burr_pdf ( double x, double a, double b, double c, double d )
   {
     y = ( x - a ) / b;
 
-    pdf = ( c * d / b ) * pow ( y, c - 1.0 ) 
+    pdf = ( c * d / b ) * pow ( y, c - 1.0 )
       / pow ( 1.0 + pow ( y, c ), d + 1.0 );
   }
 
@@ -8600,7 +8600,7 @@ double circular_normal_pdf ( double x[2], double a[2], double b )
 //
 //  Discussion:
 //
-//    PDF(X) = EXP ( - 0.5D+00 * ( ( (X(1)-A(1))^2 + (X(2)-A(2))^2 ) / B^2 ) 
+//    PDF(X) = EXP ( - 0.5D+00 * ( ( (X(1)-A(1))^2 + (X(2)-A(2))^2 ) / B^2 )
 //      / ( 2 * PI * B^2 )
 //
 //  Licensing:
@@ -8630,7 +8630,7 @@ double circular_normal_pdf ( double x[2], double a[2], double b )
   double pdf;
   const double r8_pi = 3.14159265358979323;
 
-  d = ( pow ( x[0] - a[0], 2 ) 
+  d = ( pow ( x[0] - a[0], 2 )
       + pow ( x[1] - a[1], 2 ) ) / pow ( b, 2 );
 
   pdf = exp ( - 0.5 * d ) / ( 2.0 * b * b * r8_pi );
@@ -9992,10 +9992,10 @@ double digamma ( double x )
 
   r = r * r;
 
-  value = value 
-    - r * ( 1.0 / 12.0 
-    - r * ( 1.0 / 120.0 
-    - r * ( 1.0 / 252.0 
+  value = value
+    - r * ( 1.0 / 12.0
+    - r * ( 1.0 / 120.0
+    - r * ( 1.0 / 252.0
     - r * ( 1.0 / 240.0
     - r * ( 1.0 / 132.0 ) ) ) ) );
 
@@ -12156,12 +12156,12 @@ double english_letter_cdf ( char c )
 {
   double cdf;
   static double cdf_vec[27] = {
-    0.00000, 
-    0.08167, 0.09659, 0.12441, 0.16694, 0.29396, 
-    0.31624, 0.33639, 0.39733, 0.46699, 0.46852, 
-    0.47624, 0.51649, 0.54055, 0.60804, 0.68311, 
-    0.70240, 0.70335, 0.76322, 0.82649, 0.91705, 
-    0.94463, 0.95441, 0.97802, 0.97952, 0.99926, 
+    0.00000,
+    0.08167, 0.09659, 0.12441, 0.16694, 0.29396,
+    0.31624, 0.33639, 0.39733, 0.46699, 0.46852,
+    0.47624, 0.51649, 0.54055, 0.60804, 0.68311,
+    0.70240, 0.70335, 0.76322, 0.82649, 0.91705,
+    0.94463, 0.95441, 0.97802, 0.97952, 0.99926,
     1.00000 };
   int i;
 
@@ -12220,12 +12220,12 @@ char english_letter_cdf_inv ( double cdf )
 {
   char c;
   static double cdf_vec[27] = {
-    0.00000, 
-    0.08167, 0.09659, 0.12441, 0.16694, 0.29396, 
-    0.31624, 0.33639, 0.39733, 0.46699, 0.46852, 
-    0.47624, 0.51649, 0.54055, 0.60804, 0.68311, 
-    0.70240, 0.70335, 0.76322, 0.82649, 0.91705, 
-    0.94463, 0.95441, 0.97802, 0.97952, 0.99926, 
+    0.00000,
+    0.08167, 0.09659, 0.12441, 0.16694, 0.29396,
+    0.31624, 0.33639, 0.39733, 0.46699, 0.46852,
+    0.47624, 0.51649, 0.54055, 0.60804, 0.68311,
+    0.70240, 0.70335, 0.76322, 0.82649, 0.91705,
+    0.94463, 0.95441, 0.97802, 0.97952, 0.99926,
     1.00000 };
   int i;
 
@@ -12286,11 +12286,11 @@ double english_letter_pdf ( char c )
   int i;
   double pdf;
   double pdf_vec[26] = {
-    0.08167, 0.01492, 0.02782, 0.04253, 0.12702, 
-    0.02228, 0.02015, 0.06094, 0.06966, 0.00153, 
-    0.00772, 0.04025, 0.02406, 0.06749, 0.07507, 
-    0.01929, 0.00095, 0.05987, 0.06327, 0.09056, 
-    0.02758, 0.00978, 0.02361, 0.00150, 0.01974, 
+    0.08167, 0.01492, 0.02782, 0.04253, 0.12702,
+    0.02228, 0.02015, 0.06094, 0.06966, 0.00153,
+    0.00772, 0.04025, 0.02406, 0.06749, 0.07507,
+    0.01929, 0.00095, 0.05987, 0.06327, 0.09056,
+    0.02758, 0.00978, 0.02361, 0.00150, 0.01974,
     0.00074 };
 
   if ( 'a' <= c && c <= 'z' )
@@ -16679,7 +16679,7 @@ double fisk_variance ( double a, double b, double c )
 
   g = r8_pi / c;
 
-  variance = b * b * ( 2.0 * g * r8_csc ( 2.0 * g ) 
+  variance = b * b * ( 2.0 * g * r8_csc ( 2.0 * g )
     - pow ( ( g * r8_csc ( g ) ), 2 ) );
 
   return variance;
@@ -20522,9 +20522,9 @@ double i4_choose_log ( int n, int k )
 {
   double value;
 
-  value = 
-      lgamma ( ( double ) ( n + 1 ) ) 
-    - lgamma ( ( double ) ( k + 1 ) ) 
+  value =
+      lgamma ( ( double ) ( n + 1 ) )
+    - lgamma ( ( double ) ( k + 1 ) )
     - lgamma ( ( double ) ( n - k + 1 ) );
 
   return value;
@@ -20714,7 +20714,7 @@ int i4_uniform_ab ( int a, int b, int &seed )
 //
 //  Licensing:
 //
-//    This code is distributed under the GNU LGPL license. 
+//    This code is distributed under the GNU LGPL license.
 //
 //  Modified:
 //
@@ -20799,7 +20799,7 @@ int i4_uniform_ab ( int a, int b, int &seed )
 //
 //  Scale R to lie between A-0.5 and B+0.5.
 //
-  r = ( 1.0 - r ) * ( ( float ) a - 0.5 ) 
+  r = ( 1.0 - r ) * ( ( float ) a - 0.5 )
     +         r   * ( ( float ) b + 0.5 );
 //
 //  Use rounding to convert R to an integer between A and B.
@@ -21376,7 +21376,7 @@ int *i4vec_uniform_ab_new ( int n, int a, int b, int &seed )
 //
 //  Licensing:
 //
-//    This code is distributed under the GNU LGPL license. 
+//    This code is distributed under the GNU LGPL license.
 //
 //  Modified:
 //
@@ -21424,7 +21424,7 @@ int *i4vec_uniform_ab_new ( int n, int a, int b, int &seed )
 //    Input/output, int &SEED, the "seed" value, which should NOT be 0.
 //    On output, SEED has been updated.
 //
-//    Output, int IVEC_UNIFORM_AB_NEW[N], a vector of random values 
+//    Output, int IVEC_UNIFORM_AB_NEW[N], a vector of random values
 //    between A and B.
 //
 {
@@ -21435,7 +21435,7 @@ int *i4vec_uniform_ab_new ( int n, int a, int b, int &seed )
   float r;
   int value;
   int *x;
-  
+
   if ( seed == 0 )
   {
     cerr << "\n";
@@ -21470,7 +21470,7 @@ int *i4vec_uniform_ab_new ( int n, int a, int b, int &seed )
 //
 //  Scale R to lie between A-0.5 and B+0.5.
 //
-    r = ( 1.0 - r ) * ( ( float ) a - 0.5 ) 
+    r = ( 1.0 - r ) * ( ( float ) a - 0.5 )
       +         r   * ( ( float ) b + 0.5 );
 //
 //  Use rounding to convert R to an integer between A and B.
@@ -25581,7 +25581,7 @@ double *multinomial_variance ( int a, int b, double c[] )
 }
 //****************************************************************************80
 
-double *multivariate_normal_sample ( int n, double mean[], 
+double *multivariate_normal_sample ( int n, double mean[],
   double covar_factor[], int &seed )
 
 //****************************************************************************80
@@ -25592,7 +25592,7 @@ double *multivariate_normal_sample ( int n, double mean[],
 //
 //  Discussion:
 //
-//    PDF ( Mean(1:N), S(1:N,1:N); X(1:N) ) = 
+//    PDF ( Mean(1:N), S(1:N,1:N); X(1:N) ) =
 //      1 / ( 2 * pi ) ^ ( N / 2 ) * 1 / det ( S )
 //      * exp ( - ( X - Mean )' * inverse ( S ) * ( X - Mean ) / 2 )
 //
@@ -27890,7 +27890,7 @@ double *normal_vector ( int n, double mu, double sigma, int &seed )
 }
 //****************************************************************************80
 
-double normal_truncated_ab_cdf ( double x, double mu, double s, double a, 
+double normal_truncated_ab_cdf ( double x, double mu, double s, double a,
   double b )
 
 //****************************************************************************80
@@ -27945,7 +27945,7 @@ double normal_truncated_ab_cdf ( double x, double mu, double s, double a,
 }
 //****************************************************************************80
 
-double normal_truncated_ab_cdf_inv ( double cdf, double mu, double s, double a, 
+double normal_truncated_ab_cdf_inv ( double cdf, double mu, double s, double a,
   double b )
 
 //****************************************************************************80
@@ -28063,7 +28063,7 @@ double normal_truncated_ab_mean ( double mu, double s, double a, double b )
 }
 //****************************************************************************80
 
-double normal_truncated_ab_pdf ( double x, double mu, double s, double a, 
+double normal_truncated_ab_pdf ( double x, double mu, double s, double a,
   double b )
 
 //****************************************************************************80
@@ -28118,7 +28118,7 @@ double normal_truncated_ab_pdf ( double x, double mu, double s, double a,
 }
 //****************************************************************************80
 
-double normal_truncated_ab_sample ( double mu, double s, double a, double b, 
+double normal_truncated_ab_sample ( double mu, double s, double a, double b,
   int &seed )
 
 //****************************************************************************80
@@ -28224,8 +28224,8 @@ double normal_truncated_ab_variance ( double mu, double s, double a, double b )
   alpha_cdf = normal_01_cdf ( alpha );
   beta_cdf = normal_01_cdf ( beta );
 
-  variance = s * s * ( 1.0 
-    + ( alpha * alpha_pdf - beta * beta_pdf ) / ( beta_cdf - alpha_cdf ) 
+  variance = s * s * ( 1.0
+    + ( alpha * alpha_pdf - beta * beta_pdf ) / ( beta_cdf - alpha_cdf )
     - pow ( ( alpha_pdf - beta_pdf ) / ( beta_cdf - alpha_cdf ), 2 ) );
 
   return variance;
@@ -28534,8 +28534,8 @@ double normal_truncated_a_variance ( double mu, double s, double a )
 
   alpha_cdf = normal_01_cdf ( alpha );
 
-  variance = s * s * ( 1.0 
-    + alpha * alpha_pdf / ( 1.0 - alpha_cdf ) 
+  variance = s * s * ( 1.0
+    + alpha * alpha_pdf / ( 1.0 - alpha_cdf )
     - pow ( alpha_pdf / ( 1.0 - alpha_cdf ), 2 ) );
 
   return variance;
@@ -28844,8 +28844,8 @@ double normal_truncated_b_variance ( double mu, double s, double b )
 
   beta_cdf = normal_01_cdf ( beta );
 
-  variance = s * s * ( 1.0 
-    - beta * beta_pdf / beta_cdf 
+  variance = s * s * ( 1.0
+    - beta * beta_pdf / beta_cdf
     - pow ( beta_pdf / beta_cdf, 2 ) );
 
   return variance;
@@ -31097,15 +31097,15 @@ void psi_values ( int &n_data, double &x, double &fx )
 # define N_MAX 20
 
   static double fx_vec[N_MAX] = {
-    -10.42375494041108E+00, 
-     -5.289039896592188E+00, 
-     -3.502524222200133E+00, 
-     -2.561384544585116E+00, 
-     -1.963510026021423E+00, 
-     -1.540619213893190E+00, 
-     -1.220023553697935E+00, 
-     -0.9650085667061385E+00, 
-     -0.7549269499470514E+00, 
+    -10.42375494041108E+00,
+     -5.289039896592188E+00,
+     -3.502524222200133E+00,
+     -2.561384544585116E+00,
+     -1.963510026021423E+00,
+     -1.540619213893190E+00,
+     -1.220023553697935E+00,
+     -0.9650085667061385E+00,
+     -0.7549269499470514E+00,
      -0.5772156649015329E+00,
      -0.4237549404110768E+00,
      -0.2890398965921883E+00,
@@ -31590,9 +31590,9 @@ double r8_beta ( double x, double y )
     exit ( 1 );
   }
 
-  value = exp ( 
-      lgamma ( x ) 
-    + lgamma ( y ) 
+  value = exp (
+      lgamma ( x )
+    + lgamma ( y )
     - lgamma ( x + y ) );
 
   return value;
@@ -33499,7 +33499,7 @@ double r8poly_value_horner ( int m, double c[], double x )
 //
 //  Discussion:
 //
-//    The polynomial 
+//    The polynomial
 //
 //      p(x) = c0 + c1 * x + c2 * x^2 + ... + cm * x^m
 //
@@ -33507,7 +33507,7 @@ double r8poly_value_horner ( int m, double c[], double x )
 //
 //  Licensing:
 //
-//    This code is distributed under the GNU LGPL license. 
+//    This code is distributed under the GNU LGPL license.
 //
 //  Modified:
 //

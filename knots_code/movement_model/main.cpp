@@ -54,7 +54,7 @@ vector<vector<double> > landscape (gridSize, vector<double> (gridSize));
 void readLandscape(vector<vector<double> > &landscape)
 {
     //open input stream
-    ifstream ifs("../movement_model/landscape.csv");
+    std::ifstream ifs("~/git/knots/knots_code/movement_model/landscape.csv");
     if(!ifs.is_open()){
             cerr << "error: unable to open input stream\n";
             exit(EXIT_FAILURE);
@@ -189,10 +189,10 @@ int main()
     //read landscape
     readLandscape(landscape);
 
-        //write seed to log
-        clog << "random seed : " << seed << "\n";
-        //create rng and assign seed
-        rng.seed(seed);
+    //write seed to log
+    clog << "random seed : " << seed << "\n";
+    //create rng and assign seed
+    rng.seed(seed);
 
 
     //open ofstream

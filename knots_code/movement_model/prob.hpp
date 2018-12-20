@@ -1,4 +1,4 @@
-
+/* header file containing statistical distributions */
 
 double angle_cdf ( double x, int n );
 double angle_mean ( int a );
