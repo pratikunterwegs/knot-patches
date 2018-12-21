@@ -15,10 +15,17 @@ ggplot()+
   theme_void()+theme(legend.position = "none")
   #facet_wrap(~behav)
 
+library(ggthemes); library(extrafont)
+
+png(filename = "movement_model/fig2_elev_time.png", width = 800, height = 300, res = 150)
 data %>% group_by(id) %>% 
   mutate(distance = cumsum(stepLength)) %>% 
   ggplot()+
-  geom_point(aes(x = iteration, y = distance, col = factor(id)))
+  geom_path(aes(x = iteration, y = elev, group = factor(id)), size = 0.1)+
+  geom_line(data = data_frame(a = 1:780, b = (-4*0.8*(1:780/780 - 0.5)^2)+0.8), aes(x = a, y = b), col = 2, size = 1)+
+  theme_tufte(base_family = "serif")+
+  labs(list(x = "Time since low tide (mins)", y = "Height"))
+dev.off()
 
 count(data, landOpen)
 

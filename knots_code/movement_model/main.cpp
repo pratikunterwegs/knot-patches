@@ -331,7 +331,7 @@ int main()
 
     ofs.close();
 
-    //cout << "\nwriting food landscape after foraging...\n\n";
+    //cout << "\nwriting food landscape after foraging...\n\n";     //optional, write landscape after foraging
     //writeLandscape(food_landscape);
 
     return 0;

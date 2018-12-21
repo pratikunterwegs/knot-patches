@@ -5,35 +5,54 @@ library(tidyverse)
 library(NLMR)
 #'load raster
 library(raster)
-library(viridis)
-library(scico)
 
-#'make landscape
-landscape = nlm_gaussianfield(ncol = 100, nrow = 100, autocorr_range = 50)
+#### make tidal landscape ####
+landscape_tide = nlm_gaussianfield(ncol = 100, nrow = 100, autocorr_range = 50)
 
-landscape_df = as.matrix(landscape) %>% as.data.frame() %>% 
+#landscape_tide_df = as.matrix(landscape_tide) %>% as.data.frame() %>% 
+#  `colnames<-`(1:ncol(.)) %>% 
+#  mutate(row = 1:nrow(.)) %>% gather(col, val, -row) %>% 
+#  mutate(col = as.numeric(col))
+
+#plot(landscape)
+#'make matrix
+landscape_tide_csv = as.matrix(landscape_tide)
+
+#'write to csv
+write_delim(as.data.frame(landscape_tide_csv), path = "movement_model/tide_landscape.csv", col_names = F, delim = " ")
+
+
+# 3d plot tide landscape
+library(plot3D)
+library(RColorBrewer)
+persp3D(x = 1:100, y = 1:100, z = as.matrix(landscape_tide), zlim = c(0, 7), clim = c(0, 0.6), NAcol = "goldenrod", col = rev(brewer.pal(9, "GnBu")), phi = 10, box = F, legend = F)
+
+#### make food landscape ####
+#'map nlm gaussian field onto 2:20 as autocorr range
+food_landscapes = map(2:20, function(x){
+                        nlm_gaussianfield(ncol = 100, nrow = 100, autocorr_range = x)}) %>% 
+  map(as.matrix)
+
+#'write to csv using for loop
+#'
+for(i in 1:length(food_landscapes)){
+  write_delim(as.data.frame(food_landscapes[[i]]), path = paste("movement_model/food_landscape", i+ 1, ".csv", sep = ""), col_names = F, delim = " ")
+}
+
+landscape_food_df = as.matrix(landscape_food) %>% as.data.frame() %>% 
   `colnames<-`(1:ncol(.)) %>% 
   mutate(row = 1:nrow(.)) %>% gather(col, val, -row) %>% 
   mutate(col = as.numeric(col))
 
-ggplot(landscape_df)+
-  geom_tile(aes(x = col, y = row, fill = val))+
-  geom_contour(aes(x = col, y = row, z = val), binwidth = 0.2, col = 1, alpha = 0.2)+
-  scale_fill_scico(palette = "oleron", begin = 0, end = 0.8)+
-  #scale_fill_gradientn(colours = magma(9))+
-  theme_void()#+theme(legend.position = "none")
-
 #plot(landscape)
 #'make matrix
-landscape_csv = as.matrix(landscape)
+landscape_food_csv = as.matrix(landscape_food)
 
 #'write to csv
-write_delim(as.data.frame(landscape_csv), path = "movement_model/tide_landscape.csv", col_names = F, delim = " ")
+write_delim(as.data.frame(landscape_food_csv), path = "movement_model/food_landscape.csv", col_names = F, delim = " ")
 
 
-#### 3d plot landscape
-library(plot3D)
-
-persp3D(x = 1:100, y = 1:100, z = as.matrix(landscape), zlim = c(0, 10), clim = c(0, 0.3), NAcol = 2, col = rev(brewer.pal(9, "GnBu")), phi = 10)
-
-contour3D(x = 1:100, y = 1:100, z = as.matrix(landscape), zlim = c(0, 10), clim = c(0, 1), NAcol = 1, colvar = z)
+# 3d plot food landscape
+library(plot3D); library(viridis)
+library(RColorBrewer)
+persp3D(x = 1:100, y = 1:100, z = as.matrix(landscape_food), zlim = c(0, 20), clim = c(0, 1), NAcol = 2, col = brewer.pal(9, "RdYlBu"), phi = 10, box = F, legend = F)
