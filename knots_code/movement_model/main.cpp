@@ -1,8 +1,6 @@
 
 /* a program that simulates agents with expectations moving in a landscape
  * with resource heterogeneity.
- * the landscape is discrete space, agents move in continuous space
- * agent position is rounded to discrete space
  * individuals begin with an intrinsic expectation,
  * individuals appear on a grid tile,
  * individuals sample the grid tile (with some error?),
@@ -10,8 +8,6 @@
  * individuals update their expectation based on what they find
  * if higher, consume unit resource, check if grid now lower than expectation
  * if lower, move to a random patch
- *
- * MOVEMENT RULES OR PATCH LEAVING RULES
 */
 
 //load libs
@@ -25,24 +21,26 @@
 #include <algorithm>
 #include <cmath>
 
+//init the rng
 std::mt19937_64 rng;
 
 using namespace std;
 
-//#include "prob.hpp" //provides the von Mises distribution
-
 //system params
 const int nAgents = 20;                         //how many Birds
 const int gridSize = 100;                       //grid size
-const double maxStepLength = 10.0;               //max dist (in grid cells) a Bird can move; can be double
+const double maxStepLength = 50.0;               //max dist (in grid cells) a Bird can move; can be double
 const int nSims = 1;
-const int posPerHour = 60;                      //how many locations per hour? ATLAS provides 3600 (1 Hz), 900 (.25 Hz)
+const double posPerHour = 60;                      //how many locations per hour? ATLAS provides 3600 (1 Hz), 900 (.25 Hz)
                                                 //here we use only 60 per hour (0.0167 Hz)
-const int tidalCycle = 13;                      //duration in hours of the tidal cycle = mean time between 2 high/low tides
-const double maxWaterHeight = 0.8;              //the max height of landscape covered by water; the high tide contour
+const double tidalCycle = 13;
+const double iNtidalCycles = 10; //duration in hours of the tidal cycle = mean time between 2 high/low tides
+const double maxWaterHeight = 0.9;              //the max height of landscape covered by water; the high tide contour
 
-const int nIterations = posPerHour * tidalCycle; //positions per indiv in a tidal cycle
-const double tidalTimeIncrement = (1.0 / static_cast<double> (nIterations));
+const int nIterations = posPerHour * tidalCycle * iNtidalCycles; //positions per indiv in a tidal cycle
+//const double tidalTimeIncrement = (1.0 / static_cast<double> (nIterations));
+
+const double Pi = 3.142;
 
 //set up random number generator
 chrono::high_resolution_clock::time_point tp =
@@ -55,19 +53,19 @@ int vmSeed = static_cast<int> (seed);
 class Mudflat
 {
 public:
-    double food;        //the resource value
-    double height;      //the elevation, determines covered by water or no
-    bool open;          //is the landscape open to agents?
+    double food;                                //the resource value
+    double height;                              //the elevation, determines covered by water or no
+    bool open;                        //ease or prob of finding food in a grid cell
 };
 
 //init a grid landscape of n^2 cells
 vector<vector<Mudflat> > landscape (gridSize, vector<Mudflat> (gridSize));
 
 // FUNCTION TO READ THE FOOD LANDSCAPE
-void readFoodLandscape(vector<vector<Mudflat> > &landscape)
+void readFoodLandscape(vector<vector<Mudflat> > &landscape, string &file)
 {
     //open input stream
-    ifstream ifs("../movement_model/food_landscape.csv");
+    ifstream ifs(file.c_str());
     if(!ifs.is_open()){
             cerr << "error: unable to open food landscape input stream\n";
             exit(EXIT_FAILURE);
@@ -118,7 +116,7 @@ private:
     int x; int y;                       //coordinates
     double totalIntake;                 //total 'energy' level
     double sample; double expec;        //sample from the landscape; intrinsic expectation value
-    int stepLength;                     //distance travelled
+    double stepLength;                     //distance travelled
     int angle;                          //not really an angle! a direction 0 - 7
     double height;                      //elevation at which bird is
 
@@ -133,7 +131,6 @@ public:
 };
 
 //write class functions
-//read in ofstreams
 //func to initialise 20 Birds at random points
 void Bird::initBird()
 {
@@ -151,6 +148,8 @@ void Bird::initBird()
 //func to sample landscape
 void Bird::sampleLandscape()
 {
+    //reduce some intake as constant
+    totalIntake -= 0.01;
     //sample landscape cell for food and height
     sample = landscape[x][y].food;
 
@@ -160,7 +159,7 @@ void Bird::sampleLandscape()
 //function to update expectation
 void Bird::updateExpectation()
 {
-    expec = (expec + sample)/2.0;
+    expec = (expec * 0.5 + 0.5 * sample);
 }
 
 //function to consume food
@@ -195,26 +194,27 @@ void Bird::moveBird()
             }
 
             //pick a distance between 0 and max steplength
-            exponential_distribution <double> distPicker (1 - diff);
-            stepLength = static_cast<int> (round(distPicker(rng)));
+            //exponential_distribution <double> distPicker (1 - diff);
+            //stepLength = distPicker(rng);
+            int distance = 1;
 
             //get new position
             switch (angle) {
             //0 = y+1, x+0
-            case 0: y = (y + stepLength) % gridSize ; break;
+            case 0: y = (y + distance) % gridSize ; break;
                 //1 =
-            case 1: x = (x + stepLength) % gridSize; y = (y + stepLength) % gridSize; break;
-            case 2: x = (x + stepLength) % gridSize; break;
-            case 3: x = (x + stepLength) % gridSize; y = (y - stepLength + gridSize) % gridSize; break;
-            case 4: y = (y + stepLength) % gridSize; break;
-            case 5: x = (x - stepLength + gridSize) % gridSize; y = (y - stepLength + gridSize) % gridSize; break;
-            case 6: x = (x - stepLength + gridSize) % gridSize; break;
-            case 7: x = (x - stepLength + gridSize) % gridSize; y = (y + stepLength + gridSize) % gridSize; break;
+            case 1: x = (x + distance) % gridSize; y = (y + distance) % gridSize; break;
+            case 2: x = (x + distance) % gridSize; break;
+            case 3: x = (x + distance) % gridSize; y = (y - distance + gridSize) % gridSize; break;
+            case 4: y = (y + distance) % gridSize; break;
+            case 5: x = (x - distance + gridSize) % gridSize; y = (y - distance + gridSize) % gridSize; break;
+            case 6: x = (x - distance + gridSize) % gridSize; break;
+            case 7: x = (x - distance + gridSize) % gridSize; y = (y + distance + gridSize) % gridSize; break;
             default: cerr << "could not choose a step direction!" << endl;
                 exit(EXIT_FAILURE);
             }
             //bird loses some 'energy' when it moves
-            totalIntake = totalIntake - 0.001 * static_cast<double> (stepLength);
+            //totalIntake = totalIntake - (0.001 * stepLength);
         }
         while( landscape[x][y].open == false );
     }
@@ -246,20 +246,16 @@ int main()
     //get vector of water heights
     for(int tidalTime = 0; tidalTime < nIterations; ++tidalTime)
     {
-        double scaledTime = tidalTime/780.0;
+        //double scaledTime = tidalTime/static_cast<double>(nIterations);
 
-        waterHeight[tidalTime] = -4.0 * maxWaterHeight * pow((scaledTime - 0.5), 2) + maxWaterHeight;
+        waterHeight[tidalTime] = maxWaterHeight - (0.45 * cos(((2.0 * Pi)/780.0) * tidalTime ) + 0.45);
 
     }
     cout << "calculated water heights" << endl;
 
-    //read food_landscape
-    readFoodLandscape(landscape);
-    cout << "read in the food landscape..." << endl;
-
     //read tidal/bathymetric landscape
     readTideLandscape(landscape);
-    cout << "read in the tidal landscape..." << endl;
+    cout << "read in the tidal landscape...\n" << endl;
 
     //write seed to log
     clog << "random seed : " << seed << "\n";
@@ -271,65 +267,82 @@ int main()
     ofstream ofs;
     ofs.open("../movement_model/data_sim.csv");
     //column names
-    ofs << "sim, iteration, id, x, y, elev, landOpen, stepLength, direction, expectation, sample, totalIntake"
+    ofs << "sim, land_autocorr, iteration, time, id, x, y, elev, landOpen, stepLength, direction, expectation, sample, totalIntake"
         << endl;
     ofs.close();
 
-    //this level controls the number of sims, or tidal cycles
+
+    //this level controls the autocorrelation level
     for(int sim = 0; sim < nSims; ++sim)
     {
-        //init Birds
-        for(int i = 0; i < nAgents; ++i)
+        //set the filename for the food landscape
+        string file ("../movement_model/food_landscape" + to_string(sim+2) + ".csv");
+
+        cout << "read input food landscape as...\n" << file.c_str() << endl;
+
+        //read food_landscape
+        readFoodLandscape(landscape, file);
+        cout << "read in the food landscape..." << endl;
+
+        // this level controls the replicates
+        for(int j = 0; j < 1; ++j)
         {
-            population[i].initBird();
-        }
-        cout << "simulation run..." << sim << endl;
-        //open ofstream
-
-        //LOOP THROUGH THE TIDAL CYCLE
-        for(int it = 0; it < nIterations; ++it)
-        {
-            //get water height
-            cout << "water height is..." << waterHeight[it] << endl;
-
-            //change the value of landscape cells to closed if height < water height
-            for(int gridRow = 0; gridRow < gridSize; ++gridRow)
-            {
-                for(int gridCol = 0; gridCol < gridSize; ++gridCol)
-                {
-                    landscape[gridRow][gridCol].open = landscape[gridRow][gridCol].height <
-                            waterHeight[it] ? false : true;
-                }
-            }
-
-
-            cout << "sim... " << sim << " iteration... " << it << endl;
+            //init Birds
             for(int i = 0; i < nAgents; ++i)
             {
-                //print to file
-                ofs.open("../movement_model/data_sim.csv", ofstream::out|ofstream::app);
-                ofs << sim << "," << it << "," << i;
-                ofs.close();
-                cout << sim << " " << it << " " <<  i << endl;
+                population[i].initBird();
+            }
+            cout << "simulation run..." << sim << endl;
+            //open ofstream
 
-                population[i].sampleLandscape();
-                population[i].updateExpectation();
-                population[i].moveBird();
+            //LOOP THROUGH THE TIDAL CYCLE
+            for(int it = 0; it < nIterations; ++it)
+            {
+                //get water height
+                cout << "water height is..." << waterHeight[it] << endl;
+
+                //change the value of landscape cells to closed if height < water height
+                for(int gridRow = 0; gridRow < gridSize; ++gridRow)
+                {
+                    for(int gridCol = 0; gridCol < gridSize; ++gridCol)
+                    {
+                        landscape[gridRow][gridCol].open = landscape[gridRow][gridCol].height <
+                                waterHeight[it] ? false : true;
+                    }
+                }
+
+                //display which sim is being run
+                cout << "sim... " << sim << " iteration... " << it << endl;
+                for(int i = 0; i < nAgents; ++i)
+                {
+                    //print to file
+                    ofs.open("../movement_model/data_sim.csv", ofstream::out|ofstream::app);
+                    ofs << sim << "," << sim+2 << "," << j << "," << it << "," << i;
+                    ofs.close();
+
+                    //print to screen!
+                    cout << sim << " " << j << " " << it << " " <<  i << endl;
+
+                    population[i].sampleLandscape();
+                    population[i].updateExpectation();
+                    population[i].moveBird();
 
 
-                population[i].writePos();
-                ofs << endl;
-                //cout << "printed it " << it << " indiv " << i << endl;
+                    population[i].writePos();
+                    ofs << endl;
+                    //cout << "printed it " << it << " indiv " << i << endl;
+
+                }
+
 
             }
-
+            //ofs << endl;
 
         }
-        //ofs << endl;
-
     }
 
     ofs.close();
+    cout << "all sims run and complete...move to R script to run models and make plots\n\n";
 
     //cout << "\nwriting food landscape after foraging...\n\n";     //optional, write landscape after foraging
     //writeLandscape(food_landscape);

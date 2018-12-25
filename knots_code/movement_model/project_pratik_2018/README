@@ -1,0 +1,17 @@
+README
+
+Written by Pratik Gupte
+Contact: p.r.gupte@rug.nl OR pratik.gupte@nioz.nl
+
+C++ for biologists project report and code folder
+
+Files:
+
+project_code_pratik_01_prep_landscape.r  #'generates neutral landscapes
+project_code_pratik_02_MAIN.cpp          #'main CPP source file
+project_code_pratik_03_plotdata.r        #'makes figs 2 and 3
+
+fig1, fig2, fig3              #'self exploratory
+report_cpp_biol_pratik.md     #'report in plain text format
+                              #'can be built with pandoc
+project_ciation.bib           #'project references
