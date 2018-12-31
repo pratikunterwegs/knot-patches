@@ -1,0 +1,13 @@
+---
+title: "Knots on the sands of time: An Introductory Essay"
+author: Pratik R Gupte
+institute: GELIFES -- RUG
+documentclass: book
+geometry: margin=3cm
+papersize: a4
+mainfont: Vollkorn
+sansfont: Noto Sans
+monofont: Fira Code
+indent: true
+fontsize: 10
+---
