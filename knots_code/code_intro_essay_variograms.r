@@ -9,22 +9,34 @@ landscape_params = rep(data_frame(acr = (c(2, 20, 80))) %>%
 
 landscapes = map(landscape_params, function(x) {nlm_gaussianfield(1e2, 1e2, autocorr_range = x$acr, rescale = T)})
 
+#### plot direct from raster ####
+{
+  x11()
+  par(mfrow = c(10,10))
+  for(i in 1:100){
+    plot(landscapes[[i]])
+  }
+}
+
 #'raster to df function
 raster_to_df = function(x){
   as.matrix(x) %>% as.data.frame() %>% `colnames<-`(1:ncol(.)) %>% mutate(row = 1:dim(.)[1]) %>% gather(col, val, -row) %>% mutate(col = as.numeric(col))
 }
 
+#### make df from raaster ####
 landscape_df = map(landscapes, raster_to_df)
 
-landscape_df = landscape_df %>% bind_rows()
 
 landscape_params = landscape_params %>% bind_rows() %>% mutate(id = paste(stringi::stri_pad(acr, 3, pad = 0)))
+
+landscape_df = landscape_df %>% bind_rows() #%>% mutate(id = paste(stringi::stri_pad(acr, 3, pad = 0), stringi::stri_pad(mag, 2, pad = 0), sep = "_"))
 
 landscape_df = landscape_df %>% 
   mutate(id = rep(landscape_params$id, each = 1e4)) %>% 
   mutate(acr = as.numeric(substr(id, 1, 3)))
 
 library(RColorBrewer)
+library(viridis); library(plot3D)
 
 fig2a = ggplot(landscape_df)+
   geom_raster(aes(x = col, y = row, fill = plyr::round_any(val, 0.1)))+
@@ -33,6 +45,8 @@ fig2a = ggplot(landscape_df)+
   theme_pub()+theme(legend.position = "none")+
   labs(list(x = NULL, y = NULL, title = "(a)"))
 
+#### plot variability ####
+landscape_df %>% group_by(acr, size) %>% summarise(var = var(val)) %>% ggplot()+geom_col(aes(x = 1, y = var))+facet_grid(acr~size)
 
 library(gstat)
 for(i in 1:length(landscapes)){

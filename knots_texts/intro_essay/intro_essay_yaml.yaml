@@ -13,6 +13,7 @@ monofont: Source Code Pro Medium
 indent: false
 fontsize: 10
 bibliography: /home/pratik/MyLibrary2019.bib
+csl: oikos-3.csl
 header-includes:
   - \usepackage[utf8]{inputenc}
   - \usepackage[switch]{lineno}
