@@ -1,0 +1,7 @@
+pandoc codes for building introductory Essay
+
+md to tex
+pandoc --natbib introductory_essay_2019.md  -o introductory_essay_2019.tex -s -S
+
+tex to pdf
+pandoc introductory_essay_2019.tex --include-in-header=header.tex -R --csl=journal-of-ornithology.csl -o test.pdf -s -S --latex-engine=xelatex --bibliography=citationLibPrg2019.bib --variable documentclass=scrartcl

@@ -2,23 +2,23 @@
 title: Introductory Essay
 author: Pratik R Gupte
 date: January 2019
-documentclass: scrreprt
+documentclass: scrartcl
 classoption: twoside
 geometry: margin=3cm
 papersize: a4
-mainfont: IBM Plex Serif
-sansfont: Fira Sans
-monofont: Source Code Pro Medium
 indent: false
 fontsize: 10
-bibliography: /home/pratik/MyLibrary2019.bib
+bibliography: /home/pratik/citation_lib_prg2019.bib
 header-includes:
   - \usepackage[utf8]{inputenc}
   - \usepackage[switch]{lineno}
   - \usepackage{setspace}
+  - \usepackage{graphicx}
   - \setlength{\parskip}{1em}
   - \setlength\linenumbersep{1cm}
-  - \renewcommand\linenumberfont{\normalfont\small\sffamily}
+  - \renewcommand\linenumberfont{\normalfont\footnotesize\sffamily}
+  - \setmainfont{Source Serif Pro}
+  - \setsansfont{IBM Plex Sans}
 ---
 
 \newpage
@@ -66,7 +66,11 @@ environmental change
 
 \newpage
 
-\part*{Summary}\label{summary}
+\tableofcontents
+
+\newpage
+
+\part*{Summary}
 
 The ***movement of animals*** has always fascinated humans, but modern
 biology has only now come to actively study movement as the linchpin of
@@ -85,7 +89,9 @@ evolve in such landscapes, how they affect the landscapes on which they
 evolve, as well as how the interaction of the two gives rise to emergent
 phenomena such as structured communities.
 
-# Introduction
+\linenumbers
+
+\part{Introduction}
 
 This essay, an introduction to my work over the next two years, is
 organised over the following parts: first, the ***Introduction***
@@ -96,7 +102,7 @@ section, ***Towards a model of wader movement***, explains the
 conceptual and practical aspects of the models and empirical methods I
 propose to implement towards goals in Section 2.
 
-## Animal movement
+\section{Animal movement}
 
 Animal movement across spatio-temporal scales – from seasonal migration,
 to breeding aggregations, to diurnal cycles – have been an important
@@ -132,10 +138,12 @@ high-resolution animal tracking in particular, have led to remarkable
 insights into the detailed sub-units of movement behaviour, such as the
 energetics of predation and locomotion [see e.g. @williams2004; @scantlebury2014].
 
-![The movement ecology paradigm places observed movement (*path: U*) as
-both a consequence of prior factors, and a contributor to future ones.
-From Nathan et al.
-(2008).[]{data-label="fig:fig02nathanetal2008"}](fig02_nathan_etal_2008){width="0.7\linewidth"}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{fig02_nathan_etal_2008}
+	\caption{The movement ecology paradigm places observed movement (\emph{path: U}) as both a consequence of prior factors, and a contributor to future ones. From Nathan et al. (2008).}
+	\label{fig:fig02nathanetal2008}
+\end{figure}
 
 Despite advances in empirical methods, animal movement studies are still
 subject to limitations of scale. Among these are emergent group-size
@@ -147,7 +155,7 @@ movement studies to answering at most one MEP question at a time [but
 see @fryxell2008; @strandburg-peshkin2015a; @curtin2018]. This is linked to the choice of study system, which among
 vertebrates has been restricted by the technical difficulty in hewing to
 the 3% body-mass rule [@naef-daenzer2001]. Finally, animal
-movement has been captured by the movement __*ecology*__ paradigm because of
+movement has been captured by the movement *ecology* paradigm because of
 the difficulty in studying movement at evolutionary timescales. Here,
 simulation models can help to shine “the light of ecology” on
 evolutionary biology [@grant2008], by uncovering the
@@ -157,7 +165,7 @@ extrinsic drivers of movement mode [@guttal2012], the
 evolutionary effects of higher trophic levels [@ioannou2012], and
 the evolution of movement rules [@dejager2011; @netz2017].
 
-## Movement as personality
+\section{Movement as personality}
 
 The work cited above may be safely claimed to make at least one of two
 assumptions; the first is variation in traits around a ‘golden mean’ is unimportant noise. The second is the
@@ -219,14 +227,18 @@ earlier @wolf2007a] and fitness outcomes in landscapes that
 vary in spatial *predictability* can have consequences at the population
 level – from social networks to community composition.
 
-![Spiegel et al. (2017) lay out a framework linking personality,
-movement, and resulting interactions. Personality may be initially
-measured in terms of movement, but the underlying causes can impact
-larger-scale processes such population spatial
-structure.](fig01_spiegel_etal_2017){width="0.7\linewidth"}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{fig01_spiegel_etal_2017}
+	\caption{Spiegel et al. (2017) lay out a framework linking personality,
+  movement, and resulting interactions. Personality may be initially
+  measured in terms of movement, but the underlying causes can impact
+  larger-scale processes such population spatial
+  structure.}
+	\label{fig:fig01_spiegel_etal_2017}
+\end{figure}
 
-Modelling movement
-==================
+\section{Modelling movement}
 
 Many aspects of personality and movement can be
 explored using the waders *Charadrii,* and especially the sandpipers
@@ -282,7 +294,7 @@ results – such as the evolution of rich movement dynamics and
 alternative strategies, even when beginning from largely similar
 populations [@netz2017].
 
-# About this project
+\part{About this project}
 
 In this section, I outline my approaches to examine the ***evolution of
 movement types*** [_sensu_ @wolf2010; @getz2015] in
@@ -298,7 +310,7 @@ empirical data on the foraging and movement ecology of red knots that
 can inform modeling approaches and which may be used to test model
 predictions.
 
-## Abstract models
+\section{Abstract models}
 
 I will begin with an abstract approach and some basic questions.
 Modelling agent movement as the output of an ANN which takes
@@ -329,13 +341,13 @@ following:
     made dependent on instantaneous state, it may be constrained by
     energy reserves, leading to a state-behaviour feedback. Further,
     intake may face digestive constraints that can strongly affect
-    behaviour [@vangils2004]. I will investigate __whether these feedbacks can produce behaviour-physiology clustering__ previously proposed in this system [@bijleveld2015b].
+    behaviour [@vangils2004]. I will investigate whether these feedbacks can produce behaviour-physiology clustering previously proposed in this system [@bijleveld2015b].
 
 3.  ***How do movement type frequencies develop over ecological and
 evolutionary time-scales?***
-    Foragers moving about a resource landscape can modify or introduce spatial patterns over time [@dejager2011; @getz2015; @netz2017], yet effects such as facilitation remain understudied. Empirical results suggest top-down landscape structuring, such as by depletion, can be rapid [@bijleveld2015]. Starting with initially unstructured landscapes, I will investigate how structure is modified using a relaxed version of **(1)** in which __agents deplete their landscape at different rates__. A natural consequences might be that foragers specialised to particular regimes of landscape structure could see a change in their profitability multiple times within their lives. When **(1)** includes the depletion element of **(3)**, agents might be expected to evolve a median (bet-hedged) phenotype that ensures profitability across landscape structures. This question is then aimed at investigating both the landscapes and agents:
+    Foragers moving about a resource landscape can modify or introduce spatial patterns over time [@dejager2011; @getz2015; @netz2017], yet effects such as facilitation remain understudied. Empirical results suggest top-down landscape structuring, such as by depletion, can be rapid [@bijleveld2015]. Starting with initially unstructured landscapes, I will investigate how structure is modified using a relaxed version of **(1)** in which agents deplete their landscape at different rates. A natural consequences might be that foragers specialised to particular regimes of landscape structure could see a change in their profitability multiple times within their lives. When **(1)** includes the depletion element of **(3)**, agents might be expected to evolve a median (bet-hedged) phenotype that ensures profitability across landscape structures. This question is then aimed at investigating both the landscapes and agents:
 
-    1.  ***How does landscape structure change over ecological and
+    a.  ***How does landscape structure change over ecological and
         evolutionary time?*** In this scenario, I fall back upon the red
         knot system as a guide, that foragers are not always present on
         the landscape and the resource has time to regenerate. Such
@@ -344,7 +356,7 @@ evolutionary time-scales?***
         or patch size; see @legendre1993] when agents are themselves
         evolving upon such landscapes.
 
-    2.  ***How does the number and phenotype of movement types change
+    b.  ***How does the number and phenotype of movement types change
         over evolutionary time?*** Agents’ consumption rates (set to be
         identical) could lead to different rates of landscape change in
         the scenario outlined above. Foragers would then evolve to
@@ -352,9 +364,9 @@ evolutionary time-scales?***
         the axis of patch size (autocorrelation range, or
         predictability) due to agent foraging, the spatial conditions
         that evolved types in **(1)** might recur multiple times. This
-        should allow the investigation of __whether there is a change in selection pressures on movement types__, the time-scale at which it occurs, and whether it is mediated by agents’ effect on the landscape.
+        should allow the investigation of whether there is a change in selection pressures on movement types, the time-scale at which it occurs, and whether it is mediated by agents’ effect on the landscape.
 
-    3.  ***Do critical transitions occur in the number or profitability
+    c.  ***Do critical transitions occur in the number or profitability
         of movement types?*** As agent populations evolve movement types
         rather than bet-hedged phenotypes, these types may yet show
         sufficient flexibility to behaviourally buffer against
@@ -368,11 +380,11 @@ evolutionary time-scales?***
         undergo abrupt transitions [@scheffer2009] to an alternative
         stable state. Behavioural changes relating to movement strategy
         occur in wader systems [@oudman2018], but the
-        process is not fully understood. I will look into __whether changes in such systems can then be characterised as critical transitions__. The same
+        process is not fully understood. I will look into whether changes in such systems can then be characterised as critical transitions. The same
         approach can be applied to the landscape, to study whether
         landscapes catastrophically shift to another state [as in @vandekoppel1997; @jefferies2006].
 
-## Wader models and data
+\section{Wader models and data}
 
 Following the steps above, I will modify the models to simulate the red
 knot system. Important conceptual changes include the addition of
@@ -391,7 +403,7 @@ Finally, I will turn to the empirical red knot tracking data and the
 benthic sampling data to investigate whether the models sketched above
 correspond to reality. The following questions suggest themselves.
 
-1.  ***Do red knots show movement types that can be identified from a
+4.  ***Do red knots show movement types that can be identified from a
     combination of data sources?*** This question entails cooperation
     with my co-PhD student. Using scores from behavioural assays, state
     variables such as gizzard mass or body mass, and movement variables
@@ -399,13 +411,13 @@ correspond to reality. The following questions suggest themselves.
     whether knots evolved in models occupy comparable parameter spaces
     to real birds.
 
-2.  ***Do red knots show assortative association based on movement
+5.  ***Do red knots show assortative association based on movement
     type?*** Here, I investigate expectations from @spiegel2017, that association and the strength of social networks is
     strongly influenced by personality and the 'clumped-ness' of the
     landscape. This question is suitable to both an experimental and
     field tracking approach.
 
-# Towards mechanistic movement models
+\part{Towards mechanistic movement models}
 
 In each of these sub-sections, ***Modelling landscapes*** and
 ***Modelling agents***, I will lay out how I propose to go about
@@ -422,9 +434,9 @@ predictions of later models may have to be adjusted accordingly.
 
 Another important point is that these are intended to be 'mechanistic models of intermediate complexity'. For example, they will explicity model a mechanism of cue sensing, which was only implicitly assumed in @botero2015. Complexity, though significantly greater than Botero and colleagues' work, will have an upper limit set near that of @netz2017 or @vandenberg2015a.
 
-## Modelling landscapes
+\section{Modelling landscapes}
 
-### Concept: Spatial predictability
+\subsection{Concept: Spatial predictability}
 
 Spatial pattern and scale matter in ecology [@levin1992], and foragers
 benefit from responding to spatial structure in resource landscapes in
@@ -439,13 +451,13 @@ measure [@legendre1993], and has been widely interpreted as
 corresponding to patch size [@kraan2009; @kraan2009a; @vangils2010; @bijleveld2016; @oudman2018].
 This idea is easily illustrated by creating neutral landscapes with
 varying autocorrelation ranges – landscapes with a high autocorrelation
-range have larger patches, __and are more predictable__ (see Figure 3). In the wader-mudflat system, the mechanism
+range have larger patches, and are more predictable (see Figure 3). In the wader-mudflat system, the mechanism
 underlying patch size does not need to be explicitly modelled to
 implement patch sizes. It suffices to understand that macrobenthic
 abundance is controlled by bottom-up processes over which agents have
 little influence.
 
-### Concept: Temporal predictability and change
+\subsection{Concept: Temporal predictability and change}
 
 The assumption of resources being independent of foraging agents is
 plainly ridiculous [@vandekoppel1997; @jefferies2006; @bijleveld2015]. However, the proposed system is also far
@@ -456,19 +468,19 @@ seasonal growth and decline, or within-resource interactions (such as
 competition and facilitation) are the other major mechanism of temporal
 change in landscapes.
 
-In initial models, __agents will _not_ deplete the landscape__. However, this would result in the trivial solution of agents remaining stationary at the first point where resources were above some threshold value. Models without depletion must then include
+In initial models, agents will _not_ deplete the landscape. However, this would result in the trivial solution of agents remaining stationary at the first point where resources were above some threshold value. Models without depletion must then include
 some variation in the resource landscape such that agents are forced to
-move. This can be achieved by having the __landscape change, either deterministically or stochastically__ [see parellel with @botero2015]. The first approximates
+move. This can be achieved by having the landscape change, either deterministically or stochastically [see parellel with @botero2015]. The first approximates
 changes such as might be driven by seasonality, while the second is more
 akin to resource redistribution. The first approach allows near perfect
 prediction of resource values between times *t* and *t+1*. In the second
 case, if the ‘redistribution’ is highly variable, i.e., values at a
 coordinate at a time *t* have a wide range of correlation with values at
-time *t+1*, temporal predictability is reduced. The two extreme cases allow the __examination of the interacting effects of spatial and temporal predicatability__, and identification of the more
+time *t+1*, temporal predictability is reduced. The two extreme cases allow the examination of the interacting effects of spatial and temporal predicatability, and identification of the more
 interesting regime for further investigation.
 
 In a model tailored to waders, the situation is compounded by another
-source of temporal variation: the __tidal cycle__. This highly periodic phenomenon both
+source of temporal variation: the tidal cycle. This highly periodic phenomenon both
 gives and takes away: water restricts exploitation of parts of
 the landscape (most waders cannot swim; but see interesting exception of phalaropes _Phalaropus_). However, the tide also allows waders to use their
 pressure-sensitive bills [@piersma1998] to find prey in the
@@ -478,38 +490,43 @@ knots to probe for food. At smaller scales, this prey-sensing mechanism severely
 but also create opportunities – when modelling agents, and these are
 discussed later.
 
-### Practice: Modelling spatio-temporal change in landscapes
+\subsection{Practice: Modelling spatio-temporal change in landscapes}
 
 Both resource and tidal landscapes may be implemented in continuous
-space. While implemented in some models [e.g. @spiegel2013; @spiegel2017], __continuous space creates a mismatch__ of resolution between simulations and empirical data, which is an
+space. While implemented in some models [e.g. @spiegel2013; @spiegel2017], continuous space creates a mismatch of resolution between simulations and empirical data, which is an
 important consideration in this project. Since data from benthic
 sampling can be converted into predicted intake rate rasters with a
 maximum resolution of 10 m [see method in @bijleveld2012; examples in @oudman2018], the resource landscape is best modelled
-as a __two-dimensional square grid__ of side *n* cells, a common approach [@nolet2002; @vangils2010; @getz2015; @netz2017]. Grid values can be modelled
+as a two-dimensional square grid of side *n* cells, a common approach [@nolet2002; @vangils2010; @getz2015; @netz2017]. Grid values can be modelled
 using flexible tools [@sciaini2018] as Gaussian random fields
 [@turner2015d; @kery2019]. Working on the logic of
 infinite extent [@nolet2006], the grid boundaries are periodic.
 Landscapes can thus easily be assigned an autocorrelation regime. Grid
 cells in this landscape are initialised with certain values of resource
-between 0.0 and 1.0. This allows the __subsequent mapping of empirical values__ using a variety of functions, such
+between 0.0 and 1.0. This allows the subsequent mapping of empirical values using a variety of functions, such
 as the sigmoidal [@gershenfeld1999].
 
-![Examples of Gaussian random field neutral landscapes generated in R
-following methods from Sciaini et al. (2018). **(a)** Landscapes of side
-100 cells, with increasing autocorrelation range (numbers above panels).
-Larger autocorrelation ranges result in smoother transitions between
-areas of high (blue) and low (red) resources, and thus larger patches.
-**(b)** Spatial autocorrelation in simulated landscapes; each panel
-corresponds to the one directly above in **(a)**. Compare with figures
-in Oudman et al.
-(2018).](intro_essay_figure3){width="0.7\linewidth"}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{intro_essay_figure3}
+	\caption{Examples of Gaussian random field neutral landscapes generated in R
+  following methods from Sciaini et al. (2018). \textbf{(a)} Landscapes of side
+  100 cells, with increasing autocorrelation range (numbers above panels).
+  Larger autocorrelation ranges result in smoother transitions between
+  areas of high (blue) and low (red) resources, and thus larger patches.
+  \textbf{(b)} Spatial autocorrelation in simulated landscapes; each panel
+  corresponds to the one directly above in \textbf{(a)}. Compare with figures
+  in Oudman et al. (2018).}
+	\label{fig:intro_essay_figure3}
+\end{figure}
 
-The tidal landscape’s elevation is easily __modelled as a distance or edge gradient__ [@etherington2015].
+
+The tidal landscape’s elevation is easily modelled as a distance or edge gradient [@etherington2015].
 This creates a region of high elevation which is always exposed,
 approximating islands such as Griend where waders roost. This model will
 use a circular distance gradient that avoid issues arising from
 landscape edges. Temporal change in both water level and resource
-landscapes can initially be considered to be the __output of a sine function__ with a wavelength *R*
+landscapes can initially be considered to be the output of a sine function with a wavelength *R*
 [as in @botero2015]: the “relative timescale of environmental
 change” of each. For water level, the wavelength would be the number of
 discrete model timesteps contained in one unit of ecological time. Since
@@ -517,13 +534,13 @@ the tidal cycle (approx. 13 hours off Griend in 2017; *unpublished data*) is a
 prominent feature, it is intuitive to also consider this a unit of
 ecological time, with a single non-breeding season comprising some 6 – 8
 months (approx. 450 tidal cycles). Each season would then be a unit of
-evolutionary time. In the case of the resource landscape, the __wavelength can be set to vary across a range__ to mimic
+evolutionary time. In the case of the resource landscape, the wavelength can be set to vary across a range to mimic
 either seasonal (renewal each season) or long-term (climatic cycles)
 dynamics, corresponding very well to @botero2015.
 
-## Modelling agents
+\section{Modelling agents}
 
-### Concept: Agent Based Models
+\subsection{Concept: Agent Based Models}
 
 I will implement ABMs (see Section 2.3) first for abstract foragers, and
 second for foragers similar to waders. While waders are an ideal system
@@ -542,7 +559,7 @@ elides implicit assumptions about the functional response of agents to
 their environment. This environment may include other agents, allowing
 for facilitation by local enhancement [@beauchamp2013].
 
-### Concept: Agent-resource and agent-agent interactions
+\subsection{Concept: Agent-resource and agent-agent interactions}
 
 In the models sketched above I began with the assumption that while
 especially large or numerous foragers (ecosystem engineers) are
@@ -550,14 +567,14 @@ capable of transforming their resource landscapes [@laundre2001; @jefferies2006;
 all consumer-resource systems. However, there is evidence from
 observational studies at small spatial scales (approx. 0.067 km^2^) that
 medium-sized foragers can significantly deplete their resources [@guillemette1996; @jefferies2006]. Markedly smaller waders too can deplete resources over small
-spatio-temporal scales [@szekely1992; @vangils2003; @bijleveld2015]. Thus, in more realistic models, I will __allow foragers to deplete their landscapes__.
+spatio-temporal scales [@szekely1992; @vangils2003; @bijleveld2015]. Thus, in more realistic models, I will allow foragers to deplete their landscapes.
 This depletion will replace the sinusoidal temporal variation I proposed
 for initial abstract models, and will more
 realistically approximate seasonal dynamics where resource replenishment
 occurs in a single growing period, and further declines are largely due
 to harvesting.
 
-__Depletion indtroduces the prospect of exploitative competition__ [@keddy2001], where agents affect each other by consuming shared
+Depletion indtroduces the prospect of exploitative competition [@keddy2001], where agents affect each other by consuming shared
 resources. Its inclusion in the simplest models has stark
 eco-evolutionary consequences – for example, @getz2015 showed
 that larger population sizes (and thus higher competition) resulted in
@@ -568,24 +585,24 @@ agents on the cell. Interference competition is widely seen in waders
 time models [@vahl2006]. I will leave this aspect of wader ecology out
 of the model (but see next sub-section).
 
-### Concept: Modelling interference competition
+\subsection{Concept: Modelling interference competition}
 
 I intend to supervise a master’s student with an interest in
-evolutionary game theory, and modelling skills. This master’s project will __extend the work of @vahl2006__, and take
+evolutionary game theory, and modelling skills. This master’s project will extend the work of @vahl2006, and take
 into account the following: first, that mechanisms can strongly
 influence the dynamics of games [@vandenberg2015a],
-second, that competition is often state dependent [@vangils2004], and third, that both direct and indirect competition [@vahl2005; @bijleveld2012a] can have consequences for agent space-use [@vahl2007a]. I envision the following modules for this project: __individual based models__
+second, that competition is often state dependent [@vangils2004], and third, that both direct and indirect competition [@vahl2005; @bijleveld2012a] can have consequences for agent space-use [@vahl2007a]. I envision the following modules for this project: individual based models
 following Vahl’s ideas, with pairwise interactions determining some
-contest outcome that translates to fitness. These will be __implemented in an evolutionary system__, where
+contest outcome that translates to fitness. These will be implemented in an evolutionary system, where
 successful agents replicate, either with fixed or flexible population
-size. Second, some __state dependence of behaviour__ to examine behaviour – physiology trade-offs. Third,
-to have the agent __decisions be the output of neural networks__. Fourth, implementation in an __initially limited spatial system__ (with the option of expansion), such as a two
+size. Second, some state dependence of behaviour to examine behaviour – physiology trade-offs. Third,
+to have the agent decisions be the output of neural networks. Fourth, implementation in an initially limited spatial system (with the option of expansion), such as a two
 dimensional 3 × 3 grid, or a single dimensional vector. In this final,
 more realistic system, movement would be an option, allowing interesting
 dynamics between direct competition, state-dependence of behaviour, and
 spatial distribution in a game theoretical framework.
 
-### Practice: Agent Based Models using Artificial Neural Networks
+\subsection{Practice: Agent Based Models using Artificial Neural Networks}
 
 Agents in ABMs possess attributes, including knowledge of their
 coordinate position on the grid (*x, y*) and some proxy of internal
@@ -595,7 +612,7 @@ value ρ, competitiveness δ, and sociability α from suitable
 distributions, and assign them to agents. These values are implastic
 through the agent’s life, and while a useful starting point, assumes
 behavioural consistency. The ANN approach allows for far richer
-dynamics, where agents assess their environment (described above) and __make a single decision about what move to make__ in
+dynamics, where agents assess their environment (described above) and make a single decision about what move to make in
 the next time-step. This environment may include landscape values and/or
 other agents [@netz2017]. These cues are the activations of the
 agent’s ANN nodes, while state variables can be mapped to node weights
@@ -605,7 +622,7 @@ in each timestep [@getz2015; @netz2017]. Movements of unit
 distance in unit time assume constant speed; clearly unfounded since
 real animals such as knots can achieve at least two broad movement
 speeds by flying or walking (Bijleveld et al. *unpublished data*). The
-ANN output sketched above – next grid position – __allows agents to choose their movement distance__ at each time step. At
+ANN output sketched above – next grid position – allows agents to choose their movement distance at each time step. At
 an ecological scale, this first allows the investigation of individual
 consistency in step length, and then an examination of whether movement
 types have characteristic step lengths, e.g. that are some whole number
@@ -617,29 +634,29 @@ available to foraging agents. Knots can sense only very local
 macrobenthos availability using their pressure sensitive bills [@piersma1998]. At intermediate and local scales, knots may use public
 information from other foragers [@bijleveld2015a], while it is to
 be assumed that across scales, knots are able to avoid deep water. This
-creates a cue gradient: __at very small range, agents have much more reliable information__ than at larger ones, where local enhancement due
+creates a cue gradient: at very small range, agents have much more reliable information than at larger ones, where local enhancement due
 to conspecific presence may play a greater role [@beauchamp2013]. Thus
 agents in such models may evolve movement types that trade the cost of
 poor information for the cost of exploitative competition, and
 vice-versa, all while balancing the cost of travel with the intake from
-the landscape. Evolutionary models require that __traits are inherited, implying reproduction, birth and death__. Agent fitness is best
+the landscape. Evolutionary models require that traits are inherited, implying reproduction, birth and death. Agent fitness is best
 modelled as some function, possibly sigmoidal, of net intake, i.e.,
 agents do have an upper limit to the offspring produced; for example,
 many sandpipers produce a clutch of four eggs [@piersma2019],
 and this is a realistic upper limit. Agents must therefore also have
-some mechanism approximating death; this can be modelled as energy __reserves reaching zero, after which the agent dies__.
+some mechanism approximating death; this can be modelled as energy reserves reaching zero, after which the agent dies.
 Agents must reproduce at some time --- in systems worldwide, most species
-have a fixed breeding season, and this can be modelled as __agents that survive until the next ecological time-step producing offspring__. The __value of energy reserves at which agents decide to reproduce may also be allowed to evolve__,
+have a fixed breeding season, and this can be modelled as agents that survive until the next ecological time-step producing offspring. The value of energy reserves at which agents decide to reproduce may also be allowed to evolve,
 possibly evolving interesting life-history strategies [as in @wolf2012; @wolf2007a].
 
-## Confronting models with data
+\section{Confronting models with data}
 
 Models are always wrong, but they do yield insights into real systems.
 Empirical data on the red knot system is collected both from the agents [@maccurdy2015 in @bijleveld2015b; examples in @bijleveld2016; @oudman2018] and their resource lanscape [@bijleveld2012]. These data include morphometic measures, as well as movement
 measures which may be obtained using a number of tools now available for
 the processing of animal tracking data [most recent review by @joo2019]. Coupled with behavioural scores from aviary experiments
 [currently ongoing at NIOZ; see e.g. @bijleveld2012a; @bijleveld2015a],
-these can be used to cluster individuals. These __clusters can then be compared with movement types evolved__ in simulations. I aim to
+these can be used to cluster individuals. These clusters can then be compared with movement types evolved in simulations. I aim to
 given the resource landscape structure experienced in the Wadden Sea by
 *islandica* red knots, and then to examine how well these predictions
 hold up in the face of data.
@@ -648,4 +665,4 @@ Individual associations of red knots are not expected to be non-random,
 consistent with the pattern for other waders [@myers1983; @conklin2008]. However, that expectation might yet hold for movement
 types, with assortative association within or between types in different
 environmental regimes [@spiegel2017]. The strength and nature of
-associations , and then tested using extensive tracking data.
+associations, and then tested using extensive tracking data.
