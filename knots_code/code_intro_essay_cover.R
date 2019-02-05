@@ -28,6 +28,7 @@ datapoints = map(data, function(x){
   st_multipoint(x = cbind(x$x, x$y), dim = "XY")
 })
 
+
 #'assign crs and make sfc
 dataline = map(dataline, function(x){st_sfc(x, crs = 32631)})
 datapoints = map(datapoints, function(x){st_sfc(x, crs= 32631)})
@@ -44,9 +45,12 @@ write_sf(datapoints[[2]], dsn = "intro_essay_points", layer = "knot_points_471",
 
 #'get neutral landscape
 library(NLMR);library(raster)
-landscape = nlm_gaussianfield(ncol = 148, nrow = 105)
+landscape = nlm_gaussianfield(ncol = 1480, nrow = 1050, resolution = 1, autocorr_range = 500)
+
+#'save raster
+#writeRaster(landscape, filename = "cover_raster.tif", format = "GTiff", overwrite = T)
 library(RColorBrewer)
-pal = colorRampPalette(brewer.pal(9, "Greys")[c(1:5)])(20)
+pal = colorRampPalette(brewer.pal(9, "RdBu")[c(1:9)])(20)
 
 png(filename = "intro_essay_cover_part01.png", width = 148, height = 105, units = "mm", res = 300)
 par(mar = c(0,0,0,0)); image(landscape, col = pal, axes = F, box =F, bty = "n", legend=F)
