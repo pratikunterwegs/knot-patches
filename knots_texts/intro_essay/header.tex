@@ -31,17 +31,20 @@
 \urlstyle{same}  % don't use monospace font for urls
 %\usepackage[margin=2cm]{geometry}
 
+%figure options
+%\usepackage{epstopdf}
+
 %bibliography options
 \usepackage{natbib}
 \bibliographystyle{humannnat}
-\bibliography{/home/pratik/citationLibPrg2019.bib}
+\bibliography{citationLibPrg2019.bib}
 
-\IfFileExists{parskip.sty}{%
-	\usepackage{parskip}
-}{% else
-	\setlength{\parindent}{0pt}
-	\setlength{\parskip}{6pt plus 2pt minus 1pt}
-}
+%set paragraph indentation and separation
+\setlength{\parindent}{10pt}
+\setlength{\parskip}{3pt plus 2pt minus 1pt}
+
+\usepackage{makecell}
+
 \renewcommand{\baselinestretch}{1.0}
 \setlength{\emergencystretch}{3em}  % prevent overfull lines
 \providecommand{\tightlist}{%
@@ -64,17 +67,32 @@
 
 %command for custom margin size
 \def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
-\let\endchangemargin=\endlist 
+\let\endchangemargin=\endlist
 
 \usepackage[utf8]{inputenc}
-\usepackage[switch]{lineno}
+
 \usepackage{setspace}
 \usepackage{hanging}
 \usepackage{multicol}
 \usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{arydshln}
+\usepackage{booktabs}
+\usepackage{rotating}
 \usepackage{float}
 \setlength{\parskip}{1em}
-\setlength\linenumbersep{1cm}
-\renewcommand\linenumberfont{\normalfont\footnotesize\sffamily}
+
+%line numbering
+%\usepackage[switch]{lineno}
+%\setlength\linenumbersep{1cm}
+%\renewcommand\linenumberfont{\normalfont\footnotesize\sffamily}
+
 \setmainfont{IBM Plex Serif}
 \setsansfont{IBM Plex Sans}
+%\usepackage{babel}
+\providecommand{\tabularnewline}{\\}
+
+%set table line values
+\setlength\dashlinedash{0.2pt}
+\setlength\dashlinegap{1.5pt}
+\setlength\arrayrulewidth{0.5pt}

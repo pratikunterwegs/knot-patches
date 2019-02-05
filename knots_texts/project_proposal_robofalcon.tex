@@ -1,0 +1,138 @@
+\documentclass[10pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{multicol}
+\usepackage{setspace}
+\usepackage[british]{babel}
+\usepackage{tgtermes}
+\usepackage[total={6in, 8in}]{geometry}
+
+\usepackage{lineno}
+%bibliography options
+\usepackage[style=authoryear,backend=bibtex, dateabbrev=true,date=year,doi=false,isbn=false,url=false, maxbibnames=20, maxcitenames=2, giveninits=true]{biblatex}
+\bibliography{citationLibPrg2019.bib}
+
+\DeclareFieldFormat[article, inbook]{title}{#1}
+\DeclareFieldFormat{sentencecase}{\MakeSentenceCase{#1}}
+
+\renewbibmacro*{title}{%
+	\ifthenelse{\iffieldundef{title}\AND\iffieldundef{subtitle}}
+	{}
+	{\ifthenelse{\ifentrytype{article}\OR\ifentrytype{inbook}%
+			\OR\ifentrytype{incollection}\OR\ifentrytype{inproceedings}%
+			\OR\ifentrytype{inreference}}
+		{\printtext[title]{%
+				\printfield[sentencecase]{title}%
+				\setunit{\subtitlepunct}%
+				\printfield[sentencecase]{subtitle}}}%
+		{\printtext[title]{%
+				\printfield[titlecase]{title}%
+				\setunit{\subtitlepunct}%
+				\printfield[titlecase]{subtitle}}}%
+		\newunit}%
+	\printfield{titleaddon}}
+
+%command for custom margin size
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist
+
+\title{Project Proposal \\
+The effect of predation risk on personality-dependent movement}
+
+\begin{document}
+
+\flushbottom
+\maketitle
+
+\begin{spacing}{1.15}
+
+\linenumbers
+
+\section{Introduction}
+
+It is commonly observed that individual animals often differ in their behaviour, leading to the idea that otherwise homogeneous groups might harbour significantly more diversity than previously thought.
+When animals show consistency in behaviour across contexts or over time \autocite{sih2004, sih2004a}, this may be classified as a personality, and can have important implications above the individual level \autocite{sih2008, sih2012}.
+A logical consequence of personality is finite behavioural plasticity, and hence non-optimality in some contexts \autocite{wolf2010, wolf2012}. 
+
+To complicate matters further, individual consistency along behavioural axes such as exploration and boldness is often correlated to form a syndrome, and the relationship between the axes can be difficult to elucidate \autocite{reale2007, carter2013}. 
+This is especially true when animals are tracked in their natural environment where behaviour can only be remotely observed \autocite{cooke2004, kays2015} as the result of natural experiments, and not in response to controlled stimuli \autocite{leclerc2016}. 
+Landscape-scale perturbation to test the existence, strength, and ecological effects of behavioural consistency is usually difficult to achieve in such systems. 
+
+Predation risk is somewhat of an outlier in landscape-level effects on behaviour, since a ‘landscape of fear’ [of predators] \autocite{laundre2001} is relatively easily established. 
+Consequently, anti-predator responses are well known \autocite{lima1990}, including spatio-temporal avoidance at landscape scales \autocite[e.g.][]{lank2003, ydenberg2004}. 
+Optimality in avoidance at small spatio-temporal scales often takes the form reported by \cite{kohl2018}: prey eschew areas heavily used by predators at times of day when predators are most active, yet have no qualms about the same areas when predators are largely inactive. 
+However, the binding of behavioural traits into a syndrome could result in non-optimal risk avoidance behaviour. For example, if exploration and risk avoidance were to be correlated to form a "bold" type, such individuals might use more of their landscape, and also have lower revisit intervals to the site of a predator attack. Individuals' internal state might be a confounding factor in teasing apart the correlation of exploration and risk-taking, in that individuals might accept the probability of predation over the certainty of starvation. Controlling for individual state would require knowledge of the resources consumed and thus information on intake.
+
+Here, we propose a project suitable for a master's student with an interest in animal movement and strong data handling skills in R or another statistical language. The project takes advantage of a number of independently developed capabilities that can help investigate the effect of predation on landscape scale movement in a population of individuals known to show consistent individual differences in exploratory behaviour. 
+
+First, the Bijleveld lab at the Department of Coastal Systems at NIOZ has a thorough understanding of and unprecedented access to a large migratory population of shorebirds off the Dutch Wadden Sea island of Griend. Specifically, around 150 red knots (\emph{Calidris cantus}) are regularly caught each summer, marked with coloured leg-rings, and a subset are fitted with ATLAS Time of Arrival tags (\emph{unpublished data, Allert Bijleveld}). These tags allow 0.25 -- 1.00 Hz tracking in a 100 km\textsuperscript{2} area around Griend for approximately 2 -- 3 months after deployment \autocite{maccurdy2015, oudman2018}. Further, the NIOZ Synoptic Intertidal Benthic Survey samples the macrozoobenthic prey of red knots at a resolution of 250 m, which is then transformed into a 10 m resolution landscape of predicted intake rates \autocite{bijleveld2015c, bijleveld2012, oudman2018, bijleveld2016}. 
+SIBES samples are taken in early and late summer (July and October), when red knot densities are very different, which allows for a comparison of pre- and post-occupation intake rates \autocite[see][]{bijleveld2015c}.
+
+Second, the Hemelrijk lab at GELIFES-RUG has the technical skill to manipulate predation risk for large flocks of birds, using a fixed-wing drone resembling a globally distributed raptor, the peregrine falcon (\emph{Falco peregrinus}). Peregrines are often seen attacking wader flocks off Griend, making this an ideal model to induce predation risk for knots. Further, drone-based aerial surveys of the island in 2018 (\emph{pers. obs.}) inadvertently revealed that wader flocks actively avoid even slow fixed-wing drones, serving as an intial proof of concept.
+
+\section{Project description}
+
+The basic idea is simple: during the 2019 field season (July -- October), we propose to investigate the landscape-scale predator avoidance response of knots by subjecting them to controlled predation risk. 
+
+Flocks of tracked red knots (present among other waders) will be targeted for minimal attack with the drone, i.e., until the entire flock takes off. Rather than examining the effect of a landscape of fear on resource exploitation \autocite[as in][see esp. Fig. 2]{bijleveld2015c}, we will focus for now on examining individual movement responses to predation especially in relation to exploratory personality and prior landscape use \autocite[as in][]{bijleveld2016}. 
+
+\subsection{Project questions}
+
+\begin{enumerate}
+	\item
+	First, we aim to disentangle the relation between predator avoidance and exploration. Is the distance travelled after an attack (relocation distance), and the revisit time to the site of attack, related to the experimental exploration score?
+	
+	\item 
+	Second, we propose to investigate the effect of predator attacks on social networks. Do attacks disrupt established networks any more than would be expected in the absence of predation?
+	
+	Are post-attack social networks qualitatively different from pre-attack networks, in terms of associations based on exploration scores?
+	
+	\item 
+	Finally, are there emergent flock-level effects on movement: does the average exploration score of a flock determine the relocation distance after a predator attack?
+	
+\end{enumerate}
+ 
+\subsection{Project timeline}
+
+The project timeline is strongly dependent on access to the island of Griend, which is owned and managed by Naturmonumenten, and on the availability of the falcon drone.
+The following must be taken into account:
+
+\begin{enumerate}
+	\item 
+	Knot capture and tagging takes place on new moon weeks each month from August to October. Knots are put through behavioural assays over the 2-3 days following capture, and then released. The week following capture is suitable for attacks.
+	\item 
+	A 1 week cooldown period without falcon attacks may be advisable prior to the next catching period, so as not to impact upcoming capture probabilities.
+	\item
+	The Wadden Sea experiences semi-diurnal tides of ~13 hours, meaning that low tide, when knots forage, occurs approximately twice each day. However, except some days when both low tides are during daylight hours, there is only one attack opportunity per day.
+	\item 
+	ATLAS tracking ends in mid- to late-October.
+\end{enumerate}
+
+Within these constraints, weeks 36 and 37 (Sept. 02 -- Sept. 13; 11 days), and weeks 40, 41, 42 (Sept. 30 -- Oct. 18; 19 days) are suitable drone attack periods. Assuming a single attack per low tide, one low tide per day, and 33\% unsuitable days (n $\approx$ 10), this would result in ~20 attacks on knot flocks. Selecting for flocks containing $\geq$ 10 tracked individuals, we anticipate 150 -- 200 predator escape tracks.
+
+In addition, we expect to gain a similar number of tracks from these same individuals on days when they are not subjected to simulated predation. These may be days on which there are either no attacks or when they are not present in the targeted flock.
+
+We propose a dry-run of the project in week 32 (Aug. 5 -- 9). This will allow us to investigate whether suitable predator-avoidance tracks can be obtained from tagged waders (NB: sanderlings \emph{C. alba} are tracked from late July, approx. week 31 2019). Further, it will allow the drone pilot and supporting team time to identify and solve issues related to deploying the drone over the mudflats.
+
+\nolinenumbers
+
+\noindent\hfil\rule{0.5\textwidth}{.4pt}\hfil
+
+\end{spacing}
+
+\footnotesize
+
+\changemargin{-1.0cm}{-1.0cm}
+
+\begin{multicols}{2}
+
+\tiny{
+
+\printbibliography
+
+}
+
+\end{multicols}
+
+\end{document}
