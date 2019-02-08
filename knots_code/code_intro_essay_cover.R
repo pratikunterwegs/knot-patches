@@ -14,14 +14,18 @@ data = data2018.raw %>%
 
 #'convert to x,y,t
 data = data %>% 
-  map(function(x) select(x, time=TIME, x=X, y=Y, covxy = COVXY, towers = NBS)) %>% 
-  map(function(x) mutate(x, time = plyr::round_any(time/1000, 10))) %>% 
+  map(function(x) select(x, time=TIME, x=X, y=Y, covxy = COVXY, towers = NBS, id = TAG)) %>% 
+  map(function(x) mutate(x, time = plyr::round_any(time/1000, 10), id = id - 3.1001e10)) %>% 
   map(function(x) x %>% filter(towers > 3) %>% group_by(time) %>% summarise_all(mean))
 
 library(sf)
-#'make linestring df object
+#'make multilinestring df object
 dataline = map(data, function(x){
-  st_linestring(x = cbind(x$x, x$y), dim = "XY")})
+  cbind(x$x, x$y)
+}) %>% 
+  st_multilinestring(dim = "XY")
+  
+#map(data, function(x){st_linestring(x = cbind(x$x, x$y), dim = "XY")})
 
 #'make points
 datapoints = map(data, function(x){
@@ -30,13 +34,24 @@ datapoints = map(data, function(x){
 
 
 #'assign crs and make sfc
-dataline = map(dataline, function(x){st_sfc(x, crs = 32631)})
+dataline = st_sfc(dataline,crs = 32631)
+  #map(dataline, function(x){st_sfc(x, crs = 32631)})
 datapoints = map(datapoints, function(x){st_sfc(x, crs= 32631)})
 
 #'plot all 10
-x11(); par(mfrow = c(2,5)); for(i in 1:10) plot(dataline[[i]])
+x11(); par(mfrow = c(2,5), mar = c(0,0,0,0), bg = 1); for(i in 1:10) {
+  #plot(datapoints[[i]], cex = 0.1, col = 2)
+  plot(dataline[[i]], lwd= 0.3, col = "white")
+}
+datalinejoin = st_union(dataline[[1]], dataline[[2]])
 
-x11(); plot(datapoints[[2]], cex = 0.1)
+#'try ggplot
+ggplot(dataline)+
+  geom_sf(lwd = 0.2)+
+  #facet_wrap(~dummy)
+  theme_bw()
+
+#plot(datapoints[[2]], cex = 0.1, col = 2, add =T)
 
 #'write knot 471 to shapefile
 write_sf(dataline[[2]], dsn = "intro_essay_track", layer = "knot_track_471", driver = "ESRI Shapefile")
