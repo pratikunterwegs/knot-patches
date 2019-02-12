@@ -1,27 +1,44 @@
 
 
-\title{\huge{The ecology and evolution of movement in fluctuating landscapes}}
-\author{{Pratik R Gupte}}
-\date{January 2019}
-
-{\parindent0pt
-	
-{\large{\textbf{\textsf{Supervised by}}} \\
-\large{Prof. Franz J Weissing} \\
-\large{Dr. Allert I Bijleveld} \\
-\large{Prof. Ton Groothuis} \\
-\large{Prof. Theunis Piersma}}
-
-}
-
-\begin{figure}[h!]
-	
-	\includegraphics[width=200pt, height = 80pt]{logo_affils.eps}
-	\caption{}
-	\label{fig:logoaffils}
-\end{figure}
-
 \begin{document}
+	
+\begin{titlepage}
+\begin{center}
+	
+\doublespacing
+
+\huge{\textbf{\textsf{The ecology and evolution of movement in fluctuating landscapes}}}
+
+\huge{\textbf{\textsf{Pratik R Gupte}}}
+
+\large{\textsf{February 2019}}
+
+\begin{figure}
+	\hfill\includegraphics[width=600pt, height = 200pt]{cover_image.pdf}\hspace*{\fill}
+	
+\end{figure}
+\end{center}
+
+\vspace{1.5in}
+
+\begin{minipage}[b]{0.5\textwidth}
+	\begin{flushleft}
+	\includegraphics[width=\textwidth, height = 80pt]{logo_affils.eps}
+	\end{flushleft}
+\end{minipage}%
+%
+\begin{minipage}[b]{0.5\textwidth}
+	\begin{flushright}
+		{\textbf{\textsf{Supervised by}}} \\
+		\textsf{\large{Prof. Franz J Weissing}} \\
+		\textsf{\large{Dr. Allert I Bijleveld}} \\
+		\textsf{\large{Prof. Ton Groothuis}} \\
+		\textsf{\large{Prof. Theunis Piersma}}
+	\end{flushright}
+\end{minipage}%
+ 	
+
+\end{titlepage}
 
 \newpage
 
@@ -64,6 +81,8 @@ Sciences\\
 Short term causes and long term consequences of adaptations to
 environmental change
 
+\textbf{Cover image} Red knot Y4NGNG (laterally inverted) courtesy Benjamin Gnep; movement track of knot with transmitter 471 courtesy Allert Bijleveld; background generated in R.
+
 \begin{figure}[h!]
 	
 	\includegraphics[width=200pt, height = 80pt]{logo_affils.eps}
@@ -80,12 +99,12 @@ environmental change
 
 %\linenumbers
 
-\addtolength{\topskip}{0pt plus 10pt}
+\addtolength{\topskip}{10pt plus 10pt}
 
 %add parindent again
 
-\part*{Summary}\label{part:Summary}
-\addcontentsline{toc}{part}{Summary}
+\chapter*{Summary}\label{chapter:Summary}
+%\addcontentsline{toc}{chapter}{Summary}
 
 \setlength{\parindent}{3ex}
 
@@ -94,13 +113,13 @@ One system in which consistent individual differences have been identified is th
 
 This essay, an introduction to my work over the next two years, is organised over the following parts: first, the \textbf{\emph{Introduction}} contains key concepts in the fields of \emph{Animal movement, Movement as personality}, and \emph{Modelling movement}.
 The second section, \textbf{\emph{About this project}}, lays out the questions I want to investigate for my PhD.
-The third section, \textbf{\emph{Towards a model of wader movement}}, explains the conceptual and practical aspects of the models and empirical methods I propose to implement towards the goals I set myself. Section four, \textbf{\emph{Timeframe}} outlines the activities I will undertake over the period 2018 -- 2022 in terms of research, personal academic training, co-supervision of students, and academic output, culminating in a thesis submission in May 2022, and a thesis defence provisionally in September 2022.
+The third section, \textbf{\emph{Towards a model of wader movement}}, explains the conceptual and practical aspects of the models and empirical methods I propose to implement towards the goals I set myself. The \textbf{\emph{Timeframe}} outlines the activities I will undertake over the period 2018 -- 2022 in terms of research, personal academic training, co-supervision of students, and academic output, culminating in a thesis submission in May 2022, and a thesis defence provisionally in September 2022.
 
 For my PhD, I will attempt to break new ground for the field of animal movement by examining the evolution of movement strategies, with a special focus on the evolution of consistency in fluctuating environments. First, using simple, abstract models, I will examine under which conditions of environmental spatial predictability and temporal change one can expect the evolution of distinct movement types. Second, I will examine the ecological consequences of consistency in movement behaviour in heterogeneous landscapes. Third, I will tailor the former models to investigate consistency in exploratory behaviour in my model system, the shorebirds known as red knots (\emph{Calidris canutus}). Fourth, and finally, I will examine whether red knots tracked in the wild show movement types, and thus test the predictions of theory.
 
 \newpage
 
-\part{Introduction}
+\chapter{Introduction}
 
 \section{Animal movement}
 
@@ -149,11 +168,15 @@ The movement ecology paradigm places animal movement at the end of a pipeline fe
 
 \section{Modelling movement}
 
-Many aspects of personality and movement can be explored using the waders \emph{Charadrii,} and especially the sandpipers Scolopacidae as a model system. Waders are a ubiquitous group of long-lived birds characterised by their littoral foraging on buried macrozoobenthic prey, and their often extreme flyway-channelled migration between generally disjointed and strongly seasonal global distributions \citep{boere2006a, gill2009, piersma2019}. Sandpipers are well known for their huge wintering fission-fusion flocks \citep{myers1983, conklin2008}, and as symbols of traditional landscapes \citep{colwell2018}. Waders (hereafter referring only to scolopacids) eking out their precarious existence at the waterline are thus poised to be the new canary in the coalmine: harbingers of global environmental change \citep{piersma2004, wikelski2016, fitzpatrick2018} which has swiftly advanced from `near' to `here' \citep{ipcc2018}. Wader movement fulfils many of the requirements one would expect from a system that integrates animal personality and movement studies. First, wader movement has been extensively investigated using a variety of approaches at nearly all spatio-temporal scales: small spatio-temporal scales such as foraging \citep{vangils2003, vangils2010}, large spatio-temporal scales such as migration \citep{buehler2006, piersma2011}, proximate causes for large-scale phenomena \citep{lank2003, ydenberg2004, ruthrauff2013, ruthrauff2018}, and ultimate causes for small-scale phenomena \citep{vangils2006, kraan2009}. Of the waders, red knots \emph{Calidris canutus} are among the best studied, with a wealth of biological information, from an understanding of physiology and its interaction with exploratory personality \citep{bijleveld2014, mathot2017}, to knowledge of group dynamics across scales \citep{bijleveld2010, bijleveld2012a, bijleveld2015b}, to the effect of foragers on their resource landscapes \citep{bijleveld2015c}.
+Many aspects of personality and movement can be explored using the waders \emph{Charadrii,} and especially the sandpipers Scolopacidae as a model system. Waders are a ubiquitous group of long-lived birds characterised by their littoral foraging on buried macrozoobenthic prey, and their often extreme flyway-channelled migration between generally disjointed and strongly seasonal global distributions \citep{boere2006a, gill2009, piersma2019}. Sandpipers are well known for their huge wintering fission-fusion flocks \citep{myers1983, conklin2008}, and as symbols of traditional landscapes \citep{colwell2018}. Waders (hereafter referring only to scolopacids) eking out their precarious existence at the waterline are thus poised to be the new canary in the coalmine: harbingers of global environmental change \citep{piersma2004, wikelski2016, fitzpatrick2018} which has swiftly advanced from `near' to `here' \citep{ipcc2018}. 
 
-Many theoretical studies increasingly employ agent-based approaches, which were developed to overcome two flaws in mathematical models \citep{huston1988}. First, in order to prevent an unreasonably large number of parameters (a disadvantage of ABMs), earlier models had abstracted populations to ``golden mean'' values that elided individual differences (see previous section) essential to evolutionary and ecological processes. The second issue was the assumption of global interactions, i.e., that all individuals affect all others equally, ignoring central problems of scale \citep{levin1992} and local interactions \citep[see][]{legendre1993} in ecology. ABMs have since been standardised in terminology \citep{grimm2006, grimm2010}, and are widespread in ecology \citep{deangelis2018}. In such models, individual organisms are each modelled separately and allowed to make decisions based upon various inputs, akin to real decision making processes \citep{deangelis2019}. In animal ecology, ABMs are especially relevant in modelling movement \citep[reviewed in][]{deangelis2005}, and have been used extensively \citep{spiegel2017, spiegel2013, getz2015, getz2016}, including to model red knots \citep{vangils2010}. Simple evolutionary algorithms \citep[see][]{back1996} as implemented in \citet{getz2015} and \citet{netz2017} that predicate the reproductive output (replicates) of each agent on some measure of fitness, such as net intake, can add eco-evolutionary dynamics to otherwise simple ABMs. This allows the modelling of movement across scales and contexts, from small-scale within-patch dynamics, such as competition \citep[see][ for a primer]{keddy2001} and the investigation of emergent large-scale evolutionary dynamics, such as community composition \citep[\emph{movement guilds};][]{getz2015}, and alternative strategies \citep{netz2017}. A major advance may be made by having the decisions of agents be the output of a `black-box' process in the form of artificial neural networks \citep[ANNs; see][ for example implementation]{lek1999, enquist2013, netz2017}. Neural network approaches allow for surprising results -- such as the evolution of rich movement dynamics and alternative strategies, even when beginning from largely similar populations \citep{netz2017, }.
+Wader movement fulfils many of the requirements one would expect from a system that integrates animal personality and movement studies. First, wader movement has been extensively investigated using a variety of approaches at nearly all spatio-temporal scales: small spatio-temporal scales such as foraging \citep{vangils2003, vangils2010}, large spatio-temporal scales such as migration \citep{buehler2006, piersma2011}, proximate causes for large-scale phenomena \citep{lank2003, ydenberg2004, ruthrauff2013, ruthrauff2018}, and ultimate causes for small-scale phenomena \citep{vangils2006, kraan2009}. Of the waders, red knots \emph{Calidris canutus} are among the best studied, with a wealth of biological information, from an understanding of physiology and its interaction with exploratory personality \citep{bijleveld2014, mathot2017}, to knowledge of group dynamics across scales \citep{bijleveld2010, bijleveld2012a, bijleveld2015b}, to the effect of foragers on their resource landscapes \citep{bijleveld2015c}.
 
-\part{About this project}
+Many theoretical studies increasingly employ agent-based approaches, which were developed to overcome two flaws in mathematical models \citep{huston1988}. First, in order to prevent an unreasonably large number of parameters (a disadvantage of ABMs), earlier models had abstracted populations to ``golden mean'' values that elided individual differences (see previous section) essential to evolutionary and ecological processes. The second issue was the assumption of global interactions, i.e., that all individuals affect all others equally, ignoring central problems of scale \citep{levin1992} and local interactions \citep[see][]{legendre1993} in ecology. ABMs have since been standardised in terminology \citep{grimm2006, grimm2010}, and are widespread in ecology \citep{deangelis2018}. In such models, individual organisms are each modelled separately and allowed to make decisions based upon various inputs, akin to real decision making processes \citep{deangelis2019}. 
+
+In animal ecology, ABMs are especially relevant in modelling movement \citep[reviewed in][]{deangelis2005}, and have been used extensively \citep{spiegel2017, spiegel2013, getz2015, getz2016}, including to model red knots \citep{vangils2010}. Simple evolutionary algorithms \citep[see][]{back1996} as implemented in \citet{getz2015} and \citet{netz2017} that predicate the reproductive output (replicates) of each agent on some measure of fitness, such as net intake, can add eco-evolutionary dynamics to otherwise simple ABMs. This allows the modelling of movement across scales and contexts, from small-scale within-patch dynamics, such as competition \citep[see][ for a primer]{keddy2001} and the investigation of emergent large-scale evolutionary dynamics, such as community composition \citep[\emph{movement guilds};][]{getz2015}, and alternative strategies \citep{netz2017}. A major advance may be made by having the decisions of agents be the output of a `black-box' process in the form of artificial neural networks \citep[ANNs; see][ for example implementation]{lek1999, enquist2013, netz2017}. Neural network approaches allow for surprising results -- such as the evolution of rich movement dynamics and alternative strategies, even when beginning from largely similar populations \citep{netz2017, }.
+
+\chapter{About this project}
 
 In this section, I outline my approaches to examine the \textbf{\emph{evolution of movement types}} \citep[\emph{sensu}][]{wolf2010, getz2015} in the context of \textbf{\emph{environmental predictability and rate of change}} \citep[as in][]{botero2015}, using the \textbf{\emph{red knot system}} as a reference \citep{bijleveld2012a, bijleveld2014, bijleveld2015c, bijleveld2015b, oudman2016, oudman2018}. \citet{wolf2010} lay out the theoretical basis for the expectation that consistent behavioural differences could arise in spatially structured landscapes, while \citet{botero2015} describe how environments in certain regimes of temporal variability and predictability can give rise to similar polymorphisms. \citet{getz2015} and \citet{netz2017} show how virtual agents can evolve movement types while also structuring initially featureless landscapes. Bijleveld and colleagues (above) provide empirical data on the foraging and movement ecology of red knots that can inform modeling approaches and which may be used to test model predictions.
 
@@ -164,7 +187,7 @@ I will begin with an abstract approach and some basic questions. Modelling agent
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \item
-  \textbf{\emph{How many movement types are evolved under different regimes of spatial predictability and variability?}} This question is aimed at unifying the \citet{wolf2010} and \citet{botero2015} approaches at broad evolutionary scales. Recent mechanistic models based on ANNs suggest that genotype-phenotype mapping is not as clear-cut as in Botero and colleagues' work, and that polymorphisms (there identified as diversified hedged bets) may arise under a wider set of conditions in populations of fixed size. I will then examine the behaviour of agents (movement) in response to environment quality (resource landscape), with the idea being to identify the conditions under which different strategies (bet-hedging, plasticity, etc.) evolve.
+  \textbf{\emph{How many movement types are evolved under different regimes of spatial predictability and variability?}} This question is aimed at unifying the \citet{wolf2010} and \citet{botero2015} approaches at broad evolutionary scales. Recent mechanistic models based on ANNs suggest that genotype-phenotype mapping is not as clear-cut as in Botero and colleagues' work, and that polymorphisms (there identified as diversified hedged bets) may arise under a wider set of conditions in populations of fixed size. I will then examine the behaviour of agents (movement) in response to environment quality (resource landscape), with the idea being to identify the conditions under which different strategies evolve.
 \item
   \textbf{\emph{What is the link between behaviour and labile physiological state?}} Drawing inspiration from recent work in the red knot system that suggests a strong role for behaviour-sociality-physiology feedbacks \citetext{\citealp{bijleveld2014}; \citealp{mathot2017}; \citealp{oudman2016}; \citealp[discussed in][]{wolf2010}}, this question is aimed at investigating whether physiology constrains agents in behavioural parameter space. For example, when movement is made dependent on instantaneous state, it may be constrained by energy reserves, leading to a state-behaviour feedback. Further, intake may face digestive constraints that can strongly affect behaviour \citep{vangils2004}. I will investigate whether these feedbacks can produce behaviour-physiology clustering previously proposed in this system \citep{bijleveld2015b}.
 \item
@@ -175,7 +198,7 @@ I will begin with an abstract approach and some basic questions. Modelling agent
   \item
     \textbf{\emph{How does landscape structure change over ecological and evolutionary time?}} In this scenario, I fall back upon the red knot system as a guide, that foragers are not always present on the landscape and the resource has time to regenerate. Such seasonal systems are widespread making this a reasonable scenario. I will investigate the development of landscape parameters over ecological and evolutionary time \citep[such as the autocorrelation range, or patch size; see][]{legendre1993} when agents are themselves evolving upon such landscapes.
   \item
-    \textbf{\emph{How does the number and phenotype of movement types change over evolutionary time?}} Agents' consumption rates (set to be identical) could lead to different rates of landscape change in the scenario outlined above. Foragers would then evolve to maximise fitness in both space and time. As landscapes traverse the axis of patch size (autocorrelation range, or predictability) due to agent foraging, the spatial conditions that evolved types in \textbf{(1)} might recur multiple times. This should allow the investigation of whether there is a change in selection pressures on movement types, the time-scale at which it occurs, and whetfira codeher it is mediated by agents' effect on the landscape.
+    \textbf{\emph{How does the number and phenotype of movement types change over evolutionary time?}} Agents' consumption rates (set to be identical) could lead to different rates of landscape change in the scenario outlined above. Foragers would then evolve to maximise fitness in both space and time. As landscapes traverse the axis of patch size (autocorrelation range, or predictability) due to agent foraging, the spatial conditions that evolved types in \textbf{(1)} might recur multiple times. This should allow the investigation of whether there is a change in selection pressures on movement types, the time-scale at which it occurs, and whether it is mediated by agents' effect on the landscape.
   \item
     \textbf{\emph{Do critical transitions occur in the number or profitability of movement types?}} As agent populations evolve movement types rather than bet-hedged phenotypes, these types may yet show sufficient flexibility to behaviourally buffer against decreasing profitability as the landscape shifts to a regime to which they are poorly adapted. This change may occur within individuals at ecological scales (as resources deplete or change over a season), and at the population level (as landscapes change over evolutionary time). Such systems, where the response (here, movement, or fitness) is initially poorly responsive to the driver (landscape structure, such as patch size), may then undergo abrupt transitions \citep{scheffer2009} to an alternative stable state. Behavioural changes relating to movement strategy occur in wader systems \citep{oudman2018}, but the process is not fully understood. I will look into whether changes in such systems can then be characterised as critical transitions. The same approach can be applied to the landscape, to study whether landscapes catastrophically shift to another state \citep[as in][]{vandekoppel1997, jefferies2006}.
   \end{enumerate}
@@ -198,6 +221,7 @@ Finally, I will turn to the empirical red knot tracking data and the benthic sam
   movement variables such as patch-switching or residence time, I will
   aim to determine whether knots evolved in models occupy comparable
   parameter spaces to real birds.
+  
 \item
   \textbf{\emph{Do red knots show assortative association based on
   movement type?}} Here, I investigate expectations from
@@ -207,7 +231,7 @@ Finally, I will turn to the empirical red knot tracking data and the benthic sam
   and field tracking approach.
 \end{enumerate}
 
-\part{Towards mechanistic movement models}
+\chapter{Towards mechanistic movement models}
 
 In each of these sub-sections, \textbf{\emph{Modelling landscapes}} and \textbf{\emph{Modelling agents}}, I will lay out how I propose to go about modelling the systems I have described above. I first describe the concept with some justification (usually drawn from red knot, or other avian systems), and then delve into the practical considerations of implementation, again seeking to justify my choices. In each case, I begin with the more abstract model, and then elaborate on a model based on red knots. It is important to note that while initial, abstract models are based on previous work, later, more complex models rely on these abstract models. Should the abstract models produce different dynamics from the ones expected from theory, the implementation and predictions of later models may have to be adjusted accordingly.
 
@@ -218,7 +242,6 @@ Another important point is that these are intended to be `mechanistic models of 
 \subsection{Concept: Spatial predictability}
 
 Spatial pattern and scale matter in ecology \citep{levin1992}, and foragers benefit from responding to spatial structure in resource landscapes in empirical and theoretical studies \citep{benhamou1992, walsh1996, klaassen2006, vangils2006, vangils2010, oudman2018, bijleveld2016}. \citet{botero2015} model a very abstract predictability as well as variation in time -- however, space-time substitution \citet{blois2013} has found wide use in testing landscape-scale predictions in ecological systems \citep[e.g.][]{hirota2011, staver2011}, and allows the leveraging of extensive empirical sampling of resource landscapes at small \citep[e.g.][]{bijleveld2012} and large scales \citep[e.g.][]{huete2002}.
-
 In a spatially structured landscape, autocorrelation is an important measure \citep{legendre1993}, and has been widely interpreted as corresponding to patch size \citep{kraan2009, kraan2009a, vangils2010, bijleveld2016, oudman2018}. This idea is easily illustrated by creating neutral landscapes with varying autocorrelation ranges -- landscapes with a high autocorrelation range have larger patches, and are more predictable (see Figure 3). In the wader-mudflat system, the mechanism underlying patch size does not need to be explicitly modelled to implement patch sizes. It suffices to understand that macrobenthic abundance is controlled by bottom-up processes over which agents have little influence.
 
 \subsection{Concept: Temporal predictability and change}
@@ -253,7 +276,7 @@ The tidal landscape's elevation is easily modelled as a distance or edge gradien
 
 \subsection{Concept: Agent Based Models}
 
-I will implement ABMs (see Section 2.3) first for abstract foragers, and second for foragers similar to waders. While waders are an ideal system in which to study foraging, they are specialised upon a small subset of resources and ecological conditions that will constrain more realistic models. For a general forager, it is important to be able to gain some key information: its position, the profitability of its position, and its potential future positions \citep[\emph{why} and \emph{where} to move;][]{nathan2008a}. An agent will move when its current location cannot sustain it, possibly due to some metabolic requirement \citep{barraquand2008}. There is a strong interplay between \emph{where} to move and \emph{how} to move when agents are capable of more than one movement mode, such as in birds which can switch from cursorial to volant. While the exact mechanism may be abstracted, movement carries a cost, and this cost must be taken into account when deciding when and where to move \citep{charnov1976a}. Movement decisions can be made as the result of explicitly written functions \citep[e.g.][]{getz2015}, but this entails and often elides implicit assumptions about the functional response of agents to their environment. This environment may include other agents, allowing for facilitation by local enhancement \citep{beauchamp2013}.
+I will implement ABMs for abstract foragers, and then for foragers similar to waders. While waders are an ideal system in which to study foraging, they are specialised upon a small subset of resources and ecological conditions that will constrain more realistic models. For a general forager, it is important to be able to gain some key information: its position, the profitability of its position, and its potential future positions \citep[\emph{why} and \emph{where} to move;][]{nathan2008a}. An agent will move when its current location cannot sustain it, possibly due to some metabolic requirement \citep{barraquand2008}. There is a strong interplay between \emph{where} to move and \emph{how} to move when agents are capable of more than one movement mode, such as in birds which can switch from cursorial to volant. While the exact mechanism may be abstracted, movement carries a cost, and this cost must be taken into account when deciding when and where to move \citep{charnov1976a}. Movement decisions are made as the result of explicitly written functions \citep[e.g.][]{getz2015}, but this entails and often elides implicit assumptions about the functional response of agents to their environment. This environment may include other agents, allowing for facilitation by local enhancement \citep{beauchamp2013}.
 
 \subsection{Concept: Agent-resource and agent-agent interactions}
 
@@ -281,7 +304,8 @@ Individual associations of red knots are not expected to be non-random, consiste
 
 \newgeometry{bottom=10mm}
 
-\part{Timeframe}
+\addsec*{Timeframe}
+\addcontentsline{toc}{chapter}{Timeframe}
 
 This is an approximate timeframe. Events farther in the future are more likely to change. Note that field visits and review meetings are not included, and that flexible plans are marked by asterisks.
 
@@ -307,20 +331,20 @@ This is an approximate timeframe. Events farther in the future are more likely t
 \hline
 {\footnotesize{}4} & {\footnotesize{}Jan \textendash{} Mar} & {\footnotesize{}Move. + competition model descriptions} & {\footnotesize{}GRS/GRC; \emph{Sci. Integrity Course}} & {\footnotesize{}M.Sc. student 1, 2} & {\footnotesize{}Final Intro. Essay}\tabularnewline
 \hdashline
-{\footnotesize{}5} & {\footnotesize{}Apr \textendash{} Jun} & {\footnotesize{}\makecell[l]{Proj. 1. Movement mods. variable envmnt.; \\ Proj. 2. Interference mods.}} & {\footnotesize{}Visit NIOZ} & {\footnotesize{}MSc student 1, 2} & {\footnotesize{}Proj. 1+2. methods}\tabularnewline
+{\footnotesize{}5} & {\footnotesize{}Apr \textendash{} Jun} & {\footnotesize{}\makecell[l]{Proj. 1. Movement mods. variable envmnt.; \\ Proj. 2. Interference mods.}} & {\footnotesize{}Visit NIOZ} & {\footnotesize{}M.Sc. student 1, 2} & {\footnotesize{}Proj. 1+2. methods}\tabularnewline
 \hdashline
-{\footnotesize{}6} & {\footnotesize{}Jul \textendash{} Sep} & {\footnotesize{}Proj. 3. Aviary scores \textasciitilde{} field movement} & {\footnotesize{}Collaborators visit{*}} & {\footnotesize{}MSc student 2} & {\footnotesize{}Prep. Proj. 3. m/s.}\tabularnewline
+{\footnotesize{}6} & {\footnotesize{}Jul \textendash{} Sep} & {\footnotesize{}Proj. 3. Aviary scores \textasciitilde{} field movement} & {\footnotesize{}Collaborators visit{*}} & {\footnotesize{}M.Sc. student 2} & {\footnotesize{}Prep. Proj. 3. m/s.}\tabularnewline
 \hdashline
 {\footnotesize{}7} & {\footnotesize{}Oct \textendash{} Dec} & {\footnotesize{}Analyse data Proj. 1+2.} & {\footnotesize{}Machine learning course{*}} &  & {\footnotesize{}Proj. 3 m/s.}\tabularnewline
 
 \toprule
  & \textbf{\footnotesize{}2020} & \textbf{\footnotesize{}Building shorebird models} &  &  & \tabularnewline
 \hline
-{\footnotesize{}8} & {\footnotesize{}Jan \textendash{} Mar} & {\footnotesize{}Proj. 4. Develop shorebird models} & {\footnotesize{}\emph{Modelling in R} course;} & {\footnotesize{}MSc student 3, 4{*}} & {\footnotesize{}Proj. 1+2 m/s.}\tabularnewline
+{\footnotesize{}8} & {\footnotesize{}Jan \textendash{} Mar} & {\footnotesize{}Proj. 4. Develop shorebird models} & {\footnotesize{}\emph{Modelling in R} course;} & {\footnotesize{}M.Sc. student 3, 4{*}} & {\footnotesize{}Proj. 1+2 m/s.}\tabularnewline
 \hdashline
-{\footnotesize{}9} & {\footnotesize{}Apr \textendash{} Jun} & {\footnotesize{}Finalise shorebird models} & {\footnotesize{}Collaborators visit*} & {\footnotesize{}MSc student 3, 4{*}} & {\footnotesize{}Shorebird mods. methods}\tabularnewline
+{\footnotesize{}9} & {\footnotesize{}Apr \textendash{} Jun} & {\footnotesize{}Finalise shorebird models} & {\footnotesize{}Collaborators visit*} & {\footnotesize{}M.Sc. student 3, 4{*}} & {\footnotesize{}Shorebird mods. methods}\tabularnewline
 \hdashline
-{\footnotesize{}10} & {\footnotesize{}Jul \textendash{} Sep} & {\footnotesize{}Proj. 5. MSc students' project topics} & {\footnotesize{}ISBE/ESEB} & {\footnotesize{}MSc student 3, 4{*}} & \tabularnewline
+{\footnotesize{}10} & {\footnotesize{}Jul \textendash{} Sep} & {\footnotesize{}Proj. 5. M.Sc. students' project topics} & {\footnotesize{}ISBE/ESEB} & {\footnotesize{}M.Sc. student 3, 4{*}} & \tabularnewline
 \hdashline
 {\footnotesize{}11} & {\footnotesize{}Oct \textendash{} Dec} & {\footnotesize{}Compare models with data} &  &  & \tabularnewline
 
@@ -357,7 +381,9 @@ This is an approximate timeframe. Events farther in the future are more likely t
 
 \restoregeometry
 
-\part{References}
+\chapter*{References}\label{chapter:References}
+
+
 \footnotesize
 %\changemargin{-1.0cm}{-1.0cm}
 
