@@ -306,14 +306,13 @@
             <ITEXT FONT="IBM Plex Sans Condensed Bold Italic" CH="References"/>
             <ITEXT CH=" "/>
             <ITEXT FONT="IBM Plex Sans Condensed Bold" CH="[1]"/>
-            <ITEXT CH=" Botero CA, Weissing FJ, Wright J, and Rubenstein DR. 2015. Evolutionary tipping points in the capacity to adapt to environmental change. PNAS 112: 184–9."/>
-            <para PARENT="fig"/>
-            <tab/>
-            <tab/>
-            <tab/>
-            <ITEXT CH="  "/>
-            <ITEXT FONT="IBM Plex Sans Condensed Bold" CH="[2]"/>
             <ITEXT CH=" Perlin K. 1985. An Image Synthesizer. In: Proceedings of the 12th Annual Conference on Computer Graphics and Interactive Techniques. New York, NY, USA: ACM."/>
+            <para PARENT="fig"/>
+            <tab FONT="IBM Plex Sans Condensed Bold"/>
+            <tab FONT="IBM Plex Sans Condensed Bold"/>
+            <tab FONT="IBM Plex Sans Condensed Bold"/>
+            <ITEXT FONT="IBM Plex Sans Condensed Bold" CH="  [2]"/>
+            <ITEXT CH=" Botero CA, Weissing FJ, Wright J, and Rubenstein DR. 2015. Evolutionary tipping points in the capacity to adapt to environmental change. PNAS 112: 184–9."/>
             <trail PARENT="fig"/>
             <PageItemAttributes/>
         </PAGEOBJECT>
