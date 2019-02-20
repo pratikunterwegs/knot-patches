@@ -1,6 +1,6 @@
 .Rproj.user
-.Rhistory
-.RData
+*.Rhistory
+*.RData
 .Ruserdata
 *.csv
 *.rdata
@@ -8,3 +8,5 @@ knots_code/knots_data/*
 *.mp4
 knots_code/knots_data_functions/*
 *.docx
+*.eps
+*.svg

@@ -1,5 +1,5 @@
-perlin_noise <- function( 
-  n = 5,   m = 5,    # Size of the grid for the vector field
+perlin_noise <- function(
+  n = 5,   m = 7,    # Size of the grid for the vector field
   N = 1e2, M = 1e2   # Dimension of the image
 ) {
   # For each point on this n*m grid, choose a unit 1 vector
@@ -49,10 +49,10 @@ image(seasons1, col = colorspace::terrain_hcl(120))
 seasons2 = perlin_noise()
 image(seasons2, col = colorspace::terrain_hcl(120))
 
-spatialPlots = list(seasons1, seasons2) %>% 
+spatialPlots = list(seasons1, seasons2) %>%
   map(matrixToDf)
 for(i in 1:length(spatialPlots)) spatialPlots[[i]]$id = i
-spatialPlots = bind_rows(spatialPlots) %>% 
+spatialPlots = bind_rows(spatialPlots) %>%
   mutate(id = ifelse(id == 1, "A: small patch size", "B: Large patch size"))
 
 #### make spatial plots ####
@@ -93,10 +93,12 @@ corrDf = tibble(id = rep(c("A: small patch size", "B: Large patch size"), each =
                 range = rep(seq(0, 140, 10),2))
 
 #'make plot
-spatialACF = ggplot()+
-  geom_path(data = corrDf, aes(x = range, y = acr))+
-  geom_point(data = corrDf, aes(x = range, y = acr), shape = 16, size = 2)+
-  geom_hline(yintercept = 0.1, col = 2, lty = 2, lwd = 0.2)+
+#spatialACF =
+  ggplot()+
+  geom_segment(data = corrDf, aes(x = range, xend = range, y = 0, yend = acr, col = acr), size = 1)+
+  geom_point(data = corrDf, aes(x = range, y = acr, col = acr), shape = 16, size = 3)+
+  geom_hline(yintercept = 0, col = 2, lty = 2, lwd = 0.2)+
+    scale_colour_gradient2_tableau()+
   facet_wrap(~id)+
   theme_pub()+
   labs(list(x = "Distance (landscape units)", y = "Autocorrelation"))
@@ -115,11 +117,11 @@ for(i in 1:length(rasters)){
 
 #'make seasonal landscapes
 seasons = vector("list", 1e2+1); seasons1 = perlin_noise(); seasons5 = perlin_noise(); seasons3 = (seasons1 + seasons5)/2; seasons4 = (seasons3 + seasons5)/2; seasons2 = (seasons1 + seasons3)/2
-seasonsList = list(seasons1, seasons3, seasons5)
+seasonsList = list(seasons1, seasons2, seasons3, seasons4, seasons5)
 
 #'get sequence
-seqSeas = rep(c(1:3, 3:1),30)
-seqSeas = seqSeas[diff(seqSeas)!=0]
+seqSeas = rep(c(1:5, 4:1),30)
+#seqSeas = seqSeas[diff(seqSeas)!=0]
 
 #'rasterSeasons now
 rasterSeasons = seasonsList[seqSeas]
@@ -142,51 +144,55 @@ rasters = rasters %>% bind_rows() #%>% filter(id %% 2 == 0)
 rasterSeasons = rasterSeasons %>% bind_rows()
 
 #'random change in time
-acfTime = rasters %>% 
-  plyr::dlply(c("col", "row")) %>% 
+acfTime = rasters %>%
+  plyr::dlply(c("col", "row")) %>%
   map(function(x){
    tibble(acf = c(acf(x$val, plot = F)$acf), col = unique(x$col), row = unique(x$row),
           time = 1:21)
   })
 
 #'seasonal change acf in time
-acfTimeSeason = rasterSeasons %>% 
-  plyr::dlply(c("col", "row")) %>% 
+acfTimeSeason = rasterSeasons %>%
+  plyr::dlply(c("col", "row")) %>%
   map(function(x){
     tibble(acf = c(acf(x$val, plot = F, lag.max = 20)$acf), col = unique(x$col), row = unique(x$row),
            time = 1:21)
   })
 
 #'prep for plot
-acfTimePlot = acfTime %>% 
-  bind_rows()
+acfTimePlot = acfTime %>%
+  bind_rows() %>% 
+  arrange(row, col, time)
 
 #'prep seasonal plot
-acfTimePlotSeason = acfTimeSeason %>% bind_rows()
+acfTimePlotSeason = acfTimeSeason %>% bind_rows() %>%
+  arrange(row, col, time)
 
-#'plot random change acf
-acfPlot = 
+#'plot random change acf—
+acfPlot =
   ggplot()+
-  
-  geom_line(data = acfTimePlot[c(1:nrow(acfTimePlot)/1e2),],
-              aes(x = time, y = acf, group = interaction(col, row)), lwd = 0.1,
-              se = F, col = "grey70")+
+
+  geom_segment(data = acfTimePlot[c(1:nrow(acfTimePlot)/1e2),],
+              aes(x = time, xend = time, y = 0,yend = acf, group = interaction(col, row), col = acf), lwd = 0.2,
+              se = F, position = position_dodge(width = 0.3))+
   geom_smooth(data = acfTimePlot[c(1:nrow(acfTimePlot)/1e2),],
-              aes(x = time, y = acf), col = 1)+
+              aes(x = time, y = acf), col = 1, lwd = 0.5)+
+  scale_colour_gradient2_tableau()+
   geom_hline(yintercept = 0, lwd = 0.2, lty = 2, col = 2)+
   theme_pub()+
   coord_cartesian(expand = F, ylim = c(-0.5, 1.1))+
   labs(list(x = "Timesteps", y = "Autocorrelation"))
 
-#seasonsPlot = 
+seasonsPlot =
   ggplot()+
-  
-  geom_line(data = acfTimePlotSeason[c(1:nrow(acfTimePlotSeason)/1e2),],
-            aes(x = time, y = acf, group = interaction(col, row)), lwd = 0.1,
-            se = F, col = "grey70")+
+   # geom_segment( aes(x=x, xend=x, y=0, yend=y))
+  geom_segment(data = acfTimePlotSeason[c(1:nrow(acfTimePlotSeason)/1e2),],
+            aes(x = time, xend = time, y = 0,yend = acf, group = interaction(col, row), col = acf), lwd = 0.2,
+            se = F, position = position_dodge(width = 0.2))+
   geom_smooth(data = acfTimePlotSeason[c(1:nrow(acfTimePlotSeason)/1e2),],
-              aes(x = time, y = acf), col = 1)+
+              aes(x = time, y = acf), col = 1, lwd = 0.5)+
   geom_hline(yintercept = 0, lwd = 0.2, lty = 2, col = 2)+
+    scale_colour_gradient2_tableau()+
   theme_pub()+
   coord_cartesian(expand = F, ylim = c(-1.1, 1.1))+
   labs(list(x = "Timesteps", y = "Autocorrelation"))
@@ -196,5 +202,3 @@ ggsave(filename = "plotAcfTimeGRC.eps", acfPlot, device = cairo_ps(), height = 1
 
 #'export seasons as eps
 ggsave(filename = "plotAcfSeasonsGRC.eps", seasonsPlot, device = cairo_ps(), height = 100, width = 200, units = "mm")
-
-
