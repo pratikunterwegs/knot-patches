@@ -1,5 +1,5 @@
 perlin_noise <- function(
-  n = 5,   m = 7,    # Size of the grid for the vector field
+  n = 5,   m = 7,   # Size of the grid for the vector field
   N = 1e2, M = 1e2   # Dimension of the image
 ) {
   # For each point on this n*m grid, choose a unit 1 vector
@@ -40,7 +40,7 @@ perlin_noise <- function(
    seq(from = 1, to = n, length = N+1)[-(N+1)]
   ys <- #raster[1,]*7
    seq(from = 1, to = m, length = M+1)[-(M+1)]
-  outer(xs, ys, Vectorize(f) )
+  outer(xs, ys, Vectorize(f))
 }
 
 #### export images for spatial fig ####
