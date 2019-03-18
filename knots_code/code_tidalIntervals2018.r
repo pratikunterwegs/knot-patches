@@ -1,0 +1,29 @@
+#### code to determine tidal intervals in 2018 ####
+
+#'load libs
+library(tidyverse); library(readr)
+
+#### load waterlevel data ####
+#'load waterlevel data from west terschelling
+#'from rijkswaterstaat waterinfo request
+#'
+waterlevel = read_delim("../data2018/waterlevelWestTerschelling2018Summer.csv", delim = ";")
+
+#'select relevant columns, time and waterlevel
+waterlevel = select(waterlevel, date = WAARNEMINGDATUM, time = WAARNEMINGTIJD, level = NUMERIEKEWAARDE)
+
+#'get a full posixct object for time
+waterlevel = waterlevel %>% 
+  mutate(dateTime = as.POSIXct(date, format = "%d-%m-%Y")+as.numeric(time)) %>% 
+  ungroup() %>%  
+  select(-date, -time)
+
+#### source high-low tide function ####
+#'source function
+source("knots_data_functions/high_low_tide.R")
+#'calculate tides on a 12 hour 25 minute cycle
+#'per RWS advice
+tides = HL(waterlevel$level, waterlevel$dateTime, period = 12.41, tides = "all")
+
+#'export as csv
+write_csv(tides, path = "../data2018/tidesSummer2018.csv")
