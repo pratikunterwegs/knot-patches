@@ -67,6 +67,9 @@ data2018 = data2018 %>%
 #'unnest the data
 data2018 = unnest(data2018)
 
+#'write data to file
+write_csv(data2018, path = "../data2018/data2018posWithTides.csv")
+
 #### plot proportion of actual/expected points ####
 #'get the actual/expected ratio in each tidal cucle 
 library(lubridate)
@@ -84,15 +87,16 @@ dataSummary = data2018 %>%
 library(colorspace); library(RColorBrewer)
 #'now plot
 ggplot(dataSummary)+
-  #geom_point(aes(day, factor(id), fill = ifelse(n/8640 >= 0.2, NA, 1)), size = 0.2, show.legend = F)+
+  #geom_point(aes(day, factor(id), fill = ifelse(n/8640 >= 0.2, NA, 1)), 
+  #size = 0.2, show.legend = F)+
   geom_tile(aes(tidalCycle, factor(id), fill = propFixes))+
   
   scale_fill_gradientn(colours = rev(heat_hcl(120)), 
                        values = c(0.2, 1), 
                        name = "prop.", 
                        na.value = "grey")+
-  ylab("Bird id")+ xlab("Tidal cycle foraging periods")+
-  ggtitle("Proportion of daily positions")+
+  ylab("Bird id")+ xlab("Tidal cycles")+
+  ggtitle("Proportion of expected positions")+
   theme_bw()+
   theme(panel.border = element_blank(),
         panel.grid.minor = element_blank(),

@@ -4,7 +4,10 @@
 .Ruserdata
 *.csv
 *.rdata
-knots_code/knots_data/*
+
+data2017/
+data2018/
+
 *.mp4
 knots_code/knots_data_functions/*
 *.docx

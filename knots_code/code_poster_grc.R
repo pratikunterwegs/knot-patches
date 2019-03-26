@@ -38,13 +38,13 @@ waterHeight = function(x) {x - ((x/2) * cos(((2.0 * pi)/maxT) * t)) - (x/2)}
 maxT = 1e2; t = seq(1,1e3, 1e1)
 
 #'run sim data
-landList = landList %>% 
+landList = landList %>%
   map(function(x){
-    x %>% as_tibble() %>% 
+    x %>% as_tibble() %>%
       mutate(valSeq = map(.$val, waterHeight))
   })
 
-landTempACF = landList %>% 
+landTempACF = landList %>%
   map(function(x){
     map(x %>% sample_n(1e2) %>% .$valSeq, function(y) {acf(unlist(y), plot = F)$acf})
   })

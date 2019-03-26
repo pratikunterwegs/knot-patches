@@ -7,8 +7,7 @@ library(tidyverse); library(readr)
 #'load waterlevel data from west terschelling
 #'from rijkswaterstaat waterinfo request
 #'
-waterlevel = read_delim("../data2018/waterlevelWestTerschelling2018Summer.csv", 
-                        delim = ";")
+waterlevel = read_delim("data2018/waterlevelWestTerschelling.csv", delim = ";")
 
 #'select relevant columns, time and waterlevel
 #'TAKE CARE TO SELECT ONLY ONE MEASURE OF WATERLEVEL
@@ -29,4 +28,4 @@ source("knots_data_functions/high_low_tide.R")
 tides = HL(waterlevel$level, waterlevel$dateTime, period = 13, tides = "all")
 
 #'export as csv
-write_csv(tides, path = "../data2018/tidesSummer2018.csv")
+write_csv(tides, path = "data2018/tidesSummer2018.csv")

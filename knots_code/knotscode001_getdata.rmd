@@ -1,6 +1,6 @@
 ---
 output: html_document
-editor_options: 
+editor_options:
   chunk_output_type: console
 ---
 
@@ -27,14 +27,14 @@ funcs[c(2,3)] %>% map(source)
 tx<-c(150:255)#knots part 1
 #tx<-c(255:375)#knots part 2
 
-# whole season 
+# whole season
 from="2017-08-23 13:52:00"; to="2017-10-31 14:52:00"
 
 
 ## remove beacons form tags
-tags<-tx[!tx%in%c(21,120, 253, 254, 255)]	
+tags<-tx[!tx%in%c(21,120, 253, 254, 255)]
 
-		
+
 ## convert tags to three characters
 tags<-str_pad(as.character(tags), 3, pad = "0")
 ```
@@ -71,14 +71,14 @@ save(k1.data, file = "knots01_data.rdata")
 #tx<-c(150:255)#knots part 1
 tx<-c(255:375)#knots part 2
 
-# whole season 
+# whole season
 from="2017-08-23 13:52:00"; to="2017-10-31 14:52:00"
 
 
 ## remove beacons form tags
-tags<-tx[!tx%in%c(21,120, 253, 254, 255)]	
+tags<-tx[!tx%in%c(21,120, 253, 254, 255)]
 
-		
+
 ## convert tags to three characters
 tags<-str_pad(as.character(tags), 3, pad = "0")
 ```
@@ -125,9 +125,9 @@ from="2017-07-20 18:00:00";to="2017-10-01 23:00:00"
 
 
 ## remove beacons form tags
-tags<-tx[!tx%in%c(21,120, 253, 254, 255)]	
+tags<-tx[!tx%in%c(21,120, 253, 254, 255)]
 
-		
+
 ## convert tags to three characters
 tags<-str_pad(as.character(tags), 3, pad = "0")
 ```
