@@ -19,8 +19,7 @@ library(lubridate)
 #'bind rows
 data2018 = bind_rows(data2018) %>% 
   group_by(id) %>% 
-  mutate(timeNum = time, time = as.POSIXct(timeNum, origin = "1970-01-01"),
-         week = week(time))
+  mutate(timeNum = time, time = as.POSIXct(timeNum, origin = "1970-01-01"), week = week(time))
 
 #### assign a tidal interval ####
 #'read in tidal interval data

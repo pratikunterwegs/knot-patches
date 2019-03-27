@@ -62,4 +62,4 @@ dataNest = unnest(dataNest)
 
 #'write id, tidalCycle and distances to data
 write_csv(dataNest %>% select(id, tidalCycle, timeNum, distance),
-          path = "data2018withDistances.csv")
+          path = "../data2018/data2018withDistances.csv")
