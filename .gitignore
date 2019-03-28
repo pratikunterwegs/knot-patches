@@ -14,3 +14,7 @@ knots_code/knots_data_functions/
 *.docx
 *.eps
 *.svg
+
+*.png
+*.pdf
+*.zip
