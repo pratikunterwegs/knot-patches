@@ -7,8 +7,8 @@ data = read_csv("../data2018/data2018withDistances.csv")
 
 #'summarise total distance per tide
 library(tidyverse)
-dataSummary = data %>% 
-  group_by(id, tidalCycle) %>% 
+dataSummary = data %>%
+  group_by(id, tidalCycle) %>%
   summarise(nFixes = length(distance),
             distPerTide = sum(distance, na.rm = T),
             durHrs = (max(timeNum) - min(timeNum))/3600,
@@ -16,7 +16,7 @@ dataSummary = data %>%
 
 
 #'count propFixes below 0.33
-count(ungroup(dataSummary), goodFix = propFixes >= 0.33) %>% 
+count(ungroup(dataSummary), goodFix = propFixes >= 0.33) %>%
   ggplot()+
   geom_col(aes(x = goodFix, y = n, fill = goodFix))
 
@@ -24,7 +24,8 @@ count(ungroup(dataSummary), goodFix = propFixes >= 0.33) %>%
 dataSummary = filter(dataSummary, propFixes >= 0.33)
 
 #'which ids remain?
-idsWanted = tibble(id = unique(dataSummary$id)) %>% 
-  mutate(rowNum = 1:nrow(.)) %>% 
+idsWanted = tibble(id = unique(dataSummary$id)) %>%
+  mutate(rowNum = 1:nrow(.)) %>%
   select(rowNum, id)
 
+#### WORK IN PROGRESS ####
