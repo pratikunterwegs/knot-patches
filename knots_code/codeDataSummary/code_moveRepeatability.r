@@ -23,9 +23,34 @@ count(ungroup(dataSummary), goodFix = propFixes >= 0.33) %>%
 #'remove id - tidalCycle combinations below 0.5 fix prop
 dataSummary = filter(dataSummary, propFixes >= 0.33)
 
+#'plot distance per tide scaled by propFixes
+#'source plot theme
+source("codePlotOptions/ggThemePub.r")
+library(pals)
+
+ggplot(dataSummary %>% 
+         filter(propFixes <= 1.0))+
+  geom_tile(aes(x = tidalCycle, y = factor(id), fill = distPerTide/1e3))+
+  scale_fill_gradientn(colours = rev(pals::magma(120)),
+                       name = "km per tide",
+                       limits = c(0, 100))+
+  themePubLeg()+
+  guides(fill = guidePub)
+
 #'which ids remain?
 idsWanted = tibble(id = unique(dataSummary$id)) %>%
   mutate(rowNum = 1:nrow(.)) %>%
   select(rowNum, id)
 
-#### WORK IN PROGRESS ####
+#### get population repeatability ####
+
+library(lme4)
+
+modDistId = glmer(round(distPerTide) ~ durHrs + propFixes + (1|id) + (1|tidalCycle),
+                 data = dataSummary, family = "poisson")
+
+summary(modDistId)
+
+#### function for repeatability ####
+source("codeDataSummary/functionGetRepeatability.r")
+
