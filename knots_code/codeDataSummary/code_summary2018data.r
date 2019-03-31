@@ -83,14 +83,13 @@ dataSummary = data2018 %>%
   filter(propFixes < 1.01)
 
 
-library(colorspace); library(RColorBrewer)
-#'now plot
+#'now plot as a mosaic
 ggplot(dataSummary)+
   #geom_point(aes(day, factor(id), fill = ifelse(n/8640 >= 0.2, NA, 1)), 
   #size = 0.2, show.legend = F)+
   geom_tile(aes(tidalCycle, factor(id), fill = propFixes))+
   
-  scale_fill_gradientn(colours = rev(heat_hcl(120)), 
+  scale_fill_gradientn(colours = rev(colorspace::heat_hcl(120)), 
                        values = c(0.2, 1), 
                        name = "prop.", 
                        na.value = "grey")+
@@ -108,4 +107,5 @@ ggsave(filename = "../figs/figureFixesPropPerDay2018.pdf",
        device = pdf(), width = 210, height = 297, units = "mm", dpi = 300); 
 dev.off()
 
-
+#### export data on which tides are good ####
+write_csv(dataSummary, path = "../data2018/dataSummary2018.csv")
