@@ -49,7 +49,7 @@ themePubLeg <- function(base_size=10) {
             axis.title = element_text(face = "plain",size = rel(1)),
             axis.title.y = element_text(angle=90,vjust =2),
             axis.title.x = element_text(vjust = -0.2),
-            axis.text = element_text(),
+            axis.text = element_text(colour = "grey40"),
             axis.line = element_line(),
             axis.ticks = element_line(size = 0.3),
             axis.ticks.length = unit(.2, "cm"),
