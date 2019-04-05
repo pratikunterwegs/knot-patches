@@ -5,8 +5,7 @@ library(readr); library(dplyr)
 
 #### investigate file sizes of dist matrices ####
 #'list files
-distMatrixFiles = list.files(path = "../data2018/distMatrix/",
-                             full.names = T)
+distMatrixFiles = list.files(path = "../data2018/distMatrix/", full.names = T)
 #'get sizes
 print(paste("files are", sum(sapply(distMatrixFiles, file.size))/1e6, "mb"))
 
@@ -67,6 +66,7 @@ rm(list = ls())
 dataNND = read_csv("../data2018/nnData2018.csv")
 data = read_csv("../data2018/data2018posWithTides.csv")
 rm(dataNND); gc()
+
 #'join data
 data = left_join(data, dataNND, by = c("id" = "focal", "timeNum"))
 
