@@ -32,7 +32,7 @@ themePub <- function(base_size=10) {
            plot.background = element_rect(fill = "white", colour = "transparent"),
             strip.background=element_blank(),
             #element_rect(colour="#f0f0f0",fill="#f0f0f0"),
-            strip.text = element_text(face="italic")
+            strip.text = element_text(face="bold", hjust = 0)
     ))
 
 }
@@ -45,7 +45,7 @@ themePubLeg <- function(base_size=10) {
     theme(plot.title = element_text(size = rel(1), face = "bold"),
             text = element_text(),
             panel.background = element_rect(fill = "white", colour = 1),
-            panel.border = element_blank(),
+            panel.border = element_rect(),
             axis.title = element_text(face = "plain",size = rel(1)),
             axis.title.y = element_text(angle=90,vjust =2),
             axis.title.x = element_text(vjust = -0.2),
@@ -68,7 +68,7 @@ themePubLeg <- function(base_size=10) {
            plot.background = element_rect(fill = "white", colour = "transparent"),
             strip.background=element_blank(),
             #element_rect(colour="#f0f0f0",fill="#f0f0f0"),
-            strip.text = element_text(face="italic")
+            strip.text = element_text(face="bold", hjust = 0)
     ))
 
 }
