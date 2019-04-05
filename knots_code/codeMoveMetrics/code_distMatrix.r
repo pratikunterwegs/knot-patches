@@ -63,9 +63,27 @@ for(i in 1:length(dataNest)){
                          distance = 
       dist2bird(dataNest[[i]], dataNest[[j]])) %>% 
       filter(focalX < 9e6, nonfocalX < 9e6,
-             focal != nonfocal) %>% 
-      select(-focalX, -nonfocalX)
+             focal != nonfocal)
   }
   z[[i]] = z[[i]] %>% keep(function(x) nrow(x) > 1)
   
 }
+
+#'bind rows with names
+names(z) = names(dataNest)
+#'bind rows within ids
+distData = map(z, function(x) bind_rows(x))
+#'bind across data
+rm(z); gc()
+rm(dataNest); gc()
+
+
+#### write to individual files ####
+for(i in 1:length(distData)){
+  write_csv(distData[[i]],
+            path = paste("../data2018/distMatrix/id",
+                         unique(distData[[i]]$focal),
+                         ".csv", sep = ""))
+}
+
+rm(distData); gc()
