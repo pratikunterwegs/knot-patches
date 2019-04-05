@@ -61,3 +61,32 @@ write_csv(distanceMetrics, path = "../data2018/nnData2018.csv")
 
 #'remove all files
 rm(list = ls())
+
+#### read in data and plot ####
+#'read data
+dataNND = read_csv("../data2018/nnData2018.csv")
+data = read_csv("../data2018/data2018posWithTides.csv")
+rm(dataNND); gc()
+#'join data
+data = left_join(data, dataNND, by = c("id" = "focal", "timeNum"))
+
+dataSummary = group_by(data, id, tidalCycle) %>% 
+  summarise(nN100 = mean(nBirds100, na.rm = T),
+            nN500 = mean(nBirds500, na.rm = T),
+            nNK01 = mean(nBirds1e3, na.rm = T)) %>% 
+  gather(distance, nBirds, -id, -tidalCycle)
+
+
+#'plot data
+source("codePlotOptions/ggThemePub.r")
+ggplot(dataSummary)+
+  geom_tile(aes(tidalCycle, factor(id), fill = nBirds))+
+  scale_fill_viridis_c(option = "magma")+
+  facet_wrap(~distance)+
+  themePubLeg()+
+  ylab("id")+
+  ggtitle("Nearest neighbours per tide")+
+  theme(axis.text.y = element_text(size = 4))
+
+#'save to file
+ggsave(filename = "../figs/figureNeighbours.pdf", device = pdf(), width = 210, height = 297, units = "mm", dpi = 300); dev.off()
