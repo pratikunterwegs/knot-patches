@@ -63,7 +63,8 @@ for(i in 1:length(dataNest)){
                          distance = 
       dist2bird(dataNest[[i]], dataNest[[j]])) %>% 
       filter(focalX < 9e6, nonfocalX < 9e6,
-             focal != nonfocal)
+             focal != nonfocal) %>% 
+      select(-focalX, -nonfocalX)
   }
   z[[i]] = z[[i]] %>% keep(function(x) nrow(x) > 1)
   
