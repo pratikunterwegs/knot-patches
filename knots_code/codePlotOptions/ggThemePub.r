@@ -30,7 +30,7 @@ themePub <- function(base_size=10) {
           # legend.title = element_text(face="italic"),
            plot.margin=unit(c(10,5,5,5),"mm"),
            plot.background = element_rect(fill = "white", colour = "transparent"),
-            strip.background=element_blank(),
+            strip.background=element_rect(fill = "grey90"),
             #element_rect(colour="#f0f0f0",fill="#f0f0f0"),
             strip.text = element_text(face="bold", hjust = 0)
     ))
@@ -66,7 +66,7 @@ themePubLeg <- function(base_size=10) {
           legend.background = element_rect(colour = 1),
            plot.margin=unit(c(10,5,5,5),"mm"),
            plot.background = element_rect(fill = "white", colour = "transparent"),
-            strip.background=element_blank(),
+            strip.background=element_rect(fill = "grey90"),
             #element_rect(colour="#f0f0f0",fill="#f0f0f0"),
             strip.text = element_text(face="bold", hjust = 0)
     ))
@@ -79,9 +79,9 @@ guidePub = guide_colorbar(frame.colour = 1,
                                darw.llim = T)
 
 #### specify some colours ####
-stdBlu = "royalblue4"; stdRed = "indianred3"
-altBlu = "dodgerblue3"; altRed = "indianred1"
+stdBlu = "royalblue4"; stdRed = "indianred3"; stdGrn = "olivedrab"
+altBlu = "dodgerblue3"; altRed = "indianred1"; altGrn = "seagreen3"
 
 drkGry = "grey20"; stdGry = "grey70"
 
-litBlu = "lightblue"; litRed = "lightpink"
+litBlu = "lightblue"; litRed = "lightpink"; litGrn = "paleGreen"
