@@ -46,11 +46,3 @@ for(i in 1:length(data2018names))
   rm(data); gc()
   
 }
-
-
-
-
-
-
-
-

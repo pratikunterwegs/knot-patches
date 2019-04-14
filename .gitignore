@@ -17,3 +17,5 @@ knots_code/knots_data_functions/
 
 *.png
 *.zip
+
+.vscode/
