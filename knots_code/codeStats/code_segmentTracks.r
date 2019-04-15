@@ -24,7 +24,7 @@ for(i in 1:5){
   x = dataTest[[i]]
   #lmin is 5 minutes, so 5*6 points = 30pts
   #Kmax is set to auto
-  dataSeg[[i]] = segmentation(x, lmin = 5, seg.var = c("residenceTime", "x"))
+  dataSeg[[i]] = segmentation(x, lmin = 5, seg.var = c("y", "x"))
 }
 
 #'plot to check

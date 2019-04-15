@@ -38,7 +38,19 @@ dataRevDay = mutate(data,
   summarise_at(vars(residenceTime, revisits, fpt), list(mean)) %>% 
   gather(variable, value, -id, -day2)
 
-#'plot trends over 2 day intervals
+#### load explore score data ####
+explData = read_csv("../data2018/behavScores.csv")
+
+dataRevDay = left_join(dataRevDay, explData)
+#'get tagging week
+dataTagWeek = data %>% 
+  group_by(id) %>% 
+  summarise(tagWeek = lubridate::week(min(time)))
+#'add tagweek to datarevday
+dataRevDay = left_join(dataRevDay, dataTagWeek)
+
+
+#'plot distr over 2 day intervals
 ggplot(dataRevDay %>% 
          filter(variable != "fpt"))+
   geom_histogram(aes(x = value, fill = day2, group = day2), col = drkGry, size = 0.3, position = "stack")+
@@ -47,11 +59,29 @@ ggplot(dataRevDay %>%
   facet_wrap(~variable, scales = "free")+
   xlab("minutes / # times")+
   themePubLeg()+
-  ggtitle("Space use etrics distribution: Bins 8 tidal cycles (~2 days)")
+  ggtitle("Fig. 2. Space use metrics distribution: Bins 8 tidal cycles (~2 days)")
 
 #'save to file
 ggsave(filename = "../figs/figFPT8tideBin.pdf", 
        device = pdf(), width = 210, height = 80, units = "mm"); dev.off()
+
+#### plot revisit over time ####
+ggplot(dataRevDay %>% 
+         filter(!tagWeek %in% c(34,39)))+
+  geom_jitter(aes(day2, value, col = !is.na(exploreScore),
+                  shape = !is.na(exploreScore)))+
+  scale_colour_manual(values = c(stdRed, drkGry),
+                      name = "Tent \nexplore \nscore \ntested?")+
+  scale_shape_manual(values = c(1, 16),
+                      name = "Tent \nexplore \nscore \ntested?")+
+  facet_grid(variable~tagWeek, scales = "free_y")+
+  themePubLeg()+
+  xlab("# tidal cycle")+ ylab("# visits / minutes / minutes")+
+  ggtitle("Fig. 1. Space use metrics ~ time in 8 tidal cycle bins")
+
+#'save to file
+ggsave(filename = "../figs/figSpaceUseTime.pdf", 
+       device = pdf(), width = 210, height = 125, units = "mm"); dev.off()
 
 #### load explore score data ####
 explData = read_csv("../data2018/behavScores.csv")
@@ -68,29 +98,29 @@ ggplot(dataRevSummary)+
 
 
 
-#### make a revisit and residence raster ####
-#'first get an extent object
-library(raster)
-extentGriend = raster::extent(c(xmin = min(data$x), xmax = max(data$x),
-                          ymin = min(data$y), ymax = max(data$y)))
-#'make an empty raster
-emptyRaster = raster::raster(x = extentGriend, resolution = 100,
-                             crs = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"),
-                             vals = 0)
-
-#'split data into per-id list
-dataList = plyr::dlply(data, "id")
-
-#'now make 3 rasters per id of summed revisits, residence, mean FPT
-
-for(i in 1:2){
-  a = dataList[[i]]
-  dataList[[i]][[1]] = rasterize(x = as.matrix(a[c("x", "y")]),
-                            y = emptyRaster,
-                            field = a$revisits,
-                            fun = "sum")
-  dataList[[i]][[2]] = rasterize(x = as.matrix(a[c("x", "y")]),
-                                 y = emptyRaster,
-                                 field = c("revisits"),
-                                 fun = "sum")
-}
+#' #### make a revisit and residence raster ####
+#' #'first get an extent object
+#' library(raster)
+#' extentGriend = raster::extent(c(xmin = min(data$x), xmax = max(data$x),
+#'                           ymin = min(data$y), ymax = max(data$y)))
+#' #'make an empty raster
+#' emptyRaster = raster::raster(x = extentGriend, resolution = 100,
+#'                              crs = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"),
+#'                              vals = 0)
+#' 
+#' #'split data into per-id list
+#' dataList = plyr::dlply(data, "id")
+#' 
+#' #'now make 3 rasters per id of summed revisits, residence, mean FPT
+#' 
+#' for(i in 1:2){
+#'   a = dataList[[i]]
+#'   dataList[[i]][[1]] = rasterize(x = as.matrix(a[c("x", "y")]),
+#'                             y = emptyRaster,
+#'                             field = a$revisits,
+#'                             fun = "sum")
+#'   dataList[[i]][[2]] = rasterize(x = as.matrix(a[c("x", "y")]),
+#'                                  y = emptyRaster,
+#'                                  field = c("revisits"),
+#'                                  fun = "sum")
+#' }
