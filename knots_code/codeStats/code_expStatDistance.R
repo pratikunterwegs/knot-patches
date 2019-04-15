@@ -26,24 +26,29 @@ ggplot(dataDistSummary)+
 
 #'distribution of distance in foraging and non-foraging period
 #'foraging period is HT+3 : HT+10
-dataDistForage = mutate(dataDist, 
-                        #foragePeriod = between(timeToHiTide, 3*60, 10*60),
-                        hourHT = plyr::round_any(timeToHiTide, 60)/60) %>% 
-  group_by(id, tidalCycle, hourHT) %>%
-  summarise(distPerPeriod = sum(distance, na.rm = T))
+dataDistForage = filter(dataDist, 
+                       between(timeToHiTide, 3*60, 10*60)) %>% 
+                       mutate(day2 = plyr::round_any(tidalCycle, 8)) %>%
+  group_by(id, day2, tidalCycle) %>%
+  summarise(distPerPeriod = sum(distance, na.rm = T)) %>% 
+  ungroup() %>% 
+  group_by(id, day2) %>% 
+  summarise_at(vars(distPerPeriod), mean)
+
 #'plot
-ggplot(dataDistForage %>% 
-         filter(hourHT %in% c(4:10)))+
-  stat_density(aes(x = distPerPeriod/1e3, y = ..count../max(..count..)),
-                     #col = factor(hourHT)), bins = 30, 
-               col = "grey20",
-                 position = "identity", alpha = 1, geom = "line")+
-  #scale_fill_manual(values = pals::kovesi.cyclic_mygbm_30_95_c78(6))+
-  themePubLeg()+facet_wrap(~hourHT)+
-  ggtitle("total distance per hour since HT")+ xlab("distance (km)")+
-  ylab("proportion")+
-  xlim(0, 2)
+ggplot(dataDistForage)+
+  geom_histogram(aes(x = distPerPeriod, fill = day2, group = day2), 
+                 col = drkGry,
+                 size = 0.3, position = "stack", bins = 50)+
+  scale_fill_gradientn(colours = (colorspace::heat_hcl(30)),
+                      name = "tidal \ncycle \nbin")+
+  # scale_fill_viridis_c(name = "tidal \ncycle \nbin")+
+  xlab("mean distance ")+
+ # facet_wrap(~day2)+
+  themePubLeg()+
+  ggtitle("Mean distance per foraging period: 8 tidal cycle bins (~2 days)")+ xlab("distance (km)")+
+  xlim(0, 3e4)
 
 #'save
-ggsave(filename = "../figs/figSumDistPerHour.pdf", 
-       device = pdf(), width = 125, height = 125, units = "mm", dpi = 300); dev.off()
+ggsave(filename = "../figs/figMeanDistPerForage.pdf", 
+       device = pdf(), width = 297, height = 125, units = "mm", dpi = 300); dev.off()
