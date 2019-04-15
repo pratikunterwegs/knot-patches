@@ -1,7 +1,7 @@
 #### code to explore first passage time ####
 
 #'load libs
-library(readr); library(dplyr)
+library(readr); library(dplyr); library(tidyr)
 
 #'load data
 data = read_csv("../data2018/data2018WithRecurse.csv")
@@ -19,7 +19,7 @@ dataRevSummary = mutate(data, hourHt = plyr::round_any(timeToHiTide, 120, floor)
 
 #### plot data ####
 source("codePlotOptions/ggThemePub.r")
-
+library(ggplot2)
 ggplot(dataRevSummary)+
   geom_histogram(aes(x = value), col = drkGry, fill = stdGry, size = 0.3)+
   facet_grid(hourHt~variable, scales = "free")+
@@ -29,6 +29,29 @@ ggplot(dataRevSummary)+
 #'save to file
 ggsave(filename = "../figs/figAvgFPTPerHour.pdf", 
        device = pdf(), width = 125, height = 125, units = "mm"); dev.off()
+
+#### look at between tide differences ####
+#'summarise data per tide over
+dataRevDay = mutate(data, 
+                    day2 = plyr::round_any(tidalCycle, 8)) %>% 
+  group_by(id, day2) %>% 
+  summarise_at(vars(residenceTime, revisits, fpt), list(mean)) %>% 
+  gather(variable, value, -id, -day2)
+
+#'plot trends over 2 day intervals
+ggplot(dataRevDay %>% 
+         filter(variable != "fpt"))+
+  geom_histogram(aes(x = value, fill = day2, group = day2), col = drkGry, size = 0.3, position = "stack")+
+  scale_fill_gradientn(colours = (colorspace::terrain_hcl(16)),
+                    name = "tidal \ncycle \nbin")+
+  facet_wrap(~variable, scales = "free")+
+  xlab("minutes / # times")+
+  themePubLeg()+
+  ggtitle("Space use etrics distribution: Bins 8 tidal cycles (~2 days)")
+
+#'save to file
+ggsave(filename = "../figs/figFPT8tideBin.pdf", 
+       device = pdf(), width = 210, height = 80, units = "mm"); dev.off()
 
 #### load explore score data ####
 explData = read_csv("../data2018/behavScores.csv")
@@ -40,6 +63,9 @@ ggplot(dataRevSummary)+
   geom_density_2d(aes(x = exploreScore, y = value), contour = T)+
   facet_wrap(hourHt ~ variable, scales = "free", ncol = 3)+
   themePub()
+
+#'export
+
 
 
 #### make a revisit and residence raster ####
