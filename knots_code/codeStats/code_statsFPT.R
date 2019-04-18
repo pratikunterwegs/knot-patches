@@ -11,6 +11,9 @@ count(data, id, tidalCycle)
 #'load good data summary, check if same number of id-tides present
 goodData = read_csv("../data2018/goodData2018.csv")
 
+#### load explore score data ####
+explData = read_csv("../data2018/behavScores.csv")
+
 #'summarise data as means
 dataRevSummary = mutate(data, hourHt = plyr::round_any(timeToHiTide, 120, floor)/60) %>% 
   group_by(id, tidalCycle, hourHt) %>% 
@@ -38,8 +41,7 @@ dataRevDay = mutate(data,
   summarise_at(vars(residenceTime, revisits, fpt), list(mean)) %>% 
   gather(variable, value, -id, -day2)
 
-#### load explore score data ####
-explData = read_csv("../data2018/behavScores.csv")
+
 
 dataRevDay = left_join(dataRevDay, explData)
 #'get tagging week
@@ -53,7 +55,8 @@ dataRevDay = left_join(dataRevDay, dataTagWeek)
 #'plot distr over 2 day intervals
 ggplot(dataRevDay %>% 
          filter(variable != "fpt"))+
-  geom_histogram(aes(x = value, fill = day2, group = day2), col = drkGry, size = 0.3, position = "stack")+
+  geom_histogram(aes(x = value, fill = day2, group = day2), col = drkGry, 
+                 size = 0.3, position = "stack")+
   scale_fill_gradientn(colours = (colorspace::terrain_hcl(16)),
                     name = "tidal \ncycle \nbin")+
   facet_wrap(~variable, scales = "free")+
