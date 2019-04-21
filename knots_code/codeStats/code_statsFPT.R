@@ -96,34 +96,3 @@ ggplot(dataRevSummary)+
   geom_density_2d(aes(x = exploreScore, y = value), contour = T)+
   facet_wrap(hourHt ~ variable, scales = "free", ncol = 3)+
   themePub()
-
-#'export
-
-
-
-#' #### make a revisit and residence raster ####
-#' #'first get an extent object
-#' library(raster)
-#' extentGriend = raster::extent(c(xmin = min(data$x), xmax = max(data$x),
-#'                           ymin = min(data$y), ymax = max(data$y)))
-#' #'make an empty raster
-#' emptyRaster = raster::raster(x = extentGriend, resolution = 100,
-#'                              crs = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"),
-#'                              vals = 0)
-#' 
-#' #'split data into per-id list
-#' dataList = plyr::dlply(data, "id")
-#' 
-#' #'now make 3 rasters per id of summed revisits, residence, mean FPT
-#' 
-#' for(i in 1:2){
-#'   a = dataList[[i]]
-#'   dataList[[i]][[1]] = rasterize(x = as.matrix(a[c("x", "y")]),
-#'                             y = emptyRaster,
-#'                             field = a$revisits,
-#'                             fun = "sum")
-#'   dataList[[i]][[2]] = rasterize(x = as.matrix(a[c("x", "y")]),
-#'                                  y = emptyRaster,
-#'                                  field = c("revisits"),
-#'                                  fun = "sum")
-#' }
