@@ -20,9 +20,14 @@ source("codePlotOptions/ggThemePub.r")
 
 ggplot(dataTimeDiff)+
   geom_histogram(aes(x = timeDiff), col = drkGry, fill = stdGry,
-                 bins = 50)+
+                 bins = 50, lwd = 0.3)+
   geom_vline(xintercept = 0, col = altRed, lty = 2)+
   themePub()+
-  xlab("time to tag first position after release (hrs)")+
-  xlim(-50, 200)+
+  xlab("time to first position after release (hrs)")+
+  xlim(-50, 600)+
   ylab("# birds")
+
+#'export as png
+ggsave(filename = "../figs/figTimeTagRelease.pdf", 
+       device = pdf(), width = 125, height = 80, units = "mm", dpi = 300); 
+dev.off()
