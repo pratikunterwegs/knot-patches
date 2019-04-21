@@ -12,5 +12,17 @@ behavData = read_csv("../data2018/behavScores.csv")
 dataSummary = left_join(dataSummary, behavData)
 
 dataTimeDiff = select(dataSummary, id, timeStart, Release_Date) %>% 
-  mutate(timeDiff = as.numeric(difftime(Release_Date, 
-                                        timeStart, units = "hours")))
+  mutate(timeDiff = as.numeric(difftime(time1 = Release_Date, time2 = timeStart, units = "hours")))
+
+#### histogram of release-on lag ####
+library(ggplot2)
+source("codePlotOptions/ggThemePub.r")
+
+ggplot(dataTimeDiff)+
+  geom_histogram(aes(x = timeDiff), col = drkGry, fill = stdGry,
+                 bins = 50)+
+  geom_vline(xintercept = 0, col = altRed, lty = 2)+
+  themePub()+
+  xlab("time to tag first position after release (hrs)")+
+  xlim(-50, 200)+
+  ylab("# birds")
