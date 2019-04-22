@@ -41,9 +41,8 @@ dataRevDay = mutate(data,
   summarise_at(vars(residenceTime, revisits, fpt), list(mean)) %>% 
   gather(variable, value, -id, -day2)
 
-
-
 dataRevDay = left_join(dataRevDay, explData)
+
 #'get tagging week
 dataTagWeek = data %>% 
   group_by(id) %>% 
@@ -51,6 +50,11 @@ dataTagWeek = data %>%
 #'add tagweek to datarevday
 dataRevDay = left_join(dataRevDay, dataTagWeek)
 
+#'load time difference
+dataTimeDiff = read_csv("../data2018/timeDiffRelease2018.csv")
+
+#'add timelag to release to revisit summary
+dataRevDay = left_join(dataRevDay, dataTimeDiff)
 
 #'plot distr over 2 day intervals
 ggplot(dataRevDay %>% 
@@ -71,13 +75,18 @@ ggsave(filename = "../figs/figFPT8tideBin.pdf",
 #### plot revisit over time ####
 ggplot(dataRevDay %>% 
          filter(!tagWeek %in% c(34,39)))+
-  geom_jitter(aes(day2, value, col = !is.na(exploreScore),
-                  shape = !is.na(exploreScore)))+
-  scale_colour_manual(values = c(stdRed, drkGry),
-                      name = "Tent \nexplore \nscore \ntested?")+
-  scale_shape_manual(values = c(1, 16),
-                      name = "Tent \nexplore \nscore \ntested?")+
+  geom_jitter(aes(day2*13, value, col = timeDiff,
+                  #shape = !is.na(exploreScore)
+                  ))+
+  scale_colour_gradientn(colours = pals::brewer.gnbu(9),
+                        limits = c(-100, NA),
+                        na.value = altRed)+
+  # scale_colour_manual(values = c(stdRed, drkGry),
+  #                     name = "Tent \nexplore \nscore \ntested?")+
+  # scale_shape_manual(values = c(1, 16),
+  #                     name = "Tent \nexplore \nscore \ntested?")+
   facet_grid(variable~tagWeek, scales = "free_y")+
+  scale_x_continuous(breaks = 13*seq(0, 120, 20))+
   themePubLeg()+
   xlab("# tidal cycle")+ ylab("# visits / minutes / minutes")+
   ggtitle("Fig. 1. Space use metrics ~ time in 8 tidal cycle bins")
@@ -86,13 +95,22 @@ ggplot(dataRevDay %>%
 ggsave(filename = "../figs/figSpaceUseTime.pdf", 
        device = pdf(), width = 210, height = 125, units = "mm"); dev.off()
 
-#### load explore score data ####
-explData = read_csv("../data2018/behavScores.csv")
+#### relate first fpt with release-transmit diff ####
+dataRevDay %>% 
+  filter(!tagWeek %in% c(34,39), variable == "fpt") %>% 
+  group_by(id) %>% 
+  filter(day2 == min(day2), timeDiff >= -150) %>% 
+  ggplot()+
+  geom_point(aes(x = timeDiff, y = value), col = drkGry)+
+  geom_smooth(aes(x = timeDiff, y = value), col = altBlu, method = "glm",
+              fill = stdGry)+
+  geom_hline(yintercept = c(0, 48), lty = 2, lwd = 0.2, col = rep(c(1, 2), 3))+
+  geom_vline(xintercept = 0, lwd = 0.2, col = 2)+
+  facet_grid(~tagWeek, scales = "free_x")+
+  themePub()+
+  labs(x = "first posn. time - release time (hrs)",
+            y = "first passage time (hrs)")
 
-dataRevSummary = left_join(dataRevSummary, explData)
-
-#'explore plots
-ggplot(dataRevSummary)+
-  geom_density_2d(aes(x = exploreScore, y = value), contour = T)+
-  facet_wrap(hourHt ~ variable, scales = "free", ncol = 3)+
-  themePub()
+#'save to file
+ggsave(filename = "../figs/figTimelagReleaseFPT.pdf", 
+       device = pdf(), width = 210, height = 100, units = "mm"); dev.off()
