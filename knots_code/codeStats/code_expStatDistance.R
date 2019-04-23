@@ -27,7 +27,7 @@ ggplot(dataDistSummary)+
 #### explore steplength distributions ####
 #'get summary data
 dataDistSummary = dataDist %>% 
-  mutate(hourHt = plyr::round_any(timeToHiTide, 60)) %>% 
+  mutate(hourHt = plyr::round_any(timeToHiTide, 60)/60) %>% 
   group_by(id, hourHt, tidalCycle) %>% 
   summarise(dist = mean(distance, na.rm = T))
 
@@ -36,20 +36,33 @@ dataBehav = read_csv("../data2018/behavScores.csv")
 
 dataDistSummary = left_join(dataDistSummary, dataBehav)
 
+# filter data dist summary to see only the 0-25 and 75+ quantile
+# of explore scores
+exploreScoreExtremes = quantile(dataDistSummary$exploreScore, 
+                                probs = c(0, 0.25, 0.75, 1), na.rm = T)
+
+dataDistSummary = mutate(dataDistSummary, 
+                         behavCat = cut(exploreScore, exploreScoreExtremes,
+                                        labels = c("low", "med", "hig"),
+                                        include.lowest = T))
+
 #'plot data
 ggplot()+
   geom_freqpoly(data = dataDistSummary %>% 
-                   filter(!is.na(exploreScore)),
-               aes(x = dist, 
-                   group = id, col = exploreScore), 
-               position = "dodge",fill = "transparent", size = 1,
-               binwidth = 10, alpha = 0.5)+
-  
-  scale_colour_gradientn(colours = pals::coolwarm(20))+
+                   filter(!is.na(exploreScore),
+                          hourHt < 13),
+               aes(x = dist, group = id), 
+               position = "identity", size = 0.1, geom = "line",
+               alpha = 0.2)+
   
   xlim(0, quantile(dataDist$distance, 0.95, na.rm = T))+
-  facet_wrap(~hourHt)+
+  facet_grid(behavCat~hourHt)+
   #coord_cartesian(ylim = c(0,10))+
-  themePubLeg()
+  themePub()+
+  labs(x = "steplength (m)", y = "# fixes", 
+       title = "steplength distribution over tidal cycle: hour ~ exploreScore")
 
+#'save to file
+ggsave(filename = "../figs/figSteplengthDistTime.pdf", 
+       device = pdf(), width = 297, height = 210, units = "mm"); dev.off()
   
