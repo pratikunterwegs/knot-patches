@@ -101,16 +101,18 @@ dataRevDay %>%
   group_by(id) %>% 
   filter(day2 == min(day2), timeDiff >= -150) %>% 
   ggplot()+
-  geom_point(aes(x = timeDiff, y = value), col = drkGry)+
-  geom_smooth(aes(x = timeDiff, y = value), col = altBlu, method = "glm",
-              fill = stdGry)+
-  geom_hline(yintercept = c(0, 48), lty = 2, lwd = 0.2, col = rep(c(1, 2), 3))+
+  geom_point(aes(x = timeDiff, y = value/60), col = drkGry)+
+  geom_smooth(aes(x = timeDiff, y = value/60), col = altBlu, method = "glm",
+              fill = stdGry, lwd = 0.5)+
+  geom_hline(yintercept = c(12), lty = 2, lwd = 0.2, col = 2)+
   geom_vline(xintercept = 0, lwd = 0.2, col = 2)+
-  facet_grid(~tagWeek, scales = "free_x")+
+  geom_abline(slope = -1, col = 1)+
+  facet_grid(~tagWeek)+
   themePub()+
   labs(x = "first posn. time - release time (hrs)",
-            y = "first passage time (hrs)")
+            y = "first passage time (hrs)")+
+  coord_fixed(ratio = 5)
 
 #'save to file
 ggsave(filename = "../figs/figTimelagReleaseFPT.pdf", 
-       device = pdf(), width = 210, height = 100, units = "mm"); dev.off()
+       device = pdf(), width = 210, height = 90, units = "mm"); dev.off()
