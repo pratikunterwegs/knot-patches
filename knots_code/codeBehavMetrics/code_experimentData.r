@@ -1,4 +1,4 @@
-#### deal with experimental data ####
+#### read experiment data and output clean behav scores ####
 
 library(tidyverse); library(readr)
 
