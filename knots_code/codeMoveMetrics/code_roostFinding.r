@@ -54,3 +54,6 @@ ggplot(dataRoostProp %>% filter(roost == "griend"))+
 
 #'save to file
 ggsave(filename = "../figs/figureRoostProp.pdf", device = pdf(), width = 210, height = 297, units = "mm", dpi = 300); dev.off()
+
+# remove data and clean garbage
+rm(list = ls()); gc()

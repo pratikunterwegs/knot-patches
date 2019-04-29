@@ -2,6 +2,8 @@
 #'load the data and estimate first passage time using the
 #'recurse function or similar
 
+rm(list = ls()); gc()
+
 #'load libs
 library(tidyverse); library(readr)
 
@@ -41,7 +43,7 @@ data = plyr::dlply(data, "id.tide")
 
 #'prepare for recurse by exporting to file
 for(i in 1:length(data)){
-  write_csv(data[[i]], path = paste("../data2018/dataRecurse/id.tide", 
+  write_csv(data[[i]] %>% select(-level), path = paste("../data2018/dataRecurse/id.tide", 
                                     unique(data[[i]]$id.tide),".csv", sep = ""))
 }
 
@@ -102,16 +104,16 @@ recurseData = lapply(recurseFiles, function(x){
   read_csv(x, col_types = list("_", "n", "n", "n"))
 })
 
-#'bind to existing data, then bind rows
+# bind to existing data, then bind rows
 data = map2(data, recurseData, cbind)
 data = bind_rows(data)
 
 #'check to see if each id.tide combo has 831 obs
 count(data, id.tide) %>% count(n > 830)
-#'9 do not fit this criterion
+# 14 do not fit this criterion
 
 #'remove recurse data
-rm(recurseData)
+rm(recurseData); gc()
 
 #### write good recurse data to file ####
 write_csv(data, path = "../data2018/data2018WithRecurse.csv")
