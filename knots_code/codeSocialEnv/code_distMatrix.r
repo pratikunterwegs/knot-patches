@@ -33,6 +33,7 @@ dataNest$data = map(dataNest$data, function(z){
 
 dataNest = unnest(dataNest) %>% 
   plyr::dlply("id")
+  
 #### calculate distances ####
 
 z = tibble()

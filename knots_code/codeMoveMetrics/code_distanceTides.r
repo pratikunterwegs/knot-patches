@@ -13,6 +13,9 @@ dataSf = group_by(data, id, tidalCycle) %>%
 #'keep only data (rows) where nrow > 1
 dataSf = dataSf[unlist(map(dataSf$data, nrow)) > 1,]
 
+# source the euclidan distance function
+source("codeMoveMetrics/functionEuclideanDistance.r")
+
 #'map a distance function across the list, it's super quick
 tidalMovement = map(dataSf$data, function(a)
   {

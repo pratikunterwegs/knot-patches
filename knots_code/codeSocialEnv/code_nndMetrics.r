@@ -25,7 +25,7 @@ nnMetrics = function(x){
   #'check focal, nonfocal, time and distance
   
   #'require dplyr functions
-  require(dplyr)
+  library(dplyr)
   
   as_tibble(x) %>% 
     group_by(focal, timeNum) %>% 
