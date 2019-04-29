@@ -1,20 +1,12 @@
-#### script to make summary stats 2018 tracking data ####
+#### script to assign tidal cycles and print summary ####
 
 #'load libs
 library(tidyverse); library(readr)
 
-#'list all 2018 csv data files
-data2018names = list.files("../data2018/", pattern = c("data_", ".csv"), full.names = T)
-
-#'get filesizes
-sapply(data2018names, file.size, USE.NAMES = F)/1e6
+# read in master data file
+data2018 = read_csv("../data2018/data2018cleanPreRelease.csv")
 
 #### bind all and count positions per bird ####
-#'read all data
-data2018 = lapply(data2018names, read_csv)
-#'assert that the right number of files were read
-assertthat::assert_that(length(data2018) == 14)
-
 library(lubridate)
 #'bind rows
 data2018 = bind_rows(data2018) %>% 
@@ -78,7 +70,7 @@ ggplot(dataSummary)+
   geom_tile(aes(tidalCycle, factor(id), fill = propFixes, alpha = propDur))+
   
   
-  scale_fill_gradientn(colours = rev(colorspace::heat_hcl(120)), 
+  scale_fill_gradientn(colours = rev(viridis::magma(120)), 
                        values = c(0.2, 1), 
                        name = "prop.", 
                        na.value = "grey")+
@@ -86,7 +78,7 @@ ggplot(dataSummary)+
   ggtitle("Proportion of expected positions")+
   themePubLeg()
 
-#'export as png
+#'export as pdf
 ggsave(filename = "../figs/figureFixesPropPerDay2018.pdf", 
        device = pdf(), width = 210, height = 297, units = "mm", dpi = 300); 
 dev.off()
