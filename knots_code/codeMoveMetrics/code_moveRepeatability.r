@@ -54,3 +54,4 @@ summary(modDistId)
 #### function for repeatability ####
 source("codeDataSummary/functionGetRepeatability.r")
 
+getRepeatability(modDistId)
