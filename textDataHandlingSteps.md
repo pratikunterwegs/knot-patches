@@ -30,4 +30,14 @@ all scripts are in `knots_code/`
 	b. reads in behav scores with release date
 	c. plots figure showing histogram of first fix time - release time
 	d. cleans data to remove fixes before release
-	
+	e. writes cleaned data to csv
+6. run `codeDataSummary/code_assignTidalCycle.r`
+	a. reads in the cleaned data
+	b. reads in the tidal cycle data `data2018/tidesSummer2018.csv`
+	c. assigns the tidal cycle to each position
+	d. calculates the time since high tide
+	e. summarises expected fixes per tidal cycle per id
+	f. plots realised/expected fixes proportion
+	g. writes data with tidal cycles to csv
+7. 
+
