@@ -65,7 +65,6 @@ rm(list = ls())
 #'read data
 dataNND = read_csv("../data2018/nnData2018.csv")
 data = read_csv("../data2018/data2018posWithTides.csv")
-rm(dataNND); gc()
 
 #'join data
 data = left_join(data, dataNND, by = c("id" = "focal", "timeNum"))
