@@ -28,7 +28,8 @@ dataNest = mutate(dataNest, data = map(data, function(x){
 #'the unique non-NA value
 dataNest$data = map(dataNest$data, function(z){
   mutate(z, x = ifelse(is.na(x), 9e6, x),
-         y = ifelse(is.na(y), 9e6, y))
+         y = ifelse(is.na(y), 9e6, y)) %>% 
+    distinct()
 })
 
 dataNest = unnest(dataNest) %>% 
@@ -52,6 +53,12 @@ rm(data); gc()
 dataNest2 = dataNest
 
 dataNest = dataNest2
+
+# check for equal numbers of rows in all dataframes
+diffRows = diff(map_dbl(dataNest, nrow))
+assertthat::assert_that(sum(diffRows != 0) == 0,
+                        msg = "dataframes don't have the same number of rows!")
+
 #'run loop
 for(i in 1:length(dataNest)){
   
