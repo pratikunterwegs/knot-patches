@@ -9,11 +9,14 @@ source("codePlotOptions/ggThemePub.r")
 dataFiles = list.files("../data2018/segmentation/", full.names = T)
 # read data
 data = map(dataFiles, read_csv) %>% 
-  map(function(x) plyr::dlply(x, "segment"))
+  map(function(x) plyr::dlply(x, "segment")) %>% 
+  map(function(x) {
+    keep(x, function(y) nrow(y) >= 20)
+  })
 
-# separate id tide
-data = data %>% 
-  mutate(id = substr(id.tide, 1, 3), tidalCycle = substr(id.tide, 5, 7))
+# check that all lists have at least one element
+lenList = map_dbl(data, length)
+assertthat::assert_that(min(lenList) > 0)
 
 # load kde functions
 # sp provides spatial classes, ks provides kde functions
@@ -35,7 +38,7 @@ for (i in 1:length(data)) {
     resPatchKDE = kde(pos, H = H.pi, compute.cont = T)
     #'draw contour lines
     contLines = contourLines(resPatchKDE$eval.points[[1]], resPatchKDE$eval.points[[2]], 
-                             resPatchKDE$estimate, level = contourLevels(resPatchKDE, 0.1))
+                             resPatchKDE$estimate, level = contourLevels(resPatchKDE, 0.05))
     #'convert each to polygon
     contPoly = lapply(contLines, function(y) Polygon(y[-1]))
     #'make polygons
@@ -46,3 +49,12 @@ for (i in 1:length(data)) {
   resPatches[[i]] = SpatialPolygons(resPatches[[i]], 1:length(resPatches[[i]]))
 }
 
+# save to rdata
+save(resPatches, file = "../data2018/spatials/residencePatches.rdata")
+
+#### get residence patch summaries ####
+# convert to sf class
+library(sf)
+for(i in 25:length(resPatches)){
+  resPatches[[i]] = st_as_sf(resPatches[[i]])
+}
