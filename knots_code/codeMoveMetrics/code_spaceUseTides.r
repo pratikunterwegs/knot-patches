@@ -1,5 +1,8 @@
 #### code to segment on residence ####
 
+# this code is experimental and doesn't full work
+# without errors
+
 #### load libs ####
 library(tidyverse); library(readr)
 rm(list = ls()); gc()
@@ -35,8 +38,12 @@ funcAugment = function(y){
 }
 
 # run across the list of dfs
-for (i in 1:length(data)) {
+for (i in 723:length(data)) {
   
+  # run the function within a function that catches errors
+  # and ignores them!
+  # if a knot-id 
+  tryCatch({
   segmentedDf = funcSegment(data[[i]])
   augmentedDf = funcAugment(segmentedDf)
   data[[i]]$segment = augmentedDf$state_ordered
@@ -44,5 +51,5 @@ for (i in 1:length(data)) {
   write_csv(data[[i]], 
             path = paste("../data2018/segmentation/", data[[i]]$id.tide[1], "segmented.csv", sep = ""))
   
-  gc()
+  gc()}, error = function(e){})
 }
