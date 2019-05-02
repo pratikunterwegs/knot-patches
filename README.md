@@ -8,6 +8,8 @@ Code and figures for red knots *Calidris canutus islandica* tracking data and an
 
 Contact:
 - Pratik Gupte: p.r.gupte@rug.nl, pratik.gupte@nioz.nl
+  Nijenborgh 7/5172.0583 9747AG Groningen
 
-GELIFES-RUG & COS-NIOZ
-Nijenborgh 7/5172.0583 9747AG Groningen
+- Allert Bijleveld: allert.bijleveld@nioz.nl
+
+
