@@ -83,6 +83,6 @@ guidePub = guide_colorbar(frame.colour = 1,
 stdBlu = "royalblue4"; stdRed = "indianred3"; stdGrn = "olivedrab"
 altBlu = "dodgerblue3"; altRed = "indianred1"; altGrn = "seagreen3"
 
-drkGry = "grey20"; stdGry = "grey70"
+drkGry = "grey20"; stdGry = "grey90"
 
 litBlu = "lightblue"; litRed = "lightpink"; litGrn = "paleGreen"

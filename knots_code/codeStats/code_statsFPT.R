@@ -11,6 +11,9 @@ count(data, id, tidalCycle)
 #'load good data summary, check if same number of id-tides present
 goodData = read_csv("../data2018/goodData2018.csv")
 
+#### load explore score data ####
+explData = read_csv("../data2018/behavScores.csv")
+
 #'summarise data as means
 dataRevSummary = mutate(data, hourHt = plyr::round_any(timeToHiTide, 120, floor)/60) %>% 
   group_by(id, tidalCycle, hourHt) %>% 
@@ -38,59 +41,78 @@ dataRevDay = mutate(data,
   summarise_at(vars(residenceTime, revisits, fpt), list(mean)) %>% 
   gather(variable, value, -id, -day2)
 
-#'plot trends over 2 day intervals
+dataRevDay = left_join(dataRevDay, explData)
+
+#'get tagging week
+dataTagWeek = data %>% 
+  group_by(id) %>% 
+  summarise(tagWeek = lubridate::week(min(time)))
+#'add tagweek to datarevday
+dataRevDay = left_join(dataRevDay, dataTagWeek)
+
+#'load time difference
+dataTimeDiff = read_csv("../data2018/timeDiffRelease2018.csv")
+
+#'add timelag to release to revisit summary
+dataRevDay = left_join(dataRevDay, dataTimeDiff)
+
+#'plot distr over 2 day intervals
 ggplot(dataRevDay %>% 
          filter(variable != "fpt"))+
-  geom_histogram(aes(x = value, fill = day2, group = day2), col = drkGry, size = 0.3, position = "stack")+
+  geom_histogram(aes(x = value, fill = day2, group = day2), col = drkGry, 
+                 size = 0.3, position = "stack")+
   scale_fill_gradientn(colours = (colorspace::terrain_hcl(16)),
                     name = "tidal \ncycle \nbin")+
   facet_wrap(~variable, scales = "free")+
   xlab("minutes / # times")+
   themePubLeg()+
-  ggtitle("Space use etrics distribution: Bins 8 tidal cycles (~2 days)")
+  ggtitle("Fig. 2. Space use metrics distribution: Bins 8 tidal cycles (~2 days)")
 
 #'save to file
 ggsave(filename = "../figs/figFPT8tideBin.pdf", 
        device = pdf(), width = 210, height = 80, units = "mm"); dev.off()
 
-#### load explore score data ####
-explData = read_csv("../data2018/behavScores.csv")
+#### plot revisit over time ####
+ggplot(dataRevDay %>% 
+         filter(!tagWeek %in% c(34,39)))+
+  geom_jitter(aes(day2*13, value, col = timeDiff,
+                  #shape = !is.na(exploreScore)
+                  ))+
+  scale_colour_gradientn(colours = pals::brewer.gnbu(9),
+                        limits = c(-100, NA),
+                        na.value = altRed)+
+  # scale_colour_manual(values = c(stdRed, drkGry),
+  #                     name = "Tent \nexplore \nscore \ntested?")+
+  # scale_shape_manual(values = c(1, 16),
+  #                     name = "Tent \nexplore \nscore \ntested?")+
+  facet_grid(variable~tagWeek, scales = "free_y")+
+  scale_x_continuous(breaks = 13*seq(0, 120, 20))+
+  themePubLeg()+
+  xlab("# tidal cycle")+ ylab("# visits / minutes / minutes")+
+  ggtitle("Fig. 1. Space use metrics ~ time in 8 tidal cycle bins")
 
-dataRevSummary = left_join(dataRevSummary, explData)
+#'save to file
+ggsave(filename = "../figs/figSpaceUseTime.pdf", 
+       device = pdf(), width = 210, height = 125, units = "mm"); dev.off()
 
-#'explore plots
-ggplot(dataRevSummary)+
-  geom_density_2d(aes(x = exploreScore, y = value), contour = T)+
-  facet_wrap(hourHt ~ variable, scales = "free", ncol = 3)+
-  themePub()
+#### relate first fpt with release-transmit diff ####
+dataRevDay %>% 
+  filter(!tagWeek %in% c(34,39), variable == "fpt") %>% 
+  group_by(id) %>% 
+  filter(day2 == min(day2), timeDiff >= -150) %>% 
+  ggplot()+
+  geom_point(aes(x = timeDiff, y = value/60), col = drkGry)+
+  geom_smooth(aes(x = timeDiff, y = value/60), col = altBlu, method = "glm",
+              fill = stdGry, lwd = 0.5)+
+  geom_hline(yintercept = c(12), lty = 2, lwd = 0.2, col = 2)+
+  geom_vline(xintercept = 0, lwd = 0.2, col = 2)+
+  geom_abline(slope = -1, col = 1)+
+  facet_grid(~tagWeek)+
+  themePub()+
+  labs(x = "first posn. time - release time (hrs)",
+            y = "first passage time (hrs)")+
+  coord_fixed(ratio = 5)
 
-#'export
-
-
-
-#### make a revisit and residence raster ####
-#'first get an extent object
-library(raster)
-extentGriend = raster::extent(c(xmin = min(data$x), xmax = max(data$x),
-                          ymin = min(data$y), ymax = max(data$y)))
-#'make an empty raster
-emptyRaster = raster::raster(x = extentGriend, resolution = 100,
-                             crs = CRS("+proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"),
-                             vals = 0)
-
-#'split data into per-id list
-dataList = plyr::dlply(data, "id")
-
-#'now make 3 rasters per id of summed revisits, residence, mean FPT
-
-for(i in 1:2){
-  a = dataList[[i]]
-  dataList[[i]][[1]] = rasterize(x = as.matrix(a[c("x", "y")]),
-                            y = emptyRaster,
-                            field = a$revisits,
-                            fun = "sum")
-  dataList[[i]][[2]] = rasterize(x = as.matrix(a[c("x", "y")]),
-                                 y = emptyRaster,
-                                 field = c("revisits"),
-                                 fun = "sum")
-}
+#'save to file
+ggsave(filename = "../figs/figTimelagReleaseFPT.pdf", 
+       device = pdf(), width = 210, height = 90, units = "mm"); dev.off()

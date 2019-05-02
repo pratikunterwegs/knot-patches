@@ -24,31 +24,45 @@ ggplot(dataDistSummary)+
   themePub()+
   ggtitle("distance per tidal cycle")+ xlab("distance (km)")
 
-#'distribution of distance in foraging and non-foraging period
-#'foraging period is HT+3 : HT+10
-dataDistForage = filter(dataDist, 
-                       between(timeToHiTide, 3*60, 10*60)) %>% 
-                       mutate(day2 = plyr::round_any(tidalCycle, 8)) %>%
-  group_by(id, day2, tidalCycle) %>%
-  summarise(distPerPeriod = sum(distance, na.rm = T)) %>% 
-  ungroup() %>% 
-  group_by(id, day2) %>% 
-  summarise_at(vars(distPerPeriod), mean)
+#### explore steplength distributions ####
+#'get summary data
+dataDistSummary = dataDist %>% 
+  mutate(hourHt = plyr::round_any(timeToHiTide, 60)/60) %>% 
+  group_by(id, hourHt, tidalCycle) %>% 
+  summarise(dist = mean(distance, na.rm = T))
 
-#'plot
-ggplot(dataDistForage)+
-  geom_histogram(aes(x = distPerPeriod, fill = day2, group = day2), 
-                 col = drkGry,
-                 size = 0.3, position = "stack", bins = 50)+
-  scale_fill_gradientn(colours = (colorspace::heat_hcl(30)),
-                      name = "tidal \ncycle \nbin")+
-  # scale_fill_viridis_c(name = "tidal \ncycle \nbin")+
-  xlab("mean distance ")+
- # facet_wrap(~day2)+
-  themePubLeg()+
-  ggtitle("Mean distance per foraging period: 8 tidal cycle bins (~2 days)")+ xlab("distance (km)")+
-  xlim(0, 3e4)
+#'add explore score
+dataBehav = read_csv("../data2018/behavScores.csv")
 
-#'save
-ggsave(filename = "../figs/figMeanDistPerForage.pdf", 
-       device = pdf(), width = 297, height = 125, units = "mm", dpi = 300); dev.off()
+dataDistSummary = left_join(dataDistSummary, dataBehav)
+
+# filter data dist summary to see only the 0-25 and 75+ quantile
+# of explore scores
+exploreScoreExtremes = quantile(dataDistSummary$exploreScore, 
+                                probs = c(0, 0.25, 0.75, 1), na.rm = T)
+
+dataDistSummary = mutate(dataDistSummary, 
+                         behavCat = cut(exploreScore, exploreScoreExtremes,
+                                        labels = c("low", "med", "hig"),
+                                        include.lowest = T))
+
+#'plot data
+ggplot()+
+  geom_freqpoly(data = dataDistSummary %>% 
+                   filter(!is.na(exploreScore),
+                          hourHt < 13),
+               aes(x = dist, group = id), 
+               position = "identity", size = 0.1, geom = "line",
+               alpha = 0.2)+
+  
+  xlim(0, quantile(dataDist$distance, 0.95, na.rm = T))+
+  facet_grid(behavCat~hourHt)+
+  #coord_cartesian(ylim = c(0,10))+
+  themePub()+
+  labs(x = "steplength (m)", y = "# fixes", 
+       title = "steplength distribution over tidal cycle: hour ~ exploreScore")
+
+#'save to file
+ggsave(filename = "../figs/figSteplengthDistTime.pdf", 
+       device = pdf(), width = 297, height = 210, units = "mm"); dev.off()
+  
