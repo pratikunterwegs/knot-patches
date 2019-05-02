@@ -39,8 +39,10 @@ for (i in 1:length(data)) {
     #'convert each to polygon
     contPoly = lapply(contLines, function(y) Polygon(y[-1]))
     #'make polygons
-    contPolyN = Polygons(contPoly, paste("resPatch", i, sep = "_"))
+    contPolyN = Polygons(contPoly, paste("resPatch", i, j, sep = "_"))
     #'make spatial polygon
     resPatches[[i]][[j]] = contPolyN
   }
+  resPatches[[i]] = SpatialPolygons(resPatches[[i]], 1:length(resPatches[[i]]))
 }
+
