@@ -87,7 +87,7 @@ dataCombined = bind_rows(dataCombined)
 #### add time to high tide information ####
 # make segmentation list a df
 data = map(data, bind_rows) %>% bind_rows() %>% 
-  mutate(id = as.numeric(substr(id.tide, 1, 3)),
+  mutate(id = (substr(id.tide, 1, 3)),
          tidalCycle = as.numeric(substr(id.tide, 5, 7)))
 
 # read high tide data
