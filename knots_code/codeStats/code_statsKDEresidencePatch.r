@@ -7,7 +7,8 @@ library(tidyverse); library(readr)
 source("codePlotOptions/ggThemePub.r")
 # load data
 dataFiles = list.files("../data2018/segmentation/", full.names = T)
-# read data
+
+# read data and filter for quality, at least 5 points per segment
 data = map(dataFiles, read_csv) %>% 
   map(function(x) plyr::dlply(x, "segment")) %>% 
   map(function(x) {
@@ -60,8 +61,28 @@ for (i in 1:length(data)) {
 save(resPatches, file = "../data2018/spatials/residencePatches.rdata")
 
 #### get residence patch summaries ####
-# convert to sf class
-library(sf)
-for(i in x:length(resPatches)){
-  resPatches[[i]] = st_as_sf(resPatches[[i]])
-}
+# calculate areas in m2 (in map units squared, here map units are metres)
+resPatchArea = lapply(resPatches, st_area)
+
+# combine with a summary of the filtered original data
+dataCombined = map(data, function(x){
+  map(x, function(y){
+    y %>% summarise(id = unique(substr(id.tide, 1, 3)),
+                    tidalCycle = as.numeric(unique(substr(id.tide, 5, 7))),
+                    seg = unique(segment),
+                    timeSegStart = min(timeNum),
+                    timeSegEnd = max(timeNum))
+  }) %>% 
+    bind_rows()
+})
+
+# add the segment areas
+dataCombined = map2(dataCombined, resPatchArea, function(x,y){
+  mutate(x, area = y)
+})
+
+# bind rows and export
+dataCombined = bind_rows(dataCombined)
+
+# write to file
+write_csv(dataCombined, "../data2018/data2018residencePatchAreas.csv")
