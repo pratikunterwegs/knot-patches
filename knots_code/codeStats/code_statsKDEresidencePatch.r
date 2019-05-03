@@ -11,7 +11,7 @@ dataFiles = list.files("../data2018/segmentation/", full.names = T)
 data = map(dataFiles, read_csv) %>% 
   map(function(x) plyr::dlply(x, "segment")) %>% 
   map(function(x) {
-    keep(x, function(y) nrow(y) >= 20)
+    keep(x, function(y) nrow(y) >= 5)
   })
 
 # check that all lists have at least one element
@@ -30,23 +30,30 @@ resPatches = data %>% map(function(x){map(x, function(y) NULL)})
 for (i in 1:length(data)) {
   for(j in 1:length(data[[i]])){  
     x = data[[i]][[j]]
-    #'get the positions matrix
+    # get the positions matrix
     pos = x[,c("x", "y")]
-    #'get the plugin H
+    # get the plugin H
     H.pi = Hpi(x = pos)
-    #'get the KDE
+    # get the KDE
     resPatchKDE = kde(pos, H = H.pi, compute.cont = T)
-    #'draw contour lines
+    # draw contour lines
     contLines = contourLines(resPatchKDE$eval.points[[1]], resPatchKDE$eval.points[[2]], 
                              resPatchKDE$estimate, level = contourLevels(resPatchKDE, 0.05))
-    #'convert each to polygon
-    contPoly = lapply(contLines, function(y) Polygon(y[-1]))
-    #'make polygons
-    contPolyN = Polygons(contPoly, paste("resPatch", i, j, sep = "_"))
-    #'make spatial polygon
-    resPatches[[i]][[j]] = contPolyN
+    
+    # convert each to polygon via linestring using sf directly
+    contPoly = lapply(contLines, function(z){
+      st_polygonize(st_linestring(x = (cbind(z[["x"]], z[["y"]]))))})
+    
+    # reduce possible multiple polygons to a sfg objects
+    # then convert sfg to sfc objects
+    contPoly = st_sfc(purrr::reduce(contPoly, rbind))
+    # now combine all sfc objects into a single polygon
+    resPatches[[i]][[j]] = st_combine(contPoly)
   }
-  resPatches[[i]] = SpatialPolygons(resPatches[[i]], 1:length(resPatches[[i]]))
+  # combine the jth objects of the ith track into a single sfc
+  # this sfc retains attributes of the segments (j in number)
+  # such as area, which are important
+  resPatches[[i]] = st_sfc(purrr::reduce(resPatches[[i]], rbind))
 }
 
 # save to rdata
@@ -55,6 +62,6 @@ save(resPatches, file = "../data2018/spatials/residencePatches.rdata")
 #### get residence patch summaries ####
 # convert to sf class
 library(sf)
-for(i in 25:length(resPatches)){
+for(i in x:length(resPatches)){
   resPatches[[i]] = st_as_sf(resPatches[[i]])
 }
