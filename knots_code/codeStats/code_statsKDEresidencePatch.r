@@ -81,8 +81,28 @@ dataCombined = map2(dataCombined, resPatchArea, function(x,y){
   mutate(x, area = y)
 })
 
-# bind rows and export
+# bind rows
 dataCombined = bind_rows(dataCombined)
 
+#### add time to high tide information ####
+# make segmentation list a df
+data = map(data, bind_rows) %>% bind_rows() %>% 
+  mutate(id = as.numeric(substr(id.tide, 1, 3)),
+         tidalCycle = as.numeric(substr(id.tide, 5, 7)))
+
+# read high tide data
+dataHt = read_csv("../data2018/data2018posWithTides.csv") %>% 
+  select(dataHt, id, tidalCycle, timeNum, timeToHiTide, x, y)
+# join segments and tides
+data = left_join(data, dataHt,
+                    by = c("id", "tidalCycle", "x", "y", "timeNum"))
+
+# summarise time to high tide per segment start and end
+dataSegSummary = data %>% 
+  group_by(id, tidalCycle, segment) %>% 
+  select(-id.tide, -residenceTime) %>% 
+  summarise_all(list(start = first, end = last)) %>% 
+  left_join(dataCombined, by = c("id", "tidalCycle", "segment" = "seg"))
+
 # write to file
-write_csv(dataCombined, "../data2018/data2018residencePatchAreas.csv")
+write_csv(dataSegSummary, "../data2018/data2018residencePatchAreas.csv")
