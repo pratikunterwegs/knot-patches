@@ -1,6 +1,6 @@
 **Copyright (c) 2019 Pratik Gupte**
 
-Data, if any generated or accessed (c) GELIFES-RUG and COS-NIOZ
+Data, if any generated or accessed belong to GELIFES-RUG and COS-NIOZ and/or relevant members.
 
 # Code from the Wadden Sea ATLAS project
 
