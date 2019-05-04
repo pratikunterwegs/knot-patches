@@ -1,15 +1,19 @@
-# Red knots
+**Copyright (c) 2019 Pratik Gupte**
+
+Data, if any generated or accessed belong to GELIFES-RUG and COS-NIOZ and/or relevant members.
+
+# Code from the Wadden Sea ATLAS project
 
 ## What?
 
-Code and figures for red knots *Calidris canutus islandica* tracking data and analysis.
+Code for data handling for tracking data from the Wadden Sea ATLAS project.
 
 ## Who?
+
+Please contact before cloning or in case of interest:
 
 Contact:
 - Pratik Gupte: p.r.gupte@rug.nl, pratik.gupte@nioz.nl
   Nijenborgh 7/5172.0583 9747AG Groningen
 
 - Allert Bijleveld: allert.bijleveld@nioz.nl
-
-
