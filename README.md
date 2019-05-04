@@ -17,5 +17,3 @@ Contact:
   Nijenborgh 7/5172.0583 9747AG Groningen
 
 - Allert Bijleveld: allert.bijleveld@nioz.nl
-
-
