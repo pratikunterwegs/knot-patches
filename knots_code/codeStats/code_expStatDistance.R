@@ -1,23 +1,23 @@
 #### code to explore movement distance ####
 
-#'load libs and data
+# load libs and data
 library(tidyverse); library(readr)
 
-#'load basic summary data
+# load basic summary data
 dataSummary = read_csv("../data2018/dataSummary2018.csv")
 
-#'load distances travelled
+# load distances travelled
 dataDist = read_csv("../data2018/data2018withDistances.csv")
 
-#'summarise basic data
+# summarise basic data
 dataDistSummary = group_by(dataDist, id, tidalCycle) %>% 
   summarise(distPerTide = sum(distance, na.rm = T))
 
-#'load plot ops
+# load plot ops
 source("codePlotOptions/ggThemePub.r")
 
 #### exploratory plots ####
-#'distribution of distance per tide
+# distribution of distance per tide
 ggplot(dataDistSummary)+
   geom_histogram(aes(x = distPerTide/1e3), bins = 50, col = "grey20",
                  fill = "grey90")+
@@ -25,13 +25,13 @@ ggplot(dataDistSummary)+
   ggtitle("distance per tidal cycle")+ xlab("distance (km)")
 
 #### explore steplength distributions ####
-#'get summary data
+# get summary data
 dataDistSummary = dataDist %>% 
   mutate(hourHt = plyr::round_any(timeToHiTide, 60)/60) %>% 
   group_by(id, hourHt, tidalCycle) %>% 
   summarise(dist = mean(distance, na.rm = T))
 
-#'add explore score
+# add explore score
 dataBehav = read_csv("../data2018/behavScores.csv")
 
 dataDistSummary = left_join(dataDistSummary, dataBehav)
@@ -46,7 +46,7 @@ dataDistSummary = mutate(dataDistSummary,
                                         labels = c("low", "med", "hig"),
                                         include.lowest = T))
 
-#'plot data
+# plot data
 ggplot()+
   geom_freqpoly(data = dataDistSummary %>% 
                    filter(!is.na(exploreScore),
@@ -62,7 +62,7 @@ ggplot()+
   labs(x = "steplength (m)", y = "# fixes", 
        title = "steplength distribution over tidal cycle: hour ~ exploreScore")
 
-#'save to file
+# save to file
 ggsave(filename = "../figs/figSteplengthDistTime.pdf", 
        device = pdf(), width = 297, height = 210, units = "mm"); dev.off()
   
