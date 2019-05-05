@@ -9,6 +9,8 @@ data2017/
 data2018/
 *data_func*
 
+*scripts_allert*
+
 *.mp4
 
 *.docx
@@ -19,3 +21,4 @@ data2018/
 *.zip
 
 .vscode/
+.vs/

@@ -2,10 +2,10 @@
 
 library(readr)
 
-#'read in data with movement
+# read in data with movement
 data = read_csv("../data2018/data2018withDistances.csv")
 
-#'summarise total distance per tide
+# summarise total distance per tide
 library(tidyverse)
 dataSummary = data %>%
   group_by(id, tidalCycle) %>%
@@ -15,16 +15,16 @@ dataSummary = data %>%
             propFixes = nFixes*10/(max(timeNum) - min(timeNum)))
 
 
-#'count propFixes below 0.33
+# count propFixes below 0.33
 count(ungroup(dataSummary), goodFix = propFixes >= 0.33) %>%
   ggplot()+
   geom_col(aes(x = goodFix, y = n, fill = goodFix))
 
-#'remove id - tidalCycle combinations below 0.5 fix prop
+# remove id - tidalCycle combinations below 0.5 fix prop
 dataSummary = filter(dataSummary, propFixes >= 0.33)
 
-#'plot distance per tide scaled by propFixes
-#'source plot theme
+# plot distance per tide scaled by propFixes
+# source plot theme
 source("codePlotOptions/ggThemePub.r")
 library(pals)
 
@@ -37,7 +37,7 @@ ggplot(dataSummary %>%
   themePubLeg()+
   guides(fill = guidePub)
 
-#'which ids remain?
+# which ids remain?
 idsWanted = tibble(id = unique(dataSummary$id)) %>%
   mutate(rowNum = 1:nrow(.)) %>%
   select(rowNum, id)

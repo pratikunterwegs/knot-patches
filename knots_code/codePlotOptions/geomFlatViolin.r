@@ -21,10 +21,10 @@ geom_flat_violin <- function(mapping = NULL, data = NULL, stat = "ydensity",
   )
 }
 
-#'rdname ggplot2-ggproto
-#'format NULL
-#'usage NULL
-#'export
+# rdname ggplot2-ggproto
+# format NULL
+# usage NULL
+# export
 GeomFlatViolin <-
   ggproto("GeomFlatViolin", Geom,
           setup_data = function(data, params) {

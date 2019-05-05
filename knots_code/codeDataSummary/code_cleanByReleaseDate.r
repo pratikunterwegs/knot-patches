@@ -1,16 +1,16 @@
 #### code to clean data by release date ####
 
-#'load libs
+# load libs
 library(tidyverse); library(readr)
 
-#'list all 2018 csv data files
+# list all 2018 csv data files
 data2018names = list.files("../data2018/", pattern = c("data_", ".csv"), full.names = T)
 
-#'get filesizes
+# get filesizes
 sapply(data2018names, file.size, USE.NAMES = F)/1e6
 
 #### bind all ####
-#'read all data
+# read all data
 data2018 = lapply(data2018names, read_csv)
 
 # bind and split by id
@@ -48,7 +48,7 @@ ggplot()+
   #  xlim(-50, 600)+
   ylab("# birds")
 
-#'export as png
+# export as png
 ggsave(filename = "../figs/figTimeTagRelease.pdf", 
        device = pdf(), width = 125, height = 100, units = "mm", dpi = 300); 
 dev.off()
