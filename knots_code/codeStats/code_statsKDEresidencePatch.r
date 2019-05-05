@@ -9,8 +9,8 @@ source("codePlotOptions/ggThemePub.r")
 dataFiles = list.files("../data2018/segmentation/", full.names = T)
 
 # read data and filter for quality, at least 5 points per segment
-data = map(dataFiles, read_csv) %>% 
-  map(function(x) plyr::dlply(x, "segment")) %>% 
+data = map(dataFiles, read_csv) %>%
+  map(function(x) plyr::dlply(x, "segment")) %>%
   map(function(x) {
     keep(x, function(y) nrow(y) >= 5)
   })
@@ -29,7 +29,7 @@ resPatches = data %>% map(function(x){map(x, function(y) NULL)})
 
 # run a KDE function on each of the residence patches
 for (i in 1:length(data)) {
-  for(j in 1:length(data[[i]])){  
+  for(j in 1:length(data[[i]])){
     x = data[[i]][[j]]
     # get the positions matrix
     pos = x[,c("x", "y")]
@@ -38,13 +38,13 @@ for (i in 1:length(data)) {
     # get the KDE
     resPatchKDE = kde(pos, H = H.pi, compute.cont = T)
     # draw contour lines
-    contLines = contourLines(resPatchKDE$eval.points[[1]], resPatchKDE$eval.points[[2]], 
+    contLines = contourLines(resPatchKDE$eval.points[[1]], resPatchKDE$eval.points[[2]],
                              resPatchKDE$estimate, level = contourLevels(resPatchKDE, 0.05))
-    
+
     # convert each to polygon via linestring using sf directly
     contPoly = lapply(contLines, function(z){
       st_polygonize(st_linestring(x = (cbind(z[["x"]], z[["y"]]))))})
-    
+
     # reduce possible multiple polygons to a sfg objects
     # then convert sfg to sfc objects
     contPoly = st_sfc(purrr::reduce(contPoly, rbind))
@@ -72,7 +72,7 @@ dataCombined = map(data, function(x){
                     seg = unique(segment),
                     timeSegStart = min(timeNum),
                     timeSegEnd = max(timeNum))
-  }) %>% 
+  }) %>%
     bind_rows()
 })
 
@@ -86,22 +86,22 @@ dataCombined = bind_rows(dataCombined)
 
 #### add time to high tide information ####
 # make segmentation list a df
-data = map(data, bind_rows) %>% bind_rows() %>% 
+data = map(data, bind_rows) %>% bind_rows() %>%
   mutate(id = (substr(id.tide, 1, 3)),
          tidalCycle = as.numeric(substr(id.tide, 5, 7)))
 
 # read high tide data
-dataHt = read_csv("../data2018/data2018posWithTides.csv") %>% 
+dataHt = read_csv("../data2018/data2018posWithTides.csv") %>%
   select(dataHt, id, tidalCycle, timeNum, timeToHiTide, x, y)
 # join segments and tides
 data = left_join(data, dataHt,
                     by = c("id", "tidalCycle", "x", "y", "timeNum"))
 
 # summarise time to high tide per segment start and end
-dataSegSummary = data %>% 
-  group_by(id, tidalCycle, segment) %>% 
-  select(-id.tide, -residenceTime) %>% 
-  summarise_all(list(start = first, end = last)) %>% 
+dataSegSummary = data %>%
+  group_by(id, tidalCycle, segment) %>%
+  select(-id.tide, -residenceTime) %>%
+  summarise_all(list(start = first, end = last)) %>%
   left_join(dataCombined, by = c("id", "tidalCycle", "segment" = "seg"))
 
 # write to file
