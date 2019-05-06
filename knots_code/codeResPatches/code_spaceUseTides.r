@@ -37,6 +37,10 @@ dataNest = mutate(dataNest,
                     mutate(df, segment = funcSegment(df))
                   }))
 
+# write data to file
+data = dataNest %>% unnest()
+write_csv(data, "../data2018/data2018Segments.csv")
+
 #### plot segments ####
 # random 25 id~tide combos
 dataSubset = sample_n(dataNest, 25) %>% 
