@@ -26,14 +26,14 @@ all scripts are in `knots_code/`
 4. run `codeDataSummary/code_reduce2018data.r`
 	a. reads in each rdata object of 10 ids
 	b. groups each id by 10 second intervals
-	c. summarises x, y coords as means over 10 second interval
+	c. summarises x, y coords as means over **10 second** interval
 	d. writes rdata to csv file
 
 5. run `codeDataSummary/code_cleanByReleaseDate.r`
 	a. reads in each csv file of 10 ids
 	b. reads in behav scores with release date
 	c. plots figure showing histogram of first fix time - release time
-	d. cleans data to remove fixes before release
+	d. cleans data to **remove fixes before release**
 	e. writes cleaned data to csv
 
 ## adding metadata
@@ -49,7 +49,7 @@ all scripts are in `knots_code/`
 
 7. run `codeMoveMetrics/code_distanceTides.r`
 	a. reads file of fixes with tidal cycle
-	b. removes id ~ tidal cycle combos with < 2 rows
+	b. _removes_ id ~ tidal cycle combos with **< 2 rows**
 	c. calculates euclidean distance between successive points
 	d. saves distances as an rdata object
 	e. writes csv of positions with distances
@@ -75,7 +75,7 @@ all scripts are in `knots_code/`
 
 10. run `codeMoveMetrics/code_FPT.r`
 	a. reads in file with fixes and assigned tidal cycles
-	b. filters data for >= .33 duration and fixes per id-tide
+	b. _filters data_ for **>= .33 duration and fixes** per id-tide
 	c. writes filtered data to file
 	d. splits data by id-tide
 	e. writes split data to separate files
