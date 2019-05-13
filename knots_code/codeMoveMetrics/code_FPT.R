@@ -67,9 +67,9 @@ for(i in 1:length(recurseFiles)){
 
   x = x[,c("x", "y", "time", "id")]
 
-  # get revisits from a radius of 100m
+  # get revisits from a radius of 250m
   # threshold of 10 minutes
-  xRecurse = getRecursions(x = x, radius = 100, threshold = 10,
+  xRecurse = getRecursions(x = x, radius = 250, threshold = 10,
     timeunits = "mins", verbose = TRUE)
 
   # get FPT as first residence time
