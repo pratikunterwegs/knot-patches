@@ -3,6 +3,9 @@
 # this code is experimental and doesn't fully work
 # without errors
 
+# clean env
+rm(list = ls()); gc()
+
 #### load libs ####
 library(tidyverse); library(readr)
 rm(list = ls()); gc()
