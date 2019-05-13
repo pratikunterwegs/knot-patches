@@ -1,5 +1,8 @@
 #### code for Griend departure ####
 
+# env clear
+rm(list = ls()); gc()
+
 # load libs
 library(tidyverse); library(readr)
 
@@ -94,7 +97,8 @@ distGriendId %>%
                       limits = c(0, 10),
                       na.value = litBlu)+
   facet_wrap(~var)+
-  themePubLeg()+ylab("id")
+  themePubLeg()+
+  labs(y = "id", caption = Sys.time())
   
 # save to file
 ggsave(filename = "../figs/distGriendIdTide.pdf", device = pdf(), width = 210, height = 297, units = "mm", dpi = 300); dev.off()
