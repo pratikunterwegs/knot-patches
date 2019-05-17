@@ -144,7 +144,7 @@ data = mutate(data, data = map(data, function(z){
 
 # compare segmentation
 
-## compare plot
+## compare by mapping
 
 ```{r plot_compare, fig.width=12}
 # make list of plots
@@ -162,20 +162,32 @@ listplots = map(data$data, function(z){
     labs(caption = Sys.time())
 })
 
-# print plots
+# show plots
 map(listplots, print)
-
-# save to pdf
-pdf(file = "figCompareSegmentation.pdf", width = 8, height = 8)
-
-for(i in 1:nrow(data))
-{
-  print(listplots[[i]]+
-          labs(title = data$id.tide))
-}
-
-dev.off()
 ```
+
+## compare residence time ~ time
+
+```{r plot_restime, fig.width=12}
+# make list
+listplots2 = map(data$data, function(z){
+  ggplot(z)+
+    geom_line(aes(x = as.POSIXct(timeNum, origin = "1970-01-01"),
+                  y = residenceTime), size= 0.1)+
+    geom_point(aes(x = as.POSIXct(timeNum, origin = "1970-01-01"),
+                  y = residenceTime, col = factor(segNum)))+
+    scale_color_manual(values = pals::kovesi.rainbow(max(z$segNum)))+
+    facet_grid(~segMethod,
+               labeller = labeller(segMethod = c(segment = "K-means", state_ordered = "Lavielle")))+
+    themePubLeg()+
+    theme(legend.position = "bottom")+
+    labs(caption = Sys.time(), x = "time")
+})
+
+# show plots
+map(listplots2, print)
+```
+
 
 ## write to file
 

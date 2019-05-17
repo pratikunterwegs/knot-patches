@@ -79,7 +79,7 @@ all scripts are in `knots_code/`
 	c. writes filtered data to file
 	d. splits data by id-tide
 	e. writes split data to separate files
-	f. runs recurse analysis on each file separately, reading in and writing revisit statistics
+	f. runs recurse analysis on each file separately, reading in and writing revisit statistics; recurse radius is **250m**
 	g. reads in all recurse data, binds and writes to file
 
 ## getting social environment
@@ -97,6 +97,13 @@ all scripts are in `knots_code/`
 	e. reads in written data above
 	f. summarises number of neighbours per id per tidal cycle per distance class
 	g. plots a heatmap of neighbours as above and saves to file
+
+## getting space use and residence patches
+
+13. run `codeResPatches/code_spaceUseTides.r`
+	a. reads in recurse data
+	b. splits by id and tide
+	c. 
 
 ## statistics
 
