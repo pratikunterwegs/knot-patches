@@ -1,3 +1,5 @@
+#### code to compare segclust and kmeans ####
+
 # print system specs
 sessionInfo()
 
@@ -6,13 +8,13 @@ library(tidyverse); library(segclust2d)
 library(sf)
 
 # load plot opts
-source("../codePlotOptions/ggThemePub.r")
+source("codePlotOptions/ggThemePub.r")
 
 # read data, warnings are supressed
-data = read_csv("../../data2018/data2018WithRecurse.csv")
+data = read_csv("../data2018/data2018WithRecurse.csv")
 
 #read griend as sf
-griend = st_read("../../griend_polygon/griend_polygon.shp")
+griend = st_read("../griend_polygon/griend_polygon.shp")
 
 # select id.tide combinations of interest and filter for res time
 # rename id as bird
