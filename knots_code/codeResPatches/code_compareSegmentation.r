@@ -18,58 +18,25 @@ griend = st_read("../griend_polygon/griend_polygon.shp")
 
 # select id.tide combinations of interest and filter for res time
 # rename id as bird
-data = filter(data, 
+data2 = filter(data, 
               id.tide %in% c(547.110, 550.06, 593.102, 439.064, 572.114)) %>% 
-  filter(residenceTime >= 10) %>% 
   rename(bird = id)
 
-#print as wrapped panel
-ggplot(griend)+
-  geom_sf()+
-  geom_path(data = data, aes(x, y), size = 0.2)+
-  geom_point(data = data, aes(x, y), size = 0.1, col = 2, shape = 1)+
-  facet_wrap(~id.tide, ncol = 3)+
-  coord_sf(datum = NA)+
-  themePub()+
-  labs(title = "tracks: red points are fixes", caption = Sys.time())
-
-# guess time between segments as number of moves above 90th percentile
-funcGetClusters = function(x){
-  # needs a numeric vector
-  assertthat::assert_that(is.numeric(x), msg = "x is not a numeric vector!")
-  y = quantile(x, probs = 0.01)
-  z = sum(x <= y)
-  return(z)
-} 
-
-# setup kmeans function using guessed number of residence patches
-funcSegment = function(x){
-  # kmeans reqs a matrix or coercable object such as a df
-  assertthat::assert_that(is.data.frame(x), msg = "x is not a df!")
-  nAssumedPatches = funcGetClusters(x$residenceTime)
-  x1 = kmeans(x[,c("x", "y", "residenceTime")], centers = nAssumedPatches)
-  return(x1[["cluster"]])
-}
+#### segclust 2d method ####
 
 # choose parameters Kmax, lmin, and type
 # segmentation happens on coords x and y
-Kmax = 25 # approx 2 per hour of the tidal cycle
-lmin = 10 # at least 10 points per segment
+# Kmax = 25 # approx 2 per hour of the tidal cycle
+lmin = 5 # at least 5 points per segment, ie, 50 seconds
 type = "home-range"
 
 # nest data
-data = group_by(data, id.tide) %>% nest()
-
-# use Kmeans
-# assign new column in data$data for segment/cluster
-data = mutate(data, data = map(data, function(df){
-  mutate(df, segment = funcSegment(df))
-}))
+data2 = group_by(data, id.tide) %>% nest()
 
 # use segclust2d
 data = mutate(data, data = map(data, function(x){
   segmentation(x, Kmax = Kmax, lmin = lmin, 
-               coord.names = c("x", "y"), seg.var = "residenceTime") %>% 
+               coord.names = c("x", "y")) %>% 
     augment()
 }))
 
