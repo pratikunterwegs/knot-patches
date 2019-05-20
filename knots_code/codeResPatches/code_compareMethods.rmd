@@ -1,0 +1,206 @@
+---
+title: code to compare kmeans and segclust2d on selected individuals
+bibliography: ../refs.bib
+csl: 
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+  pdf_document:
+    keep_tex: yes
+    latex_engine: xelatex
+    number_sections: yes
+    toc: yes
+---
+
+comparing two methods: _K_-means clustering implemented in base `R`, and bivariate Lavielle segmentation implemented in the package `segclust2d` [@segclust2d; @Patin444794].
+
+# set up environment
+
+```{r load_libs}
+# print system specs
+sessionInfo()
+
+# load libs
+library(tidyverse); library(segclust2d)
+library(sf)
+
+# load plot opts
+source("../codePlotOptions/ggThemePub.r")
+```
+
+# data prep
+
+## read in data
+
+1. reading in tracking data with revisit statistics: first passage time, number of revisits, residence time.
+
+2. revisit stats are based on a 250 m radius, with a 10 minute return window, _i.e._, movements outside the radius of under 10 mins are not considered as true exits.
+
+```{r read_data, warning=FALSE}
+# read data, warnings are supressed
+data = read_csv("../../data2018/data2018WithRecurse.csv")
+```
+
+3. read in griend
+
+```{r read_griend}
+#read griend as sf
+griend = st_read("../../griend_polygon/griend_polygon.shp")
+```
+
+
+## clean data
+
+1. select indivs of interest; remove residence times < 10 mins
+
+the selected id and tidal cycle combinations have been lost due to a new round of data cleaning, in which the 24 hours following capture were also removed. close approximations have been chosen.
+
+```{r clean_data}
+# select id.tide combinations of interest and filter for res time
+# rename id as bird
+data = filter(data, 
+              id.tide %in% c(547.110, 550.06, 593.102, 439.064, 572.114)) %>% 
+  filter(residenceTime >= 10) %>% 
+  rename(bird = id)
+```
+
+
+2. plot as panel to examine were 
+
+```{r plot_data, fig.width=12}
+#print as wrapped panel
+ggplot(griend)+
+  geom_sf()+
+  geom_path(data = data, aes(x, y), size = 0.2)+
+  geom_point(data = data, aes(x, y), size = 0.1, col = 2, shape = 1)+
+  facet_wrap(~id.tide, ncol = 3)+
+  coord_sf(datum = NA)+
+  themePub()+
+  labs(title = "tracks: red points are fixes", caption = Sys.time())
+```
+
+# set up segmentation
+
+## set up `k-means`
+
+get the 10th percentile of movement distance in each track, and count the number of residence times below that. use this value as the number of clusters for that track.
+
+```{r kmeans_setup}
+# guess time between segments as number of moves above 90th percentile
+funcGetClusters = function(x){
+  # needs a numeric vector
+  assertthat::assert_that(is.numeric(x), msg = "x is not a numeric vector!")
+  y = quantile(x, probs = 0.01)
+  z = sum(x <= y)
+  return(z)
+} 
+
+# setup kmeans function using guessed number of residence patches
+funcSegment = function(x){
+  # kmeans reqs a matrix or coercable object such as a df
+  assertthat::assert_that(is.data.frame(x), msg = "x is not a df!")
+  nAssumedPatches = funcGetClusters(x$residenceTime)
+  x1 = kmeans(x[,c("x", "y", "residenceTime")], centers = nAssumedPatches)
+  return(x1[["cluster"]])
+}
+```
+
+## set up `segclust2d`
+
+```{r segclust2d_setup}
+# choose parameters Kmax, lmin, and type
+# segmentation happens on coords x and y
+Kmax = 25 # approx 2 per hour of the tidal cycle
+lmin = 10 # at least 10 points per segment
+type = "home-range"
+```
+
+## run segmentation
+
+```{r segment_run}
+# nest data
+data = group_by(data, id.tide) %>% nest()
+
+# use Kmeans
+# assign new column in data$data for segment/cluster
+data = mutate(data, data = map(data, function(df){
+  mutate(df, segment = funcSegment(df))
+}))
+
+# use segclust2d
+data = mutate(data, data = map(data, function(x){
+  segmentation(x, Kmax = Kmax, lmin = lmin, 
+               coord.names = c("x", "y"), seg.var = "residenceTime") %>% 
+    augment()
+  }))
+
+# gather method classifications
+data = mutate(data, data = map(data, function(z){
+  select(z, x, y, residenceTime, timeNum, segment, state_ordered) %>% 
+  gather(segMethod, segNum, -x,-y,-residenceTime,-timeNum)
+}))
+```
+
+# compare segmentation
+
+## compare by mapping
+
+```{r plot_compare, fig.width=12}
+# make list of plots
+listplots = map(data$data, function(z){
+  ggplot(griend)+
+  geom_sf(size = 0.1)+
+  geom_path(data = z, aes(x,y), col = 1, size = 0.01)+
+  geom_point(data = z, aes(x,y, col = factor(segNum)), shape = 1)+
+    scale_color_manual(values = pals::kovesi.rainbow(max(z$segNum)))+
+  facet_wrap(~segMethod, 
+             labeller = labeller(segMethod = c(segment = "K-means", state_ordered = "Lavielle")))+
+  coord_sf(datum = NA)+
+  themePubLeg()+
+    theme(legend.position = "bottom")+
+    labs(caption = Sys.time())
+})
+
+# show plots
+map(listplots, print)
+```
+
+## compare residence time ~ time
+
+```{r plot_restime, fig.width=12}
+# make list
+listplots2 = map(data$data, function(z){
+  ggplot(z)+
+    geom_line(aes(x = as.POSIXct(timeNum, origin = "1970-01-01"),
+                  y = residenceTime), size= 0.1)+
+    geom_point(aes(x = as.POSIXct(timeNum, origin = "1970-01-01"),
+                  y = residenceTime, col = factor(segNum)))+
+    scale_color_manual(values = pals::kovesi.rainbow(max(z$segNum)))+
+    facet_grid(~segMethod,
+               labeller = labeller(segMethod = c(segment = "K-means", state_ordered = "Lavielle")))+
+    themePubLeg()+
+    theme(legend.position = "bottom")+
+    labs(caption = Sys.time(), x = "time")
+})
+
+# show plots
+map(listplots2, print)
+```
+
+
+## write to file
+
+```{r write_data}
+# convert to wide format
+data = unnest(data) %>% 
+  mutate(segMethod = ifelse(segMethod == "segment", "Kmeans", "Lavielle"), 
+         id.tide = as.character(id.tide)) %>% 
+  spread(segMethod, segNum)
+
+# write to file
+write_csv(data, path = "testSegmentationData.csv")
+```
+
+
+# refs

@@ -1,5 +1,5 @@
 #### ggplot publication theme ####
-#'make theme for plots
+# make theme for plots
 library(ggplot2)
 
 themePub <- function(base_size=10) {
