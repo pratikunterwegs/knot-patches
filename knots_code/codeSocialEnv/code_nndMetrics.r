@@ -1,5 +1,8 @@
 #### calculate distmatrix metrics ####
 
+# clear env
+rm(list = ls()); gc()
+
 # load libs
 library(readr); library(dplyr)
 
@@ -83,8 +86,8 @@ ggplot(dataSummary)+
   scale_fill_viridis_c(option = "magma")+
   facet_wrap(~distance)+
   themePubLeg()+
-  ylab("id")+
-  ggtitle("Nearest neighbours per tide")+
+  labs(y = "id", title = "Nearest neighbours per tide",
+       caption = Sys.time())+
   theme(axis.text.y = element_text(size = 4))
 
 # save to file

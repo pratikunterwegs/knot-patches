@@ -46,15 +46,19 @@ ggplot()+
   themePub()+
   xlab("first position -- official release time (hrs)")+
   #  xlim(-50, 600)+
-  ylab("# birds")
+  ylab("# birds")+
+  labs(caption = Sys.time())
 
 # export as png
 ggsave(filename = "../figs/figTimeTagRelease.pdf", 
        device = pdf(), width = 125, height = 100, units = "mm", dpi = 300); 
 dev.off()
 
+# 24 hours in seconds
+oneDay = 24 * 60 * 60
+
 # remove fixes before release and check how many
-data2018 = data2018 %>% filter(time >= as.numeric(Release_Date))
+data2018 = data2018 %>% filter(time >= (as.numeric(Release_Date) + oneDay))
 print(paste(nOriginalRows - nrow(data2018), "rows of data removed"))
 
 #### write data without pre-release fixes to file ####

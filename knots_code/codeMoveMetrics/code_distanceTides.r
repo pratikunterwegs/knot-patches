@@ -1,5 +1,8 @@
 #### code to make shapefiles ####
 
+# clear env
+rm(list = ls()); gc()
+
 # load libs
 library(tidyverse); library(readr)
 library(sf)
@@ -18,9 +21,9 @@ source("codeMoveMetrics/functionEuclideanDistance.r")
 
 # map a distance function across the list, it's super quick
 tidalMovement = map(dataSf$data, function(a)
-  {
+{
   funcDistance(a, "x", "y")
-  })
+})
 
 # save as rdata
 save(tidalMovement, file = "tidalMovement2018.rdata")

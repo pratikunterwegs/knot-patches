@@ -1,5 +1,8 @@
 #### script to assign tidal cycles and print summary ####
 
+# clear prev session
+rm(list = ls()); gc()
+
 # load libs
 library(tidyverse); library(readr)
 
@@ -75,7 +78,8 @@ ggplot(dataSummary)+
                        name = "prop.",
                        na.value = "grey")+
   ylab("Bird id")+ xlab("Tidal cycles")+
-  ggtitle("Proportion of expected positions")+
+  labs(title="Proportion of expected positions",
+       caption = Sys.time())+
   themePubLeg()
 
 # export as pdf

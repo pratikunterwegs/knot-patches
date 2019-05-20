@@ -1,5 +1,8 @@
 #### roost on Griend or Richel ####
 
+# env clear
+rm(list = ls()); gc()
+
 # read in roost points
 
 library(sf)
@@ -49,7 +52,8 @@ ggplot(dataRoostProp %>% filter(roost == "griend"))+
   scale_fill_viridis_c(name = "propGriend",
                        na.value = "grey")+
   themePubLeg()+
-  ylab("id")+ ggtitle("Proportion of roost time on Griend")+
+  labs(y = "id", title = "Proportion of roost time on Griend",
+       caption = Sys.time())+
   theme(axis.text.y = element_text(size = 4))
 
 # save to file
