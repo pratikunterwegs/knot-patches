@@ -20,7 +20,9 @@ griend = st_read("../griend_polygon/griend_polygon.shp")
 # rename id as bird
 data2 = filter(data, 
               id.tide %in% c(547.110, 550.06, 593.102, 439.064, 572.114)) %>% 
-  rename(bird = id)
+  rename(bird = id) %>% 
+  mutate(id.tide = as.factor(id.tide)) %>% 
+  filter(residenceTime >= 10)
 
 #### segclust 2d method ####
 
@@ -28,20 +30,39 @@ data2 = filter(data,
 # segmentation happens on coords x and y
 # Kmax = 25 # approx 2 per hour of the tidal cycle
 lmin = 5 # at least 5 points per segment, ie, 50 seconds
-type = "home-range"
 
 # nest data
-data2 = group_by(data, id.tide) %>% nest()
+data2 = group_by(data2, id.tide) %>% nest()
 
 # use segclust2d
-data = mutate(data, data = map(data, function(x){
-  segmentation(x, Kmax = Kmax, lmin = lmin, 
-               coord.names = c("x", "y")) %>% 
+data2 = mutate(data2, dataSeg = map(data, function(x){
+  segmentation(x, lmin = 10, 
+               seg.var = c("x", "y"),
+               scale.variable = FALSE,
+               Kmax = 200) %>% 
     augment()
 }))
 
+# make seg summary
+data2$segSummary = map(data2$dataSeg, function(z){
+  group_by(z, state_ordered) %>% 
+    summarise(meanX = mean(x), meanY = mean(y), meanTime = mean(time))
+})
+
+# make multiple figures
+plots = map2(data2$dataSeg, data2$segSummary, function(a,b,c){
+  ggplot(griend)+
+    geom_sf()+
+    geom_path(data = a, aes(x,y), size = 0.2)+
+    geom_point(data = b, aes(x,y, col = state_ordered))+
+    geom_text(data = c, aes(meanX, meanY, label = state_ordered))
+})
+
+  
+#### changed till here ####
+
 # gather method classifications
-data = mutate(data, data = map(data, function(z){
+data2 = mutate(data2, data = map(data, function(z){
   select(z, x, y, residenceTime, timeNum, segment, state_ordered) %>% 
     gather(segMethod, segNum, -x,-y,-residenceTime,-timeNum)
 }))
