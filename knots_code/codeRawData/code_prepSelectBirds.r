@@ -105,13 +105,75 @@ if(!dir.exists("../data2018/selRawData/recursePrep")){
   dir.create("../data2018/selRawData/recursePrep")
 }
 
-# split data and write to file
-dataForSeg <- group_by(data, id, tidalCycle) %>% nest()
+# split data and remove dfs with less than 100 obs
+dataForSeg <- group_by(data, id, tidalCycle) %>%
+  group_split() %>% 
+  keep(function(x) nrow(x) > 100)
 
 # paste id and tide for easy extraction, padd tide number to 3 digits
 library(glue)
-for (i in 1:nrow(dataForSeg)) {
-  fwrite(dataForSeg$data[[i]], 
-         file = glue("../data2018/selRawData/recursePrep/", dataForSeg$id[i],
-                     "_", str_pad(dataForSeg$tidalCycle[i], 3, pad = 0)))
+for (i in 1:length(dataForSeg)) {
+  bird <- unique(dataForSeg[[i]]$id)
+  tide <- str_pad(unique(dataForSeg[[i]]$tidalCycle), 3, pad = 0)
+  fwrite(dataForSeg[[i]], 
+         file = glue("../data2018/selRawData/recursePrep/", bird,
+                     "_", tide))
 }
+
+# remove previous data
+rm(data, dataForSeg, releaseData, tides, waterlevel); gc()
+
+#### segmentation process ####
+
+# list files
+dataFiles <- list.files("../data2018/selRawData/recursePrep/", full.names = T)
+
+# create dir for output
+if(!dir.exists("../data2018/selRawData/recurseData")){
+  dir.create("../data2018/selRawData/recurseData")
+}
+
+library(recurse)
+for(i in 1:length(dataFiles)){
+  
+  # read in data
+  df <- as.data.frame(fread(dataFiles[i])[,.(x,y,time,id, tidalCycle)])
+  
+  # assign bird and tidal cycle
+  bird <- unique(df$id); tide <- str_pad(unique(df$tidalCycle),3,pad = 0)
+  
+  # run recurse
+  dfRecurse <- getRecursions(x = df[,c("x","y","time","id")], radius = 50, 
+                             timeunits = "mins", verbose = TRUE)
+  
+  # get residence time as sum of first 1 hour
+  dfRes <- data.table(dfRecurse[["revisitStats"]])[,cumlTime:=cumsum(timeInside), by=.(coordIdx,x,y)][cumlTime <= 60,][,.(resTime = sum(timeInside), fpt = first(timeInside), revisits = max(visitIdx)), .(coordIdx,x,y)]
+  
+  # join to data, for some reason, data.table converts time to posixct
+  # this conversion is both wrong and unwanted
+  df <- data.table(df)[dfRes,on=.(x,y)]
+  
+  # write to file
+  fwrite(df, file = glue("../data2018/selRawData/recurseData/recurse", bird,
+                         "_", tide), dateTimeAs = "epoch")
+  
+  rm(df, dfRecurse, dfRes)
+  
+}
+
+#### list the output and read in ####
+# list files
+dataFiles <- list.files("../data2018/selRawData/recurseData/", full.names = T)
+
+data <- 
+
+
+# read in griend
+griend = sf::st_read("../griend_polygon/griend_polygon.shp")
+ggplot(griend)+
+  geom_sf()+
+  geom_point(data = a,aes(x,y,col=resTime, alpha = resTime>1))+
+  scale_colour_viridis_c()
+
+ggplot(a)+
+  geom_point(aes(time, resTime), size = 0.2)
