@@ -99,3 +99,19 @@ ggsave("../figs/figRdSampleFixesPerTide.pdf", device = pdf(), height = 5,
 
 # write to file
 fwrite(data, file = "../data2018/selRawData/rawdataWithTides.csv")
+
+# make dir for segmentation output
+if(!dir.exists("../data2018/selRawData/recursePrep")){
+  dir.create("../data2018/selRawData/recursePrep")
+}
+
+# split data and write to file
+dataForSeg <- group_by(data, id, tidalCycle) %>% nest()
+
+# paste id and tide for easy extraction, padd tide number to 3 digits
+library(glue)
+for (i in 1:nrow(dataForSeg)) {
+  fwrite(dataForSeg$data[[i]], 
+         file = glue("../data2018/selRawData/recursePrep/", dataForSeg$id[i],
+                     "_", str_pad(dataForSeg$tidalCycle[i], 3, pad = 0)))
+}
