@@ -4,7 +4,7 @@
 selected_birds <- c(439, 547, 550, 572, 593)
 
 # load libs
-library(tidyverse)
+library(tidyverse); library(data.table)
 
 # list files
 dataFiles <- list.files("../data2018/", pattern = "knots2018", full.names = T)
@@ -84,31 +84,31 @@ data <- split(data, f = data$id) %>%
   group_by(id, tidalCycle) %>% 
   mutate(timeToHiTide = (time - min(time)) / 3600)
 
-# plot positions per tidal cycle
-count(data, id, tidalCycle) %>% 
-  ggplot(aes(x = factor(tidalCycle), y = factor(id), fill = n))+
-  geom_tile(col = "white", size = 0.2)+
-  scale_fill_viridis_c(option = "magma")+
-  theme_bw()+
-  theme(axis.text.x = element_text(angle = 45, size = 4))+
-  labs(x = "tidal cycle", y = "id", fill = "fixes")
+# split data and remove dfs with less than 100 obs
+dataForSeg <- group_by(data, id, tidalCycle) %>%
+  group_split() %>% 
+  keep(function(x) nrow(x) > 100)
 
-# make plot
-ggsave("../figs/figRdSampleFixesPerTide.pdf", device = pdf(), height = 5,
-       width = 12); dev.off()
+source("codeMoveMetrics/functionEuclideanDistance.r")
+# calc distance
+dataDist <- map(dataForSeg, function(df){
+  funcDistance(df, "x", "y")  
+})
+
+# add distance
+dataForSeg <- map2(dataForSeg, dataDist, function(z,w){
+  mutate(z, dist = w)
+})
+# bind rows
+dataForSeg <- bind_rows(dataForSeg)
 
 # write to file
-fwrite(data, file = "../data2018/selRawData/rawdataWithTides.csv")
+fwrite(dataForSeg, file = "../data2018/selRawData/rawdataWithTidesDists.csv")
 
 # make dir for segmentation output
 if(!dir.exists("../data2018/selRawData/recursePrep")){
   dir.create("../data2018/selRawData/recursePrep")
 }
-
-# split data and remove dfs with less than 100 obs
-dataForSeg <- group_by(data, id, tidalCycle) %>%
-  group_split() %>% 
-  keep(function(x) nrow(x) > 100)
 
 # paste id and tide for easy extraction, padd tide number to 3 digits
 library(glue)
@@ -163,30 +163,29 @@ for(i in 1:length(dataFiles)){
 
 #### segmentation ####
 # list files
-dataFiles <- list.files("../data2018/selRawData/recurseData/", full.names = T)
+dataRevFiles <- list.files("../data2018/selRawData/recurseData/", full.names = T)
 # read in the data
-data <- map(dataFiles, fread)
+data <- map(dataRevFiles, fread)
 
-# pass to segmentation
-library(segclust2d)
+# get distance data
+dataDist <- fread("../data2018/selRawData/rawdataWithTidesDists.csv")
 
-dataSeg <- map(data[c(1,2)],
-               function(x){
-                 segmentation(as.data.frame(x), lmin = 300,
-                              seg.var = c("resTime", "time"),
-                              order.var = "time",
-                              scale.variable = TRUE,
-                              Kmax = 100) %>% 
-                   augment()
-               })
-
+## test segmentation ##
+a <- data[[1]]
+a <- left_join(a, dataDist)
+a <- filter(a, !is.na(dist), !is.na(fpt))
+a <- mutate(a, dist = dist + runif(nrow(a), 0, min(dist)),
+            fpt = fpt + runif(nrow(a),0, min(fpt)),
+            resTime = resTime + runif(nrow(a), 0, min(resTime)))
 
 # read in griend
 griend = sf::st_read("../griend_polygon/griend_polygon.shp")
 ggplot(griend)+
   geom_sf()+
-  geom_point(data = a,aes(x,y,col=resTime, alpha = resTime>1))+
-  scale_colour_viridis_c()
+  geom_point(data = a,
+             aes(x,y, col = resTime, alpha = resTime>10))
 
-ggplot(a)+
-  geom_point(aes(time, resTime), size = 0.2)
+
+## to do ##
+# try ks kde
+
