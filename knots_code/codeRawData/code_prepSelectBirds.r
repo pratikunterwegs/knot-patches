@@ -79,8 +79,8 @@ data <- split(data, f = data$id) %>%
              tidalCycle = cumsum(tide == "H")) %>%      # assign tidal cycle
       filter(!is.na(x)) %>%                             # remove non positions
       select(-tide, -level, -time.y)                    # remove tidal data
-  }) %>% bind_rows() %>% 
-  mutate(tidalCycle = tidalCycle - min(tidalCycle) + 1) %>% 
+  }) %>% bind_rows() %>%                                # bind rows
+  mutate(tidalCycle = tidalCycle - min(tidalCycle) + 1) %>%
   group_by(id, tidalCycle) %>% 
   mutate(timeToHiTide = (time - min(time)) / 3600)
 
@@ -147,7 +147,13 @@ for(i in 1:length(dataFiles)){
                              timeunits = "mins", verbose = TRUE)
   
   # get residence time as sum of first 1 hour
-  dfRes <- data.table(dfRecurse[["revisitStats"]])[,cumlTime:=cumsum(timeInside), by=.(coordIdx,x,y)][cumlTime <= 60,][,.(resTime = sum(timeInside), fpt = first(timeInside), revisits = max(visitIdx)), .(coordIdx,x,y)]
+  dfRes <- setDT(dfRecurse[["revisitStats"]]                          # select rev stats
+                 )[,cumlTime:=cumsum(timeInside),                     # calc cumulative time
+                   by=.(coordIdx,x,y)                                 # for each coordinate
+                   ][cumlTime <= 60,                                  # remove times > 60
+                     ][,.(resTime = sum(timeInside),                  # calc metrics
+                          fpt = first(timeInside),
+                          revisits = max(visitIdx)), .(coordIdx,x,y)] # for each coordinate
   
   # join to data, for some reason, data.table converts time to posixct
   # this conversion is both wrong and unwanted
@@ -171,7 +177,7 @@ data <- map(dataRevFiles, fread)
 dataDist <- fread("../data2018/selRawData/rawdataWithTidesDists.csv")
 
 ## test segmentation ##
-a <- data[[1]]
+a <- data[[1]][dataDist, on=.(id,time,x,y)][]
 a <- left_join(a, dataDist)
 a <- filter(a, !is.na(dist), !is.na(fpt))
 a <- mutate(a, dist = dist + runif(nrow(a), 0, min(dist)),
