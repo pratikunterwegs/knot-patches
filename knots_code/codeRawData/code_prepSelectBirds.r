@@ -21,9 +21,9 @@ for(i in 1:length(dataFiles))
     keep(function(x) length(x) > 0) %>% # keep non null lists
     flatten() %>% # flatten this list structure
     keep(function(x) nrow(x) > 0) # keep dfs with data
- 
+  
   rm(data2018.raw); gc()
-     
+  
   data <- keep(data, function(x) unique(x$TAG - 3.1001e10) %in% selected_birds)
   
   # if the list is non-empty, add to a another list
@@ -37,7 +37,7 @@ for(i in 1:length(dataFiles))
 # output selectData as csv with some mods
 selectData <- map(selectData, function(df){
   select(df, time=TIME, x=X, y=Y, covxy=COVXY, towers=NBS, id=TAG) %>% 
-  mutate(time = time/1e3, id = id - 3.1001e10)
+    mutate(time = time/1e3, id = id - 3.1001e10)
 }) %>% 
   bind_rows()
 
@@ -161,11 +161,24 @@ for(i in 1:length(dataFiles)){
   
 }
 
-#### list the output and read in ####
+#### segmentation ####
 # list files
 dataFiles <- list.files("../data2018/selRawData/recurseData/", full.names = T)
+# read in the data
+data <- map(dataFiles, fread)
 
-data <- 
+# pass to segmentation
+library(segclust2d)
+
+dataSeg <- map(data[c(1,2)],
+               function(x){
+                 segmentation(as.data.frame(x), lmin = 300,
+                              seg.var = c("resTime", "time"),
+                              order.var = "time",
+                              scale.variable = TRUE,
+                              Kmax = 100) %>% 
+                   augment()
+               })
 
 
 # read in griend
