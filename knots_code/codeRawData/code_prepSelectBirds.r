@@ -202,6 +202,7 @@ dataSeg <- purrr::map(data, function(df){
     augment()
 })
 
+#### make plot ####
 # read in griend
 library(ggplot2)
 #griend = sf::st_read("../griend_polygon/griend_polygon.shp")
