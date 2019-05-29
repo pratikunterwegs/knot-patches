@@ -24,18 +24,20 @@ data <- purrr::map(data, function(df) {
                        ][,resPatch:= cumsum(resPatch)]
 })
 
-# this doesn't work
-
-dataPatch <- map(data[c(1:2)], function(df){
+# make residence patches
+dataPatch <- list()
+library(sf)
+for(i in 1:length(data[c(1:2)])){
+  df <- data[[i]]
   
-  df %>% group_by(resPatch) %>% 
-    group_split() %>% 
-    map(function(z){
-      st_as_sf(z, coords = c("x", "y")) %>% 
+  df <- group_by(df, resPatch) %>% 
+    st_as_sf(coords = c("x", "y")) %>% 
         `st_crs<-`(32631) %>% 
         st_buffer(10) %>% 
-        st_union()
-    })
+        group_by(resPatch) %>% 
+    summarise()
   
-})
+}
+
+
 
