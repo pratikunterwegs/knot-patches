@@ -33,25 +33,35 @@ data <- purrr::map(data, function(df) {
 # make residence patches
 library(sf)
 
-dataPatches <- map(data[c(1:5)], function(df){
+# error dataframes
+dfErrors = list()
+
+dataPatches <- map(data, function(df){
+  tryCatch(
   # group by patch
-  group_by(df, resPatch) %>% 
+  {group_by(df, resPatch) %>% 
     # make sd
     st_as_sf(coords = c("x", "y")) %>% 
     # assign crs
     `st_crs<-`(32631) %>% 
-    # draw a 10 m buffer (arbit choice)
-    st_buffer(10) %>% 
+    # draw a 50 m buffer (arbitrary choice)
+    st_buffer(50) %>% 
     # dissolve overlapping polygons into each other 
     st_union() %>% 
-    # split the resulting polygon into its constituents
-    st_cast("MULTIPOLYGON")
+    # split the resulting multipolygon into its constituents
+    st_cast("POLYGON")},
+  error= function(e){print(glue("there was an error in id_tide combination... ",
+                                unique(z$id), unique(z$tidalCycle)))
+    dfErrors <- append(dfErrors, glue(z$id, "_", z$tidalCycle))
+    }
+  )
 })
 
-distancePatches
+# get distance between one patch and the next
+distancePatches <- map(dataPatches, function(z){
+  as.numeric(st_distance(z[1:length(z) - 1],
+                         z[2:length(z)], by_element = TRUE))
+})
 
-# write to file to check if something can be done in qgis
-st_write(df2, dsn = "../data2018/selRawData/patch", layer = "patches.shp", driver = "ESRI Shapefile", delete_layer = TRUE)
-
-
-
+# patch areas
+areaPatches <- map(dataPatches, function(z){ as.numeric(st_area(z))})
