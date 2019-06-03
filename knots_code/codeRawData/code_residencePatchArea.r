@@ -57,6 +57,11 @@ dataPatches <- map(data, function(df){
   )
 })
 
+# remove all dataPatches which are not sfc objects
+dataPatches <- dataPatches[!is.na(str_match(map_chr(dataPatches, function(x) class(x)[1]), "sfc"))]
+# remove dataPatches where there are 2 polygons or fewer: 268 remain
+dataPatches <- dataPatches[map_dbl(dataPatches, length) > 2]
+
 # get distance between one patch and the next
 distancePatches <- map(dataPatches, function(z){
   as.numeric(st_distance(z[1:length(z) - 1],
@@ -65,3 +70,6 @@ distancePatches <- map(dataPatches, function(z){
 
 # patch areas
 areaPatches <- map(dataPatches, function(z){ as.numeric(st_area(z))})
+
+# save as rdata
+save(areaPatches, distancePatches, dataPatches, file = "tempResPatches.rdata")
