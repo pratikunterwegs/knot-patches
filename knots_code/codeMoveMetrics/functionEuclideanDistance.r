@@ -20,7 +20,7 @@ funcDistance = function(a, x, y){
   # make a vector with trailing NA to store distances
   b = vector()
   for(i in 1:nrow(a)-1){
-    b[i] = (sqrt((a[i,"x"] - a[i+1, "x"])^2 + (a[i,"y"] - a[i+1, "y"])^2))
+    b[i] = (sqrt((a[i,x] - a[i+1, x])^2 + (a[i,y] - a[i+1, y])^2))
   }
   b = c(b, NA)
   
