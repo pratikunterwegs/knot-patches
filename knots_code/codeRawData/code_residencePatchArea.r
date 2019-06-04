@@ -43,6 +43,9 @@ data <- map(data, function(df){
 # clear main data
 rm(dataHt); gc()
 
+# get names
+names <- names(data)
+
 # make residence patches
 library(sf)
 
