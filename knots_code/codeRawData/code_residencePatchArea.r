@@ -149,13 +149,30 @@ patchData <- keep(patchData, function(x){
 # save
 save(patchData, file = "tempPatchData.rdata")
 
+#### process patches as spatials ####
+# get ids and tides
+birds <- as.list(substr(names(patchData), 1, 3))
+tides <- as.list(substr(names(patchData), 5, 7))
+
+# assign id tide to patches
+patchData <- pmap(list(patchData, birds, tides), function(df, a, b){
+  mutate(df, bird = a, tidalCycle = b)
+})
+
+# turn into multipolygon
+patchData2 <- sf::st_as_sf(data.table::rbindlist(patchData))
+
+# save as shapefile
+st_write(patchData2, dsn = "../data2018/selRawData/patch", layer = "patches.shp",
+         driver = "ESRI Shapefile", delete_layer = TRUE)
+
 # add griend
-griend <- st_read("../griend_polygon/griend_polygon.shp")
+# griend <- st_read("../griend_polygon/griend_polygon.shp")
 
 # plot on map
-ggplot(griend)+
-  geom_sf()+
-  geom_sf(data = patchData[[3]], col = "transparent")+
-  geom_point(data = patchData[[3]], aes(x = x_mean, y = y_mean), col = 2)+
-  geom_path(data = patchData[[3]], aes(x = x_mean, y = y_mean), col = 1)+
-  scale_fill_distiller(direction = 1)
+# ggplot(griend)+
+#   geom_sf()+
+#   geom_sf(data = patchData[[3]])+
+#   geom_point(data = patchData[[3]], aes(x = x_mean, y = y_mean), col = 2)+
+#   geom_path(data = patchData[[3]], aes(x = x_mean, y = y_mean), col = 1)+
+#   scale_fill_distiller(direction = 1)
