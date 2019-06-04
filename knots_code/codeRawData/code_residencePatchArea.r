@@ -166,6 +166,30 @@ patchData2 <- sf::st_as_sf(data.table::rbindlist(patchData))
 st_write(patchData2, dsn = "../data2018/selRawData/patch", layer = "patches.shp",
          driver = "ESRI Shapefile", delete_layer = TRUE)
 
+# try getting plots
+ggplot(patchData2)+
+  geom_point(aes(timeToHiTide_mean, area, col = as.numeric(tidalCycle)))+
+  facet_wrap(~bird)+
+  ylim(0, 2e4)+
+  scale_y_log10()+
+  scale_color_viridis_c()+
+  labs(x = "hours since high tide", y = "patch area (m^2)", 
+       colour = "tidal cycle", title = "patch area ~ time since high tide",
+       caption = Sys.time())
+
+ggsave("figPatchSizeHiTide.pdf", width = 10, height = 8, device = pdf()); dev.off()
+
+# hsitogram
+ggplot(patchData2)+
+  geom_histogram(aes(area, fill = factor(bird)), position = "identity")+
+  xlim(0, 2e4)+
+  facet_wrap(~bird, ncol = 5)+
+  # scale_y_log10()+
+  # scale_color_viridis_c()+
+  labs(x = "patch area (m^2)", title = "patch area distribution",
+       caption = Sys.time(), fill = "bird")
+
+ggsave("../figs/figPatchSizeDistribution.pdf", width = 10, height =4, device = pdf()); dev.off()
 # add griend
 # griend <- st_read("../griend_polygon/griend_polygon.shp")
 
