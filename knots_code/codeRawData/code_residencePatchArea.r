@@ -5,7 +5,8 @@ library(tidyverse); library(data.table)
 # read in recurse data for selected birds
 dataRevFiles <- list.files("../data2018/selRawData/recurseData/", full.names = T)
 # read in the data
-data <- purrr::map(dataRevFiles, fread)
+data <- purrr::map(dataRevFiles[1:5], fread)
+
 # get id.tide names
 library(glue)
 names <- purrr::map_chr(data, 
