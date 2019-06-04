@@ -31,46 +31,117 @@ data <- purrr::map(data, function(df) {
                        ][,resPatch:= cumsum(resPatch)]
 })
 
+# get time to high tide
+dataHt <- fread("../data2018/selRawData/rawdataWithTides.csv")
+
+data <- map(data, function(df){
+  merge(df, dataHt, all=FALSE)
+})
+
+# clear main data
+rm(dataHt); gc()
+
 # make residence patches
 library(sf)
 
 # error dataframes
-dfErrors = list()
+dfErrors <- list()
 
-dataPatches <- map(data, function(df){
+# source distance function
+source("codeMoveMetrics/functionEuclideanDistance.r")
+
+#### function for resPatches arranged by time ####
+funcGetResPatches <- function(df){
+  
+  # assert df is a data frame
+  
+  # try function and ignore errors for now
   tryCatch(
-  # group by patch
-  {group_by(df, resPatch) %>% 
-    # make sd
-    st_as_sf(coords = c("x", "y")) %>% 
-    # assign crs
-    `st_crs<-`(32631) %>% 
-    # draw a 50 m buffer (arbitrary choice)
-    st_buffer(50) %>% 
-    # dissolve overlapping polygons into each other 
-    st_union() %>% 
-    # split the resulting multipolygon into its constituents
-    st_cast("POLYGON")},
-  error= function(e){print(glue("there was an error in id_tide combination... ",
-                                unique(z$id), unique(z$tidalCycle)))
-    dfErrors <- append(dfErrors, glue(z$id, "_", z$tidalCycle))
+    { 
+      # convert to sf
+      pts = df %>% 
+        # make sd
+        st_as_sf(coords = c("x", "y")) %>% 
+        # assign crs
+        `st_crs<-`(32631)#
+      
+      # make polygons
+      polygons = pts %>% 
+        # draw a 50 m buffer (arbitrary choice)
+        st_buffer(10.0) %>%
+        
+        # group_by(resPatch) %>%
+        # summarise()
+        # # dissolve overlapping polygons into each other
+        st_union(by_feature = FALSE) %>%
+        # # split the resulting multipolygon into its constituents
+        st_cast("POLYGON") %>% 
+        st_sf() %>% 
+        mutate(patch = 1:nrow(.))
+      
+      # get which points are covered by which polygon
+      dfOverlaps = as_tibble(st_covers(polygons, pts)) %>% 
+        rename(patch = row.id, point = col.id)
+      
+      # get mean time and time to high tide from base data
+      # make a new tibble as a left join
+      patchMetrics = left_join(dfOverlaps,
+                          # with raw data assigned row ids as point id
+                          df %>% 
+                            mutate(point = 1:nrow(df)) %>% 
+                            select(point, x, y, time, timeToHiTide)) %>% 
+        # for each polygon or residence patch
+        group_by(patch) %>% 
+        # summarise the mean:
+        # x,y (centroid), numeric time, and time since HT
+        summarise_at(vars(x,y,time,timeToHiTide), list(mean = mean,
+                                                       start = min,
+                                                       end = max)) %>% 
+        
+        # add area: must be here to avoid mixing areas of polygons
+        # as a reordering takes place immediately after
+        # area is in metres squared, the map units (this is UTM zone 31N)
+        mutate(area = as.numeric(st_area(polygons)),
+               # time in hours
+               duration = (time_end - time_start) / 3600, 
+               # assign a spatial geometry
+               geom = polygons$geometry) %>% 
+        
+        # join to the polygons spatial data
+        
+        # arrange by time_mean
+        arrange(time_mean) %>%
+        # reorder the polygons and get distance between each and area
+        mutate(patch = 1:nrow(.),
+               distance = funcDistance(., "x_mean", "y_mean")) %>% 
+        # convert result to sf
+        st_sf()
+        
+      
+      # remove data
+      rm(pts, polygons, dfOverlaps); gc()
+        
+      # return the patch data as function output
+      return(patchMetrics)
+    },
+    # null error function, with option to collect data on errors
+    error= function(e)
+    {
+      # print(glue("there was an error in id_tide combination... ",
+      #                             unique(z$id), unique(z$tidalCycle)))
+      # dfErrors <- append(dfErrors, glue(z$id, "_", z$tidalCycle))
     }
   )
-})
+  
+}
 
-# remove all dataPatches which are not sfc objects
-dataPatches <- dataPatches[!is.na(str_match(map_chr(dataPatches, function(x) class(x)[1]), "sfc"))]
-# remove dataPatches where there are 2 polygons or fewer: 268 remain
-dataPatches <- dataPatches[map_dbl(dataPatches, length) > 2]
+#### get patch data ####
+patchData <- map(data, funcGetResPatches)
 
-# get distance between one patch and the next
-distancePatches <- map(dataPatches, function(z){
-  as.numeric(st_distance(z[1:length(z) - 1],
-                         z[2:length(z)], by_element = TRUE))
-})
+# add griend
+griend <- st_read("../griend_polygon/griend_polygon.shp")
 
-# patch areas
-areaPatches <- map(dataPatches, function(z){ as.numeric(st_area(z))})
-
-# save as rdata
-save(areaPatches, distancePatches, dataPatches, file = "tempResPatches.rdata")
+# plot on map
+ggplot(griend)+
+  geom_sf()+
+  geom_sf(data = patchData[[1]], aes(fill = duration), col = "transparent")
