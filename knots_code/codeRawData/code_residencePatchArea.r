@@ -139,10 +139,23 @@ funcGetResPatches <- function(df){
 #### get patch data ####
 patchData <- map(data, funcGetResPatches)
 
+# assign names
+names(patchData) <- names
+# filter non-sf results
+patchData <- keep(patchData, function(x){
+  sum("sf" %in% class(x)) > 0
+})
+
+# save
+save(patchData, file = "tempPatchData.rdata")
+
 # add griend
 griend <- st_read("../griend_polygon/griend_polygon.shp")
 
 # plot on map
 ggplot(griend)+
   geom_sf()+
-  geom_sf(data = patchData[[1]], aes(fill = duration), col = "transparent")
+  geom_sf(data = patchData[[3]], col = "transparent")+
+  geom_point(data = patchData[[3]], aes(x = x_mean, y = y_mean), col = 2)+
+  geom_path(data = patchData[[3]], aes(x = x_mean, y = y_mean), col = 1)+
+  scale_fill_distiller(direction = 1)
