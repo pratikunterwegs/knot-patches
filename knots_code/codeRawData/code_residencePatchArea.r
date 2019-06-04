@@ -30,7 +30,8 @@ data <- purrr::map(data, function(df) {
                      ][resTime == T,
                        # assign res patch as change from F to T
                        ][,resPatch:= cumsum(resPatch)]
-})
+}) %>% 
+  keep(function(x) nrow(x) > 2)
 
 # get time to high tide
 dataHt <- fread("../data2018/selRawData/rawdataWithTides.csv")
