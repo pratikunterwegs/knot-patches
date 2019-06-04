@@ -99,16 +99,12 @@ funcGetResPatches <- function(df){
         group_by(patch) %>% 
         # summarise the mean:
         # x,y (centroid), numeric time, and time since HT
-        summarise_at(vars(x,y,time,timeToHiTide), list(mean = mean,
-                                                       start = min,
-                                                       end = max)) %>% 
+        summarise_at(vars(x,y,time,timeToHiTide), list(mean = mean)) %>% 
         
         # add area: must be here to avoid mixing areas of polygons
         # as a reordering takes place immediately after
         # area is in metres squared, the map units (this is UTM zone 31N)
-        mutate(area = as.numeric(st_area(polygons)),
-               # time in hours
-               duration = (time_end - time_start) / 3600, 
+        mutate(area = as.numeric(st_area(polygons)), 
                # assign a spatial geometry
                geom = polygons$geometry) %>% 
         
