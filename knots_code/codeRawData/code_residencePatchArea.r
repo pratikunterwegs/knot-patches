@@ -190,13 +190,4 @@ ggplot(patchData2)+
        caption = Sys.time(), fill = "bird")
 
 ggsave("../figs/figPatchSizeDistribution.pdf", width = 10, height =4, device = pdf()); dev.off()
-# add griend
-# griend <- st_read("../griend_polygon/griend_polygon.shp")
 
-# plot on map
-# ggplot(griend)+
-#   geom_sf()+
-#   geom_sf(data = patchData[[3]])+
-#   geom_point(data = patchData[[3]], aes(x = x_mean, y = y_mean), col = 2)+
-#   geom_path(data = patchData[[3]], aes(x = x_mean, y = y_mean), col = 1)+
-#   scale_fill_distiller(direction = 1)
