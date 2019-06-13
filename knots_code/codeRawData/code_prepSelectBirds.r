@@ -1,10 +1,13 @@
 #### code to deal with raw data from selected birds ####
 # selected birds are
 
-selected_birds <- c(439, 547, 550, 572, 593)
+selected_tides <- c(seq(5, 100, 15))
+
+# now try for random birds
 
 # load libs
 library(tidyverse); library(data.table)
+library(glue)
 
 # list files
 dataFiles <- list.files("../data2018/", pattern = "knots2018", full.names = T)
@@ -12,8 +15,12 @@ dataFiles <- list.files("../data2018/", pattern = "knots2018", full.names = T)
 # selected data
 selectData <- list()
 
-for(i in 1:length(dataFiles))
-{
+# make output dir if non existent
+if(!dir.exists("../data2018/oneHertzData")){
+  dir.create("../data2018/oneHertzData")
+}
+
+for(i in 1:length(dataFiles)) {
   load(dataFiles[i])
   
   # prep data to compare
@@ -24,13 +31,20 @@ for(i in 1:length(dataFiles))
   
   rm(data2018.raw); gc()
   
-  data <- keep(data, function(x) unique(x$TAG - 3.1001e10) %in% selected_birds)
+  names <- map_chr(data, function(x) as.character(unique(x$TAG - 3.1001e10)))
   
-  # if the list is non-empty, add to a another list
-  if(length(data) > 0){
-    selectData <- append(selectData, data)
-    rm(data); gc()
-  } else { rm (data); gc() }
+  map2(data, names, function(x, y){
+    fwrite(x, file = glue("../data2018/oneHertzData/", y, ".csv"))
+  })
+  
+  # data <- # data[round(runif(2, 1, length(data)))]
+  #   keep(data, function(x) unique(x$TAG - 3.1001e10) %in% selected_birds)
+  
+  # # if the list is non-empty, add to a another list
+  # if(length(data) > 0){
+  #   selectData <- append(selectData, data)
+  #   rm(data); gc()
+  # } else { rm (data); gc() }
   
 }
 
