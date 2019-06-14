@@ -61,21 +61,24 @@ map(dataFiles, function(df){
          ][,tidalCycle:=tidalCycle-min(tidalCycle)+1]
 
   fwrite(tempdf, file = df)
+  return("overwritten with tidal cycles")
 })
 
-# write to file
-data.table::fwrite(selectData, file = "../data2018/selRawData/birdsForSeg.csv")
+#### read in again and select some tides ####
+
+dataSubset <- map(dataFiles, function(df){
+  tempdf <- read_csv(df) %>% setDT()
+  tempdf <- tempdf[tidalCycle %in% c(selected_tides),
+         ][,ID:=(TAG - 3.1001e10)]
+  
+  newNames <- str_to_lower(names(tempdf))
+  setnames(tempdf, newNames)
+  
+  return(tempdf) # works wo comma
+})
 
 # remove select data
 rm(selectData); gc()
-
-#### assign tidal cycles ####
-# load tidal data
-tides <- read_csv("../data2018/tidesSummer2018.csv") %>%
-  filter(tide == "H")
-
-# read in sample data as data
-data <- fread("../data2018/selRawData/birdsForSeg.csv")
 
 # filter out 24 hours after release
 # read in release time
@@ -83,7 +86,7 @@ releaseData <- read_csv("../data2018/behavScores.csv") %>%
   mutate(timeNumRelease = as.numeric(Release_Date))
 
 # join to data and keep data where time >= release date + 24 h
-data <- left_join(data, releaseData %>% select(id, timeNumRelease)) %>% 
+dataSubset <- left_join(data, releaseData %>% select(id, timeNumRelease)) %>% 
   filter(time >= timeNumRelease + (24 * 3600)) %>% 
   select(-timeNumRelease)
 
