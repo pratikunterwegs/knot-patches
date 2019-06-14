@@ -37,28 +37,10 @@ for(i in 1:length(dataFiles)) {
     fwrite(x, file = glue("../data2018/oneHertzData/", y, ".csv"))
   })
   
-  # data <- # data[round(runif(2, 1, length(data)))]
-  #   keep(data, function(x) unique(x$TAG - 3.1001e10) %in% selected_birds)
-  
-  # # if the list is non-empty, add to a another list
-  # if(length(data) > 0){
-  #   selectData <- append(selectData, data)
-  #   rm(data); gc()
-  # } else { rm (data); gc() }
-  
 }
 
-# output selectData as csv with some mods
-selectData <- map(selectData, function(df){
-  select(df, time=TIME, x=X, y=Y, covxy=COVXY, towers=NBS, id=TAG) %>% 
-    mutate(time = time/1e3, id = id - 3.1001e10)
-}) %>% 
-  bind_rows()
+# oh dammit this whole thing needs reworking to manage the tides
 
-# make output dir if non existent
-if(!dir.exists("../data2018/selRawData")){
-  dir.create("../data2018/selRawData")
-}
 
 # write to file
 data.table::fwrite(selectData, file = "../data2018/selRawData/birdsForSeg.csv")
