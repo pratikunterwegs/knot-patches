@@ -39,8 +39,29 @@ for(i in 1:length(dataFiles)) {
   
 }
 
-# oh dammit this whole thing needs reworking to manage the tides
 
+#### assign tidal cycles ####
+tides <- fread("../data2018/tidesSummer2018.csv")[tide == "H"]
+
+# read in data and add tidal cycles
+dataFiles <- list.files(path = "../data2018/oneHertzData/", full.names = TRUE)
+
+# assign and write
+map(dataFiles, function(df){
+  tempdf <- read_csv(df) %>% setDT()
+  tempdf[,TIME:=floor(TIME/1e3)]
+  tempdf <- merge(tempdf, tides, by.x = "TIME", by.y = "timeNum", all = TRUE)
+  setorder(tempdf, TIME)
+  tempdf <- tempdf[,tide:=!is.na(tide)
+         ][, tidalCycle:=cumsum(tide)
+           ][,tidalTime:= (TIME - min(TIME))/60,by=tidalCycle
+             ][complete.cases(X),]
+              
+  tempdf[,`:=` (temp = NULL, tide = NULL, level = NULL, time = NULL)
+         ][,tidalCycle:=tidalCycle-min(tidalCycle)+1]
+
+  fwrite(tempdf, file = df)
+})
 
 # write to file
 data.table::fwrite(selectData, file = "../data2018/selRawData/birdsForSeg.csv")
