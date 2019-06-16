@@ -4,7 +4,7 @@
 library(tidyr); library(dplyr); library(readr); library(sf)
 
 # read in patch size data from shapefile
-patches <- st_read("../data2018/oneHertzDataSubset/patch/patches.shp")
+patches <- st_read("../data2018/oneHertzDataSubset/patches.json")
 
 # read in behav scores
 behavScore <- read_csv("../data2018/behavScores.csv") %>% 
@@ -23,8 +23,8 @@ source("codePlotOptions/ggThemePub.r")
 
 # plot boxplot of patch area over all times to high tide in 10 cycle clusters
 ggplot(patches)+
-  geom_boxplot(aes(x = factor(round(as.numeric(tdlCycl)/10)), 
-                   y = area, fill = factor(bird)),
+  geom_boxplot(aes(x = factor(tidalCycle), 
+                   y = area),
                position = position_dodge(preserve = "single", width = 1),
                    alpha = 0.5)+
   themePubLeg()+
@@ -32,9 +32,9 @@ ggplot(patches)+
 
 # plot boxplots of foraging vs non-foraging patches
 patches %>% 
-  mutate(highTideHour = floor(tmTHTd_),
+  mutate(highTideHour = floor(tidaltime_mean/60),
          foraging = ifelse(between(highTideHour, 4, 9), "low-tide", "high-tide"),
-         tidalCycleCluster = factor(round(as.numeric(tdlCycl)/10)))%>%
+         tidalCycleCluster = factor(tidalCycle)) %>%
   ggplot()+
   geom_boxplot(aes(x = factor(highTideHour), 
                    y = area),
@@ -51,19 +51,21 @@ ggsave(filename = "../figs/figPatchAreaVsTime.pdf", width = 11, height = 8,
        device = pdf()); dev.off()
 
 # plot patch area vs other predictors
-patches %>% filter(area < 1e4) %>% 
+patches %>% #filter(area < 1e5) %>% 
   as_tibble() %>% 
-  select(area, WING, MASS, gizzard_mass, pectoral, exploreScore, bird) %>% 
-  gather(predictor, value, -bird, -area) %>% 
+  select(area, WING, MASS, gizzard_mass, pectoral, exploreScore, bird, tidalCycle) %>% 
+  gather(predictor, value, -bird, -area, -tidalCycle) %>% 
 
 ggplot()+
   geom_jitter(aes(x = value, y = area, group = bird), size= 0.1, alpha = 0.2)+
   geom_smooth(aes(x = value, y = area), method = "glm")+
-  facet_wrap(~predictor, scales = "free")+
-  coord_cartesian(ylim = c(0,5e3))+
+  facet_grid(tidalCycle~predictor, scales = "free_x")+
+  coord_cartesian(ylim = c(0,1e4))+
   labs(x = "predictor value", y = "patch area (m^2)", caption = Sys.time(),
        title = "patch area ~ various predictors")+
   themePub()
 
 ggsave(filename = "../figs/figPatchAreaVsPredictors.pdf", width = 11, height = 8,
        device = pdf()); dev.off()
+
+# write patch metrics to file later
