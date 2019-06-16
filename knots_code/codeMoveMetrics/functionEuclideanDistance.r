@@ -7,14 +7,20 @@
 # the distance function takes a dataframe, converts to matrix
 # assigns the colnames again as x and y
 
-funcDistance = function(df, x, y){
+# needs dplyr
+
+funcDistance = function(df, a, b){
   #check for basic assumptions
   assertthat::assert_that(is.data.frame(df),
-                          is.character(x),
-                          is.character(y),
+                          is.character(a),
+                          is.character(b),
                           nrow(df) > 1,
                           msg = "some df assumptions are not met")
-  dist <- sqrt((df$x[2:length(df$x)] - df$x[1:length(df$x)-1])^2 + 
-                 (df$y[2:length(df$y)] - df$y[1:length(df$y)-1])^2)
-  return(c(NA,dist))
+  # get x and y
+  x <- dplyr::pull(df, a); x1 <- x[1:length(x)-1]; x2 <- x[2:length(x)]
+  y <- dplyr::pull(df, b); y1 <- y[1:length(y)-1]; y2 <- y[2:length(y)]
+  
+  # get dist
+  dist <- c(NA, sqrt((x1 - x2)^2 + (y1 - y2)^2))
+  return(dist)
 }

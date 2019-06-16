@@ -1,11 +1,20 @@
 #### function to get residence patches ####
 
+# currently compains about unknown columns, but seems to work
+
 # use sf
 library(tidyverse); library(sf)
 
-funcGetResPatches <- function(df){
+funcGetResPatches <- function(df, x = "x", y = "y", time = "time", tidaltime = "tidaltime"){
   
   # assert df is a data frame
+  assertthat::assert_that(is.data.frame(df),
+                          is.character(c(x,y,time,tidaltime)), # check that args are strings
+                          is.numeric(c(df$time, df$tidaltime)), # check times are numerics
+                          msg = "argument classes don't match expected arg classes")
+  
+  assertthat::assert_that(length(base::intersect(c(x,y,time,tidaltime), names(df))) == 4,
+                          msg = "wrong column names provided, or df has wrong cols")
   
   # try function and ignore errors for now
   tryCatch(
@@ -41,12 +50,12 @@ funcGetResPatches <- function(df){
                                # with raw data assigned row ids as point id
                                df %>% 
                                  mutate(point = 1:nrow(df)) %>% 
-                                 select(point, x, y, time, timeToHiTide)) %>% 
+                                 select(point, x, y, time, tidaltime)) %>% 
         # for each polygon or residence patch
         group_by(patch) %>% 
         # summarise the mean:
         # x,y (centroid), numeric time, and time since HT
-        summarise_at(vars(x,y,time,timeToHiTide), list(mean = mean)) %>% 
+        summarise_at(vars(x,y,time,tidaltime), list(mean = mean)) %>% 
         
         # add area: must be here to avoid mixing areas of polygons
         # as a reordering takes place immediately after
@@ -60,24 +69,26 @@ funcGetResPatches <- function(df){
         # arrange by time_mean
         arrange(time_mean) %>%
         # reorder the polygons and get distance between each and area
-        mutate(patch = 1:nrow(.),
-               distance = funcDistance(., "x_mean", "y_mean")) %>% 
-        # convert result to sf
-        st_sf()
+        mutate(patch = 1:nrow(.))
       
+      # get patch distances
+      patchDistances <- funcDistance(patchMetrics, a = "x_mean",b ="y_mean")
+      
+      # add to patch metrics
+      patchMetrics$dist <- patchDistances
       
       # remove data
       rm(pts, polygons, dfOverlaps); gc()
       
       # return the patch data as function output
-      print("residence patches constructed...")
+      print(glue('residence patches of {unique(df$id)} in tide {unique(df$tidalcycle)} constructed...'))
       return(patchMetrics)
     },
     # null error function, with option to collect data on errors
     error= function(e)
     {
       print(glue('there was an error in id_tide combination... 
-                                  {unique(z$id)} {unique(z$tidalCycle)}'))
+                                  {unique(df$id)} {unique(df$tidalcycle)}'))
       # dfErrors <- append(dfErrors, glue(z$id, "_", z$tidalCycle))
     }
   )
