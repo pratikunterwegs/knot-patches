@@ -22,7 +22,7 @@
 # data <- data[c(1:5)]
 # 
 # # get distance data
-# dataDist <- fread("../data2018/selRawData/rawdataWithTidesDists.csv")
+# dataDist <- fread("../data2018/oneHertzDataSubset/rawdataWithTidesDists.csv")
 # 
 # ## prep for segmentation
 # data <- purrr::map(data, function(df) {

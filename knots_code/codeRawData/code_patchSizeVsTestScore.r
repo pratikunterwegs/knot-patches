@@ -4,7 +4,7 @@
 library(tidyr); library(dplyr); library(readr); library(sf)
 
 # read in patch size data from shapefile
-patches <- st_read("../data2018/selRawData/patch/patches.shp")
+patches <- st_read("../data2018/oneHertzDataSubset/patch/patches.shp")
 
 # read in behav scores
 behavScore <- read_csv("../data2018/behavScores.csv") %>% 
