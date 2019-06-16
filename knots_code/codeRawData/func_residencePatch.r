@@ -70,13 +70,14 @@ funcGetResPatches <- function(df){
       rm(pts, polygons, dfOverlaps); gc()
       
       # return the patch data as function output
+      print("residence patches constructed...")
       return(patchMetrics)
     },
     # null error function, with option to collect data on errors
     error= function(e)
     {
-      # print(glue("there was an error in id_tide combination... ",
-      #                             unique(z$id), unique(z$tidalCycle)))
+      print(glue('there was an error in id_tide combination... 
+                                  {unique(z$id)} {unique(z$tidalCycle)}'))
       # dfErrors <- append(dfErrors, glue(z$id, "_", z$tidalCycle))
     }
   )
