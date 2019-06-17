@@ -4,7 +4,9 @@
 library(tidyr); library(dplyr); library(readr); library(sf)
 
 # read in patch size data from shapefile
-patches <- st_read("../data2018/oneHertzDataSubset/patches.json")
+patches <- st_read("../data2018/oneHertzDataSubset/patch/patches.shp") 
+# make an sf copy
+patchSf <- patches
 
 # read in behav scores
 behavScore <- read_csv("../data2018/behavScores.csv") %>% 
@@ -121,17 +123,24 @@ ggplot()+
 ggsave(filename = "../figs/figPatchAreaVsPredictors.pdf", width = 11, height = 8,
        device = pdf()); dev.off()
 
-# write patch metrics to file later
+#### plot one set of patches ####
+randBirds <- sample(unique(patchSf$bird), 15, replace = FALSE)
+patchSfsubset <- patchSf %>% filter(tdlCycl == "005", bird %in% randBirds)
 
+# read griend
+griend <- st_read("../griend_polygon/griend_polygon.shp")
 
-
-
-count(patches, bird, tidalCycle, name = "nPatches") %>% 
-  left_join(behavScore) %>% 
+# plot subset
+mapPlot <- ggplot()+
+  geom_sf(data = griend)+
+  geom_sf(data = patchSfsubset, aes(fill = bird))+
   
-  select(nPatches, WING, MASS, gizzard_mass, pectoral, exploreScore, bird, tidalCycle) %>% 
-  gather(predictor, value, -bird, -nPatches, -tidalCycle) %>% 
-  
-  ggplot()+
-  geom_jitter(aes(x = value, y = nPatches))+
-  facet_grid(tidalCycle~predictor, scales = "free_x")
+  geom_path(data = patchSfsubset, aes(x_mean, y_mean, group = bird, col = bird), 
+            size = 0.1)+
+  geom_text(data = patchSfsubset, aes(x_mean, y_mean, label = patch, group = bird))
+
+library(plotly); library(htmlwidgets)
+
+mapInt <- ggplotly(mapPlot)
+
+htmlwidgets::saveWidget(mapInt, file = "mapInteractivePatches.html")
