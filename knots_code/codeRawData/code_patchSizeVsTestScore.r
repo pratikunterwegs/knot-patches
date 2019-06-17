@@ -11,7 +11,8 @@ behavScore <- read_csv("../data2018/behavScores.csv") %>%
   mutate(bird = factor(id))
 
 # link behav score and patch size and area
-patches <- left_join(patches, behavScore, by= c("bird"))
+patches <- left_join(patches, behavScore, by= c("bird")) %>% 
+  st_drop_geometry()
 
 # # filter out unreasonable data of greater than 100 x 100 m
 # patches <- filter(patches)
@@ -21,33 +22,85 @@ library(ggplot2)
 source("codePlotOptions/geomFlatViolin.r")
 source("codePlotOptions/ggThemePub.r")
 
-# plot boxplot of patch area over all times to high tide in 10 cycle clusters
-ggplot(patches)+
-  geom_boxplot(aes(x = factor(tidalCycle), 
-                   y = area),
-               position = position_dodge(preserve = "single", width = 1),
-                   alpha = 0.5)+
-  themePubLeg()+
-  ylim(0,1e4)
-
+#### patch area vs tidal stage over season ####
 # plot boxplots of foraging vs non-foraging patches
 patches %>% 
   mutate(highTideHour = floor(tidaltime_mean/60),
-         foraging = ifelse(between(highTideHour, 4, 9), "low-tide", "high-tide"),
-         tidalCycleCluster = factor(tidalCycle)) %>%
+         foraging = ifelse(between(highTideHour, 4, 9), "low-tide", "high-tide")) %>%
   ggplot()+
   geom_boxplot(aes(x = factor(highTideHour), 
-                   y = area),
-               position = position_dodge(preserve = "single", width = 1),
-               alpha = 0.5)+
-  facet_wrap(~tidalCycleCluster)+
+                   y = area, fill = highTideHour %in% c(4:9)),
+               position = position_dodge(preserve = "single", width = 1))+
+  facet_wrap(~tidalCycle)+
+  scale_fill_brewer(palette = "Accent", label = c("high tide","low tide"))+
   themePubLeg()+
   ylim(0,1e4)+
-  labs(x = "hours since high tide", y = "patch area (m^2)",
+  labs(x = "hours since high tide", y = bquote("patch area" (m^2)),
        title = "patch area ~ time since high tide",
-       caption = Sys.time())
+       caption = Sys.time(), fill = "rough tidal stage")+
+  theme(legend.position = c(0.9, 0.1))
 
 ggsave(filename = "../figs/figPatchAreaVsTime.pdf", width = 11, height = 8,
+       device = pdf()); dev.off()
+
+#### patch count plot ####
+patches %>% 
+  mutate(highTideHour = floor(tidaltime_mean/60),
+         foraging = ifelse(between(highTideHour, 4, 9), "low-tide", "high-tide")) %>%
+  count(bird, highTideHour, name = "nPatches") %>% 
+  
+  ggplot()+
+  geom_flat_violin(aes(x = factor(highTideHour), y = nPatches, 
+                       fill = highTideHour %in% c(4:9)),
+                   col = "transparent",
+                   position = position_nudge(x = .1, y = 0),
+                   scale = "width")+
+  geom_boxplot(aes(x = factor(highTideHour), 
+                   y = nPatches, col = highTideHour %in% c(4:9)),
+               position = position_nudge(x = -.1, y = 0),
+               width = 0.2,
+               size = 0.5,
+               outlier.colour = stdGry, outlier.size = 0.5)+
+  #facet_wrap(~tidalCycle)+
+  scale_fill_brewer(palette = "Accent", label = c("high tide","low tide"))+
+  scale_colour_brewer(palette = "Accent", label = c("high tide","low tide"))+
+  themePubLeg()+
+  #ylim(0,1e4)+
+  labs(x = "hours since high tide", y = "# patches",
+       title = "number of patches ~ time since high tide",
+       caption = Sys.time(), fill = "rough tidal stage", colour = "rough tidal stage")+
+  theme(legend.position = c(0.9, 0.9))
+
+ggsave(filename = "../figs/figPatchNumberVsTidalTime.pdf", width = 6, height = 5,
+       device = pdf()); dev.off()
+
+#### patch distance plot ####
+patches %>% 
+  mutate(highTideHour = floor(tidaltime_mean/60),
+         foraging = ifelse(between(highTideHour, 4, 9), "low-tide", "high-tide")) %>%
+  
+  ggplot()+
+  geom_flat_violin(aes(x = factor(highTideHour), y = dist, fill = foraging),
+                   col = "transparent",
+                   position = position_nudge(x = .1, y = 0),
+                   scale = "width")+
+  geom_boxplot(aes(x = factor(highTideHour), y = dist, col = foraging), 
+               position = position_nudge(x = -.1, y = 0), 
+               width = 0.2,
+               size = 0.3,
+               outlier.colour = stdGry, outlier.size = 0.5)+
+  facet_wrap(~tidalCycle)+
+  labs(x = "hours since high tide", y = "distance between patches (m)",
+       caption = Sys.time(), title = "inter-patch distance ~ tidal time",
+       fill = "rough tidal stage", colour = "rough tidal stage")+
+  ylim(0, 2e3)+
+  
+  scale_fill_brewer(palette = "Accent", label = c("high tide","low tide"))+
+  scale_colour_brewer(palette = "Accent", label = c("high tide","low tide"))+
+  themePubLeg()+
+  theme(legend.position = c(0.9, 0.1))
+
+ggsave(filename = "../figs/figPatchDistanceVsTime.pdf", width = 11, height = 8,
        device = pdf()); dev.off()
 
 # plot patch area vs other predictors
@@ -69,3 +122,16 @@ ggsave(filename = "../figs/figPatchAreaVsPredictors.pdf", width = 11, height = 8
        device = pdf()); dev.off()
 
 # write patch metrics to file later
+
+
+
+
+count(patches, bird, tidalCycle, name = "nPatches") %>% 
+  left_join(behavScore) %>% 
+  
+  select(nPatches, WING, MASS, gizzard_mass, pectoral, exploreScore, bird, tidalCycle) %>% 
+  gather(predictor, value, -bird, -nPatches, -tidalCycle) %>% 
+  
+  ggplot()+
+  geom_jitter(aes(x = value, y = nPatches))+
+  facet_grid(tidalCycle~predictor, scales = "free_x")
