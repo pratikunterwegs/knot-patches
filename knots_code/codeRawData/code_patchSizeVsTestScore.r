@@ -108,19 +108,21 @@ ggsave(filename = "../figs/figPatchDistanceVsTime.pdf", width = 11, height = 8,
 # plot patch area vs other predictors
 patches %>% #filter(area < 1e5) %>% 
   as_tibble() %>% 
-  select(area, WING, MASS, gizzard_mass, pectoral, exploreScore, bird, tidalCycle) %>% 
-  gather(predictor, value, -bird, -area, -tidalCycle) %>% 
+  select(area, WING, MASS, gizzard_mass, pectoral, exploreScore, bird, tdlCycl) %>% 
+  gather(predictor, value, -bird, -area, -tdlCycl) %>% 
+  group_by(predictor, bird, value) %>% 
+  summarise_at(vars(area), list(mean=mean, sd=sd)) %>% 
 
 ggplot()+
-  geom_jitter(aes(x = value, y = area, group = bird), size= 0.1, alpha = 0.2)+
-  geom_smooth(aes(x = value, y = area), method = "glm")+
-  facet_grid(tidalCycle~predictor, scales = "free_x")+
+  geom_pointrange(aes(x = value, y = mean, ymin = mean-sd, ymax = mean+sd, group = bird), size= 0.5, alpha = 0.2)+
+  geom_smooth(aes(x = value, y = mean), method = "glm")+
+  facet_wrap(~predictor, scales = "free_x")+
   coord_cartesian(ylim = c(0,1e4))+
   labs(x = "predictor value", y = "patch area (m^2)", caption = Sys.time(),
        title = "patch area ~ various predictors")+
   themePub()
 
-ggsave(filename = "../figs/figPatchAreaVsPredictors.pdf", width = 11, height = 8,
+ggsave(filename = "../figs/figPatchAreaVsPredictors2.pdf", width = 11, height = 8,
        device = pdf()); dev.off()
 
 #### plot one set of patches ####
