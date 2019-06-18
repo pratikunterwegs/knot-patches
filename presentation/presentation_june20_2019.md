@@ -203,12 +203,6 @@ Inter-patch distance
 ===
 <img src="/home/pratik/projects/redknotMoveWaddensea/figs/figPatchDistanceVsTime.png" title="plot of chunk distance_time" alt="plot of chunk distance_time" width="80%" />
 
-In the works
-===
-
-- Extract resource values for patches (SIBES data)
-
-- Count overlapping individuals
-
 Linking patch area to predictors
 ===
+<img src="/home/pratik/projects/redknotMoveWaddensea/figs/figPatchAreaVsPredictors2.png" title="plot of chunk area_predictors" alt="plot of chunk area_predictors" width="80%" />

@@ -235,12 +235,10 @@ knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/figs/figPatc
 
 ```
 
-In the works
-===
-
-- Extract resource values for patches (SIBES data)
-
-- Count overlapping individuals
-
 Linking patch area to predictors
 ===
+```{r area_predictors, echo=FALSE, out.width='80%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/figs/figPatchAreaVsPredictors2.png", dpi = 300)
+
+```
