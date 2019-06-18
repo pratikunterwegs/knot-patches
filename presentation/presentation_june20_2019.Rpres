@@ -1,0 +1,246 @@
+Half-yearly progress meeting
+===
+author: Pratik Gupte
+date: 20th June, 2019
+autosize: false
+width: 1440
+height: 900
+font-family: 'IBM Plex Serif'
+
+Structure
+===
+type: sub-section
+
+- **Summary**
+
+- **Coursework + conferences**
+
+- **Projects + master's students**
+
+- **Planned projects + outcomes**
+
+Summary
+===
+
+- 28% of PhD duration
+
+- 16 + 2 ECTS (60%)
+  
+  - 1 ongoing course (10 EC), 1 planned (5 EC)
+  - 2 + 1 conferences
+
+
+- 4 + 1 projects
+- 2 master's students
+
+Coursework
+===
+
+**Completed**
+
+- C++ for Biologists
+- Consumer-Resource Interactions
+- Scientific Integrity
+
+**Ongoing and planned**
+
+- Mathematical Models in Ecology & Evolution --- ongoing
+- Practical Modelling for Biologists --- Jan 2020
+
+**Estimated date for 30 EC** --- February 2020 (~50% of PhD)
+
+Conferences
+===
+
+- 1st Biomove Symposium
+
+- 3rd Gordon Research Conference on Movement Ecology of Animals
+
+- 1st Gordon Research Seminar on Movement Ecology of Animals
+
+Projects
+===
+
+**Ongoing**
+>
+- Modelling
+  1. Evolution of movement in fluctuating landscapes
+  2. Evolution of movement with competition
+
+>
+- Empirical
+  3. Exploring movement consistency across scales
+
+***
+  
+**Proposed**
+
+1. Evolution of migration traditions
+
+**Side project
+
+Evolution of movement in fluctuating landscapes
+===
+type:sub-section
+
+*with L. Boullosa, C. Netz, H. Hildenbrandt & F. Weissing*
+
+- 
+
+- 
+
+Master's student progress
+===
+*co-supervised with C. Netz and F. Weissing*
+
+- Start date --- January
+- Expected end date --- July
+- Mid-term evaluation --- none
+- Expected EC --- ??
+
+*Probability of manuscript in 2019* ≈ 20%, *in 2020* ≈ 70% 
+
+Evolution of movement with competition
+===
+type: sub-section
+
+*with M. Pederboni, C. Netz & F. Weissing*
+
+Master's student progress
+===
+*co-supervised with C. Netz and F. Weissing*
+
+- Start date --- February
+- Expected end date --- September
+- Mid-term evaluation -- next week (June)
+- Expected EC --- 30 ?.
+
+*Probability of manuscript in 2019* ≈ 10%, *in 2020* ≈ 70%
+
+Exploring movement consistency in red knots
+===
+type: sub-section
+
+*with S. Ersoy & A. Bijleveld*
+
+How does space-use in red knots change within and between tidal cycles?
+
+Are individuals consistent in their movement behaviour across scales?
+
+Cleaning movement data
+===
+
+- Issue: tags transmitting before release
+- Solution: remove fixes before release + 24 hrs
+
+```{r tags_before_release, echo=FALSE, out.width='60%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/figs/figTimeTagRelease.png")
+
+```
+
+Calculating residence time
+===
+- Residence time at a focal point = total time spent within 
+  - 50m buffer of the focal point
+
+- Here:
+  - res time = $(t_{in} - t_{out})$
+  
+***
+
+```{r restime_scheme, echo=FALSE, out.width='60%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/presentation/figSchematicResidence.png")
+
+```
+
+Manual track segmentation
+===
+- Criterion: residence time > 2 minutes?
+
+- TRUE; classify as residence point
+
+- FALSE; classify as non-residence point
+
+- Performs better than more complex alogrithms (eg. Patin et al. 2018)
+
+Comparing segmentation methods
+===
+
+```{r restime_segmentation, echo=FALSE, out.width='100%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/presentation/figRawDataSegmentation.png")
+
+```
+
+
+Preventing patch misidenfication
+===
+
+- Issue: tidally-driven cyclical movements can inflate residence time
+
+- Solution: count only residence times for a point within 60 mins
+
+- Red and blue patches overlap in space but not time
+
+- Points in each don't contribute to the other's residence time
+
+***
+
+```{r restime_inflate, echo=FALSE, out.width='60%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/presentation/figResTimeInflation.png", dpi = 300)
+
+```
+
+Residence patch metrics
+===
+
+- Spatial metrics --- area, circularity, distance moved within patches, distance between patches
+
+- Temporal metrics --- time within patch, time since high tide
+
+- Social metrics --- number of overlapping individuals
+
+***
+
+```{r respatch_metrics, echo=FALSE, out.width='50%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/presentation/figResPatchMetrics.png", dpi = 300)
+
+```
+
+Patch area within and between tides
+===
+```{r area_time, echo=FALSE, out.width='80%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/figs/figPatchAreaVsTime.png", dpi = 300)
+
+```
+
+Number of patches within a tidal cycle
+===
+```{r number_time, echo=FALSE, out.width='70%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/figs/figPatchNumberVsTidalTime.png", dpi = 300)
+
+```
+
+Inter-patch distance
+===
+```{r distance_time, echo=FALSE, out.width='80%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/figs/figPatchDistanceVsTime.png", dpi = 300)
+
+```
+
+In the works
+===
+
+- Extract resource values for patches (SIBES data)
+
+- Count overlapping individuals
+
+Linking patch area to predictors
+===
