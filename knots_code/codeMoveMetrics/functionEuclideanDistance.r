@@ -9,7 +9,7 @@
 
 # needs dplyr
 
-funcDistance = function(df, a, b){
+funcDistance = function(df, a = "x", b = "y"){
   #check for basic assumptions
   assertthat::assert_that(is.data.frame(df),
                           is.character(a),
@@ -24,3 +24,5 @@ funcDistance = function(df, a, b){
   dist <- c(NA, sqrt((x1 - x2)^2 + (y1 - y2)^2))
   return(dist)
 }
+
+
