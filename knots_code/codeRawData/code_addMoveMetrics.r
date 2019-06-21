@@ -28,8 +28,10 @@ if(!dir.exists("../data2018/oneHertzData/recursePrep")){
 map(dataFiles, function(df){
   tempdf <- read_csv(df) %>% setDT() # use readcsv rather than fread
   
-  print(glue('read in {unique(tempdf$id)}...'))
+  # calculate which tag was read in
+  print(glue('read in bird {unique(tempdf$TAG) - 3.1001e10}...'))
   
+  # assign names
   newNames <- str_to_lower(names(tempdf))
   setnames(tempdf, newNames)
   
@@ -47,47 +49,34 @@ map(dataFiles, function(df){
   
   # group by id and tidal cycle
   tempdf <- group_by(tempdf, id, tidalcycle) %>% 
-    nest()
+    nest() %>% 
+    # make sure dataframe has more than 1 row
+    mutate(toKeep = map_chr(data, nrow) > 1) %>% 
+    filter(toKeep == TRUE) %>% select(-toKeep)
   
+  # distance function fails once in a while
   tryCatch(
     {
       # get distances
-      tempdf$data <- map(tempdf$data, function(df){
-        mutate(df, dist = funcDistance(df, "x", "y"))
+      tempdf$data <- map(tempdf$data, function(z){
+        mutate(z, dist = funcDistance(z))
       })
+      
+      # write to file in id and tidal cycle combination
+      pmap(list(tempdf$id, tempdf$tidalcycle, tempdf$data), function(a, b, c) {
+        
+        fwrite(mutate(c, id = a, tidalcycle = b), 
+               file = glue("../data2018/oneHertzData/recursePrep/", a,
+                           "_", str_pad(b, 3, pad = "0")))
+        
+        print(glue('id {unique(a)} in tide {unique(b)} written to file'))
+        
+      })
+      
     },
     error = function(e) {print(glue('problems in distance calculation of id {unique(tempdf$id)}'))}
   )
-  
-  # write to file in id and tidal cycle combination
-  pmap(list(tempdf$id, tempdf$tidalcycle, tempdf$data), function(a, b, c) {
-    
-    fwrite(mutate(c, id = a, tidalcycle = b), 
-           file = glue("../data2018/oneHertzData/recursePrep/", a,
-                       "_", str_pad(b, 3, pad = "0")))
-    
-    print(glue('id {unique(a)} in tide {unique(b)} written to file'))
-    
-  })
-  
-  return(glue('id {unique(tempdf$id)} and tidal cycle subsets written to file'))
+  return(glue('id {unique(tempdf$id)} and tidal cycle processed'))
 })
 
-
-
-# # split by id and tidal cycle
-# dataForSeg <- map(dataForSeg, function(x){
-#   group_by(x, tidalcycle, id) %>% nest()
-# }) %>% bind_rows()
-
-# paste id and tide for easy extraction, pad tide number to 3 digits
-library(glue)
-pmap(list(dataForSeg$id, dataForSeg$tidalcycle, dataForSeg$data), function(a, b, c) {
-  
-  fwrite(mutate(c, id = a, tidalcycle = b), 
-         file = glue("../data2018/oneHertzDataSubset/recursePrep/", a,
-                     "_", str_pad(b, 3, pad = "0")))
-})
-
-# remove previous data
-rm(tempdf, dataForSeg, releaseData); gc()
+## end here
