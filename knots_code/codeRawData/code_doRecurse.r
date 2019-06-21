@@ -5,11 +5,11 @@ library(tidyverse); library(data.table)
 #### segmentation process ####
 
 # list files
-dataFiles <- list.files("../data2018/oneHertzDataSubset/recursePrep/", full.names = T)
+dataFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)
 
 # create dir for output
-if(!dir.exists("../data2018/oneHertzDataSubset/recurseData")){
-  dir.create("../data2018/oneHertzDataSubset/recurseData")
+if(!dir.exists("../data2018/oneHertzData/recurseData")){
+  dir.create("../data2018/oneHertzData/recurseData")
 }
 
 library(recurse)
@@ -31,7 +31,7 @@ map(dataFiles, function(filename) {
                              timeunits = timeunits, verbose = TRUE)
   
   # get residence time as sum of first 1 hour
-  dfRes <- setDT(dfRecurse[["revisitStats"]]                          # select rev stats
+  dfRes <- setDT(dfRecurse[["revisitStats"]]           # select rev stats
   )[,cumlTime:=cumsum(timeInside),                     # calc cumulative time
     by=.(coordIdx,x,y)                                 # for each coordinate
     ][cumlTime <= 60,                                  # remove times > 60
