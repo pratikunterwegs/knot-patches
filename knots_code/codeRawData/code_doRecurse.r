@@ -41,10 +41,11 @@ map(dataFiles, function(filename) {
   
   # join to data, for some reason, data.table converts time to posixct
   # this conversion is both wrong and unwanted
-  df <- left_join(df, dfRes, by = c("x","y"))
+  df <- left_join(df, dfRes, by = c("x","y")) %>% 
+    drop_na()
   
   # write to file
-  fwrite(df, file = glue("../data2018/oneHertzDataSubset/recurseData/recurse", bird,
+  fwrite(df, file = glue("../data2018/oneHertzData/recurseData/recurse", bird,
                          "_", tide), dateTimeAs = "epoch")
   
   rm(df, dfRecurse, dfRes)
