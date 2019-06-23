@@ -3,9 +3,9 @@
 library(tidyverse); library(data.table)
 
 # read in recurse data for selected birds
-dataRevFiles <- list.files("../data2018/oneHertzDataSubset/recurseData/", full.names = T)
+dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)
 # read in the data
-data <- purrr::map(dataRevFiles, fread) %>% 
+data <- purrr::map(dataRevFiles[1], fread) %>% 
   keep(function(x) { nrow(x) > 0})
 
 # get id.tide names
@@ -22,7 +22,7 @@ names(data) <- names
 data <- purrr::map(data, function(df) {
   # remove NA vals in fpt
   # set residence time to 0 or 1 predicated on <= 10 (mins)
-  df[!is.na(fpt),][,resTime:= ifelse(resTime <= 10, F, T)
+  df[!is.na(fpt),][,resTime:= ifelse(resTime <= 2, F, T)
                    # get breakpoints where F changes to T and vice versa
                    ][,resPatch:= c(as.numeric(resTime[1]),
                                    diff(resTime))
@@ -34,7 +34,7 @@ data <- purrr::map(data, function(df) {
   keep(function(x) nrow(x) > 2)
 
 # get time to high tide from written data
-dataHt <- list.files("../data2018/oneHertzDataSubset/recursePrep/", full.names = T) %>% 
+dataHt <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)[1] %>% 
   map(fread) %>% bind_rows() %>% select(time, id, x, y, tidaltime, dist, tidalcycle)
 
 # merge to recurse data
@@ -80,40 +80,38 @@ save(patchData, file = "tempPatchData.rdata")
 birds <- as.list(substr(names(patchData), 1, 3))
 tides <- as.list(substr(names(patchData), 5, 7))
 
-# assign id tide to patches
-patchData <- pmap(list(patchData, birds, tides), function(df, a, b){
-  mutate(df, bird = a, tidalCycle = b)
-})
+# # assign id tide to patches
+# patchData <- pmap(list(patchData, birds, tides), function(df, a, b){
+#   mutate(df, bird = a, tidalCycle = b)
+# })
 
 # turn into multipolygon
-patchData2 <- sf::st_as_sf(data.table::rbindlist(patchData))
+# patchData2 <- sf::st_as_sf(data.table::rbindlist(patchData))
+# 
+# # save as json to maintain single file
+# st_write(patchData2, dsn = "../data2018/oneHertzData/patches",
+#          driver = "ESRI Shapefile", layer = "patches", delete_layer = TRUE)
+# 
+# # try getting plots
+# # read in griend
+# griend <- st_read("../griend_polygon/griend_polygon.shp")
+# ggplot()+
+#   geom_sf(data = griend)+
+#   geom_sf(data = patchData2, aes(fill = as.POSIXct(time_mean, origin = "1970-01-01")))+
+#   geom_path(data = patchData2, aes(x_mean, y_mean))
+# 
+# ggsave("figPatchExample.pdf", width = 10, height = 8, device = pdf()); dev.off()
 
-# save as shapefile
-st_write(patchData2, dsn = "../data2018/oneHertzDataSubset/patches.json",
-         driver = "GeoJSON", delete_layer = TRUE)
-
-# try getting plots
-ggplot(patchData2)+
-  geom_hex(aes(tidaltime_mean, area))+
-  ylim(0, 2e4)+
-  scale_y_log10()+
-  scale_fill_viridis_c(limits = c(0, 30))+
-  labs(x = "hours since high tide", y = "patch area (m^2)", 
-       colour = "tidal cycle", title = "patch area ~ time since high tide",
-       caption = Sys.time())
-
-ggsave("figPatchSizeHiTide.pdf", width = 10, height = 8, device = pdf()); dev.off()
-
-# hsitogram
-ggplot(patchData2)+
-  geom_histogram(aes(area, fill = factor(bird)), position = "identity")+
-  xlim(0, 2e4)+
-  #facet_wrap(~bird, ncol = 5)+
-  # scale_y_log10()+
-  # scale_color_viridis_c()+
-  labs(x = "patch area (m^2)", title = "patch area distribution",
-       caption = Sys.time(), fill = "bird")+
-  theme(legend.position = "none")
-
-ggsave("../figs/figPatchSizeDistribution.pdf", width = 10, height =4, device = pdf()); dev.off()
+# # hsitogram
+# ggplot(patchData2)+
+#   geom_histogram(aes(area, fill = factor(bird)), position = "identity")+
+#   xlim(0, 2e4)+
+#   #facet_wrap(~bird, ncol = 5)+
+#   # scale_y_log10()+
+#   # scale_color_viridis_c()+
+#   labs(x = "patch area (m^2)", title = "patch area distribution",
+#        caption = Sys.time(), fill = "bird")+
+#   theme(legend.position = "none")
+# 
+# ggsave("../figs/figPatchSizeDistribution.pdf", width = 10, height =4, device = pdf()); dev.off()
 
