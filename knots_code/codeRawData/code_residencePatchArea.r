@@ -17,7 +17,7 @@ dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names =
 dataHt <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)
 
 # read in the data
-data <- purrr::map2(dataRevFiles, dataHt, function(filename, htData){
+data <- purrr::map2_df(dataRevFiles, dataHt, function(filename, htData){
   
   # read the file in
   df <- fread(filename)
@@ -42,52 +42,16 @@ data <- purrr::map2(dataRevFiles, dataHt, function(filename, htData){
   
   # get patch data
   patchData <- funcGetResPatches(df)
-
-# filter non-sf results
-patchData <- keep(patchData, function(x){
-  sum(c("tbl", "data.frame") %in% class(x)) > 0
+  
+  # remove htData
+  rm(htData)
+  
+  return(patchData)
+  
 })
 
-# save
-save(patchData, file = "tempPatchData.rdata")
+# write data to file
+fwrite(data, file = "../data2018/oneHertzData/data2018patches.csv")
 
-#### process patches as spatials ####
-# get ids and tides
-birds <- as.list(substr(names(patchData), 1, 3))
-tides <- as.list(substr(names(patchData), 5, 7))
 
-# # assign id tide to patches
-# patchData <- pmap(list(patchData, birds, tides), function(df, a, b){
-#   mutate(df, bird = a, tidalCycle = b)
-# })
-
-# turn into multipolygon
-# patchData2 <- sf::st_as_sf(data.table::rbindlist(patchData))
-# 
-# # save as json to maintain single file
-# st_write(patchData2, dsn = "../data2018/oneHertzData/patches",
-#          driver = "ESRI Shapefile", layer = "patches", delete_layer = TRUE)
-# 
-# # try getting plots
-# # read in griend
-# griend <- st_read("../griend_polygon/griend_polygon.shp")
-# ggplot()+
-#   geom_sf(data = griend)+
-#   geom_sf(data = patchData2, aes(fill = as.POSIXct(time_mean, origin = "1970-01-01")))+
-#   geom_path(data = patchData2, aes(x_mean, y_mean))
-# 
-# ggsave("figPatchExample.pdf", width = 10, height = 8, device = pdf()); dev.off()
-
-# # hsitogram
-# ggplot(patchData2)+
-#   geom_histogram(aes(area, fill = factor(bird)), position = "identity")+
-#   xlim(0, 2e4)+
-#   #facet_wrap(~bird, ncol = 5)+
-#   # scale_y_log10()+
-#   # scale_color_viridis_c()+
-#   labs(x = "patch area (m^2)", title = "patch area distribution",
-#        caption = Sys.time(), fill = "bird")+
-#   theme(legend.position = "none")
-# 
-# ggsave("../figs/figPatchSizeDistribution.pdf", width = 10, height =4, device = pdf()); dev.off()
-
+# end here
