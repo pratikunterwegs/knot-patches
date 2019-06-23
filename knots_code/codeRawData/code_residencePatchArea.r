@@ -1,71 +1,47 @@
 #### code for polygons around residence patches ####
 
 library(tidyverse); library(data.table)
-
-# read in recurse data for selected birds
-dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)
-# read in the data
-data <- purrr::map(dataRevFiles[1], fread) %>% 
-  keep(function(x) { nrow(x) > 0})
-
-# get id.tide names
-library(glue)
-names <- purrr::map_chr(data, 
-                        function(x){ glue(unique(x$id), 
-                                          stringr::str_pad(unique(x$tidalcycle), 3, pad = 0),
-                                          .sep = ".") })
-# assign names
-names(data) <- names
-
-# prep to assign sequence to res patches
-# to each id.tide combination
-data <- purrr::map(data, function(df) {
-  # remove NA vals in fpt
-  # set residence time to 0 or 1 predicated on <= 10 (mins)
-  df[!is.na(fpt),][,resTime:= ifelse(resTime <= 2, F, T)
-                   # get breakpoints where F changes to T and vice versa
-                   ][,resPatch:= c(as.numeric(resTime[1]),
-                                   diff(resTime))
-                     # keeping fixes where restime > 10
-                     ][resTime == T,
-                       # assign res patch as change from F to T
-                       ][,resPatch:= cumsum(resPatch)]
-}) %>% 
-  keep(function(x) nrow(x) > 2)
-
-# get time to high tide from written data
-dataHt <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)[1] %>% 
-  map(fread) %>% bind_rows() %>% select(time, id, x, y, tidaltime, dist, tidalcycle)
-
-# merge to recurse data
-data <- map(data, function(df){
-  df <- merge(df, dataHt, all = FALSE)
-  return(df)
-})
-
-# clear main data
-rm(dataHt); gc()
-
-# get names
-names <- names(data)
-
-# make residence patches
-library(sf)
-
-# error dataframes
-dfErrors <- list()
+library(glue); library(sf)
 
 # source distance function
 source("codeMoveMetrics/functionEuclideanDistance.r")
 
-#### function for resPatches arranged by time ####
+# function for resPatches arranged by time
 source("codeRawData/func_residencePatch.r")
 
-#### get patch data ####
-patchData <- map(data, funcGetResPatches)
 
-# assign names
-names(patchData) <- names
+# read in recurse data for selected birds
+dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)
+
+# get time to high tide from written data
+dataHt <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)
+
+# read in the data
+data <- purrr::map2(dataRevFiles, dataHt, function(filename, htData){
+  
+  # read the file in
+  df <- fread(filename)
+  
+  # prep to assign sequence to res patches
+  # to each id.tide combination
+  # remove NA vals in fpt
+  # set residence time to 0 or 1 predicated on <= 10 (mins)
+  df <- df[!is.na(fpt),][,resTime:= ifelse(resTime <= 2, F, T)
+                         # get breakpoints where F changes to T and vice versa
+                         ][,resPatch:= c(as.numeric(resTime[1]),
+                                         diff(resTime))
+                           # keeping fixes where restime > 10
+                           ][resTime == T,
+                             # assign res patch as change from F to T
+                             ][,resPatch:= cumsum(resPatch)]
+  
+  
+  htData <- fread(htData)
+  # merge to recurse data
+  df <- merge(df, htData, all = FALSE)
+  
+  # get patch data
+  patchData <- funcGetResPatches(df)
 
 # filter non-sf results
 patchData <- keep(patchData, function(x){
