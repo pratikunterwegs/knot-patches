@@ -40,12 +40,13 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time", tidaltime = "
         }))
       
       # remove the pts sf obj
-      #rm(pts); gc()
-      
-      # convert the complex sf object to a simpler sfc column
+      rm(pts); gc()
+            # convert the complex sf object to a simpler sfc column
       polygons$data = reduce(polygons$data, c) %>% st_sfc()
+      
+      # don't do this, the resulting object is too large for 7000 uses
       # make polygons a full sf object
-      polygons = st_sf(polygons)
+      #polygons = st_sf(polygons)
       
       # get patch area in m^2
       polygons = mutate(polygons, area = as.numeric(st_area(data)))
@@ -78,11 +79,12 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time", tidaltime = "
       
       # join summary data with polygons
       # the order matters for the class of the resulting object!
-      patchSummary = left_join(polygons, patchSummary)
+      patchSummary = left_join(patchSummary, polygons)
       
       # return the patch data as function output
       print(glue('residence patches of {unique(df$id)} in tide {unique(df$tidalcycle)} constructed...'))
       return(patchSummary)
+      rm(polygons); gc()
     },
     # null error function, with option to collect data on errors
     error= function(e)
