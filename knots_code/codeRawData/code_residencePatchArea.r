@@ -14,7 +14,7 @@ source("codeRawData/func_residencePatch.r")
 dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)[1:10]
 
 # get time to high tide from written data
-dataHt <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)[1:10]
+dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)[1:10]
 
 # read in the data
 data <- purrr::map2_df(dataRevFiles, dataHt, function(filename, htData){
@@ -38,7 +38,7 @@ data <- purrr::map2_df(dataRevFiles, dataHt, function(filename, htData){
                              ][,resPatch:= cumsum(resPatch)]
   
   
-  htData <- fread(htData)
+  dataHt <- fread(htData)
   # merge to recurse data
   df <- merge(df, htData, all = FALSE)
   
