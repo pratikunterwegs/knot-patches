@@ -16,7 +16,7 @@ releaseData <- fread("../data2018/behavScores.csv", )[,timeNumRelease := as.nume
 source("codeMoveMetrics/functionEuclideanDistance.r")
 
 # list files
-dataFiles <- list.files(path = "../data2018/oneHertzData/", full.names = TRUE)
+dataFiles <- list.files(path = "../data2018/oneHertzData/", pattern = "csv", full.names = TRUE)
 
 # make dir for segmentation output
 if(!dir.exists("../data2018/oneHertzData/recursePrep")){

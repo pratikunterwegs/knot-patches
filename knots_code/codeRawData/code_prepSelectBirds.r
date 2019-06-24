@@ -12,7 +12,7 @@ if(!dir.exists("../data2018/oneHertzData")){
   dir.create("../data2018/oneHertzData")
 }
 
-for(i in 1:length(dataFiles[1])) {
+for(i in 1:length(dataFiles)) {
   load(dataFiles[i])
   
   # prep data to compare
@@ -36,7 +36,7 @@ for(i in 1:length(dataFiles[1])) {
 tides <- read_csv("../data2018/tidesSummer2018.csv") %>% filter(tide == "H")
 
 # read in data and add tidal cycles
-dataFiles <- list.files(path = "../data2018/oneHertzData/", full.names = TRUE)
+dataFiles <- list.files(path = "../data2018/oneHertzData/", full.names = TRUE, pattern = "csv")
 
 # assign and write
 map(dataFiles, function(df){
