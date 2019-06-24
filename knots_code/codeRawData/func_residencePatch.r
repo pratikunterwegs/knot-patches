@@ -57,22 +57,26 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time", tidaltime = "
         nest() %>% 
         mutate(data = map(data, function(df){
           # arrange by time
-          arrange(df, time) %>% 
-          # get distance inside patch
-          mutate(distInPatch = funcDistance(.)) %>%
+          dff <- arrange(df, time)
+          # get distance inside patch if n positions are greater than 1
+          distInPatch <- case_when(nrow(dff) > 1 ~ funcDistance(dff), TRUE ~ 0)
+          # mutate(distInPatch = 
+          #          ifelse(nrow(df) < 2, NA, funcDistance(df))) %>%
             # get summary of other covariates
-          summarise_at(vars(x,y,time,tidaltime),
+          dff <- dff %>% summarise_at(vars(x,y,time,tidaltime),
                        list(mean = mean,
                             start = first,
                             end = last)) %>% 
             # get duration inside patch and sum of distances
             mutate(duration = time_end - time_start,
-                 distInPatch = sum(funcDistance(df), na.rm = T)) %>% 
+                 ) %>% 
             mutate_at(vars(time_mean), list(round))
+          
+          return(dff)
           
         })) %>% 
         # unnest
-        unnest() %>%
+        unnest() #%>%
         # arrange in order of time for interpatch distances
         arrange(resPatch) %>% 
         mutate(distBwPatch = funcDistance(., a = "x_mean", b = "y_mean"))
