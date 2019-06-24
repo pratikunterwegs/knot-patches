@@ -11,10 +11,10 @@ source("codeRawData/func_residencePatch.r")
 
 
 # read in recurse data for selected birds
-dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)[1:10]
+dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)
 
 # get time to high tide from written data
-dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)[1:10]
+dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)
 
 # read in the data
 data <- purrr::map2_df(dataRevFiles, dataHtFiles, function(filename, htData){
@@ -48,12 +48,15 @@ data <- purrr::map2_df(dataRevFiles, dataHtFiles, function(filename, htData){
   # remove htData
   rm(htData)
   
+  patchData$data <- NULL
+  
   return(patchData)
   
 })
 
 # write data to file
-save(data, file = "../data2018/oneHertzData/data2018patches.csv")
+fwrite(data, file = "../data2018/oneHertzData/data2018patches.csv", 
+       dateTimeAs = "epoch")
 
 
 # end here
