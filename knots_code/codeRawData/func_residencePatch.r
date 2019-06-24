@@ -1,6 +1,6 @@
 #### function to get residence patches ####
 
-# currently complains about unknown columns, but seems to work
+# currently complains about vectorising geometry cols, but seems to work
 
 # use sf
 library(tidyverse); library(sf)
@@ -41,12 +41,9 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time", tidaltime = "
       
       # remove the pts sf obj
       rm(pts); gc()
-            # convert the complex sf object to a simpler sfc column
+      # convert the complex sf object to a simpler sfc column
+      # this function, st_sfc, produces warnings. ignore them
       polygons$data = reduce(polygons$data, c) %>% st_sfc()
-      
-      # don't do this, the resulting object is too large for 7000 uses
-      # make polygons a full sf object
-      #polygons = st_sf(polygons)
       
       # get patch area in m^2
       polygons = mutate(polygons, area = as.numeric(st_area(data)))
@@ -58,37 +55,37 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time", tidaltime = "
         mutate(data = map(data, function(df){
           # arrange by time
           dff <- arrange(df, time)
-          # get distance inside patch if n positions are greater than 1
-          distInPatch <- case_when(nrow(dff) > 1 ~ funcDistance(dff), TRUE ~ 0)
+          # get distance inside patch if n positions are greater than 1, else return 0
+          distInPatch <- funcDistance(dff)
           # mutate(distInPatch = 
           #          ifelse(nrow(df) < 2, NA, funcDistance(df))) %>%
-            # get summary of other covariates
+          # get summary of other covariates
           dff <- dff %>% summarise_at(vars(x,y,time,tidaltime),
-                       list(mean = mean,
-                            start = first,
-                            end = last)) %>% 
+                                      list(mean = mean,
+                                           start = first,
+                                           end = last)) %>% 
             # get duration inside patch and sum of distances
             mutate(duration = time_end - time_start,
-                 ) %>% 
+                   nFixes = nrow(dff),
+                   distInPatch = sum(distInPatch, na.rm = TRUE)) %>% 
             mutate_at(vars(time_mean), list(round))
           
           return(dff)
           
         })) %>% 
         # unnest
-        unnest() #%>%
-        # arrange in order of time for interpatch distances
-        arrange(resPatch) %>% 
+        unnest() %>%
+      # arrange in order of time for interpatch distances
+      arrange(resPatch) %>% 
         mutate(distBwPatch = funcDistance(., a = "x_mean", b = "y_mean"))
       
       # join summary data with polygons
-      # the order matters for the class of the resulting object!
-      patchSummary = left_join(patchSummary, polygons)
+      # the order matters for the class of the resulting object! use an inner join
+      patchSummary = inner_join(patchSummary, polygons)
       
       # return the patch data as function output
       print(glue('residence patches of {unique(df$id)} in tide {unique(df$tidalcycle)} constructed...'))
       return(patchSummary)
-      rm(polygons); gc()
     },
     # null error function, with option to collect data on errors
     error= function(e)
