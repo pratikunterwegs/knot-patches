@@ -11,16 +11,18 @@ source("codeRawData/func_residencePatch.r")
 
 
 # read in recurse data for selected birds
-dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)
+dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)[1:10]
 
 # get time to high tide from written data
-dataHt <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)
+dataHt <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)[1:10]
 
 # read in the data
 data <- purrr::map2_df(dataRevFiles, dataHt, function(filename, htData){
   
   # read the file in
   df <- fread(filename)
+  
+  print(glue('individual {unique(df$id)} in tide {unique(df$tidalcycle)} has {nrow(df)} obs'))
   
   # prep to assign sequence to res patches
   # to each id.tide combination
