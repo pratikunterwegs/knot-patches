@@ -17,7 +17,7 @@ dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names =
 dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)[1:10]
 
 # read in the data
-data <- purrr::map2_df(dataRevFiles, dataHt, function(filename, htData){
+data <- purrr::map2_df(dataRevFiles, dataHtFiles, function(filename, htData){
   
   # read the file in
   df <- fread(filename)
@@ -40,7 +40,7 @@ data <- purrr::map2_df(dataRevFiles, dataHt, function(filename, htData){
   
   dataHt <- fread(htData)
   # merge to recurse data
-  df <- merge(df, htData, all = FALSE)
+  df <- merge(df, dataHt, all = FALSE)
   
   # get patch data
   patchData <- funcGetResPatches(df)
@@ -53,7 +53,7 @@ data <- purrr::map2_df(dataRevFiles, dataHt, function(filename, htData){
 })
 
 # write data to file
-fwrite(data, file = "../data2018/oneHertzData/data2018patches.csv")
+save(data, file = "../data2018/oneHertzData/data2018patches.csv")
 
 
 # end here
