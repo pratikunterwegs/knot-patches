@@ -9,19 +9,26 @@
 
 # needs dplyr
 
+library(dplyr)
+
 funcDistance = function(df, a = "x", b = "y"){
   #check for basic assumptions
   assertthat::assert_that(is.data.frame(df),
                           is.character(a),
                           is.character(b),
-                          nrow(df) > 1,
                           msg = "some df assumptions are not met")
-  # get x and y
-  x <- dplyr::pull(df, a); x1 <- x[1:length(x)-1]; x2 <- x[2:length(x)]
-  y <- dplyr::pull(df, b); y1 <- y[1:length(y)-1]; y2 <- y[2:length(y)]
   
-  # get dist
-  dist <- c(NA, sqrt((x1 - x2)^2 + (y1 - y2)^2))
+  dist <- dplyr::case_when(nrow(df) > 1 ~ 
+                      # get x and y
+                      {x <- dplyr::pull(df, a); x1 <- x[1:length(x)-1]; x2 <- x[2:length(x)]
+                      y <- dplyr::pull(df, b); y1 <- y[1:length(y)-1]; y2 <- y[2:length(y)]
+                      
+                      # get dist
+                      c(NA, sqrt((x1 - x2)^2 + (y1 - y2)^2))},
+                    
+                    nrow(df) == 1 ~ {0.0},
+                    TRUE ~ {as.numeric(NA)})
+  
   return(dist)
 }
 
