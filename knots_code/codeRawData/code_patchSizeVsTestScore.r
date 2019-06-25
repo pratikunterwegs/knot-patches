@@ -86,7 +86,7 @@ ggplot(patchSummary)+
   themePubKnots()+
   
   labs(x = "hours since high tide", y = bquote("distance within patch (m)"),
-       title = "nFixes ~ time since high tide ~ tidal cluster",
+       title = "distWiPatches ~ time since high tide ~ tidal cluster",
        caption = Sys.time(), fill = "rough tidal stage")
 # plot
 ggsave(filename = "../figs/figPatchDistWithinVsTime.pdf", width = 8, height = 6,
@@ -105,7 +105,7 @@ ggplot(patchSummary)+
   themePubKnots()+
   
   labs(x = "hours since high tide", y = bquote("distance b/w patch (m)"),
-       title = "nFixes ~ time since high tide ~ tidal cluster",
+       title = "distBwPatches ~ time since high tide ~ tidal cluster",
        caption = Sys.time(), fill = "rough tidal stage")
 # plot
 ggsave(filename = "../figs/figPatchDistBetwnVsTime.pdf", width = 8, height = 6,
