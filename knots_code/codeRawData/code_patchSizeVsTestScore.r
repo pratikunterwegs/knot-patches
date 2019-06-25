@@ -35,78 +35,50 @@ patchSummary <- patches %>%
   summarise_at(vars(area, nFixes, distInPatch, distBwPatch),
                list(~mean(., na.rm = T), ~ci(.)))
 
-#### area vs time ####
-ggplot(patchSummary)+
-  geom_pointrange(aes(x = factor(tidalTimeHour), 
-                   y = area_mean, ymin = area_mean - area_ci,
-                   ymax = area_mean + area_ci,
-                   fill = between(tidalTimeHour, 4, 9)), shape = 21, lty = 1)+
-  facet_wrap(~tidalCluster, scales = "free")+
-  scale_fill_brewer(palette = "Greys", label = c("high tide","low tide"))+
-  coord_cartesian(ylim = c(1e3, 4e3))+
-  
-  themePubKnots()+
-  
-  labs(x = "hours since high tide", y = bquote("patch area" (m^2)),
-       title = "patch area ~ time since high tide ~ tidal cluster",
-       caption = Sys.time(), fill = "rough tidal stage")
-# plot
-ggsave(filename = "../figs/figPatchAreaVsTime.pdf", width = 8, height = 6,
-       device = pdf()); dev.off()
+# source plot code
+source("codeRawData/plot_resPatchPlots.r")
 
-#### n Fixes vs time ####
-ggplot(patchSummary)+
-  geom_pointrange(aes(x = factor(tidalTimeHour), 
-                      y = nFixes_mean, ymin = nFixes_mean - nFixes_ci,
-                      ymax = nFixes_mean + nFixes_ci,
-                      fill = between(tidalTimeHour, 4, 9)), shape = 21, lty = 1)+
-  facet_wrap(~tidalCluster, scales = "free")+
-  scale_fill_brewer(palette = "Reds", label = c("high tide","low tide"))+
-  coord_cartesian(ylim = c(0, 3e2))+
-  
-  themePubKnots()+
-  
-  labs(x = "hours since high tide", y = bquote("nFixes"),
-       title = "nFixes ~ time since high tide ~ tidal cluster",
-       caption = Sys.time(), fill = "rough tidal stage")
-# plot
-ggsave(filename = "../figs/figPatchFixesVsTime.pdf", width = 8, height = 6,
-       device = pdf()); dev.off()
+#### make patch summary for indivs ####
+# get in incremens of 0.2 of explore score
+patchIdSummary <- patches %>% 
+  mutate(
+    # tidalCluster = plyr::round_any(tidalcycle, 15),
+    hiOrLo = ifelse(between(tidaltime_mean, 4*60, 9*60), "lowTide", "highTide"),
+         exploreBin = plyr::round_any(exploreScore, 0.2)) %>% 
+  select(exploreBin, 
+         #tidalCluster, 
+         duration, nFixes, 
+         distInPatch, distBwPatch, area, hiOrLo) %>% 
+  gather(variable, value, -exploreBin, -hiOrLo) %>% 
+  group_by(exploreBin, hiOrLo, variable) %>% 
+  summarise_at(vars(value),
+               list(~mean(., na.rm = T), ~ci(.)))
 
-#### distance within patch ####
-ggplot(patchSummary)+
-  geom_pointrange(aes(x = factor(tidalTimeHour), 
-                      y = distInPatch_mean, ymin = distInPatch_mean - distInPatch_ci,
-                      ymax = distInPatch_mean + distInPatch_ci,
-                      fill = between(tidalTimeHour, 4, 9)), shape = 21, lty = 1)+
-  facet_wrap(~tidalCluster, scales = "fixed")+
-  scale_fill_brewer(palette = "Blues", label = c("high tide","low tide"))+
-  #coord_cartesian(ylim = c(0, 3e2))+
+# count patches per tide per explore score bin
+patchCount <- patches %>% 
+  mutate(hiOrLo = ifelse(between(tidaltime_mean, 4*60, 9*60), "lowTide", "highTide")) %>%  
+  count(id, exploreScore, tidalcycle, hiOrLo) %>% 
+  mutate(exploreBin = plyr::round_any(exploreScore, 0.2)) %>% 
+  group_by(exploreBin, hiOrLo) %>% 
+  summarise_at(vars(n), list(~mean(., na.rm=T),~ci(.))) %>% 
+  mutate(variable = "patch changes") %>% 
+  select(exploreBin, hiOrLo, variable, mean, ci) %>% 
+  bind_rows(patchIdSummary)
   
-  themePubKnots()+
-  
-  labs(x = "hours since high tide", y = bquote("distance within patch (m)"),
-       title = "distWiPatches ~ time since high tide ~ tidal cluster",
-       caption = Sys.time(), fill = "rough tidal stage")
-# plot
-ggsave(filename = "../figs/figPatchDistWithinVsTime.pdf", width = 8, height = 6,
-       device = pdf()); dev.off()
 
-#### distance between patch ####
-ggplot(patchSummary)+
-  geom_pointrange(aes(x = factor(tidalTimeHour), 
-                      y = distBwPatch_mean, ymin = distBwPatch_mean - distBwPatch_ci,
-                      ymax = distBwPatch_mean + distBwPatch_ci,
-                      fill = between(tidalTimeHour, 4, 9)), shape = 21, lty = 1)+
-  facet_wrap(~tidalCluster, scales = "free")+
-  scale_fill_brewer(palette = "Greens", label = c("high tide","low tide"))+
-  coord_cartesian(ylim = c(0, 5e2))+
-  
-  themePubKnots()+
-  
-  labs(x = "hours since high tide", y = bquote("distance b/w patch (m)"),
-       title = "distBwPatches ~ time since high tide ~ tidal cluster",
-       caption = Sys.time(), fill = "rough tidal stage")
 # plot
-ggsave(filename = "../figs/figPatchDistBetwnVsTime.pdf", width = 8, height = 6,
+ggplot(patchCount)+
+  geom_pointrange(aes(x = exploreBin, y = mean, ymin = mean - ci,
+                      ymax = mean + ci, col = hiOrLo, shape = hiOrLo),
+                  position = position_dodge(width = 0.04), size = 0.3)+
+  facet_wrap(~variable, scales = "free")+
+  scale_colour_brewer(palette = "Dark2")+
+  #scale_shape_cleveland()+
+  themePubKnots()+
+  labs(x = "exploration score", y = "value (specific units)",
+       title = "patch values ~ exploration score",
+       caption = Sys.time())+
+  theme(legend.position = "top")
+
+ggsave("../figs/figPatchMetricsVsExploreScoreWithTide.pdf", height = 6, width = 8,
        device = pdf()); dev.off()
