@@ -2,7 +2,7 @@
 # make theme for plots
 library(ggplot2)
 
-themePub <- function(base_size=10) {
+themePubGeese <- function(base_size=10) {
   library(grid)
   library(ggthemes)
   (theme_foundation(base_size=base_size)+
@@ -37,7 +37,7 @@ themePub <- function(base_size=10) {
 
 }
 
-themePubLeg <- function(base_size=10) {
+themePubLegGeese <- function(base_size=10) {
   library(grid)
   library(ggthemes)
   (theme_foundation(base_size=base_size)+
