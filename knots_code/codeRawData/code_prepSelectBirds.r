@@ -7,9 +7,6 @@ library(glue)
 # list files
 dataFiles <- list.files("../data2018/", pattern = "knots2018", full.names = T)
 
-# selected data
-selectData <- list()
-
 # make output dir if non existent
 if(!dir.exists("../data2018/oneHertzData")){
   dir.create("../data2018/oneHertzData")
@@ -36,21 +33,26 @@ for(i in 1:length(dataFiles)) {
 
 
 #### assign tidal cycles ####
-tides <- fread("../data2018/tidesSummer2018.csv")[tide == "H"]
+tides <- read_csv("../data2018/tidesSummer2018.csv") %>% filter(tide == "H")
 
 # read in data and add tidal cycles
-dataFiles <- list.files(path = "../data2018/oneHertzData/", full.names = TRUE)
+dataFiles <- list.files(path = "../data2018/oneHertzData/", full.names = TRUE, pattern = "csv")
 
 # assign and write
 map(dataFiles, function(df){
+  # read in the file with readr and make data.table
   tempdf <- read_csv(df) %>% setDT()
+  # floor the time in milliseconds to seconds
   tempdf[,TIME:=floor(TIME/1e3)]
+  # merge data to insert high tides within movement data
   tempdf <- merge(tempdf, tides, by.x = "TIME", by.y = "timeNum", all = TRUE)
+  # arrange by time to position high tides correctly
   setorder(tempdf, TIME)
-  tempdf <- tempdf[,tide:=!is.na(tide)
-         ][, tidalCycle:=cumsum(tide)
-           ][,tidalTime:= (TIME - min(TIME))/60,by=tidalCycle
-             ][complete.cases(X),]
+  # modify the df as follows
+  tempdf <- tempdf[,tide:=!is.na(tide) # check if the tide has a value, ie, check for high tide
+         ][, tidalCycle:=cumsum(tide) # cumulative sum the tide column, thus counting only high tides
+           ][,tidalTime:= (TIME - min(TIME))/60,by=tidalCycle # within each tidal cycle, get time to high tide
+             ][complete.cases(X),] # remove rows with incomplete cases of X
               
   tempdf[,`:=` (temp = NULL, tide = NULL, level = NULL, time = NULL)
          ][,tidalCycle:=tidalCycle-min(tidalCycle)+1]
@@ -59,4 +61,4 @@ map(dataFiles, function(df){
   return("overwritten with tidal cycles")
 })
 
-
+# end here
