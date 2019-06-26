@@ -19,7 +19,7 @@ patches <- left_join(patches, behavScore, by= c("id"))
 library(ggplot2)
 source("codePlotOptions/geomFlatViolin.r")
 source("codePlotOptions/ggThemeKnots.r")
-source("codePlotOptions/ggThemeGeese.r")
+# source("codePlotOptions/ggThemeGeese.r")
 
 # simple ci function
 ci = function(x){
@@ -36,7 +36,7 @@ patchSummary <- patches %>%
                list(~mean(., na.rm = T), ~ci(.)))
 
 # source plot code
-source("codeRawData/plot_resPatchPlots.r")
+# source("codeRawData/plot_resPatchPlots.r")
 
 #### make patch summary for indivs ####
 # get in incremens of 0.2 of explore score
@@ -69,16 +69,19 @@ patchCount <- patches %>%
 # plot
 ggplot(patchCount)+
   geom_pointrange(aes(x = exploreBin, y = mean, ymin = mean - ci,
-                      ymax = mean + ci, col = hiOrLo, shape = hiOrLo),
-                  position = position_dodge(width = 0.04), size = 0.3)+
+                      ymax = mean + ci, fill = hiOrLo, shape = hiOrLo),
+                  position = position_dodge(width = 0.04))+
   facet_wrap(~variable, scales = "free")+
-  scale_colour_brewer(palette = "Dark2")+
-  #scale_shape_cleveland()+
+  scale_fill_brewer(palette = "Greys")+
+  scale_y_continuous(labels = scales::comma)+
+  scale_x_continuous(breaks = seq(-0.4, 1.0, 0.2))+
+  scale_shape_manual(values = c(21, 24))+
   themePubKnots()+
   labs(x = "exploration score", y = "value (specific units)",
        title = "patch values ~ exploration score",
        caption = Sys.time())+
-  theme(legend.position = "top")
+  theme(legend.position = "top", 
+        panel.spacing.y = unit(1, "lines"))
 
 ggsave("../figs/figPatchMetricsVsExploreScoreWithTide.pdf", height = 6, width = 8,
        device = pdf()); dev.off()
