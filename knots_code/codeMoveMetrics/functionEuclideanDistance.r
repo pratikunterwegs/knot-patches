@@ -7,23 +7,29 @@
 # the distance function takes a dataframe, converts to matrix
 # assigns the colnames again as x and y
 
-funcDistance = function(a, x, y){
+# needs dplyr
+
+library(dplyr)
+
+funcDistance = function(df, a = "x", b = "y"){
   #check for basic assumptions
-  assertthat::assert_that(is.data.frame(a),
-                          is.character(x),
-                          is.character(y),
-                          nrow(a) > 1)
-  # subset the dataframe, make matrix, set the new colnames
-  a = as.matrix(a[c(x,y)])
-  colnames(a) = c(x,y)
+  assertthat::assert_that(is.data.frame(df),
+                          is.character(a),
+                          is.character(b),
+                          msg = "some df assumptions are not met")
   
-  # make a vector with trailing NA to store distances
-  b = vector()
-  for(i in 1:nrow(a)-1){
-    b[i] = (sqrt((a[i,"x"] - a[i+1, "x"])^2 + (a[i,"y"] - a[i+1, "y"])^2))
-  }
-  b = c(b, NA)
+  dist <- dplyr::case_when(nrow(df) > 1 ~ 
+                      # get x and y
+                      {x <- dplyr::pull(df, a); x1 <- x[1:length(x)-1]; x2 <- x[2:length(x)]
+                      y <- dplyr::pull(df, b); y1 <- y[1:length(y)-1]; y2 <- y[2:length(y)]
+                      
+                      # get dist
+                      c(NA, sqrt((x1 - x2)^2 + (y1 - y2)^2))},
+                    
+                    nrow(df) == 1 ~ {0.0},
+                    TRUE ~ {as.numeric(NA)})
   
-  # return b
-  return(b)
+  return(dist)
 }
+
+

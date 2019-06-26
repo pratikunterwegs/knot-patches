@@ -1,0 +1,594 @@
+Half-yearly progress meeting
+===
+author: Pratik Gupte
+date: 20th June, 2019
+autosize: false
+width: 1440
+height: 900
+font-family: 'IBM Plex Serif'
+
+Structure
+===
+type: sub-section
+
+- **Summary**
+
+- **Coursework + conferences**
+
+- **Projects + master's students**
+
+- **Planned projects + outcomes**
+
+Summary
+===
+
+- 28% of PhD duration
+
+- 16 + 2 ECTS (60%)
+  
+  - 1 ongoing course (10 EC), 1 planned (5 EC)
+  - 2 + 1 conferences
+
+
+- 4 + 1 projects
+- 2 master's students
+
+Coursework
+===
+
+**Completed**
+
+- C++ for Biologists
+- Consumer-Resource Interactions
+- Scientific Integrity
+
+**Ongoing and planned**
+
+- Mathematical Models in Ecology & Evolution --- ongoing
+- Practical Modelling for Biologists --- Jan 2020
+
+**Estimated date for 30 EC** --- February 2020 (~50% of PhD)
+
+Conferences
+===
+
+- 1st Biomove Symposium
+
+- 3rd Gordon Research Conference on Movement Ecology of Animals
+
+- 1st Gordon Research Seminar on Movement Ecology of Animals
+
+Projects
+===
+
+**Ongoing**
+>
+- Modelling
+  1. Evolution of movement in fluctuating landscapes
+  2. Evolution of movement with competition
+
+>
+- Empirical
+  3. Exploring movement consistency across scales
+
+***
+  
+**Proposed**
+
+1. Evolution of migration traditions
+
+Evolution of movement in fluctuating landscapes
+===
+type:sub-section
+
+*with L. Boullosa, C. Netz, H. Hildenbrandt & F. Weissing*
+
+Can we construct a spatially explicit model of individuals reacting to a fluctuating landscape?
+
+What reaction norms are evolved in such landscapes?
+
+Local sensing of global patterns
+===
+
+**Landscape**
+
+- Neutral, continuous landscape
+
+- Values represent resource 0 -- 1
+
+- Landscape changes in space and time
+
+- Landscape is not depleted
+
+***
+
+**Agents**
+
+- *N* agents
+
+- Simple neural network
+
+- Single input, single output (distance), random direction
+
+- Non-depleting, non-interacting
+
+An introduction to neutral landscapes
+===
+Un-wrapped Gaussian landscapes^[1]
+
+```{r nlm_figure, echo=FALSE}
+knitr::include_graphics("../presentation/figGaussianLand.png")
+```
+
+<small>
+^[1]: following Sciani et al. (2018)
+^[2]: Cenzer et al. (2019) </small>
+
+***
+
+Wrapped, clamped, 2 resource Gaussian landscapes^[2] 
+
+```{r cenzer_figure, echo=FALSE}
+knitr::include_graphics("../presentation/figCenzer2019.png")
+```
+
+
+Perlin noise as neutral landscapes
+===
+
+Method developed for water surface graphics^[1]
+
+```{r perlin_figure, echo=FALSE}
+knitr::include_graphics("../presentation/figurePerlinLandscapes.png")
+```
+
+<small>^[1]: Perlin (1985)</small>
+
+What do landscape parameters mean?
+===
+type: alert
+
+<font size="+12">Landscape simulation parameters **do not** always correspond to realised landscape metrics!^[1]</font>
+
+<small>[1]: Haller et al. (2013)</small>
+
+Fluctuations in Perlin noise
+===
+<video width="1280" height="800" controls>
+  <source src="../presentation/figPerlinChange.webm" type="video/webm">
+</video>
+
+A reminder of Perlin parameters
+===
+**Space**
+
+Perlin noise is varied by overlaying octaves in `C++`
+
+```{r perlin_figure2, echo=FALSE}
+knitr::include_graphics("../presentation/figurePerlinLandscapes.png")
+```
+
+***
+
+**Time**
+
+Temporal variation is velocity along axis Z
+
+```{r perlin_figure3, echo=FALSE}
+knitr::include_graphics("../presentation/figPerlinExplain.png")
+```
+
+Quantifying spatial predictability
+===
+
+- Semivariogram range as measure of spatial predictability
+
+- Pairwise distance at which the semivariance ≈ global variance
+
+- Computation in `Python` using library `gstat`
+
+Perlin noise 2D variographs
+===
+
+X-axis: distance, Y-axis: semivariance, rows: temporal rate ++, cols: octaves ++
+```{r perlin_variograph, echo=FALSE}
+knitr::include_graphics("../presentation/figurePerlinVariographs.png")
+```
+
+Expected effect of varying spatial scale
+===
+
+Landscapes generated using `nlmpy`^[1]
+
+```{r nlmpy_landscape, echo=FALSE, out.width='120%'}
+knitr::include_graphics("../presentation/figureNeutralLandscapes.png")
+```
+
+**Perlin noise octaves do not produce spatial structure**
+
+***
+
+Variograms from `gstat`
+
+```{r nlmpy_vgram, echo=FALSE, out.width='100%'}
+knitr::include_graphics("../presentation/figureNeutralLandscapeVariograph.png")
+```
+
+<small>[1]: Etherington et al. (2015)</small>
+
+Quantifying spatio-temporal predictability
+===
+- Semivariance calculated in 3 dimensional space
+
+- `Python` computation using `gstat`
+
+- **Perlin noise does produce spatio-temporal structure**
+
+Perlin noise 3D variographs
+===
+
+X-axis: distance, Y-axis: semivariance, rows: temporal rate ++, cols: octaves ++
+```{r perlin3d_variograph, echo=FALSE, out.width='70%'}
+knitr::include_graphics("../presentation/figurePerlin3dVariographs.png")
+```
+
+Local sensing agents
+===
+
+- Simple ANN
+- Landscape value the only input
+- Distance the only output
+- Random movement angle
+- Reproduction ~ resource intake
+
+```{r ann_perlin, echo=FALSE, out.width='70%'}
+knitr::include_graphics("../presentation/figPerlinAnn.png")
+```
+
+Project progress
+===
+*co-supervised with C. Netz and F. Weissing*
+
+- January through July *(?)*
+- Mid-term evaluation --- none
+- Expected EC --- ?
+
+*Probability of manuscript in 2019* ≈ 20%, *in 2020* ≈ 70%
+
+Project questions
+===
+
+- How can we better link this project to Botero et al. (2015)?
+
+- Should we include more complexity in strategies, such as developmental switches?
+
+- Are red knots or waders a system we want to model towards?
+
+Evolution of movement with competition
+===
+type: sub-section
+
+*with M. Pederboni, C. Netz & F. Weissing*
+
+How do exploitation and interference competition affect space-use?
+
+How can competition affect the evolution of movement strategies?
+
+Movement types and/or foraging guilds
+===
+Getz et al. (2015). *Panmictic and clonal evolution on a single patchy resource produces polymorphic foraging guilds*. PLoS One.
+
+- Evolved movement polymorphisms on a grid-based, depletable landscape
+  - Morph emergence ~ competition
+  - Competition ~ population size
+
+***
+
+```{r getz_figure, echo=FALSE}
+knitr::include_graphics("../presentation/figGetz2015fig05.png")
+```
+
+Conceptually modelling wader competition
+===
+Vahl (2006). *Interference competition among foraging waders*. RuG PhD thesis.
+
+```{r vahl_figure, echo=FALSE, out.width='60%'}
+knitr::include_graphics("../presentation/figVahl2006fig6.1.png")
+```
+
+Implementing competition in spatial models
+===
+**Landscape**
+- Simple lattice landscape --- $S^2$ cells
+- Discrete resources w/ handling time ---  
+  - $R$ resources
+  - $p(resource)$
+  
+
+```{r distgrad_figure, echo=FALSE, out.width='60%'}
+knitr::include_graphics("../presentation/figDistGradientLand.png")
+```
+
+***
+
+**Agents**
+- $N$ agents
+- Agents choose position based on cell agents and resources
+
+```{r interfscheme_figure, echo=FALSE, out.width='80%'}
+knitr::include_graphics("../presentation/figInterfSimScheme.png")
+```
+
+Preliminary model output
+===
+
+<video width="1280" height="800" controls>
+  <source src="../presentation/vidKleptomove.webm" type="video/webm">
+</video>
+
+Zoomed model output
+===
+
+<video width="1280" height="800" controls>
+  <source src="../presentation/vidKleptomoveZoom.webm" type="video/webm">
+</video>
+
+Model questions
+===
+Building on Getz et al. (2015) with help from Vahl (2006)
+
+- Can we evolve movement and interference polymorphisms?
+
+- Do movement and interference co-evolve, and how?
+
+- How do they affect space-use and population-level movement?
+
+
+Master's student progress
+===
+*co-supervised with C. Netz and F. Weissing*
+
+- February through September
+- Mid-term evaluation -- next week
+- Expected EC --- 30 *(?)*
+
+*Probability of manuscript in 2019* ≈ 10%, *in 2020* ≈ 70%
+
+Project questions
+===
+
+- Should we implement exploitation or only interference?
+
+- Should there be state-dependent interaction outcomes?
+
+- What area of eco-evo dynamics should we target this project towards?
+
+Exploring movement consistency in red knots
+===
+type: sub-section
+
+*with S. Ersoy & A. Bijleveld*
+
+How does space-use in red knots change within and between tidal cycles?
+
+Are individuals consistent in their movement behaviour across scales?
+
+Cleaning movement data
+===
+
+- Issue: tags transmitting before release
+- Solution: remove fixes before release + 24 hrs
+
+```{r tags_before_release, echo=FALSE, out.width='60%'}
+
+knitr::include_graphics("../figs/figTimeTagRelease.png")
+
+```
+
+Calculating residence time
+===
+- Residence time at a focal point = total time spent within 
+  - 50m buffer of the focal point
+
+- Here:
+  - res time = $(t_{in} - t_{out})$
+  
+***
+
+```{r restime_scheme, echo=FALSE, out.width='60%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/presentation/figSchematicResidence.png")
+
+```
+
+Manual track segmentation
+===
+- Criterion: residence time > 2 minutes?
+
+- TRUE; classify as residence point
+
+- FALSE; classify as non-residence point
+
+- Performs better than more complex alogrithms^[1]
+
+<small>[^1]: such as Patin et al. (2018)</small>
+
+Comparing segmentation methods
+===
+
+```{r restime_segmentation, echo=FALSE, out.width='100%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/presentation/figRawDataSegmentation.png")
+
+```
+
+
+Preventing patch misidenfication
+===
+
+- Issue: tidally-driven cyclical movements can inflate residence time
+
+- Solution: count only residence times for a point within 60 mins
+
+- Red and blue patches overlap in space but not time
+
+- Points in each don't contribute to the other's residence time
+
+***
+
+```{r restime_inflate, echo=FALSE, out.width='60%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/presentation/figResTimeInflation.png", dpi = 300)
+
+```
+
+Residence patch metrics
+===
+
+- Spatial metrics --- area, circularity, distance moved within patches, distance between patches
+
+- Temporal metrics --- time within patch, time since high tide
+
+- Social metrics --- number of overlapping individuals
+
+***
+
+```{r respatch_metrics, echo=FALSE, out.width='50%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/presentation/figResPatchMetrics.png", dpi = 300)
+
+```
+
+Patch area within and between tides
+===
+```{r area_time, echo=FALSE, out.width='80%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/figs/figPatchAreaVsTime.png", dpi = 300)
+
+```
+
+Number of patches within a tidal cycle
+===
+```{r number_time, echo=FALSE, out.width='70%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/figs/figPatchNumberVsTidalTime.png", dpi = 300)
+
+```
+
+Inter-patch distance
+===
+```{r distance_time, echo=FALSE, out.width='80%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/figs/figPatchDistanceVsTime.png", dpi = 300)
+
+```
+
+Linking patch area to predictors
+===
+```{r area_predictors, echo=FALSE, out.width='80%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/figs/figPatchAreaVsPredictors2.png", dpi = 300)
+
+```
+
+To do
+===
+
+- Link residence patches to underlying resource values
+- Get overlaps between individuals to test theoretical predictions, eg. Spiegel et al. (2017)
+
+Project questions
+===
+
+- How should we divide up a complex story?
+
+- When should we introduce the SIBES data?
+
+Modelling the evolution of migration traditions
+===
+type: sub-section
+
+*with I. Daras, M. Kozielska, T. Oudman(?) & F. Weissing*
+
+How can IBMs reproduce the migration patterns of social animals?
+
+How do age-structure and dominance hierarchies play a role?
+
+Potential model system
+===
+
+- Waders
+  - Migrate in groups
+  - Complex migration dynamics
+  - Potential information transfer of migration decisions --- departure flights, moulting
+
+- Geese
+  - Show family-size based dominance hierarchies
+  - Vertical, oblique, and horizontal information transfer
+  
+Green-wave landscape
+===
+
+- *W* element vector --- each position is a site
+
+- Shifting resource peak
+
+- Constant or variable
+
+  - End point
+  - Rate of peak shift (green wave velocity)
+  
+- Green-wave reverses every $t$ timesteps
+
+***
+
+```{r greenwave, echo=FALSE, out.width='100%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/knots_code/figLandscape.png", dpi = 300)
+
+```
+
+Agent migration decision
+===
+
+- *N* agents each decide step-length
+
+- Agents take 2 inputs from cell:
+  - Resource value
+  - Proportion of agents moving forward
+  
+***
+
+```{r mig_ann, echo=FALSE, out.width='100%'}
+
+knitr::include_graphics("/home/pratik/projects/redknotMoveWaddensea/presentation/figGooseMigANN.png", dpi = 300)
+
+```
+  
+  
+Agent currency & reproduction
+===
+- Currency = resource intake
+- Intake ~ resource value, agent density^-1
+- Cost ~ movement distance
+
+**Reproduction**
+
+- Fixed population --- proportional to intake
+- Flexible population --- realistic reproduction dynamics
+
+Project questions
+===
+- Should we pursue this modelling approach?
+
+- Should we implement learning and non-genetic inheritance, and how?
+
+- How complex should we make the system?
+
+Thanks, and questions please
+===
+type: sub-section
+
+Email: p.r.gupte@rug.nl
+Github: pratikunterwegs
+
