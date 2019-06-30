@@ -33,25 +33,24 @@ all scripts are in `knots_code/`
 **This file is not on the repo.**
 
 1. run `codeGetData/code_getData2018.r`
-    a. filters on wild knots
-    b. gets all fixes from 1st to last
-    c. removes beacons
-    d. writes data to rdata file with 10 ids per file
-    e. reads all rdata files, combines to one df
-    f. writes combined files as rdata - `../data2018/*.Rdata`
-
+    1. filters on wild knots
+    2. gets all fixes from 1st to last
+    3. removes beacons
+    4. writes data to rdata file with 10 ids per file
+    5. reads all rdata files, combines to one df
+    6. writes combined files as rdata - `../data2018/*.Rdata`
 2. run `codeBehavMetrics/code_experimentData.r`
-    a. reads in behavioural score and release data csv
-    b. writes cleaned data with selected columns to csv: `../data2018/behavScores.csv`
+    1. reads in behavioural score and release data csv
+    2. writes cleaned data with selected columns to csv: `../data2018/behavScores.csv`
 
 **This file is not on the repo.**
 
 3. run `codeGetData/code_tidalIntervals2018.r`
-    a. reads west terschelling waterlevel csv
-    b. selects a measure of waterlevel
-    c. reads `codeGetData/high_low_tide.R` function
-    d. calcualtes tides
-    e. writes high and low tide times to csv: `tidesSummer2018.csv`
+    1. reads west terschelling waterlevel csv
+    1. selects a measure of waterlevel
+    1. reads `codeGetData/high_low_tide.R` function
+    1. calcualtes tides
+    1. writes high and low tide times to csv: `tidesSummer2018.csv`
 
 ## Prepare data
 
