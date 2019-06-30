@@ -33,9 +33,9 @@ all scripts are in `knots_code/`
 **This file is not on the repo.**
 
 1. run `codeGetData/code_getData2018.r`
-    1. filters on wild knots
-    2. gets all fixes from 1st to last
-    3. removes beacons
+    a. filters on wild knots
+    b. gets all fixes from 1st to last
+    c. removes beacons
     4. writes data to rdata file with 10 ids per file
     5. reads all rdata files, combines to one df
     6. writes combined files as rdata - `../data2018/*.Rdata`
