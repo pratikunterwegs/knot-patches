@@ -1,12 +1,12 @@
-**Copyright (c) 2019 Pratik Gupte**
+**NB:** Data, if any generated or accessed, belong to GELIFES-RUG and COS-NIOZ and/or relevant members. See contact details.
 
-Data, if any generated or accessed belong to GELIFES-RUG and COS-NIOZ and/or relevant members.
-
-# Code from the Wadden Sea ATLAS project
+# Publication branch of Wadden Sea ATLAS project
 
 ## What?
 
-Code for data handling for tracking data from the Wadden Sea ATLAS project.
+Publication branch of the repository containing code from ATLAS tracking in the Wadden Sea. *This is probably the branch you're looking for.*
+
+Unlike the other branches, this branch contains only code relevant to the upcoming paper.
 
 ## Who?
 
@@ -17,3 +17,5 @@ Contact:
   Nijenborgh 7/5172.0583 9747AG Groningen
 
 - Allert Bijleveld: allert.bijleveld@nioz.nl
+
+- Selin Ersoy: selin.ersoy@nioz.nl
