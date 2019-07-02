@@ -1,3 +1,11 @@
+# Summary stats for paper
+
+```{r setup}
+  library(knitr)
+  opts_knit$set(root.dir=normalizePath('../'))
+```
+
+```{r load_data_and_summarise}
 #### code to summarise various data ####
 
 library(data.table); library(tidyverse); library(glue)
@@ -18,15 +26,23 @@ dataSummary <- map_df(dataFiles, function(z){
               id = as.character(unique(TAG - 3.1001e10)))])
 })
 
+```
+
+```{r count_fix_per_bird}
+
 # check for fixes order of magnitude
 count(dataSummary, fixLog = floor(log10(fixes)))
 
 # count total number of fixes
 sum(dataSummary$fixes)
+```
 
+```{r get_tracking_duration}
 # get range of time as posixct
 diff(as.POSIXct(range(c(dataSummary$startTime, dataSummary$endTime)), origin = "1970-01-01", tz = "Europe/Berlin"))
+```
 
+```{r get_tracking_area}
 # get bounding box and convex hull area of the limits of the positions
 library(sf)
 
@@ -40,12 +56,18 @@ boundBox <- map(bounds$data, function(z){
 # area of the bounding box
 st_area(boundBox)
 
+# extent of the bounding box
+st_bbox(boundBox) %>% st_as_sfc() %>%  st_transform(4326)
+```
 
+```{r read_behavdata}
 # read in behavioural scores for release times
 behavData <- fread("../data2018/behavScores.csv")[,`:=`(Release_Date=as.POSIXct(Release_Date),
                                                         id=as.character(id))] %>% 
   as_tibble()
+```
 
+```{r count_transmit_fore_release}
 # how many transmitting before release
 dataSummary = inner_join(dataSummary, behavData) %>% 
   distinct(id, .keep_all = T)
@@ -58,21 +80,76 @@ recPrepFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names =
 recPrepData <- map_df(recPrepFiles, function(z){
   fread(z)[,.(startTime = min(time),
                endTime = max(time),
-               fixes = length(x)),by=id]
+               fixes = length(x)),by=list(id, tidalcycle)]
 })
 
-recPrepDataSummary <- recPrepData[,.(nFixesFilter=sum(N)),by=id]
-sum(recPrepData$nFixesFilter)
+# get number of fixes and days tracked
+recPrepDataSummary <- recPrepData %>% 
+  group_by(id) %>% 
+  mutate_at(vars(contains("Time")), list(~as.POSIXct(., origin = "1970-01-01"))) %>% 
+  summarise(fixes = sum(fixes), duration = (max(endTime) - min(startTime)))
 
-# get mean, sd of fixes per bird
-recPrepData %>% summarise_at(vars(nFixesFilter), 
-                             list(~mean(.), ~sd(.), ~min(.), ~max(.)))
+sum(recPrepData$fixes)
+```
 
+```{r get_relweek_wise_fixes}
 # get mean per release week
-recPrepData %>%
+dataSummary <- recPrepDataSummary %>%
   mutate(id = as.character(id)) %>% 
   inner_join(dataSummary %>% mutate(relWeek = week(Release_Date)) %>% 
                select(id, relWeek)) %>% 
   group_by(relWeek) %>% 
-  summarise_at(vars(nFixesFilter), 
-               list(~mean(.), ~sd(.), ~min(.), ~max(.), ~length(.)))
+  summarise_at(vars(fixes, duration), list(~mean(.), ~sd(.), ~min(.), ~max(.), ~length(.))) %>% 
+  mutate(fixesPerDay = fixes_mean/as.numeric(duration_mean))
+```
+
+```{r}
+dataSummary %>% 
+  summarise_at(vars(fixesPerDay), list(~mean(.), ~sd(.), ~min(.), ~max(.)))
+```
+
+
+```{r check_differences_fixperday}
+# use an anova
+summary(aov(fixesPerDay ~ relWeek, data = dataSummary))
+
+```
+
+```{r west_terschelling_harbour}
+# where is west terschelling
+# taken from wikipedia, which links to the correct location on OSM
+# https://tools.wmflabs.org/geohack/geohack.php?language=nl&params=53_021_039_N_5_012_056_E_type:city_scale:25000_region:NL&pagename=West-Terschelling
+
+terschelling <- c(5.215556, 53.360833) %>% 
+  st_point() %>% st_sfc() %>% `st_crs<-`(4326) %>% st_transform(32631)
+
+# read griend and find distance
+griend <- st_read("../griend_polygon/griend_polygon.shp")
+
+st_distance(terschelling, st_centroid(griend))
+```
+
+```{r ht_data}
+# when
+tides <- read_csv("../data2018/tidesSummer2018.csv") %>% filter(tide == "H")
+
+max(recPrepData$tidalcycle)
+```
+
+```{r tides_per_bird}
+# how many tides per id on average
+recPrepData %>% 
+  count(id, name = "tides") %>% 
+  summarise_at(vars(tides), list(~mean(.), ~sd(.), ~min(.), ~max(.)))
+
+```
+
+# distance and mcp stuff
+
+```{r read_dist_mcp}
+# read in data
+mcpArea <- fread("../data2018/oneHertzData/summary/dataMCParea.csv")
+
+# 
+```
+
