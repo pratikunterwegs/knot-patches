@@ -19,7 +19,7 @@ behavScores = dataExp %>%
 behavScores$Release_Date = as.POSIXct(paste(behavScores$Release_Date,
                                             behavScores$Release_Time,
                                             sep = " "),
-                                      format = "%d.%m.%y %H:%M:%S")
+                                      format = "%d.%m.%y %H:%M:%S", tz = "Europe/Berlin")
 
 # get mean of field and wadunit scores
 behavScores$exploreScore = behavScores %>% 
