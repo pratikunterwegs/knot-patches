@@ -58,6 +58,9 @@ st_area(boundBox)
 
 # extent of the bounding box
 st_bbox(boundBox) %>% st_as_sfc() %>%  st_transform(4326)
+
+# save bbox and send
+st_write(boundBox, dsn = "../data2018/spatials/boundbox", layer = "boundBoxCombo.shp", driver = "ESRI Shapefile")
 ```
 
 ```{r read_behavdata}
@@ -80,7 +83,11 @@ recPrepFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names =
 recPrepData <- map_df(recPrepFiles, function(z){
   fread(z)[,.(startTime = min(time),
                endTime = max(time),
-               fixes = length(x)),by=list(id, tidalcycle)]
+               fixes = length(x),
+              xmin = min(x),
+              ymin = min(y),
+              xmax = max(x),
+              ymax = max(y)),by=list(id, tidalcycle)]
 })
 
 # get number of fixes and days tracked
