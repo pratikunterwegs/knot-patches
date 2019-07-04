@@ -19,17 +19,12 @@ dataSummary <- map_df(dataFiles, function(z){
   setDF(fread(z)[,.(startTime = min(TIME),
               endTime = max(TIME),
               fixes = length(X),
-              xmin = min(X),
-              ymin = min(Y),
-              xmax = max(X),
-              ymax = max(Y),
               id = as.character(unique(TAG - 3.1001e10)))])
 })
 
 ```
 
 ```{r count_fix_per_bird}
-
 # check for fixes order of magnitude
 count(dataSummary, fixLog = floor(log10(fixes)))
 
@@ -40,27 +35,6 @@ sum(dataSummary$fixes)
 ```{r get_tracking_duration}
 # get range of time as posixct
 diff(as.POSIXct(range(c(dataSummary$startTime, dataSummary$endTime)), origin = "1970-01-01", tz = "Europe/Berlin"))
-```
-
-```{r get_tracking_area}
-# get bounding box and convex hull area of the limits of the positions
-library(sf)
-
-bounds <- dataSummary %>% group_by(id) %>% nest()
-boundBox <- map(bounds$data, function(z){
-  st_bbox(c(xmin = z$xmin, xmax = z$xmax, ymin = z$ymin, ymax = z$ymax), crs = 32631) %>% 
-    st_as_sfc()
-}) %>% reduce(c) %>% 
-  st_union()
-
-# area of the bounding box
-st_area(boundBox)
-
-# extent of the bounding box
-st_bbox(boundBox) %>% st_as_sfc() %>%  st_transform(4326)
-
-# save bbox and send
-st_write(boundBox, dsn = "../data2018/spatials/boundbox", layer = "boundBoxCombo.shp", driver = "ESRI Shapefile")
 ```
 
 ```{r read_behavdata}
@@ -83,13 +57,11 @@ recPrepFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names =
 recPrepData <- map_df(recPrepFiles, function(z){
   fread(z)[,.(startTime = min(time),
                endTime = max(time),
-               fixes = length(x),
-              xmin = min(x),
-              ymin = min(y),
-              xmax = max(x),
-              ymax = max(y)),by=list(id, tidalcycle)]
+               fixes = length(x)),by=list(id, tidalcycle)]
 })
+```
 
+```{r}
 # get number of fixes and days tracked
 recPrepDataSummary <- recPrepData %>% 
   group_by(id) %>% 
@@ -98,6 +70,14 @@ recPrepDataSummary <- recPrepData %>%
 
 sum(recPrepData$fixes)
 ```
+
+```{r track_area}
+# get tracking area
+boundPoly <- st_read("../data2018/spatials/newUnionPatches/unionPatches.shp")
+
+st_area(boundPoly)
+```
+
 
 ```{r get_relweek_wise_fixes}
 # get mean per release week
@@ -157,6 +137,10 @@ recPrepData %>%
 # read in data
 mcpArea <- fread("../data2018/oneHertzData/summary/dataMCParea.csv")
 
-# 
+# summarise mcp area and distance overall
+mcpArea %>% 
+  summarise_at(vars(totalDist, mcpArea),
+               list(~mean(.), ~sd(.), ~min(.), ~quantile(., probs = 0.95))) %>% 
+  mutate_at(vars(contains('mcp')), list(function(z){z/1000^2}))
 ```
 
