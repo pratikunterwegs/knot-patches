@@ -77,19 +77,35 @@ modsCoarseData <- modsCoarse %>% select(respVar, predModWioId) %>%
 # plot
 source("codePlotOptions/ggThemeGeese.r")
 
-ggplot(modsCoarseData)+
+# write a labeller
+coarseMetLabels <- c("mcpArea" = "MCP area (km²)",
+                     "totalDist" = "Total distance (km)")
+#panel_labels <- c("1" = "hibernate/migrate", "2" = "migrate/solitary_or_small_clusters")
+plotCoarseMetrics <- ggplot(modsCoarseData)+
   geom_pointrange(aes(x = exploreBin, y = empVal_mean,
                       ymin = empVal_mean - empVal_ci,
-                      ymax = empVal_mean + empVal_ci), size = 0.2)+
+                      ymax = empVal_mean + empVal_ci), size = 0.3)+
   geom_smooth(aes(x = exploreBin, y = predval_mean), 
               col = 1, method = "lm", fill = "grey80", lwd = 0.3)+
   
   scale_x_continuous(breaks = seq(-0.4, 1, 0.2))+
   
-  facet_wrap(~respVar, scales = "free_y")+
-  labs(x = "exploration score", y = bquote("mean ± 95% CI (km or km"^2~")"))+
-  themePubGeese()
-  
+  facet_rep_wrap(~respVar, scales = "free_y",
+                 labeller = labeller(respVar = coarseMetLabels),
+                 strip.position = "left")+
+  themePubGeese()+
+  theme(strip.placement = "outside", 
+        strip.background = element_blank(),
+        strip.text = element_text(face = "plain", hjust = 0.5))+
+  labs(y = NULL, x = "exploration score")
 
 # save plot
-ggsave(filename = "../figs/fig04coarseMetrics.pdf", height = 80/25.4, width = 180/25.4)
+
+
+{pdf(file = "../figs/fig04coarseMetrics.pdf", width = 180/25.4, height = 80/25.4)
+  
+  print(plotCoarseMetrics);
+  grid.text(c("a","b"), x = c(0.1, 0.575), y = 0.95, just = "left",
+            gp = gpar(fontface = "bold"), vp = NULL)
+  
+  dev.off()}
