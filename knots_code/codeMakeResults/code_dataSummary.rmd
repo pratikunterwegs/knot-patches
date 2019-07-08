@@ -133,6 +133,8 @@ recPrepData %>%
 
 # distance and mcp stuff
 
+**see `code_coarseMetStats.r` for model output**
+
 ```{r read_dist_mcp}
 # read in data
 mcpArea <- fread("../data2018/oneHertzData/summary/dataMCParea.csv")
@@ -142,5 +144,54 @@ mcpArea %>%
   summarise_at(vars(totalDist, mcpArea),
                list(~mean(.), ~sd(.), ~min(.), ~quantile(., probs = 0.95))) %>% 
   mutate_at(vars(contains('mcp')), list(function(z){z/1000^2}))
+```
+
+# patch metrics and explore score
+
+```{r load_patch_data etc}
+# read in patch data
+patches <- read_csv("../data2018/oneHertzData/summary/data2018patches.csv") 
+
+# read in behav scores
+behavScore <- read_csv("../data2018/behavScores.csv")
+
+# link behav score and patch size and area
+patches <- left_join(patches, behavScore, by= c("id"))
+```
+
+```{r basic_patch_stats}
+# nrow patches
+nrow(patches)
+
+# avg N patches
+patches %>% 
+  filter(nFixes > 0) %>% 
+  count(id, tidalcycle) %>% 
+  summarise_at(vars(n), list(~mean(.), ~sd(.), ~min(.), ~max(.), ~quantile(., probs = 0.95)))
+```
+
+```{r compare_scales}
+# compare large and small scale polygons
+comparePatches <- left_join(mcpArea,
+                            patches %>% group_by(id, tidalcycle) %>% 
+                              summarise_at(vars(nFixes, area), list(sum)))
+
+# get difference
+comparePatches %>% 
+  mutate(area = area/1e6, mcpArea = mcpArea/1e6,
+    areaRatio = (area/mcpArea)) %>% 
+  filter(!is.na(areaRatio), !is.infinite(areaRatio)) %>% 
+  summarise_at(vars(area, areaRatio), list(~mean(.), ~sd(.), ~min(.), ~max(.), ~quantile(., probs = 0.95)))
+```
+
+```{r summarise_metrics}
+# summarise patch metrics
+patches %>% 
+  select(nFixes, duration, distInPatch, distBwPatch,area) %>% 
+  drop_na() %>% 
+  gather(var, value) %>% 
+  group_by(var) %>% 
+  summarise_all(list(~mean(.), ~sd(.), ~min(.), ~max(.), ~quantile(., probs = 0.95, na.rm = T)))
+
 ```
 
