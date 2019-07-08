@@ -49,7 +49,7 @@ modsCoarse <- modsCoarse %>%
            data = z, na.action = na.omit)
     }))
 
-# get model predictions for explore score, holding fixes at mean
+# get model predictions for explore score,k
 # and no random effects
 modsCoarse <- modsCoarse %>% 
   mutate(
@@ -80,7 +80,9 @@ source("codePlotOptions/ggThemeGeese.r")
 # write a labeller
 coarseMetLabels <- c("mcpArea" = "MCP area (km²)",
                      "totalDist" = "Total distance (km)")
-#panel_labels <- c("1" = "hibernate/migrate", "2" = "migrate/solitary_or_small_clusters")
+
+
+# plot with panels
 plotCoarseMetrics <- ggplot(modsCoarseData)+
   geom_pointrange(aes(x = exploreBin, y = empVal_mean,
                       ymin = empVal_mean - empVal_ci,
