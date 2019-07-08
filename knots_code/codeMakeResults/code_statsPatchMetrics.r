@@ -88,7 +88,8 @@ dataPlt <- map(list(modsPatches1, modsPatches2), function(z){
     unnest() %>% 
     group_by(respvar, 
              explorebin = plyr::round_any(exploreScore, 0.2)) %>% 
-    mutate_at(vars(contains("duration")), list(~(./60))) %>% 
+    mutate(empval = ifelse(respvar == "duration", empval/60, empval),
+           predval = ifelse(respvar == "duration", predval/60, predval)) %>% 
     summarise_at(vars(empval, predval),
                  list(~mean(.), ~ci(.)))
 }) %>% 
@@ -155,8 +156,6 @@ plotPatchMetrics02 <-
 
 # arrange using grid arrange
 library(gridExtra)
-
-
 
 {pdf(file = "../figs/fig05patchMetrics.pdf", width = 180/25.4, height = 150/25.4)
   
