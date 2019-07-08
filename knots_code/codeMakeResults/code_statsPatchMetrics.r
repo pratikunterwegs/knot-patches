@@ -88,6 +88,7 @@ dataPlt <- map(list(modsPatches1, modsPatches2), function(z){
     unnest() %>% 
     group_by(respvar, 
              explorebin = plyr::round_any(exploreScore, 0.2)) %>% 
+    mutate_at(vars(contains("duration")), list(~(./60))) %>% 
     summarise_at(vars(empval, predval),
                  list(~mean(.), ~ci(.)))
 }) %>% 
@@ -101,7 +102,7 @@ source("codePlotOptions/ggThemeKnots.r")
 patchMetLabels <- c("area" = "Patch area (m²)",
                     "distInPatch" = "Dist. within patch (m)",
                     "distBwPatch" = "Dist. between patches (m)",
-                    "duration" = "Time in patch (mins)",
+                    "duration" = "Time in patch (mins.)",
                     "patchChanges" = "Patch changes")
 
 # plot with panels of three and two columns
