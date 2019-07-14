@@ -30,9 +30,10 @@ library(lme4)
 
 # prepare the data for both models at the same time
 modsCoarse <- data %>% 
-  select(totalDist, mcpArea, exploreScore, fixes = N, id, tidalcycle) %>% 
+  mutate(tidestage = factor(ifelse(between(tidaltime_mean, 4*60, 9*60), "lowTide", "highTide"))) %>% 
+  select(totalDist, mcpArea, exploreScore, fixes = N, id, tidalcycle, tidestage) %>% 
   drop_na() %>% 
-  gather(respVar, empVal, -exploreScore, -fixes, -id, -tidalcycle) %>% 
+  gather(respVar, empVal, -exploreScore, -fixes, -id, -tidalcycle, -tidestage) %>% 
   nest(-respVar)
 
 # add the model object as a new list column
@@ -40,7 +41,7 @@ modsCoarse <- modsCoarse %>%
   # run models with id as a random effect
   mutate(
     modelWithId = map(data, function(z){
-      lmer(empVal ~ exploreScore + log(fixes) + (1|id) + (1|tidalcycle), 
+      lmer(empVal ~ exploreScore + tidestage + log(fixes) + (1|id) + (1|tidalcycle), 
            data = z, na.action = na.omit)
     }),
     # run mods without id as random effect
@@ -65,7 +66,8 @@ modsCoarseData <- modsCoarse %>% select(respVar, predModWioId) %>%
   unnest() %>% 
   # now summarise by respVar and binned explore score
   group_by(respVar,
-           exploreBin = plyr::round_any(exploreScore, 0.2)) %>% 
+           exploreBin = plyr::round_any(exploreScore, 0.2),
+           tidestage) %>% 
   
   mutate(empVal = ifelse(respVar == "totalDist", empVal/1e3, empVal/1e6),
          predval = ifelse(respVar == "totalDist", predval/1e3, predval/1e6)) %>% 
@@ -86,11 +88,14 @@ coarseMetLabels <- c("mcpArea" = "MCP area (km²)",
 plotCoarseMetrics <- ggplot(modsCoarseData)+
   geom_pointrange(aes(x = exploreBin, y = empVal_mean,
                       ymin = empVal_mean - empVal_ci,
-                      ymax = empVal_mean + empVal_ci), size = 0.3)+
-  geom_smooth(aes(x = exploreBin, y = predval_mean), 
+                      ymax = empVal_mean + empVal_ci,
+                      shape = tidestage), size = 0.3)+
+  geom_smooth(aes(x = exploreBin, y = predval_mean, lty = tidestage), 
               col = 1, method = "lm", fill = "grey80", lwd = 0.3)+
   
   scale_x_continuous(breaks = seq(-0.4, 1, 0.2))+
+
+  scale_shape_manual(values = c(16, 15))+
   
   facet_rep_wrap(~respVar, scales = "free_y",
                  labeller = labeller(respVar = coarseMetLabels),
