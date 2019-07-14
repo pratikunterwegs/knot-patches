@@ -20,10 +20,11 @@ patches <- left_join(patches, behavScore, by= c("id"))
 #### prep for models ####
 # select patch duration, patch area, within patch distance,
 # between patch distance, number of patches
-modsPatches1 <- patches %>% 
-  select(duration, distInPatch, area, exploreScore, tidalcycle, nFixes,id) %>% 
+modsPatches1 <- patches %>%
+  mutate(tidestage = factor(ifelse(between(tidaltime_mean, 4*60, 9*60), "lowTide", "highTide"))) %>% 
+  select(duration, distInPatch, area, exploreScore, tidalcycle, nFixes,id, tidalstage) %>% 
   drop_na() %>% 
-  gather(respvar, empval, -exploreScore, -nFixes, -tidalcycle, -id) %>% 
+  gather(respvar, empval, -exploreScore, -nFixes, -tidalcycle, -tidestage, -id) %>% 
   nest(-respvar)
 
 # check data availability
@@ -34,7 +35,7 @@ library(lme4)
 # run models for within patch metrics
 modsPatches1 <- modsPatches1 %>% 
   mutate(model = map(data, function(z){
-    lmer(empval ~ exploreScore + log(nFixes) + (1|tidalcycle), data = z, na.action = na.omit)
+    lmer(empval ~ exploreScore + log(nFixes) + tidestage + (1|tidalcycle), data = z, na.action = na.omit)
   })) %>% 
   # get predictions with random effects and nfixes includes
   mutate(predMod = map2(model, data, function(a, b){
@@ -48,8 +49,9 @@ map(modsPatches1$model, car::Anova)
 
 #### code for between patch metrics ####
 dataBwPatches <- patches %>%
+  mutate(tidestage = factor(ifelse(between(tidaltime_mean, 4*60, 9*60), "lowTide", "highTide"))) %>%
   drop_na(exploreScore) %>% 
-  group_by(id, tidalcycle, exploreScore) %>% 
+  group_by(id, tidalcycle, tidestage, exploreScore) %>% 
   summarise(distBwPatch = mean(distBwPatch, na.rm = T),
             patchChanges = max(resPatch),
             nFixes = sum(nFixes))
@@ -57,7 +59,7 @@ dataBwPatches <- patches %>%
 # gather and run models
 modsPatches2 <- dataBwPatches %>%
   ungroup() %>% 
-  gather(respvar, empval, -exploreScore, -id, -tidalcycle, -nFixes) %>% 
+  gather(respvar, empval, -exploreScore, -id, -tidalcycle, -tidestage, -nFixes) %>% 
   nest(-respvar)
 
 # count available data
@@ -67,7 +69,7 @@ map(modsPatches2$data, function(z){length(unique(z$id))})
 # run model and get preds
 modsPatches2 <- modsPatches2 %>% 
   mutate(model = map(data, function(z){
-    lmer(empval ~ exploreScore + log(nFixes) + (1|tidalcycle), data = z, na.action = na.omit)
+    lmer(empval ~ exploreScore + log(nFixes) + tidestage + (1|tidalcycle), data = z, na.action = na.omit)
   })) %>% 
   # get predictions with random effects and nfixes includes
   mutate(predMod = map2(model, data, function(a, b){
