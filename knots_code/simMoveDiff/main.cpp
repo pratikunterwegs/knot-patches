@@ -1,3 +1,9 @@
+/*
+
+a simple random walk and levy flight simulation to examine
+variance partitioning in linear mixed models
+
+*/
 
 //include gsl for distributions
 #include <stdio.h>
