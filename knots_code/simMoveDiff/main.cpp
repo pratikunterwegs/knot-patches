@@ -87,7 +87,7 @@ int main(void)
             for(int i = 0; i < nAgents; i++)
             {
                 //confirm entry
-                std::cout << "time = " << time << " agent = " << i << endl;
+                //std::cout << "time = " << time << " agent = " << i << endl;
 
                 //dec a bernoulli distribution with probability centred on moveprob
                 std::bernoulli_distribution dBern (pop[i].moveProb);
