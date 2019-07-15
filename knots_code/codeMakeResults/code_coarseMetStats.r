@@ -23,6 +23,9 @@ recPrepData <- map_df(recPrepFiles, function(z){
 #save to file
 fwrite(recPrepData, "../data2018/data2018idTideCount.csv")
 
+# read in file
+recPrepData <- fread("../data2018/data2018idTideCount.csv")
+
 data <- merge(data, recPrepData, all = FALSE, no.dups = TRUE)
 
 #### run coarse scale area and distance models ####
@@ -30,7 +33,7 @@ library(lme4)
 
 # prepare the data for both models at the same time
 modsCoarse <- data %>% 
-  mutate(tidestage = factor(ifelse(between(tidaltime_mean, 4*60, 9*60), "lowTide", "highTide"))) %>% 
+  # mutate(tidestage = factor(ifelse(between(tidaltime_mean, 4*60, 9*60), "lowTide", "highTide"))) %>% 
   select(totalDist, mcpArea, exploreScore, fixes = N, id, tidalcycle, tidestage) %>% 
   drop_na() %>% 
   gather(respVar, empVal, -exploreScore, -fixes, -id, -tidalcycle, -tidestage) %>% 
@@ -88,9 +91,11 @@ coarseMetLabels <- c("mcpArea" = "MCP area (km²)",
 plotCoarseMetrics <- ggplot(modsCoarseData)+
   geom_pointrange(aes(x = exploreBin, y = empVal_mean,
                       ymin = empVal_mean - empVal_ci,
-                      ymax = empVal_mean + empVal_ci,
-                      shape = tidestage), size = 0.3)+
-  geom_smooth(aes(x = exploreBin, y = predval_mean, lty = tidestage), 
+                      ymax = empVal_mean + empVal_ci#,
+                      # shape = tidestage
+                      ), size = 0.3)+
+  geom_smooth(aes(x = exploreBin, y = predval_mean#, lty = tidestage
+                  ), 
               col = 1, method = "lm", fill = "grey80", lwd = 0.3)+
   
   scale_x_continuous(breaks = seq(-0.4, 1, 0.2))+
