@@ -67,3 +67,16 @@ modData <- dataSummary %>%
   # group by sim type and resp and nest, allows same model code on each df
   group_by(simtype, respvar) %>% 
   nest()
+
+# run model on each df
+library(lme4)
+modData <- modData %>%
+  mutate(model = map(data, function(df){
+    lmer(simval ~ log(fixes) + moveProb + (1|id) + (1|replicate), data=df)
+  }))
+
+# run model summary
+map(modData$model, summary)
+
+# also car anova
+map(modData$model, car::Anova)
