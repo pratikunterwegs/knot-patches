@@ -21,12 +21,16 @@ std::mt19937_64 rng;
 using namespace std;
 
 //system parameters
-const int nAgents = 200;
-const int tMax = 1e2;
-const int rep = 100;
+const int nAgents = 100;
+const int tMax = 1e3;
+const int repMax = 20;
+
+//levy flight params
+double alpha = 2.0; //exponent of the levy-skew distr
+double beta = 1.0; //skewness param
 
 //uniform distr of move probs and scales
-std::uniform_real_distribution<double> probPicker (0.f, 1.f);
+std::uniform_real_distribution<double> probPicker (0.0, 1.0);
 
 //class agent
 class agent
@@ -37,10 +41,10 @@ public:
     double moveProb = probPicker(rng);
 
     //dec levy movement params
-    double scale = static_cast<double>(moveProb * 10.0);
+    double scale = (moveProb * 5.0);
 };
 
-// make agent vec
+// make agent vec, remains constant over replicates, but not b/w sims
 std::vector<agent> pop (nAgents);
 
 //run sim and get data
@@ -67,41 +71,65 @@ int main(void)
     ofs << "replicate, time, id, moveProb, xRw, yRw, moveScale, xLf, yLf"
         << endl;
 
-    for(int time = 0; time < tMax; time++)
+    for (int rep = 0; rep < repMax; rep++)
     {
-        //get probabilistic movement
-        for(int i = 0; i < nAgents; i++)
+        // clear agent positions
+        for (int i = 0; i < nAgents; i++)
         {
-            //confirm entry
-            //std::cout << "time = " << time << " agent = " << i << endl;
-
-            //dec a bernoulli distribution with probability centred on moveprob
-            std::bernoulli_distribution dBern (pop[i].moveProb);
-
-            //random walk move or not? if move, update position
-            if (dBern(rng))
-            {
-                double dx, dy;
-                //pick a movement angle
-                gsl_ran_dir_2d(r, &dx, &dy);
-                pop[i].xRw += dx; pop[i].yRw += dy;
-            }
-
-            //write to file
-            ofs << 1 << ","
-                << time << ","
-                << i << ","
-                << pop[i].moveProb << ","
-                << pop[i].xRw << "," << pop[i].yRw
-                << pop[i].scale << ","
-                << pop[i].xLf << "," << pop[i].yLf
-                << endl;
+            pop[i].xRw = pop[i].yRw = pop[i].xLf = pop[i].yLf = 0.0;
         }
 
+        std::cout << "processing rep " << rep << endl;
+        for(int time = 0; time < tMax; time++)
+        {
+            std::cout << "rep = " << rep << " time = " << time << endl;
+            //get probabilistic movement
+            for(int i = 0; i < nAgents; i++)
+            {
+                //confirm entry
+                std::cout << "time = " << time << " agent = " << i << endl;
+
+                //dec a bernoulli distribution with probability centred on moveprob
+                std::bernoulli_distribution dBern (pop[i].moveProb);
+
+                //random walk move or not? if move, update position
+                if (dBern(rng))
+                {
+                    double dx, dy;
+                    //pick a movement angle
+                    gsl_ran_dir_2d(r, &dx, &dy);
+                    pop[i].xRw += dx; pop[i].yRw += dy;
+                }
+
+                //levy flight movement as x and y + dx dy
+                {
+                    // change in x and y, distances of x and y displacement
+                    double dx, dy, moveX, moveY;
+                    // select a direction
+                    gsl_ran_dir_2d(r, &dx, &dy);
+                    // get a levy movement distance
+                    moveX = gsl_ran_levy_skew(r, pop[i].scale, alpha, beta);
+                    moveY = gsl_ran_levy_skew(r, pop[i].scale, alpha, beta);
+                    pop[i].xLf += (dx*moveX); pop[i].yLf += (dy*moveY);
+
+                }
+
+                //write to file
+                ofs << rep << ","
+                    << time << ","
+                    << i << ","
+                    << pop[i].moveProb << ","
+                    << pop[i].xRw << "," << pop[i].yRw << ","
+                    << pop[i].scale << ","
+                    << pop[i].xLf << "," << pop[i].yLf
+                    << endl;
+            }
+
+        }
     }
-    //close ofs
-    ofs.close();
-    gsl_rng_free (r);
+        //close ofs
+        ofs.close();
+        gsl_rng_free (r);
 
     std::cout << "done with sims, move to R for analysis" << endl;
     return 0;
