@@ -1,7 +1,7 @@
 #### code for models ####
 
 library(data.table); library(tidyverse)
-library(lme4)
+library(lmerTest)
 
 # simple ci function
 ci = function(x){
@@ -158,7 +158,7 @@ plotPatchMetrics02 <-
 # arrange using grid arrange
 library(gridExtra)
 
-{pdf(file = "../figs/fig05patchMetrics.pdf", width = 180/25.4, height = 150/25.4)
+{pdf(file = "../figs/fig05patchMetrics.pdf", width = 180/25.4, height = 120/25.4)
   
   grid.arrange(plotPatchMetrics01, plotPatchMetrics02, nrow = 2,
                layout_matrix = matrix(c(1,1,1,1,1,1,NA,2,2,2,2,NA), nrow = 2, byrow = T));
