@@ -80,3 +80,65 @@ map(modData$model, summary)
 
 # also car anova
 map(modData$model, car::Anova)
+
+#### plot effect ####
+plotData <- dataSummary %>% 
+  # get a rounded move param
+  mutate(moveProb = plyr::round_any(moveProb, 0.1),
+         moveScale = plyr::round_any(moveScale, 0.5)) %>% 
+  # select vars and gather
+  select(moveProb, simtype, distance, area) %>% 
+  gather(respvar, simval, -simtype, -moveProb) %>% 
+  group_by(simtype, moveProb, respvar) %>%
+  summarise_all(list(~mean(.), ~ci(.)))
+
+# plot construction
+source("codePlotOptions/ggThemeGeese.r")
+library(ggplot2)
+library(scales)
+
+# write a pair of labellers
+respvarLabels <- c("area" = "MCP area (unit²)",
+                    "distance" = "Total distance (units)")
+
+simtypeLabels <- c("Lf" = "Levy flight",
+                   "Rw" = "Random walk")
+
+# reorder plot variables
+plotData <- mutate(plotData %>% ungroup(),
+                   simtype = factor(simtype, levels = c("Rw", "Lf")),
+                   respvar = factor(respvar, levels = c("distance", "area")))
+
+# make plot
+plotSimMetrics <- ggplot(plotData)+
+  geom_pointrange(aes(x= ifelse(simtype == "Lf", moveProb*5, moveProb), 
+                      y = mean,
+                      ymin = mean-ci, ymax = mean+ci,
+                      shape = simtype))+
+  # facet the metrics by sim type
+  facet_wrap(simtype~respvar, scales = "free",
+             switch = "y",
+             labeller = labeller(respvar = respvarLabels,
+                                 simtype = simtypeLabels))+
+  scale_shape_manual(values = c(16,15))+
+  
+  scale_y_continuous(label=comma)+
+  
+  themePubKnots()+
+  theme(strip.placement = "outside", 
+        strip.background = element_blank(),
+        strip.text = element_text(face = "plain", hjust = 0.5),
+        panel.spacing.y = unit(2, "lines"),
+        legend.position = "none")+
+  labs(x = "Movement parameter", y= NULL)
+
+# export plot
+{pdf(file = "../figs/figA01simMetrics.pdf", width = 180/25.4, height = 150/25.4)
+  
+  print(plotSimMetrics);
+  grid.text(c("a","b", "c", "d"), x = c(0.115, 0.6, 0.115, 0.6), y = c(0.95, 0.95, 0.5, 0.5), just = "left",
+            gp = gpar(fontface = "bold"), vp = NULL)
+  
+  dev.off()}
+
+# ends here
