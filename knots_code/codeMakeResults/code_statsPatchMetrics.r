@@ -168,3 +168,11 @@ library(gridExtra)
             gp = gpar(fontface = "bold"), vp = NULL)
   
   dev.off()}
+
+
+# write model output to text file
+{writeLines(R.utils::captureOutput(map(modsPatches1$model, summary)), 
+                                   con = "../data2018/textPatchMods1.txt")}
+
+{writeLines(R.utils::captureOutput(map(modsPatches2$model, summary)), 
+                                   con = "../data2018/textPatchMods2.txt")}
