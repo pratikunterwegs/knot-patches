@@ -1,7 +1,7 @@
 #### code for models ####
 
 library(data.table); library(tidyverse)
-library(lme4)
+library(lmerTest)
 
 # simple ci function
 ci = function(x){
@@ -29,27 +29,22 @@ recPrepData <- fread("../data2018/data2018idTideCount.csv")
 data <- merge(data, recPrepData, all = FALSE, no.dups = TRUE)
 
 #### run coarse scale area and distance models ####
-library(lme4)
-
 # prepare the data for both models at the same time
 modsCoarse <- data %>% 
   # mutate(tidestage = factor(ifelse(between(tidaltime_mean, 4*60, 9*60), "lowTide", "highTide"))) %>% 
-  select(totalDist, mcpArea, exploreScore, fixes = N, id, tidalcycle, tidestage) %>% 
+  select(totalDist, mcpArea, exploreScore, fixes = N, id, tidalcycle) %>% 
   drop_na() %>% 
-  gather(respVar, empVal, -exploreScore, -fixes, -id, -tidalcycle, -tidestage) %>% 
+  gather(respVar, empVal, -exploreScore, -fixes, -id, -tidalcycle) %>% 
   nest(-respVar)
 
 # add the model object as a new list column
+# can't use tidal cycle as a random effect because it causes singularities
+# ie, only one measure per combination of random effects
 modsCoarse <- modsCoarse %>% 
   # run models with id as a random effect
   mutate(
-    modelWithId = map(data, function(z){
-      lmer(empVal ~ exploreScore + tidestage + log(fixes) + (1|id) + (1|tidalcycle), 
-           data = z, na.action = na.omit)
-    }),
-    # run mods without id as random effect
-    modelWioId = map(data, function(z){
-      lmer(empVal ~ exploreScore + log(fixes) + (1|tidalcycle), 
+    model = map(data, function(z){
+      lmer(empVal ~ exploreScore + log(fixes) + (1|id), 
            data = z, na.action = na.omit)
     }))
 
@@ -58,19 +53,18 @@ modsCoarse <- modsCoarse %>%
 modsCoarse <- modsCoarse %>% 
   mutate(
     # for models without id
-    predModWioId = map2(modelWioId, data, function(a,b){
+    pred = map2(model, data, function(a,b){
       b %>% 
         mutate(predval = predict(a, type = "response", re.form = NULL))
     })
   )
 
 # unnest data for use and summarise
-modsCoarseData <- modsCoarse %>% select(respVar, predModWioId) %>% 
+modsCoarseData <- modsCoarse %>% select(respVar, pred) %>% 
   unnest() %>% 
   # now summarise by respVar and binned explore score
   group_by(respVar,
-           exploreBin = plyr::round_any(exploreScore, 0.2),
-           tidestage) %>% 
+           exploreBin = plyr::round_any(exploreScore, 0.2)) %>% 
   
   mutate(empVal = ifelse(respVar == "totalDist", empVal/1e3, empVal/1e6),
          predval = ifelse(respVar == "totalDist", predval/1e3, predval/1e6)) %>% 
@@ -80,7 +74,7 @@ modsCoarseData <- modsCoarse %>% select(respVar, predModWioId) %>%
                list(~mean(.), ~ci(.)))
 
 # plot
-source("codePlotOptions/ggThemeGeese.r")
+source("codePlotOptions/ggThemeKnots.r")
 
 # write a labeller
 coarseMetLabels <- c("mcpArea" = "MCP area (km²)",
@@ -102,10 +96,10 @@ plotCoarseMetrics <- ggplot(modsCoarseData)+
 
   scale_shape_manual(values = c(16, 15))+
   
-  facet_rep_wrap(~respVar, scales = "free_y",
+  facet_wrap(~respVar, scales = "free_y",
                  labeller = labeller(respVar = coarseMetLabels),
                  strip.position = "left")+
-  themePubGeese()+
+  themePubKnots()+
   theme(strip.placement = "outside", 
         strip.background = element_blank(),
         strip.text = element_text(face = "plain", hjust = 0.5))+
