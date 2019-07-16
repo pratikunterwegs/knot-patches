@@ -29,6 +29,38 @@ data <- fread("simMoveDiff/dataSimMoveDiff.csv") %>%
   select(-data) %>% 
   gather(sim, data, -id, -replicate, -moveProb, -moveScale)
 
+#### simulate explore score ####
+# simulated explore score is the log total distance moved by an individual in the first 10 timesteps of any one of the replicates
+scoredata <- data %>% 
+  mutate(scoredata = map(data, function(df){
+    head(df, 10)
+  })) %>% 
+  select(-data)
+
+# get sim explore score
+scoredata <- scoredata %>% 
+  mutate(simexscore = map_dbl(scoredata, function(df){
+    a = log10(sum(funcDistance(df), na.rm = T))
+    return(a)
+  })) %>% 
+  select(-scoredata)
+
+# get a single score out of each id
+scoredata <- scoredata %>% 
+  group_by(id, sim) %>% 
+  sample_n(1)
+
+# plot sim score against movement param
+ggplot(scoredata)+
+  geom_point(aes(moveProb, simexscore), size = 0.2)+
+  facet_wrap(~sim, scales = "free")+
+  theme_bw()+
+  scale_y_continuous(limits = c(0, 3))+
+  theme(panel.grid = element_blank(),
+        strip.background = element_blank())
+
+# set seed
+set.seed(0)
 # subsample data at 10 - 60% to mimic imperfect sampling  
 data <- data %>% 
   mutate_at(vars(data), list(~map(., function(df){
@@ -68,11 +100,26 @@ modData <- dataSummary %>%
   group_by(simtype, respvar) %>% 
   nest()
 
+# join simexscore to simdata by model
+modData <- modData %>% 
+  # statement conditional on the simulation type
+  mutate(data = ifelse(simtype == "Lf",
+                       map(data, function(df){
+                         inner_join(df, scoredata %>%
+                                      filter(sim == "Lf") %>% 
+                                      select(id, simexscore, sim))
+                       }),
+                       map(data, function(df){
+                         inner_join(df, scoredata %>% 
+                                      filter(sim == "Rw") %>% 
+                                      select(id, simexscore, sim))
+                       })))
+
 # run model on each df
 library(lme4)
 modData <- modData %>%
   mutate(model = map(data, function(df){
-    lmer(simval ~ log(fixes) + moveProb + (1|id) + (1|replicate), data=df)
+    lmer(simval ~ log(fixes) + simexscore + (1|id), data=df)
   }))
 
 # run model summary
@@ -82,18 +129,20 @@ map(modData$model, summary)
 map(modData$model, car::Anova)
 
 #### plot effect ####
-plotData <- dataSummary %>% 
+plotData <- dataSummary %>%
+  inner_join(scoredata) %>% 
   # get a rounded move param
-  mutate(moveProb = plyr::round_any(moveProb, 0.1),
-         moveScale = plyr::round_any(moveScale, 0.5)) %>% 
+  # mutate(moveProb = plyr::round_any(moveProb, 0.1),
+  #        moveScale = plyr::round_any(moveScale, 0.5)) %>% 
+  mutate(score = plyr::round_any(simexscore, 0.2)) %>% 
   # select vars and gather
-  select(moveProb, simtype, distance, area) %>% 
-  gather(respvar, simval, -simtype, -moveProb) %>% 
-  group_by(simtype, moveProb, respvar) %>%
+  select(score, simtype, distance, area) %>% 
+  gather(respvar, simval, -simtype, -score) %>% 
+  group_by(simtype, score, respvar) %>%
   summarise_all(list(~mean(.), ~ci(.)))
 
 # plot construction
-source("codePlotOptions/ggThemeGeese.r")
+source("codePlotOptions/ggThemeKnots.r")
 library(ggplot2)
 library(scales)
 
@@ -111,7 +160,7 @@ plotData <- mutate(plotData %>% ungroup(),
 
 # make plot
 plotSimMetrics <- ggplot(plotData)+
-  geom_pointrange(aes(x= ifelse(simtype == "Lf", moveProb*5, moveProb), 
+  geom_pointrange(aes(x= score, 
                       y = mean,
                       ymin = mean-ci, ymax = mean+ci,
                       shape = simtype))+
@@ -130,7 +179,7 @@ plotSimMetrics <- ggplot(plotData)+
         strip.text = element_text(face = "plain", hjust = 0.5),
         panel.spacing.y = unit(2, "lines"),
         legend.position = "none")+
-  labs(x = "Movement parameter", y= NULL)
+  labs(x = "Simulated exploration score", y= NULL)
 
 # export plot
 {pdf(file = "../figs/figA01simMetrics.pdf", width = 180/25.4, height = 150/25.4)
