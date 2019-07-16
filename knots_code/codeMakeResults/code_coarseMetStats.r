@@ -115,3 +115,8 @@ plotCoarseMetrics <- ggplot(modsCoarseData)+
             gp = gpar(fontface = "bold"), vp = NULL)
   
   dev.off()}
+
+# write model output to file
+# write model output to text file
+{writeLines(R.utils::captureOutput(map(modsCoarse$model, summary)), 
+            con = "../data2018/textCoarseMods.txt")}
