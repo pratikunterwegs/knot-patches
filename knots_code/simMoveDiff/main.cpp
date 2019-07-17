@@ -27,9 +27,9 @@ std::mt19937_64 rng;
 using namespace std;
 
 //system parameters
-const int nAgents = 100;
+const int nAgents = 150;
 const int tMax = 1e3;
-const int repMax = 20;
+const int repMax = 150;
 
 //levy flight params
 double alpha = 2.0; //exponent of the levy-skew distr
@@ -74,11 +74,15 @@ int main(void)
     std::cout << "opened output file..." << endl;
 
     //column names
-    ofs << "replicate, time, id, moveProb, xRw, yRw, moveScale, xLf, yLf"
+    ofs << "replicate, repEff, time, id, moveProb, xRw, yRw, moveScale, xLf, yLf"
         << endl;
 
     for (int rep = 0; rep < repMax; rep++)
     {
+        // create a replicate specific factor to scale movement
+        // this allows a true random effect of replicate
+        double repEff = probPicker(rng);
+
         // clear agent positions
         for (int i = 0; i < nAgents; i++)
         {
@@ -88,7 +92,7 @@ int main(void)
         std::cout << "processing rep " << rep << endl;
         for(int time = 0; time < tMax; time++)
         {
-            std::cout << "rep = " << rep << " time = " << time << endl;
+            // std::cout << "rep = " << rep << " time = " << time << endl;
             //get probabilistic movement
             for(int i = 0; i < nAgents; i++)
             {
@@ -104,7 +108,7 @@ int main(void)
                     double dx, dy;
                     //pick a movement angle
                     gsl_ran_dir_2d(r, &dx, &dy);
-                    pop[i].xRw += dx; pop[i].yRw += dy;
+                    pop[i].xRw += (dx*repEff); pop[i].yRw += (dy*repEff);
                 }
 
                 //levy flight movement as x and y + dx dy
@@ -116,12 +120,13 @@ int main(void)
                     // get a levy movement distance
                     moveX = gsl_ran_levy_skew(r, pop[i].scale, alpha, beta);
                     moveY = gsl_ran_levy_skew(r, pop[i].scale, alpha, beta);
-                    pop[i].xLf += (dx*moveX); pop[i].yLf += (dy*moveY);
+                    pop[i].xLf += (dx*moveX*repEff); pop[i].yLf += (dy*moveY*repEff);
 
                 }
 
                 //write to file
                 ofs << rep << ","
+                    << repEff << ","
                     << time << ","
                     << i << ","
                     << pop[i].moveProb << ","
