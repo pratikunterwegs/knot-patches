@@ -33,29 +33,44 @@ data <- fread("simMoveDiff/dataSimMoveDiff.csv") %>%
 # simulated explore score is the log total distance moved by an individual in the first 10 timesteps of any one of the replicates
 scoredata <- data %>% 
   mutate(scoredata = map(data, function(df){
-    head(df, 10)
+    head(df, 50)
   })) %>% 
   select(-data)
 
 # get sim explore score
 scoredata <- scoredata %>% 
-  mutate(simexscore = map_dbl(scoredata, function(df){
-    a = log10(sum(funcDistance(df), na.rm = T))
+  mutate(totalDist = map_dbl(scoredata, function(df){
+    a = (sum(funcDistance(df), na.rm = T))
     return(a)
   })) %>% 
   select(-scoredata)
 
-# get a single score out of each id
-scoredata <- scoredata %>% 
-  group_by(id, sim) %>% 
-  sample_n(1)
+# fit a rptR model to the data
+library(rptR)
+repMod = rpt(totalDist ~ sim + (1|id) + (1|replicate), 
+             grname = c("id", "replicate"), 
+             data = scoredata, datatype = "Gaussian", 
+             nboot = 100, npermut = 0)
+
+# get scores as scaled ranef on id
+scoredata$simexscore <- scales::rescale((ranef(repMod$mod)$id[,1]),
+                                        to = c(-1, 1))
+
+# plot unique simexscore as id
+library(ggplot2)
+scoredata %>% 
+  distinct(id, simexscore) %>% 
+  ggplot()+
+  stat_density(aes(x = simexscore), geom = "line")+
+  theme_bw()
 
 # plot sim score against movement param
 ggplot(scoredata)+
-  geom_point(aes(moveProb, simexscore), size = 0.2)+
+  geom_point(aes(x = ifelse(sim == "Rw", moveProb, moveScale), simexscore), size = 0.2)+
   facet_wrap(~sim, scales = "free")+
   theme_bw()+
-  scale_y_continuous(limits = c(0, 3))+
+  labs(x = "movement parameter", y = "estimated explore score")+
+#  scale_y_continuous(limits = c(0, 3))+
   theme(panel.grid = element_blank(),
         strip.background = element_blank())
 
@@ -115,8 +130,8 @@ modData <- modData %>%
                                       select(id, simexscore, sim))
                        })))
 
-# run model on each df
-library(lme4)
+# run model on each df using lmertest
+library(lmerTest)
 modData <- modData %>%
   mutate(model = map(data, function(df){
     lmer(simval ~ log(fixes) + simexscore + (1|id), data=df)
@@ -124,9 +139,6 @@ modData <- modData %>%
 
 # run model summary
 map(modData$model, summary)
-
-# also car anova
-map(modData$model, car::Anova)
 
 #### plot effect ####
 plotData <- dataSummary %>%
@@ -163,7 +175,7 @@ plotSimMetrics <- ggplot(plotData)+
   geom_pointrange(aes(x= score, 
                       y = mean,
                       ymin = mean-ci, ymax = mean+ci,
-                      shape = simtype))+
+                      shape = simtype), size = 0.2)+
   # facet the metrics by sim type
   facet_wrap(simtype~respvar, scales = "free",
              switch = "y",
@@ -182,7 +194,7 @@ plotSimMetrics <- ggplot(plotData)+
   labs(x = "Simulated exploration score", y= NULL)
 
 # export plot
-{pdf(file = "../figs/figA01simMetrics.pdf", width = 180/25.4, height = 150/25.4)
+{pdf(file = "../figs/figA01simMetrics.pdf", width = 150/25.4, height = 120/25.4)
   
   print(plotSimMetrics);
   grid.text(c("a","b", "c", "d"), x = c(0.115, 0.6, 0.115, 0.6), y = c(0.95, 0.95, 0.5, 0.5), just = "left",
