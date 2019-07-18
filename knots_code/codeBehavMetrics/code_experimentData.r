@@ -10,7 +10,8 @@ dataRanef = read_csv("../data2018/Selindb-ranef.csv") %>%
 # transformed explore
 dataTexpl = read_delim("../data2018/Selindb-updated_2019-07-17.csv", delim = ";") %>% 
   filter(trial == "F01") %>% 
-  rename("tExplScore" = "texpl")
+  rename("tExplScore" = "texpl") %>% 
+  mutate(tExplScore = as.numeric(tExplScore))
 
 # morphometric measures
 dataMorph = read_csv("../data2018/SelinDB.csv") %>% 
@@ -20,8 +21,12 @@ dataMorph = read_csv("../data2018/SelinDB.csv") %>%
 dataExp = inner_join(dataMorph, dataTag) %>% 
   inner_join(dataRanef) %>% inner_join(dataTexpl)
 
-# select col and save
-behavScores = select(dataExp, grp, condval)
+# get individual release times as posixct
+dataExp = dataExp %>% 
+  mutate(Release_Date = as.POSIXct(paste(Release_Date,
+                                         Release_Time,
+                                          sep = " "),
+                                    format = "%d.%m.%y %H:%M:%S", tz = "Europe/Berlin"))
 
 # export for use
-write_csv(behavScores, path = "../data2018/behavScoresRanef.csv")
+write_csv(dataExp, path = "../data2018/behavScoresRanef.csv")
