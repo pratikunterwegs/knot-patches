@@ -1,7 +1,7 @@
 #### code for models ####
 
 library(data.table); library(tidyverse)
-library(lme4)
+library(lmerTest)
 
 # simple ci function
 ci = function(x){
@@ -12,30 +12,41 @@ ci = function(x){
 patches <- read_csv("../data2018/oneHertzData/summary/data2018patches.csv") 
 
 # read in behav scores
-behavScore <- read_csv("../data2018/behavScores.csv")
+behavData <- read_csv("../data2018/behavScoresRanef.csv") %>% 
+  select(id, contains("Score"))
 
 # link behav score and patch size and area
-patches <- left_join(patches, behavScore, by= c("id"))
+patches <- left_join(patches, behavData, by= c("id"))
 
 #### prep for models ####
 # select patch duration, patch area, within patch distance,
 # between patch distance, number of patches
 modsPatches1 <- patches %>%
-  mutate(tidestage = factor(ifelse(between(tidaltime_mean, 4*60, 9*60), "lowTide", "highTide"))) %>% 
-  select(duration, distInPatch, area, exploreScore, tidalcycle, nFixes,id, tidalstage) %>% 
-  drop_na() %>% 
-  gather(respvar, empval, -exploreScore, -nFixes, -tidalcycle, -tidestage, -id) %>% 
-  nest(-respvar)
+  select(duration, distInPatch, area, contains("Score"), tidalcycle, nFixes,id) %>% 
+  drop_na() %>%
+  # make long for score type, either transformed or cond ranef
+  gather(scoreType, scoreval, -id, -tidalcycle, -duration, -distInPatch,
+         -area, -nFixes) %>% 
+  group_by(scoreType) %>% 
+  # split into two dfs
+  nest() %>% 
+  # in each df, split by response variable
+  mutate(data = map(data, function(df){
+    df %>% gather(respVar, respval, -scoreval, -nFixes, -id, -tidalcycle) %>%
+      nest(-respVar)
+  })) %>% 
+  # unnest one level
+  unnest()
+
 
 # check data availability
 map_int(modsPatches1$data, nrow)
 map(modsPatches1$data, function(z){length(unique(z$id))})
 
-library(lme4)
 # run models for within patch metrics
 modsPatches1 <- modsPatches1 %>% 
   mutate(model = map(data, function(z){
-    lmer(empval ~ exploreScore + log(nFixes) + tidestage + (1|tidalcycle), data = z, na.action = na.omit)
+    lmer(respval ~ scoreval + log(nFixes) + (1|id) + (1|tidalcycle), data = z, na.action = na.omit)
   })) %>% 
   # get predictions with random effects and nfixes includes
   mutate(predMod = map2(model, data, function(a, b){
