@@ -26,6 +26,9 @@ setDF(data)
 # read prepared data of positions per tidal cycle
 recPrepData <- fread("../data2018/data2018idTideCount.csv")
 
+# read in file
+recPrepData <- fread("../data2018/data2018idTideCount.csv")
+
 data <- merge(data, recPrepData, all = FALSE, no.dups = TRUE)
 
 # read and select behav scores
@@ -73,19 +76,18 @@ modsCoarse <- modsCoarse %>%
 modsCoarse <- modsCoarse %>% 
   mutate(
     # for models without id
-    predModWioId = map2(modelWioId, data, function(a,b){
+    pred = map2(model, data, function(a,b){
       b %>% 
         mutate(predval = predict(a, type = "response", re.form = NULL))
     })
   )
 
 # unnest data for use and summarise
-modsCoarseData <- modsCoarse %>% select(respVar, predModWioId) %>% 
+modsCoarseData <- modsCoarse %>% select(respVar, pred) %>% 
   unnest() %>% 
   # now summarise by respVar and binned explore score
   group_by(respVar,
-           exploreBin = plyr::round_any(exploreScore, 0.2),
-           tidestage) %>% 
+           exploreBin = plyr::round_any(exploreScore, 0.2)) %>% 
   
   mutate(empVal = ifelse(respVar == "totalDist", empVal/1e3, empVal/1e6),
          predval = ifelse(respVar == "totalDist", predval/1e3, predval/1e6)) %>% 
@@ -95,7 +97,7 @@ modsCoarseData <- modsCoarse %>% select(respVar, predModWioId) %>%
                list(~mean(.), ~ci(.)))
 
 # plot
-source("codePlotOptions/ggThemeGeese.r")
+source("codePlotOptions/ggThemeKnots.r")
 
 # write a labeller
 coarseMetLabels <- c("mcpArea" = "MCP area (km²)",
@@ -106,19 +108,21 @@ coarseMetLabels <- c("mcpArea" = "MCP area (km²)",
 plotCoarseMetrics <- ggplot(modsCoarseData)+
   geom_pointrange(aes(x = exploreBin, y = empVal_mean,
                       ymin = empVal_mean - empVal_ci,
-                      ymax = empVal_mean + empVal_ci,
-                      shape = tidestage), size = 0.3)+
-  geom_smooth(aes(x = exploreBin, y = predval_mean, lty = tidestage), 
+                      ymax = empVal_mean + empVal_ci#,
+                      # shape = tidestage
+                      ), size = 0.3)+
+  geom_smooth(aes(x = exploreBin, y = predval_mean#, lty = tidestage
+                  ), 
               col = 1, method = "lm", fill = "grey80", lwd = 0.3)+
   
   scale_x_continuous(breaks = seq(-0.4, 1, 0.2))+
 
   scale_shape_manual(values = c(16, 15))+
   
-  facet_rep_wrap(~respVar, scales = "free_y",
+  facet_wrap(~respVar, scales = "free_y",
                  labeller = labeller(respVar = coarseMetLabels),
                  strip.position = "left")+
-  themePubGeese()+
+  themePubKnots()+
   theme(strip.placement = "outside", 
         strip.background = element_blank(),
         strip.text = element_text(face = "plain", hjust = 0.5))+
@@ -134,3 +138,8 @@ plotCoarseMetrics <- ggplot(modsCoarseData)+
             gp = gpar(fontface = "bold"), vp = NULL)
   
   dev.off()}
+
+# write model output to file
+# write model output to text file
+{writeLines(R.utils::captureOutput(map(modsCoarse$model, summary)), 
+            con = "../data2018/textCoarseMods.txt")}

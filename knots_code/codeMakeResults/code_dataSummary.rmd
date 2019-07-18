@@ -156,7 +156,18 @@ patches <- read_csv("../data2018/oneHertzData/summary/data2018patches.csv")
 behavScore <- read_csv("../data2018/behavScores.csv")
 
 # link behav score and patch size and area
-patches <- left_join(patches, behavScore, by= c("id"))
+patches <- full_join(patches, behavScore, by= c("id"))
+
+# write to file a table of whether there is movement data and explore data or not
+useableData <- patches %>% 
+  group_by(id) %>% 
+  mutate(moveData = ifelse(!is.na(max(resPatch)), "yes", "no"),
+         exploreScore = ifelse(is.numeric(exploreScore) & !is.nan(exploreScore), "yes", "no")) %>% 
+  select(id, exploreScore, moveData) %>% 
+  distinct()
+
+# writing
+fwrite(useableData, file = "../data2018/data2018idsWithData.csv")
 ```
 
 ```{r basic_patch_stats}
