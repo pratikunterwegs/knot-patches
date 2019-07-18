@@ -31,7 +31,6 @@ for(i in 1:length(dataFiles)) {
   
 }
 
-
 #### assign tidal cycles ####
 tides <- read_csv("../data2018/tidesSummer2018.csv") %>% filter(tide == "H")
 
