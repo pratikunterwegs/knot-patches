@@ -1,7 +1,7 @@
 #### code for models ####
 
 library(data.table); library(tidyverse)
-library(lme4)
+library(lmerTest)
 
 # simple ci function
 ci = function(x){
