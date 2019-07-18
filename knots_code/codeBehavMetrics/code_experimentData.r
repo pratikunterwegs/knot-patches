@@ -1,35 +1,32 @@
 #### read experiment data and output clean behav scores ####
 
-library(tidyverse); library(readr)
+library(tidyverse)
 
 # read data
-dataExp = read_csv("../data2018/SelinDB.csv")
+# conditional rand effects
+dataRanef = read_csv("../data2018/Selindb-ranef.csv") %>% 
+  select(-grpvar, -term, FB = grp, ranefScore = condval, ranefSd = condsd)
 
-# keep cols and rename others
-colsToKeep = c("SEX","AGE","WING","BILL","TOTHD","TARS","MASS",
-               "gizzard_mass", "pectoral", "Release_Date", "Release_Time")
+# transformed explore
+dataTexpl = read_delim("../data2018/Selindb-updated_2019-07-17.csv", delim = ";") %>% 
+  filter(trial == "F01") %>% 
+  rename("tExplScore" = "texpl") %>% 
+  mutate(tExplScore = as.numeric(tExplScore))
 
-# subset data for  toa tags
-behavScores = dataExp %>% 
-  select(id = Toa_Tag, colsToKeep, contains("texpl"),
-        -contains("W0")) %>% 
-  filter(!is.na(id))
+# morphometric measures
+dataMorph = read_csv("../data2018/SelinDB.csv") %>% 
+  select(-contains("0"), FB = RINGNR, -X1, status = info, id = Toa_Tag)
 
-# convert release date to posixct
-behavScores$Release_Date = as.POSIXct(paste(behavScores$Release_Date,
-                                            behavScores$Release_Time,
-                                            sep = " "),
-                                      format = "%d.%m.%y %H:%M:%S", tz = "Europe/Berlin")
+# join data
+dataExp = inner_join(dataMorph, dataTag) %>% 
+  inner_join(dataRanef) %>% inner_join(dataTexpl)
 
-# get mean of field and wadunit scores
-behavScores$exploreScore = behavScores %>% 
-  select(contains("F0")) %>% 
-  apply(1, function(x) mean(x, na.rm = T))
-
-# remove field scores
-behavScores = select(behavScores, -contains("F0"))
+# get individual release times as posixct
+dataExp = dataExp %>% 
+  mutate(Release_Date = as.POSIXct(paste(Release_Date,
+                                         Release_Time,
+                                          sep = " "),
+                                    format = "%d.%m.%y %H:%M:%S", tz = "Europe/Berlin"))
 
 # export for use
-write_csv(behavScores, path = "../data2018/behavScores.csv")
-
-
+write_csv(dataExp, path = "../data2018/behavScoresRanef.csv")

@@ -68,17 +68,6 @@ fwrite(data, file = "../data2018/dataMCParea.csv")
 # read in behav scores
 behavScore <- read_csv("../data2018/behavScores.csv")
 
-# pot ops
-source("codePlotOptions/ggThemeKnots.r")
-
-# simple ci function
-ci = function(x){
-  qnorm(0.975)*sd(x, na.rm = T)/sqrt((length(x)))
-}
-
-# join explore score and area dist data
-data = inner_join(data, behavScore, by = "id")
-
 # write to file
 fwrite(data, file = "../data2018/dataMCParea.csv")
 

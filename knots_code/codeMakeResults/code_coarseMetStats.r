@@ -12,39 +12,62 @@ ci = function(x){
 data <- fread("../data2018/dataMCParea.csv")
 setDF(data)
 
-# read number of fixes
-recPrepFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)
+# # read number of fixes
+# recPrepFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)
+# 
+# # read in data and ask how many rows
+# recPrepData <- map_df(recPrepFiles, function(z){
+#   fread(z)[,.N,by=list(id, tidalcycle)]
+# })
+# 
+# #save to file
+# fwrite(recPrepData, "../data2018/data2018idTideCount.csv")
 
-# read in data and ask how many rows
-recPrepData <- map_df(recPrepFiles, function(z){
-  fread(z)[,.N,by=list(id, tidalcycle)]
-})
-
-#save to file
-fwrite(recPrepData, "../data2018/data2018idTideCount.csv")
+# read prepared data of positions per tidal cycle
+recPrepData <- fread("../data2018/data2018idTideCount.csv")
 
 # read in file
 recPrepData <- fread("../data2018/data2018idTideCount.csv")
 
 data <- merge(data, recPrepData, all = FALSE, no.dups = TRUE)
 
+# read and select behav scores
+behavData <- read_csv("../data2018/behavScoresRanef.csv") %>% 
+  select(id, contains("Score"))
+
+# join move metrics with behav datas
+data <- inner_join(data, behavData)
+
 #### run coarse scale area and distance models ####
 # prepare the data for both models at the same time
 modsCoarse <- data %>% 
-  # mutate(tidestage = factor(ifelse(between(tidaltime_mean, 4*60, 9*60), "lowTide", "highTide"))) %>% 
-  select(totalDist, mcpArea, exploreScore, fixes = N, id, tidalcycle) %>% 
-  drop_na() %>% 
-  gather(respVar, empVal, -exploreScore, -fixes, -id, -tidalcycle) %>% 
-  nest(-respVar)
+  # select cols
+  select(totalDist, mcpArea, contains("Score"), fixes = N, id, tidalcycle) %>% 
+  drop_na() %>%
+  # make long for score type, either transformed or cond ranef
+  gather(scoreType, scoreval, -id, -tidalcycle, -totalDist, -mcpArea, -fixes) %>% 
+  group_by(scoreType) %>% 
+  # split into two dfs
+  nest() %>% 
+  # in each df, split by response variable
+  mutate(data = map(data, function(df){
+    df %>% gather(respVar, respval, -scoreval, -fixes, -id, -tidalcycle) %>%
+    nest(-respVar)
+  })) %>% 
+  # unnest one level
+  unnest()
 
-# add the model object as a new list column
-# can't use tidal cycle as a random effect because it causes singularities
-# ie, only one measure per combination of random effects
+ # add the model object as a new list column
 modsCoarse <- modsCoarse %>% 
   # run models with id as a random effect
   mutate(
-    model = map(data, function(z){
-      lmer(empVal ~ exploreScore + log(fixes) + (1|id), 
+    modelWithId = map(data, function(z){
+      lmer(sqrt(respval) ~ scoreval + log(fixes) + (1|id) + (1|tidalcycle), 
+           data = z, na.action = na.omit)
+    }),
+    # run mods without id as random effect
+    modelWioId = map(data, function(z){
+      lmer(sqrt(respval) ~ scoreval + log(fixes) + (1|tidalcycle), 
            data = z, na.action = na.omit)
     }))
 
