@@ -15,7 +15,7 @@ ci = function(x){
 # read data and nest, separating into random walk and levy flight data frames
 data <- fread("simMoveDiff/dataSimMoveDiff.csv") %>% 
   setDF() %>% 
-  group_by(id, replicate, moveProb, moveScale) %>% nest() %>% 
+  group_by(id, replicate, repEff, moveProb, moveScale) %>% nest() %>% 
   # separate using select
   mutate(Rw = map(data, function(df){
     df %>% select(-matches(c("Lf"))) %>% rename("x" = "xRw", "y"="yRw") %>% 
