@@ -1,6 +1,6 @@
 **NB:** Data, if any generated or accessed, belong to GELIFES-RUG and COS-NIOZ and/or relevant members. See contact details.
 
-# Publication branch of Wadden Sea ATLAS project
+# Wadden Sea ATLAS project
 
 ## What?
 
