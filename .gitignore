@@ -11,11 +11,11 @@
 *.rdata
 
 # anything in the data folders
-data2017/
-data2018/
-data2019/
+data2017/*
+data2018/*
+data2019/*
 # except model output
-!data2018/*modOutput*
+!data2018/modOutput
 
 # any scripts that access data
 *data_func*

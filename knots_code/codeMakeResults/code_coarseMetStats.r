@@ -139,6 +139,11 @@ plotCoarseMetrics <- ggplot(modsCoarseData)+
   
   dev.off()}
 
+# make dir if absent
+if(!dir.exists("../data2018/modOutput/")){
+  dir.create("../data2018/modOutput/")
+}
+
 # write model output to text file
 {writeLines(R.utils::captureOutput(map(modsCoarse$modelWithId, summary)), 
-            con = "../data2018/textCoarseModsWithId.txt")}
+            con = "../data2018/modOutput/modOutputCoarseModsWithId.txt")}
