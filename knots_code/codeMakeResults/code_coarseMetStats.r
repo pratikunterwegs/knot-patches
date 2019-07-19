@@ -106,7 +106,6 @@ source("codePlotOptions/ggThemeKnots.r")
 coarseMetLabels <- c("mcpArea" = "MCP area (km²)",
                      "totalDist" = "Total distance (km)")
 
-
 # plot with panels
 plotCoarseMetrics <- ggplot(modsCoarseData)+
   geom_pointrange(aes(x = exploreBin, y = empVal_mean,
@@ -132,8 +131,6 @@ plotCoarseMetrics <- ggplot(modsCoarseData)+
   labs(y = NULL, x = "exploration score")
 
 # save plot
-
-
 {pdf(file = "../figs/fig04coarseMetrics.pdf", width = 180/25.4, height = 80/25.4)
   
   print(plotCoarseMetrics);
@@ -142,7 +139,6 @@ plotCoarseMetrics <- ggplot(modsCoarseData)+
   
   dev.off()}
 
-# write model output to file
 # write model output to text file
-{writeLines(R.utils::captureOutput(map(modsCoarse$model, summary)), 
-            con = "../data2018/textCoarseMods.txt")}
+{writeLines(R.utils::captureOutput(map(modsCoarse$modelWithId, summary)), 
+            con = "../data2018/textCoarseModsWithId.txt")}
