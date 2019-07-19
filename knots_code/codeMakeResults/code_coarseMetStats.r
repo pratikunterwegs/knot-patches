@@ -59,21 +59,27 @@ modsCoarse <- modsCoarse %>%
   # run models with id as a random effect
   mutate(
     modelWithId = map(data, function(z){
-      lmer(sqrt(respval) ~ scoreval + log(fixes) + (1|id) + (1|tidalcycle), 
+      lmer(sqrt(respval) ~ scoreval + (1|id) + (1|tidalcycle), 
            data = z, na.action = na.omit)
     }),
     # run mods without id as random effect
     modelWioId = map(data, function(z){
-      lmer(sqrt(respval) ~ scoreval + log(fixes) + (1|tidalcycle), 
+      lmer(sqrt(respval) ~ scoreval + (1|tidalcycle), 
            data = z, na.action = na.omit)
     }))
 
+# set model list object names for export
+library(glue)
+names(modsCoarse$modelWithId) <- glue("response = {modsCoarse$respVar} predictor = {modsCoarse$scoreType}")
+names(modsCoarse$modelWioId) <- names(modsCoarse$modelWithId)
+
+#### get model predictions ####
 # get model predictions for explore score,k
 # and no random effects
 modsCoarse <- modsCoarse %>% 
   mutate(
     # for models without id
-    pred = map2(model, data, function(a,b){
+    pred = map2(modelWithId, data, function(a,b){
       b %>% 
         mutate(predval = predict(a, type = "response", re.form = NULL))
     })
