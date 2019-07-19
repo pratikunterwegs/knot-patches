@@ -26,9 +26,6 @@ setDF(data)
 # read prepared data of positions per tidal cycle
 recPrepData <- fread("../data2018/data2018idTideCount.csv")
 
-# read in file
-recPrepData <- fread("../data2018/data2018idTideCount.csv")
-
 data <- merge(data, recPrepData, all = FALSE, no.dups = TRUE)
 
 # read and select behav scores
