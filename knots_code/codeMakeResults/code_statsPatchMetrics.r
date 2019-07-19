@@ -32,8 +32,8 @@ modsPatches1 <- patches %>%
   nest() %>% 
   # in each df, split by response variable
   mutate(data = map(data, function(df){
-    df %>% gather(respVar, respval, -scoreval, -nFixes, -id, -tidalcycle) %>%
-      nest(-respVar)
+    df %>% gather(respvar, respval, -scoreval, -nFixes, -id, -tidalcycle) %>%
+      nest(-respvar)
   })) %>% 
   # unnest one level
   unnest()
@@ -46,7 +46,7 @@ map(modsPatches1$data, function(z){length(unique(z$id))})
 # run models for within patch metrics
 modsPatches1 <- modsPatches1 %>% 
   mutate(model = map(data, function(z){
-    lmer(sqrt(respval) ~ scoreval + (1|id) + (1|tidalcycle), data = z, na.action = na.omit)
+    lmer(respval ~ scoreval + (1|id) + (1|tidalcycle), data = z, na.action = na.omit)
   })) %>% 
   # get predictions with random effects and nfixes includes
   mutate(predMod = map2(model, data, function(a, b){
@@ -55,7 +55,7 @@ modsPatches1 <- modsPatches1 %>%
   }))
 
 # assign names
-names(modsPatches1$model) <- glue("response = {modsPatches1$respVar} | predictor = {modsPatches1$scoreType}")
+names(modsPatches1$model) <- glue("response = {modsPatches1$respvar} | predictor = {modsPatches1$scoreType}")
 
 # code to get mod summary
 map(modsPatches1$model, summary)
@@ -73,7 +73,7 @@ dataBwPatches <- patches %>%
 # gather and run models
 modsPatches2 <- dataBwPatches %>%
   ungroup() %>% 
-  gather(respvar, empval, -tExplScore, -id, -tidalcycle, -nFixes) %>% 
+  gather(respvar, respval, -tExplScore, -id, -tidalcycle, -nFixes) %>% 
   nest(-respvar)
 
 # count available data
@@ -83,7 +83,7 @@ map(modsPatches2$data, function(z){length(unique(z$id))})
 # run model and get preds
 modsPatches2 <- modsPatches2 %>% 
   mutate(model = map(data, function(z){
-    lmer(sqrt(empval) ~ tExplScore + (1|id) + (1|tidalcycle), data = z, na.action = na.omit)
+    lmer(respval ~ tExplScore + (1|id) + (1|tidalcycle), data = z, na.action = na.omit)
   })) %>% 
   # get predictions with random effects and nfixes includes
   mutate(predMod = map2(model, data, function(a, b){
@@ -97,7 +97,30 @@ names(modsPatches2$model) <- glue("response = {modsPatches2$respvar} | predictor
 # see mod summaries
 map(modsPatches2$model, summary)
 
+#### write model output to file ####
+# make dir if absent
+if(!dir.exists("../data2018/modOutput/")){
+  dir.create("../data2018/modOutput/")
+}
+
+# write model output to text file
+{writeLines(R.utils::captureOutput(map(modsPatches1$model, summary)), 
+            con = "../data2018/modOutput/modOutPatchMods1.txt")}
+
+{writeLines(R.utils::captureOutput(map(modsPatches2$model, summary)), 
+            con = "../data2018/modOutput/modOutPatchMods2.txt")}
+
 #### section for plots ####
+# prep the within patch data for plotting
+modsPatches1 <- modsPatches1 %>% 
+  # choose only transformed explore score
+  filter(scoreType == "tExplScore") %>%
+  select(-scoreType) %>%
+  # rename all scoreval to tExplScore
+  mutate(predMod = map(predMod, function(df){
+    rename(df, tExplScore = scoreval)
+  }))
+
 # starting with within patch models
 dataPlt <- map(list(modsPatches1, modsPatches2), function(z){
   
@@ -105,16 +128,16 @@ dataPlt <- map(list(modsPatches1, modsPatches2), function(z){
     select(respvar, predMod) %>% 
     unnest() %>% 
     group_by(respvar, 
-             explorebin = plyr::round_any(exploreScore, 0.2)) %>% 
-    mutate(empval = ifelse(respvar == "duration", empval/60, empval),
+             explorebin = plyr::round_any(tExplScore, 0.1)) %>% 
+    mutate(respval = ifelse(respvar == "duration", respval/60, respval),
            predval = ifelse(respvar == "duration", predval/60, predval)) %>% 
-    summarise_at(vars(empval, predval),
+    summarise_at(vars(respval, predval),
                  list(~mean(.), ~ci(.)))
 }) %>% 
   bind_rows() %>% 
   ungroup()
 
-# plot
+#### plot figures ####
 source("codePlotOptions/ggThemeKnots.r")
 
 # write a labeller
@@ -132,12 +155,17 @@ ggplot(dataPlt %>%
          mutate(respvar = factor(respvar, levels = c("duration",
                                                      "distInPatch",
                                                      "area"))))+
-  geom_pointrange(aes(x = explorebin, y = empval_mean,
-                      ymin = empval_mean - empval_ci,
-                      ymax = empval_mean + empval_ci), size = 0.3)+
   
   geom_smooth(aes(x = explorebin, y = predval_mean), 
               col = 1, method = "lm", fill = "grey80", lwd = 0.3)+
+  
+  geom_pointrange(aes(x = explorebin, y = respval_mean,
+                      ymin = respval_mean - respval_ci,
+                      ymax = respval_mean + respval_ci), shape = 20,
+                  col = "grey40", size = 0.2)+
+  
+  
+  scale_y_continuous(labels = scales::comma)+
   
   scale_x_continuous(breaks = seq(-0.4, 1, 0.2))+
   
@@ -154,14 +182,18 @@ ggplot(dataPlt %>%
 plotPatchMetrics02 <-
   ggplot(dataPlt %>% 
            filter(respvar %in% c("distBwPatch", "patchChanges")))+
-  geom_pointrange(aes(x = explorebin, y = empval_mean,
-                      ymin = empval_mean - empval_ci,
-                      ymax = empval_mean + empval_ci), size = 0.3, shape = 15)+
   
   geom_smooth(aes(x = explorebin, y = predval_mean), 
               col = 1, method = "lm", fill = "grey80", lwd = 0.3)+
   
-  scale_x_continuous(breaks = seq(-0.4, 1, 0.2))+
+  geom_pointrange(aes(x = explorebin, y = respval_mean,
+                      ymin = respval_mean - respval_ci,
+                      ymax = respval_mean + respval_ci), 
+                  shape = 20, col = "grey40", size = 0.2)+
+  
+  scale_x_continuous(breaks = seq(0, 1, 0.2))+
+  
+#  coord_cartesian(xlim=c(0,1))+
   
   facet_wrap(~respvar, scales = "free",
              labeller = labeller(respvar = patchMetLabels),
@@ -186,15 +218,4 @@ library(gridExtra)
   
   dev.off()}
 
-#### write model output to file ####
-# make dir if absent
-if(!dir.exists("../data2018/modOutput/")){
-  dir.create("../data2018/modOutput/")
-}
 
-# write model output to text file
-{writeLines(R.utils::captureOutput(map(modsPatches1$model, summary)), 
-                                   con = "../data2018/modOutput/modOutPatchMods1.txt")}
-
-{writeLines(R.utils::captureOutput(map(modsPatches2$model, summary)), 
-                                   con = "../data2018/modOutput/modOutPatchMods2.txt")}
