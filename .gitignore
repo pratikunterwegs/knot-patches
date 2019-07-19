@@ -1,30 +1,46 @@
+# ignore changes to the following
+# and don't upload to github
+# any rproj or history files
 .Rproj.user
 *.Rhistory
 *.RData
 .Ruserdata
+
+# any csv or rdata
 *.csv
 *.rdata
 
+# anything in the data folders
 data2017/
 data2018/
 data2019/
-*data_func*
+# except model output
+!data2018/*modOutput*
 
+# any scripts that access data
+*data_func*
 *scripts_allert*
 
+# any movies
 *.mp4
 
+# image files that can be modified easily
 *.docx
 *.eps
 *.svg
 
+# any zip files
 *.zip
 
+# anything to do with visual studio
 .vscode/
 .vs/
 
+# any unnamed rplots
 *Rplots*
 
+# any html files
 *.html
 
+# the presentation folder
 presentation/
