@@ -147,3 +147,6 @@ if(!dir.exists("../data2018/modOutput/")){
 # write model output to text file
 {writeLines(R.utils::captureOutput(map(modsCoarse$modelWithId, summary)), 
             con = "../data2018/modOutput/modOutputCoarseModsWithId.txt")}
+
+{writeLines(R.utils::captureOutput(map(modsCoarse$modelWioId, summary)), 
+            con = "../data2018/modOutput/modOutputCoarseModsWioId.txt")}
