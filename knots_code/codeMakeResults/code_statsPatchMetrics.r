@@ -83,7 +83,7 @@ map(modsPatches2$data, function(z){length(unique(z$id))})
 # run model and get preds
 modsPatches2 <- modsPatches2 %>% 
   mutate(model = map(data, function(z){
-    lmer(empval ~ exploreScore + log(nFixes) + (1|id) + (1|tidalcycle), data = z, na.action = na.omit)
+    lmer(sqrt(empval) ~ tExplScore + (1|id) + (1|tidalcycle), data = z, na.action = na.omit)
   })) %>% 
   # get predictions with random effects and nfixes includes
   mutate(predMod = map2(model, data, function(a, b){
@@ -91,9 +91,11 @@ modsPatches2 <- modsPatches2 %>%
       mutate(predval = predict(a, type = "response", re.form = NULL))
   }))
 
+# assign names
+names(modsPatches2$model) <- glue("response = {modsPatches2$respvar} | predictor = tExplScore")
+
 # see mod summaries
 map(modsPatches2$model, summary)
-map(modsPatches2$model, car::Anova)
 
 #### section for plots ####
 # starting with within patch models
