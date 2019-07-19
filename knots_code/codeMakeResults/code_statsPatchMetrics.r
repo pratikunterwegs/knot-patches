@@ -42,10 +42,11 @@ modsPatches1 <- patches %>%
 map_int(modsPatches1$data, nrow)
 map(modsPatches1$data, function(z){length(unique(z$id))})
 
+### models for within patch metrics ####
 # run models for within patch metrics
 modsPatches1 <- modsPatches1 %>% 
   mutate(model = map(data, function(z){
-    lmer(respval ~ scoreval + log(nFixes) + (1|id) + (1|tidalcycle), data = z, na.action = na.omit)
+    lmer(sqrt(respval) ~ scoreval + (1|id) + (1|tidalcycle), data = z, na.action = na.omit)
   })) %>% 
   # get predictions with random effects and nfixes includes
   mutate(predMod = map2(model, data, function(a, b){
@@ -53,15 +54,18 @@ modsPatches1 <- modsPatches1 %>%
       mutate(predval = predict(a, type = "response", re.form = NULL))
   }))
 
+# assign names
+names(modsPatches1$model) <- glue("response = {modsPatches1$respVar} | predictor = {modsPatches1$scoreType}")
+
 # code to get mod summary
 map(modsPatches1$model, summary)
-map(modsPatches1$model, car::Anova)
 
-#### code for between patch metrics ####
+#### models for between patch metrics ####
+# hereon, we use only the transformed exploration score
 dataBwPatches <- patches %>%
   # mutate(tidestage = factor(ifelse(between(tidaltime_mean, 4*60, 9*60), "lowTide", "highTide"))) %>%
-  drop_na(exploreScore) %>% 
-  group_by(id, tidalcycle, exploreScore) %>% 
+  drop_na(tExplScore) %>% 
+  group_by(id, tidalcycle, tExplScore) %>% 
   summarise(distBwPatch = mean(distBwPatch, na.rm = T),
             patchChanges = max(resPatch),
             nFixes = sum(nFixes))
@@ -69,7 +73,7 @@ dataBwPatches <- patches %>%
 # gather and run models
 modsPatches2 <- dataBwPatches %>%
   ungroup() %>% 
-  gather(respvar, empval, -exploreScore, -id, -tidalcycle, -nFixes) %>% 
+  gather(respvar, empval, -tExplScore, -id, -tidalcycle, -nFixes) %>% 
   nest(-respvar)
 
 # count available data
@@ -79,7 +83,7 @@ map(modsPatches2$data, function(z){length(unique(z$id))})
 # run model and get preds
 modsPatches2 <- modsPatches2 %>% 
   mutate(model = map(data, function(z){
-    lmer(empval ~ exploreScore + log(nFixes) + (1|id) + (1|tidalcycle), data = z, na.action = na.omit)
+    lmer(sqrt(empval) ~ tExplScore + (1|id) + (1|tidalcycle), data = z, na.action = na.omit)
   })) %>% 
   # get predictions with random effects and nfixes includes
   mutate(predMod = map2(model, data, function(a, b){
@@ -87,9 +91,11 @@ modsPatches2 <- modsPatches2 %>%
       mutate(predval = predict(a, type = "response", re.form = NULL))
   }))
 
+# assign names
+names(modsPatches2$model) <- glue("response = {modsPatches2$respvar} | predictor = tExplScore")
+
 # see mod summaries
 map(modsPatches2$model, summary)
-map(modsPatches2$model, car::Anova)
 
 #### section for plots ####
 # starting with within patch models
@@ -180,10 +186,15 @@ library(gridExtra)
   
   dev.off()}
 
+#### write model output to file ####
+# make dir if absent
+if(!dir.exists("../data2018/modOutput/")){
+  dir.create("../data2018/modOutput/")
+}
 
 # write model output to text file
 {writeLines(R.utils::captureOutput(map(modsPatches1$model, summary)), 
-                                   con = "../data2018/textPatchMods1.txt")}
+                                   con = "../data2018/modOutput/modOutPatchMods1.txt")}
 
 {writeLines(R.utils::captureOutput(map(modsPatches2$model, summary)), 
-                                   con = "../data2018/textPatchMods2.txt")}
+                                   con = "../data2018/modOutput/modOutPatchMods2.txt")}

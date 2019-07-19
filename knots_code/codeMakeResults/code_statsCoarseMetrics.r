@@ -26,9 +26,6 @@ setDF(data)
 # read prepared data of positions per tidal cycle
 recPrepData <- fread("../data2018/data2018idTideCount.csv")
 
-# read in file
-recPrepData <- fread("../data2018/data2018idTideCount.csv")
-
 data <- merge(data, recPrepData, all = FALSE, no.dups = TRUE)
 
 # read and select behav scores
@@ -62,21 +59,27 @@ modsCoarse <- modsCoarse %>%
   # run models with id as a random effect
   mutate(
     modelWithId = map(data, function(z){
-      lmer(sqrt(respval) ~ scoreval + log(fixes) + (1|id) + (1|tidalcycle), 
+      lmer(sqrt(respval) ~ scoreval + (1|id) + (1|tidalcycle), 
            data = z, na.action = na.omit)
     }),
     # run mods without id as random effect
     modelWioId = map(data, function(z){
-      lmer(sqrt(respval) ~ scoreval + log(fixes) + (1|tidalcycle), 
+      lmer(sqrt(respval) ~ scoreval + (1|tidalcycle), 
            data = z, na.action = na.omit)
     }))
 
+# set model list object names for export
+library(glue)
+names(modsCoarse$modelWithId) <- glue("response = {modsCoarse$respVar} predictor = {modsCoarse$scoreType}")
+names(modsCoarse$modelWioId) <- names(modsCoarse$modelWithId)
+
+#### get model predictions ####
 # get model predictions for explore score,k
 # and no random effects
 modsCoarse <- modsCoarse %>% 
   mutate(
     # for models without id
-    pred = map2(model, data, function(a,b){
+    pred = map2(modelWithId, data, function(a,b){
       b %>% 
         mutate(predval = predict(a, type = "response", re.form = NULL))
     })
@@ -103,7 +106,6 @@ source("codePlotOptions/ggThemeKnots.r")
 coarseMetLabels <- c("mcpArea" = "MCP area (km²)",
                      "totalDist" = "Total distance (km)")
 
-
 # plot with panels
 plotCoarseMetrics <- ggplot(modsCoarseData)+
   geom_pointrange(aes(x = exploreBin, y = empVal_mean,
@@ -129,8 +131,6 @@ plotCoarseMetrics <- ggplot(modsCoarseData)+
   labs(y = NULL, x = "exploration score")
 
 # save plot
-
-
 {pdf(file = "../figs/fig04coarseMetrics.pdf", width = 180/25.4, height = 80/25.4)
   
   print(plotCoarseMetrics);
@@ -139,7 +139,14 @@ plotCoarseMetrics <- ggplot(modsCoarseData)+
   
   dev.off()}
 
-# write model output to file
+# make dir if absent
+if(!dir.exists("../data2018/modOutput/")){
+  dir.create("../data2018/modOutput/")
+}
+
 # write model output to text file
-{writeLines(R.utils::captureOutput(map(modsCoarse$model, summary)), 
-            con = "../data2018/textCoarseMods.txt")}
+{writeLines(R.utils::captureOutput(map(modsCoarse$modelWithId, summary)), 
+            con = "../data2018/modOutput/modOutputCoarseModsWithId.txt")}
+
+{writeLines(R.utils::captureOutput(map(modsCoarse$modelWioId, summary)), 
+            con = "../data2018/modOutput/modOutputCoarseModsWioId.txt")}
