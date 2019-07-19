@@ -59,12 +59,12 @@ modsCoarse <- modsCoarse %>%
   # run models with id as a random effect
   mutate(
     modelWithId = map(data, function(z){
-      lmer(sqrt(respval) ~ scoreval + (1|id) + (1|tidalcycle), 
+      lmer(respval ~ scoreval + (1|id) + (1|tidalcycle), 
            data = z, na.action = na.omit)
     }),
     # run mods without id as random effect
     modelWioId = map(data, function(z){
-      lmer(sqrt(respval) ~ scoreval + (1|tidalcycle), 
+      lmer(respval ~ scoreval + (1|tidalcycle), 
            data = z, na.action = na.omit)
     }))
 
@@ -72,6 +72,18 @@ modsCoarse <- modsCoarse %>%
 library(glue)
 names(modsCoarse$modelWithId) <- glue("response = {modsCoarse$respVar} predictor = {modsCoarse$scoreType}")
 names(modsCoarse$modelWioId) <- names(modsCoarse$modelWithId)
+
+# make dir if absent
+if(!dir.exists("../data2018/modOutput/")){
+  dir.create("../data2018/modOutput/")
+}
+
+# write model output to text file
+{writeLines(R.utils::captureOutput(map(modsCoarse$modelWithId, summary)), 
+            con = "../data2018/modOutput/modOutputCoarseModsWithId.txt")}
+
+{writeLines(R.utils::captureOutput(map(modsCoarse$modelWioId, summary)), 
+            con = "../data2018/modOutput/modOutputCoarseModsWioId.txt")}
 
 #### get model predictions ####
 # get model predictions for explore score,k
@@ -86,17 +98,19 @@ modsCoarse <- modsCoarse %>%
   )
 
 # unnest data for use and summarise
-modsCoarseData <- modsCoarse %>% select(respVar, pred) %>% 
+modsCoarseData <- modsCoarse %>% 
+  filter(scoreType == "tExplScore") %>% 
+  select(respVar, pred, -scoreType) %>% 
   unnest() %>% 
   # now summarise by respVar and binned explore score
   group_by(respVar,
-           exploreBin = plyr::round_any(exploreScore, 0.2)) %>% 
+           exploreBin = plyr::round_any(scoreval, 0.1)) %>% 
   
-  mutate(empVal = ifelse(respVar == "totalDist", empVal/1e3, empVal/1e6),
-         predval = ifelse(respVar == "totalDist", predval/1e3, predval/1e6)) %>% 
+  mutate(respval = ifelse(respVar == "totalDist", respval/1e3, respval/1e6),
+         predval = ifelse(respVar == "totalDist", predval/1e3, predval/1e6)) %>%
   
   # get mean and ci for plots
-  summarise_at(vars(empVal, predval),
+  summarise_at(vars(respval, predval),
                list(~mean(.), ~ci(.)))
 
 # plot
@@ -108,14 +122,15 @@ coarseMetLabels <- c("mcpArea" = "MCP area (km²)",
 
 # plot with panels
 plotCoarseMetrics <- ggplot(modsCoarseData)+
-  geom_pointrange(aes(x = exploreBin, y = empVal_mean,
-                      ymin = empVal_mean - empVal_ci,
-                      ymax = empVal_mean + empVal_ci#,
-                      # shape = tidestage
-                      ), size = 0.3)+
+  
   geom_smooth(aes(x = exploreBin, y = predval_mean#, lty = tidestage
                   ), 
               col = 1, method = "lm", fill = "grey80", lwd = 0.3)+
+  geom_pointrange(aes(x = exploreBin, y = respval_mean,
+                      ymin = respval_mean - respval_ci,
+                      ymax = respval_mean + respval_ci#,
+                      # shape = tidestage
+  ), size = 0.3, col = "grey40", shape = 20)+
   
   scale_x_continuous(breaks = seq(-0.4, 1, 0.2))+
 
@@ -128,10 +143,10 @@ plotCoarseMetrics <- ggplot(modsCoarseData)+
   theme(strip.placement = "outside", 
         strip.background = element_blank(),
         strip.text = element_text(face = "plain", hjust = 0.5))+
-  labs(y = NULL, x = "exploration score")
+  labs(y = NULL, x = "Exploration score")
 
 # save plot
-{pdf(file = "../figs/fig04coarseMetrics.pdf", width = 180/25.4, height = 80/25.4)
+{pdf(file = "../figs/fig04coarseMetrics.pdf", width = 120/25.4, height = 60/25.4)
   
   print(plotCoarseMetrics);
   grid.text(c("a","b"), x = c(0.1, 0.575), y = 0.95, just = "left",
@@ -139,14 +154,4 @@ plotCoarseMetrics <- ggplot(modsCoarseData)+
   
   dev.off()}
 
-# make dir if absent
-if(!dir.exists("../data2018/modOutput/")){
-  dir.create("../data2018/modOutput/")
-}
-
-# write model output to text file
-{writeLines(R.utils::captureOutput(map(modsCoarse$modelWithId, summary)), 
-            con = "../data2018/modOutput/modOutputCoarseModsWithId.txt")}
-
-{writeLines(R.utils::captureOutput(map(modsCoarse$modelWioId, summary)), 
-            con = "../data2018/modOutput/modOutputCoarseModsWioId.txt")}
+# end here
