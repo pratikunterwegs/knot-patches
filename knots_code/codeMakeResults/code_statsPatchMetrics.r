@@ -186,10 +186,15 @@ library(gridExtra)
   
   dev.off()}
 
+#### write model output to file ####
+# make dir if absent
+if(!dir.exists("../data2018/modOutput/")){
+  dir.create("../data2018/modOutput/")
+}
 
 # write model output to text file
 {writeLines(R.utils::captureOutput(map(modsPatches1$model, summary)), 
-                                   con = "../data2018/textPatchMods1.txt")}
+                                   con = "../data2018/modOutput/modOutPatchMods1.txt")}
 
 {writeLines(R.utils::captureOutput(map(modsPatches2$model, summary)), 
-                                   con = "../data2018/textPatchMods2.txt")}
+                                   con = "../data2018/modOutput/modOutPatchMods2.txt")}
