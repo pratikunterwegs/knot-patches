@@ -1,70 +1,31 @@
-$`response = distBwPatch | predictor = tExplScore`
-Linear mixed model fit by REML. t-tests use
-  Satterthwaite's method [lmerModLmerTest]
-Formula: 
-respval ~ tExplScore + (1 | id) + (1 | tidalcycle)
-   Data: z
-
-REML criterion at convergence: 55796
-
-Scaled residuals: 
-    Min      1Q  Median      3Q     Max 
--3.4360 -0.3305 -0.1157  0.0792 16.5468 
-
-Random effects:
- Groups     Name        Variance Std.Dev.
- tidalcycle (Intercept) 127964   357.7   
- id         (Intercept)  72753   269.7   
- Residual               486234   697.3   
-Number of obs: 3480, groups:  tidalcycle, 130; id, 65
-
-Fixed effects:
-            Estimate Std. Error      df t value
-(Intercept)   621.40      97.43   60.95   6.378
-tExplScore   -176.03     154.55   46.99  -1.139
-            Pr(>|t|)    
-(Intercept) 2.69e-08 ***
-tExplScore      0.26    
----
-Signif. codes:  
-0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-Correlation of Fixed Effects:
-           (Intr)
-tExplScore -0.858
-
 $`response = patchChanges | predictor = tExplScore`
-Linear mixed model fit by REML. t-tests use
-  Satterthwaite's method [lmerModLmerTest]
-Formula: 
-respval ~ tExplScore + (1 | id) + (1 | tidalcycle)
+Linear mixed model fit by REML. t-tests use Satterthwaite's method [lmerModLmerTest
+]
+Formula: respval ~ tExplScore + tidestage + (1 | tidalcycle)
    Data: z
 
-REML criterion at convergence: 40713.1
+REML criterion at convergence: 71175.8
 
 Scaled residuals: 
     Min      1Q  Median      3Q     Max 
--1.8935 -0.6042 -0.2008  0.3477  8.4317 
+-2.2374 -0.5889 -0.2235  0.3283  9.4854 
 
 Random effects:
  Groups     Name        Variance Std.Dev.
- tidalcycle (Intercept) 1056     32.50   
- id         (Intercept) 1192     34.52   
- Residual               6427     80.17   
-Number of obs: 3480, groups:  tidalcycle, 130; id, 65
+ tidalcycle (Intercept)  728.5   26.99   
+ Residual               5627.8   75.02   
+Number of obs: 6185, groups:  tidalcycle, 121
 
 Fixed effects:
-            Estimate Std. Error    df t value
-(Intercept)    47.96      11.91 68.21   4.028
-tExplScore     50.50      19.44 57.83   2.598
-            Pr(>|t|)    
-(Intercept) 0.000144 ***
-tExplScore  0.011881 *  
+             Estimate Std. Error       df t value Pr(>|t|)    
+(Intercept)    85.230      3.597  353.173  23.694  < 2e-16 ***
+tExplScore     25.791      3.989 6082.946   6.465 1.09e-10 ***
+tidestagelow  -39.209      1.908 6063.147 -20.546  < 2e-16 ***
 ---
-Signif. codes:  
-0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 Correlation of Fixed Effects:
-           (Intr)
-tExplScore -0.881
+            (Intr) tExplS
+tExplScore  -0.603       
+tidestagelw -0.262 -0.001
 
