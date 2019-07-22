@@ -9,7 +9,12 @@ ci = function(x){
 
 #### load data ####
 # read in patch data
-patches <- read_csv("../data2018/oneHertzData/summary/data2018patches.csv") 
+patches <- read_csv("../data2018/oneHertzData/summary/data2018patches.csv")
+
+# keep only ids with 5 or more patches per tidal cycle
+patches <- patches %>% group_by(id, tidalcycle) %>% 
+  mutate(toKeep = max(resPatch) > 5) %>% 
+  filter(toKeep == T) %>% select(-toKeep)
 
 # read in behav scores
 behavData <- read_csv("../data2018/behavScoresRanef.csv") %>% 
@@ -22,17 +27,22 @@ patches <- left_join(patches, behavData, by= c("id"))
 # select patch duration, patch area, within patch distance,
 # between patch distance, number of patches
 modsPatches1 <- patches %>%
-  select(duration, distInPatch, area, contains("Score"), tidalcycle, nFixes,id) %>% 
+  # get a predictor for tidal time, a sine transform to be cyclic
+  mutate(tidestage = as.factor(ifelse(between(tidaltime_mean, 
+                                              4*60, 9*60), "low", "high"))) %>% 
+  select(duration, distInPatch, distBwPatch, area, tidestage, # responses
+         contains("Score"), tidalcycle, nFixes,id) %>% # predictors
   drop_na() %>%
   # make long for score type, either transformed or cond ranef
-  gather(scoreType, scoreval, -id, -tidalcycle, -duration, -distInPatch,
-         -area, -nFixes) %>% 
+  gather(scoreType, scoreval, -id, -tidalcycle, -tidestage,  
+         -duration, -distInPatch, -distBwPatch, -area, -nFixes) %>% 
   group_by(scoreType) %>% 
   # split into two dfs
   nest() %>% 
   # in each df, split by response variable
   mutate(data = map(data, function(df){
-    df %>% gather(respvar, respval, -scoreval, -nFixes, -id, -tidalcycle) %>%
+    df %>% gather(respvar, respval, -scoreval, -nFixes, -id, -tidalcycle, 
+                  -tidestage) %>%
       nest(-respvar)
   })) %>% 
   # unnest one level
@@ -46,7 +56,7 @@ map(modsPatches1$data, function(z){length(unique(z$id))})
 # run models for within patch metrics
 modsPatches1 <- modsPatches1 %>% 
   mutate(model = map(data, function(z){
-    lmer(respval ~ scoreval + (1|id) + (1|tidalcycle), data = z, na.action = na.omit)
+    lmer(respval ~ scoreval + tidestage + (1|tidalcycle), data = z, na.action = na.omit)
   })) %>% 
   # get predictions with random effects and nfixes includes
   mutate(predMod = map2(model, data, function(a, b){
@@ -55,6 +65,7 @@ modsPatches1 <- modsPatches1 %>%
   }))
 
 # assign names
+library(glue)
 names(modsPatches1$model) <- glue("response = {modsPatches1$respvar} | predictor = {modsPatches1$scoreType}")
 
 # code to get mod summary
@@ -63,17 +74,17 @@ map(modsPatches1$model, summary)
 #### models for between patch metrics ####
 # hereon, we use only the transformed exploration score
 dataBwPatches <- patches %>%
-  # mutate(tidestage = factor(ifelse(between(tidaltime_mean, 4*60, 9*60), "lowTide", "highTide"))) %>%
+  mutate(tidestage = factor(ifelse(between(tidaltime_mean, 4*60, 9*60), "low", "high"))) %>%
   drop_na(tExplScore) %>% 
-  group_by(id, tidalcycle, tExplScore) %>% 
-  summarise(distBwPatch = mean(distBwPatch, na.rm = T),
-            patchChanges = max(resPatch),
+  group_by(id, tidalcycle, tidestage, tExplScore) %>% 
+  summarise(patchChanges = max(resPatch),
             nFixes = sum(nFixes))
 
 # gather and run models
 modsPatches2 <- dataBwPatches %>%
   ungroup() %>% 
-  gather(respvar, respval, -tExplScore, -id, -tidalcycle, -nFixes) %>% 
+  gather(respvar, respval, 
+         -tExplScore, -id, -tidalcycle, -tidestage, -nFixes) %>% 
   nest(-respvar)
 
 # count available data
@@ -83,7 +94,8 @@ map(modsPatches2$data, function(z){length(unique(z$id))})
 # run model and get preds
 modsPatches2 <- modsPatches2 %>% 
   mutate(model = map(data, function(z){
-    lmer(respval ~ tExplScore + (1|id) + (1|tidalcycle), data = z, na.action = na.omit)
+    lmer(respval ~ tExplScore + tidestage + 
+           (1|tidalcycle), data = z, na.action = na.omit)
   })) %>% 
   # get predictions with random effects and nfixes includes
   mutate(predMod = map2(model, data, function(a, b){
@@ -128,7 +140,8 @@ dataPlt <- map(list(modsPatches1, modsPatches2), function(z){
     select(respvar, predMod) %>% 
     unnest() %>% 
     group_by(respvar, 
-             explorebin = plyr::round_any(tExplScore, 0.1)) %>% 
+             explorebin = plyr::round_any(tExplScore, 0.1),
+             tidestage) %>% 
     mutate(respval = ifelse(respvar == "duration", respval/60, respval),
            predval = ifelse(respvar == "duration", predval/60, predval)) %>% 
     summarise_at(vars(respval, predval),
@@ -151,49 +164,32 @@ patchMetLabels <- c("area" = "Patch area (m²)",
 # get first row of within patch plots
 plotPatchMetrics01 <-
 ggplot(dataPlt %>% 
-         filter(respvar %in% c("duration", "distInPatch", "area")) %>% 
+         # filter(respvar %in% c("duration", "distInPatch", "area", "distBwPatch")) %>% 
          mutate(respvar = factor(respvar, levels = c("duration",
                                                      "distInPatch",
-                                                     "area"))))+
+                                                     "area",
+                                                     "distBwPatch",
+                                                     "patchChanges"))))+
   
-  geom_smooth(aes(x = explorebin, y = predval_mean), 
-              col = 1, method = "lm", fill = "grey80", lwd = 0.3)+
+  geom_smooth(aes(x = explorebin, y = predval_mean, group = tidestage,
+                  col = tidestage, lty = tidestage),
+              method = "lm", fill = "grey80")+
   
   geom_pointrange(aes(x = explorebin, y = respval_mean,
                       ymin = respval_mean - respval_ci,
-                      ymax = respval_mean + respval_ci), shape = 20,
-                  col = "grey40", size = 0.2)+
+                      ymax = respval_mean + respval_ci,
+                      shape = tidestage, col = tidestage), lwd = 0.3, fatten = 4)+
   
   
   scale_y_continuous(labels = scales::comma)+
   
   scale_x_continuous(breaks = seq(-0.4, 1, 0.2))+
   
-  facet_wrap(~respvar, scales = "free",
-             labeller = labeller(respvar = patchMetLabels),
-             strip.position = "left")+
-  themePubKnots()+
-  theme(strip.placement = "outside", 
-        strip.background = element_blank(),
-        strip.text = element_text(face = "plain", hjust = 0.5))+
-  labs(y = NULL, x = "Exploration score")
-
-# get second row with between patch metrics
-plotPatchMetrics02 <-
-  ggplot(dataPlt %>% 
-           filter(respvar %in% c("distBwPatch", "patchChanges")))+
+  scale_shape_manual(values = c(16, 17))+
   
-  geom_smooth(aes(x = explorebin, y = predval_mean), 
-              col = 1, method = "lm", fill = "grey80", lwd = 0.3)+
+  scale_colour_manual(values = viridis_pal(option = "D")(7)[c(2,5)])+
   
-  geom_pointrange(aes(x = explorebin, y = respval_mean,
-                      ymin = respval_mean - respval_ci,
-                      ymax = respval_mean + respval_ci), 
-                  shape = 20, col = "grey40", size = 0.2)+
-  
-  scale_x_continuous(breaks = seq(0, 1, 0.2))+
-  
-#  coord_cartesian(xlim=c(0,1))+
+ # scale_fill_manual(values = viridis_pal(option = "D")(7)[c(2,5)])+
   
   facet_wrap(~respvar, scales = "free",
              labeller = labeller(respvar = patchMetLabels),
@@ -201,19 +197,20 @@ plotPatchMetrics02 <-
   themePubKnots()+
   theme(strip.placement = "outside", 
         strip.background = element_blank(),
-        strip.text = element_text(face = "plain", hjust = 0.5))+
+        strip.text = element_text(face = "plain", hjust = 0.5),
+        panel.spacing.y = unit(2, "lines"))+
   labs(y = NULL, x = "Exploration score")
 
-# arrange using grid arrange
-library(gridExtra)
 
+# send to file
 {pdf(file = "../figs/fig05patchMetrics.pdf", width = 180/25.4, height = 120/25.4)
   
-  grid.arrange(plotPatchMetrics01, plotPatchMetrics02, nrow = 2,
-               layout_matrix = matrix(c(1,1,1,1,1,1,NA,2,2,2,2,NA), nrow = 2, byrow = T));
+  # grid.arrange(plotPatchMetrics01, plotPatchMetrics02, nrow = 2,
+  #              layout_matrix = matrix(c(1,1,1,1,1,1,NA,2,2,2,2,NA), nrow = 2, byrow = T));
   # add subplot labels
-  grid.text(c("a","b", "c", "d", "e"), x = c(0.075, 0.4, 0.725, 0.24, 0.56), 
-            y = c(0.97, 0.97, 0.97, 0.475, 0.475), just = "left",
+  print(plotPatchMetrics01)
+  grid.text(c("(a)","(b)", "(c)", "(d)", "(e)"), x = c(0.075, 0.4, 0.725, 0.075, 0.4), 
+            y = c(0.95, 0.95, 0.95, 0.48, 0.48), just = "left",
             gp = gpar(fontface = "bold"), vp = NULL)
   
   dev.off()}
