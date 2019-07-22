@@ -56,6 +56,10 @@ Correlation of Fixed Effects:
          (Intr)
 scoreval 0.065 
 
+****************************************************
+tExplScore
+****************************************************
+
 $`response = totalDist predictor = tExplScore`
 Linear mixed model fit by REML. t-tests use Satterthwaite's method ['lmerModLmerTest']
 Formula: sqrt(respval) ~ scoreval + (1 | id) + (1 | tidalcycle)
