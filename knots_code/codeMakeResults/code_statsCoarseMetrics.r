@@ -149,7 +149,7 @@ plotCoarseMetrics <- ggplot(modsCoarseData)+
 {pdf(file = "../figs/fig04coarseMetrics.pdf", width = 120/25.4, height = 60/25.4)
   
   print(plotCoarseMetrics);
-  grid.text(c("a","b"), x = c(0.1, 0.575), y = 0.95, just = "left",
+  grid.text(c("(a)","(b)"), x = c(0.1, 0.575), y = 0.95, just = "left",
             gp = gpar(fontface = "bold"), vp = NULL)
   
   dev.off()}
