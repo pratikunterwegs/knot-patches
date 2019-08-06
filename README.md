@@ -77,7 +77,7 @@ Contact Allert for data.
 ## Work with residence patches
 
 8. run `codeMakeResults/code_distanceMCP.r`
-    1. reads in data prepared by **5.vi**
+    1. reads in data prepared by **5.vi** and subsets for low tide
     2. calculates total distance and convex hull area and writes to file: `../data2018/oneHertzData/dataMCParea.csv`
     3. writes the irregular boundary of unioned MCPs to file `../data2018/spatials/newUnionPatches/unionPatches.shp`
 
