@@ -96,7 +96,7 @@ Contact Allert for data.
     5. write model summaries to file
     6. prepare data and plot fig05: `../figs/fig05patchMetrics.pdf`
 
-    ![Figure 5](../figs/fig05patchMetrics.pdf)
+    ![Figure 5](figs/fig05patchMetrics.pdf)
 
 
 ## Aux files
