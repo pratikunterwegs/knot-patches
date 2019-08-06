@@ -17,6 +17,9 @@ ci = function(x){
 # read in patch data
 patches <- read_csv("../data2018/oneHertzData/summary/data2018patches.csv")
 
+# keep only low tide
+patches <- patches %>% filter(between(tidaltime_mean, 4*60, 9*60))
+
 # keep only ids with 5 or more patches per tidal cycle
 patches <- patches %>% group_by(id, tidalcycle) %>% 
   mutate(toKeep = max(resPatch) > 5) %>% 
@@ -62,12 +65,12 @@ map(modsPatches1$data, function(z){length(unique(z$id))})
 # run models for within patch metrics
 modsPatches1 <- modsPatches1 %>% 
   mutate(model = map(data, function(z){
-    lmer(respval ~ scoreval + tidestage + (1|tidalcycle), data = z, na.action = na.omit)
+    lmer(respval ~ scoreval + (1|tidalcycle), data = z, na.action = na.omit)
   })) %>% 
   # get predictions with random effects and nfixes includes
   mutate(predMod = map2(model, data, function(a, b){
     b %>% 
-      mutate(predval = predict(a, type = "response", re.form = NULL))
+      mutate(predval = predict(a, type = "response"))
   }))
 
 # assign names
@@ -100,7 +103,7 @@ map(modsPatches2$data, function(z){length(unique(z$id))})
 # run model and get preds
 modsPatches2 <- modsPatches2 %>% 
   mutate(model = map(data, function(z){
-    lmer(respval ~ tExplScore * tidestage + 
+    lmer(respval ~ tExplScore + 
            (1|tidalcycle), data = z, na.action = na.omit)
   })) %>% 
   # get predictions with random effects and nfixes includes
@@ -169,13 +172,13 @@ patchMetLabels <- c("area" = "Patch area (m²)",
 # plot with panels of three and two columns
 # get first row of within patch plots
 plotPatchMetrics01 <-
-ggplot(dataPlt %>% 
-         # filter(respvar %in% c("duration", "distInPatch", "area", "distBwPatch")) %>% 
-         mutate(respvar = factor(respvar, levels = c("duration",
-                                                     "distInPatch",
-                                                     "area",
-                                                     "distBwPatch",
-                                                     "patchChanges"))))+
+  ggplot(dataPlt %>% 
+           # filter(respvar %in% c("duration", "distInPatch", "area", "distBwPatch")) %>% 
+           mutate(respvar = factor(respvar, levels = c("duration",
+                                                       "distInPatch",
+                                                       "area",
+                                                       "distBwPatch",
+                                                       "patchChanges"))))+
   
   geom_smooth(aes(x = explorebin, y = predval_mean, group = tidestage,
                   col = tidestage, lty = tidestage),
@@ -193,9 +196,9 @@ ggplot(dataPlt %>%
   
   scale_shape_manual(values = c(16, 17))+
   
-  scale_colour_manual(values = viridis_pal(option = "D")(7)[c(2,5)])+
+  scale_colour_manual(values = "grey40")+
   
- # scale_fill_manual(values = viridis_pal(option = "D")(7)[c(2,5)])+
+  scale_fill_manual(values = "grey40")+
   
   facet_wrap(~respvar, scales = "free",
              labeller = labeller(respvar = patchMetLabels),
