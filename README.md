@@ -96,7 +96,7 @@ Contact Allert for data.
     5. write model summaries to file
     6. prepare data and plot fig05: `../figs/fig05patchMetrics.pdf`
 
-    ![Figure 5](../figs/fig-1.png)
+    ![Figure 5](https://raw.githubusercontent.com/pratikunterwegs/redknotMoveWaddensea/devBranch/knots_code/figs/fig-1.png)
 
 
 ## Aux files
