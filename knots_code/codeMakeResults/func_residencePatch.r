@@ -1,5 +1,10 @@
 #### function to get residence patches ####
 
+# Code author Pratik Gupte
+# PhD student
+# MARM group, GELIFES-RUG, NL
+# Contact p.r.gupte@rug.nl
+
 # currently complains about vectorising geometry cols, but seems to work
 
 # use sf

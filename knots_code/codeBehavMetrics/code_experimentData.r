@@ -1,5 +1,10 @@
 #### read experiment data and output clean behav scores ####
 
+# Code author Pratik Gupte
+# PhD student
+# MARM group, GELIFES-RUG, NL
+# Contact p.r.gupte@rug.nl
+
 library(tidyverse)
 
 # read data

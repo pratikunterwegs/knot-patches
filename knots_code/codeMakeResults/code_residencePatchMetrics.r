@@ -1,5 +1,10 @@
 #### code for polygons around residence patches ####
 
+# Code author Pratik Gupte
+# PhD student
+# MARM group, GELIFES-RUG, NL
+# Contact p.r.gupte@rug.nl
+
 library(tidyverse); library(data.table)
 library(glue); library(sf)
 

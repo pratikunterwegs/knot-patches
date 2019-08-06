@@ -1,5 +1,10 @@
 #### custom euclidean distance function ####
 
+# Code author Pratik Gupte
+# PhD student
+# MARM group, GELIFES-RUG, NL
+# Contact p.r.gupte@rug.nl
+
 # very very fast, but makes assumptions!
 # the coordinate system has to be close to cartesian
 # DO NOT TRY THIS ON LONG/LAT COORDINATES

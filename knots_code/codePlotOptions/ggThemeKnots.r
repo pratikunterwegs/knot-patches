@@ -1,4 +1,10 @@
 #### ggplot publication theme ####
+
+# Code author Pratik Gupte
+# PhD student
+# MARM group, GELIFES-RUG, NL
+# Contact p.r.gupte@rug.nl
+
 #'make theme for plots
 library(ggplot2)
 

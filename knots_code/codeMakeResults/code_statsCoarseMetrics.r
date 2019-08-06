@@ -1,5 +1,10 @@
 #### code for models ####
 
+# Code author Pratik Gupte
+# PhD student
+# MARM group, GELIFES-RUG, NL
+# Contact p.r.gupte@rug.nl
+
 library(data.table); library(tidyverse)
 library(lmerTest)
 

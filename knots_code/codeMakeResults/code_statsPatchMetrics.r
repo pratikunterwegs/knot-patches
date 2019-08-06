@@ -1,7 +1,13 @@
-#### code for models ####
+#### code for models of fine-scale patch metrics vs exploration score ####
+
+# Code author Pratik Gupte
+# PhD student
+# MARM group, GELIFES-RUG, NL
+# Contact p.r.gupte@rug.nl
 
 library(data.table); library(tidyverse)
 library(lmerTest)
+library(viridis)
 
 # simple ci function
 ci = function(x){
@@ -94,7 +100,7 @@ map(modsPatches2$data, function(z){length(unique(z$id))})
 # run model and get preds
 modsPatches2 <- modsPatches2 %>% 
   mutate(model = map(data, function(z){
-    lmer(respval ~ tExplScore + tidestage + 
+    lmer(respval ~ tExplScore * tidestage + 
            (1|tidalcycle), data = z, na.action = na.omit)
   })) %>% 
   # get predictions with random effects and nfixes includes

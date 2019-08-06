@@ -1,5 +1,10 @@
 #### code to deal with raw data from selected birds ####
 
+# Code author Pratik Gupte
+# PhD student
+# MARM group, GELIFES-RUG, NL
+# Contact p.r.gupte@rug.nl
+
 # load libs
 library(tidyverse); library(data.table)
 library(glue)

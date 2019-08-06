@@ -1,4 +1,10 @@
 #### function for repeatability calculations ####
+
+# Code author Pratik Gupte
+# PhD student
+# MARM group, GELIFES-RUG, NL
+# Contact p.r.gupte@rug.nl
+
 # write a function to extract the population repeatability
 # from a linear mixed model of the class lmerMod
 getRepeatability = function(x){
