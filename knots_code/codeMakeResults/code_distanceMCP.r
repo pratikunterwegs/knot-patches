@@ -15,7 +15,9 @@ dataFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)
 data <- map(dataFiles, function(filename){
   
   # read in data
-  df <- fread(filename)[,.(x,y,time,id, tidalcycle, dist)]
+  # subset for low tide only
+  df <- fread(filename)[,.(x,y,time,id, tidalcycle, dist, tidaltime)
+                        ][between(tidaltime, 4*60, 9*60)]
   
   # message
   print(glue('bird {unique(df$id)} in tide {unique(df$tidalcycle)} has {nrow(df)} obs'))
