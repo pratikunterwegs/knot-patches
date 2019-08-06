@@ -12,31 +12,40 @@ library(sf)
 # list files
 dataFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)
 
+# remove files with less than 10 observations
+datasize <- map_dbl(dataFiles, file.size)
+hist(datasize)
+
+quantile(datasize, probs = c(0.01, 0.99))
+
+# keep filenames with some minimum filesize
+dataFiles <- dataFiles[datasize > 300]
+
 data <- map(dataFiles, function(filename){
-  
-  # read in data
-  # subset for low tide only
-  df <- fread(filename)[,.(x,y,time,id, tidalcycle, dist, tidaltime)
-                        ][between(tidaltime, 4*60, 9*60)]
-  
-  # message
-  print(glue('bird {unique(df$id)} in tide {unique(df$tidalcycle)} has {nrow(df)} obs'))
-  
-  # makde df
-  setDF(df)
   
   tryCatch(
     # make sf, union, get convex hull area
-    {mcp <- st_as_sf(df, coords = c("x","y")) %>% st_union() %>% 
-      st_convex_hull() %>% `st_crs<-`(32631)
-    
-    mcpArea <- as.numeric(st_area(mcp))},
+    {# read in data
+      # subset for low tide only
+      df <- fread(filename)[,.(x,y,time,id, tidalcycle, dist, tidaltime)
+                            ][between(tidaltime, 4*60, 9*60)]
+      
+      # message
+      print(glue('bird {unique(df$id)} in tide {unique(df$tidalcycle)} has {nrow(df)} obs'))
+      
+      # makde df
+      setDF(df)
+      
+      mcp <- st_as_sf(df, coords = c("x","y")) %>% st_union() %>% 
+        st_convex_hull() %>% `st_crs<-`(32631)
+      
+      mcpArea <- as.numeric(st_area(mcp))},
     error = function(e){ print(glue('problems with bird {unique(df$id)} in tide {unique(df$tidalcycle)}'))})
   
   tryCatch(
-  # sum distance
-  {df <- setDT(df)[,.(totalDist = sum(dist, na.rm = T)), by=list(id, tidalcycle)]},
-  error = function(e){ print(glue('problems with bird {unique(df$id)} in tide {unique(df$tidalcycle)}'))})
+    # sum distance
+    {df <- setDT(df)[,.(totalDist = sum(dist, na.rm = T)), by=list(id, tidalcycle)]},
+    error = function(e){ print(glue('problems here in tide {unique(df$tidalcycle)}'))})
   
   # add area
   df[,mcpArea:=mcpArea]
@@ -61,9 +70,10 @@ data <- keep(data, function(z){
 mcpBirds <- reduce(data, rbind)
 # get bounding box
 bbox <- mcpBirds %>% st_union()
+bbox = st_sf(bbox)
 
 st_write(bbox, dsn = "../data2018/spatials/newUnionPatches", layer = "unionPatches.shp",
-         driver = "ESRI Shapefile")
+         driver = "ESRI Shapefile", delete_layer = T, SHPT = "POLYGON")
 
 # bind to df
 data <- map(data, st_drop_geometry) %>% bind_rows()
