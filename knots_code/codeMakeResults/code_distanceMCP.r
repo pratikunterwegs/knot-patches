@@ -69,11 +69,4 @@ data <- map(data, st_drop_geometry) %>% bind_rows()
 # write to file
 fwrite(data, file = "../data2018/dataMCParea.csv")
 
-#### plot mcp and distance vs explore score ####
-# read in behav scores
-behavScore <- read_csv("../data2018/behavScores.csv")
-
-# write to file
-fwrite(data, file = "../data2018/dataMCParea.csv")
-
 # end here
