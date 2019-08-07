@@ -40,6 +40,12 @@ behavData <- read_csv("../data2018/behavScoresRanef.csv") %>%
 # join move metrics with behav datas
 data <- inner_join(data, behavData)
 
+# get the bottom and top 5th quantiles of behav score
+extremes <- quantile(behavData$tExplScore, probs = c(0.25, 0.75), na.rm = T)
+
+# remove extreme birds
+data <- filter(data, tExplScore %between% extremes)
+
 #### run coarse scale area and distance models ####
 # prepare the data for both models at the same time
 modsCoarse <- data %>% 
@@ -109,7 +115,7 @@ modsCoarseData <- modsCoarse %>%
   unnest() %>% 
   # now summarise by respVar and binned explore score
   group_by(respVar,
-           exploreBin = plyr::round_any(scoreval, 0.1)) %>% 
+           exploreBin = plyr::round_any(scoreval, 0.05)) %>% 
   
   mutate(respval = ifelse(respVar == "totalDist", respval/1e3, respval/1e6),
          predval = ifelse(respVar == "totalDist", predval/1e3, predval/1e6)) %>%
@@ -137,7 +143,7 @@ plotCoarseMetrics <- ggplot(modsCoarseData)+
                       # shape = tidestage
   ), size = 0.3, col = "grey40", shape = 20)+
   
-  scale_x_continuous(breaks = seq(-0.4, 1, 0.2))+
+  scale_x_continuous(breaks = seq(-0.4, 1, 0.1))+
 
   scale_shape_manual(values = c(16, 15))+
   
@@ -151,7 +157,7 @@ plotCoarseMetrics <- ggplot(modsCoarseData)+
   labs(y = NULL, x = "Exploration score")
 
 # save plot
-{pdf(file = "../figs/fig04coarseMetrics.pdf", width = 120/25.4, height = 60/25.4)
+{pdf(file = "../figs/fig04.2coarseMetricsNoExtremes.pdf", width = 120/25.4, height = 60/25.4)
   
   print(plotCoarseMetrics);
   grid.text(c("(a)","(b)"), x = c(0.1, 0.575), y = 0.95, just = "left",

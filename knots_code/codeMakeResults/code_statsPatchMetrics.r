@@ -29,8 +29,13 @@ patches <- patches %>% group_by(id, tidalcycle) %>%
 behavData <- read_csv("../data2018/behavScoresRanef.csv") %>% 
   select(id, contains("Score"))
 
+extreme <- quantile(behavData$tExplScore, probs = c(0.25, 0.75), na.rm = T)
+
 # link behav score and patch size and area
 patches <- left_join(patches, behavData, by= c("id"))
+
+# remove extremes, the top and bottom 5%
+patches <- patches %>% filter(tExplScore %between% extreme)
 
 #### prep for models ####
 # select patch duration, patch area, within patch distance,
@@ -83,9 +88,9 @@ map(modsPatches1$model, summary)
 #### models for between patch metrics ####
 # hereon, we use only the transformed exploration score
 dataBwPatches <- patches %>%
-  mutate(tidestage = factor(ifelse(between(tidaltime_mean, 4*60, 9*60), "low", "high"))) %>%
+  # mutate(tidestage = factor(ifelse(between(tidaltime_mean, 4*60, 9*60), "low", "high"))) %>%
   drop_na(tExplScore) %>% 
-  group_by(id, tidalcycle, tidestage, tExplScore) %>% 
+  group_by(id, tidalcycle, tExplScore) %>% 
   summarise(patchChanges = max(resPatch),
             nFixes = sum(nFixes))
 
@@ -93,7 +98,7 @@ dataBwPatches <- patches %>%
 modsPatches2 <- dataBwPatches %>%
   ungroup() %>% 
   gather(respvar, respval, 
-         -tExplScore, -id, -tidalcycle, -tidestage, -nFixes) %>% 
+         -tExplScore, -id, -tidalcycle, -nFixes) %>% 
   nest(-respvar)
 
 # count available data
@@ -149,8 +154,7 @@ dataPlt <- map(list(modsPatches1, modsPatches2), function(z){
     select(respvar, predMod) %>% 
     unnest() %>% 
     group_by(respvar, 
-             explorebin = plyr::round_any(tExplScore, 0.1),
-             tidestage) %>% 
+             explorebin = plyr::round_any(tExplScore, 0.05)) %>% 
     mutate(respval = ifelse(respvar == "duration", respval/60, respval),
            predval = ifelse(respvar == "duration", predval/60, predval)) %>% 
     summarise_at(vars(respval, predval),
@@ -180,14 +184,12 @@ plotPatchMetrics01 <-
                                                        "distBwPatch",
                                                        "patchChanges"))))+
   
-  geom_smooth(aes(x = explorebin, y = predval_mean, group = tidestage,
-                  col = tidestage, lty = tidestage),
+  geom_smooth(aes(x = explorebin, y = predval_mean),
               method = "lm", fill = "grey80")+
   
   geom_pointrange(aes(x = explorebin, y = respval_mean,
                       ymin = respval_mean - respval_ci,
-                      ymax = respval_mean + respval_ci,
-                      shape = tidestage, col = tidestage), lwd = 0.3, fatten = 4)+
+                      ymax = respval_mean + respval_ci), lwd = 0.3, fatten = 4)+
   
   
   scale_y_continuous(labels = scales::comma)+
@@ -212,7 +214,7 @@ plotPatchMetrics01 <-
 
 
 # send to file
-{pdf(file = "../figs/fig05patchMetrics.pdf", width = 180/25.4, height = 120/25.4)
+{pdf(file = "../figs/fig05.2patchMetricsNoExtremes.pdf", width = 180/25.4, height = 120/25.4)
   
   # grid.arrange(plotPatchMetrics01, plotPatchMetrics02, nrow = 2,
   #              layout_matrix = matrix(c(1,1,1,1,1,1,NA,2,2,2,2,NA), nrow = 2, byrow = T));
