@@ -8,8 +8,8 @@ MARM group, GELIFES-RUG, NL
 Contact p.r.gupte@rug.nl
 
 ```{r setup}
-  library(knitr)
-  opts_knit$set(root.dir=normalizePath('../'))
+library(knitr)
+opts_knit$set(root.dir=normalizePath('../'))
 ```
 
 ```{r load_data_and_summarise}
@@ -68,7 +68,7 @@ recPrepData <- map_df(recPrepFiles, function(z){
 })
 ```
 
-```{r}
+```{r fixes_days_tracked}
 # get number of fixes and days tracked
 recPrepDataSummary <- recPrepData %>% 
   group_by(id) %>% 
