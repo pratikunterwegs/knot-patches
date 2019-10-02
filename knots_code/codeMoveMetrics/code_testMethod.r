@@ -1,11 +1,7 @@
-#### code for polygons around residence patches ####
+#### code to diagnose methods ####
 
-# Code author Pratik Gupte
-# PhD student
-# MARM group, GELIFES-RUG, NL
-# Contact p.r.gupte@rug.nl
-
-library(tidyverse); library(data.table)
+# load libs and data
+library(data.table); library(tidyverse)
 library(glue); library(sf)
 
 # source distance function
@@ -14,21 +10,20 @@ source("codeMoveMetrics/functionEuclideanDistance.r")
 # function for resPatches arranged by time
 source("codeMakeResults/func_residencePatch.r")
 
-
 # read in recurse data for selected birds
-dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)
+dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)[1]
 
 # get time to high tide from written data
-dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)
+dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)[1]
 
-# read in the data
+# read in subset of data
 data <- purrr::map2_df(dataRevFiles, dataHtFiles, function(filename, htData){
-
+  
   # read the file in
   df <- fread(filename)
-
+  
   print(glue('individual {unique(df$id)} in tide {unique(df$tidalcycle)} has {nrow(df)} obs'))
-
+  
   # prep to assign sequence to res patches
   # to each id.tide combination
   # remove NA vals in fpt
@@ -41,27 +36,25 @@ data <- purrr::map2_df(dataRevFiles, dataHtFiles, function(filename, htData){
                            ][resTime == T,
                              # assign res patch as change from F to T
                              ][,resPatch:= cumsum(resPatch)]
-
-
+  
+  
   dataHt <- fread(htData)
   # merge to recurse data
   df <- merge(df, dataHt, all = FALSE)
-
+  
   # get patch data
   patchData <- funcGetResPatches(df)
-
+  
   # remove htData
   rm(htData)
-
+  
   patchData$data <- NULL
-
+  
   return(patchData)
-
+  
 })
 
-# write data to file
-fwrite(data, file = "../data2018/oneHertzData/data2018patches.csv",
-       dateTimeAs = "epoch")
+#### diagnostic plots ####
+# get griend
+griend <- st_read("../griend_polygon/griend_polygon.shp")
 
-
-# end here
