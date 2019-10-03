@@ -33,19 +33,22 @@ data <- purrr::map2_df(dataRevFiles, dataHtFiles, function(filename, htData){
   # to each id.tide combination
   # remove NA vals in fpt
   # set residence time to 0 or 1 predicated on <= 10 (mins)
-  df <- df[!is.na(fpt),][,resTime:= ifelse(resTime <= 2, F, T)
+  df <- df[!is.na(fpt),
+           ][,rollMeanResTime:= zoo::rollmean(resTime, k = 20, fill = NA)
+             ][,resTime:= ifelse(rollMeanResTime <= 10, F, T)
                          # get breakpoints where F changes to T and vice versa
                          ][,resPatch:= c(as.numeric(resTime[1]),
                                          diff(resTime))
                            # keeping fixes where restime > 10
-                           ][resTime == T,
-                             # assign res patch as change from F to T
+                           ]
+  df <- df[resTime == T,# assign res patch as change from F to T
                              ][,resPatch:= cumsum(resPatch)]
 
 
   dataHt <- fread(htData)
-  # merge to recurse data
+  # merge to recurse data and order by time
   df <- merge(df, dataHt, all = FALSE)
+  setorder(df, time)
 
   # get patch data
   patchData <- funcGetResPatches(df)
