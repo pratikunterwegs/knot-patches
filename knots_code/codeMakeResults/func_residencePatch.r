@@ -47,7 +47,7 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time", tidaltime = "
       # polygons$data = reduce(polygons$data, c) %>% st_sfc()
       
       # get patch area in m^2
-      polygons = mutate(polygons, area = as.numeric(st_area(polygons)))
+      # polygons = mutate(polygons, area = as.numeric(st_area(polygons)))
       
       # return to summarising residence patches
       patchSummary = df %>%
