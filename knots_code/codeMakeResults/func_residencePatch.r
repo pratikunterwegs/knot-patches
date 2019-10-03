@@ -23,65 +23,71 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time", tidaltime = "
   
   # try function and ignore errors for now
   tryCatch(
-    { 
+    {
       # convert to sf points object
-      pts = df %>% 
+      pts = df %>%
         # make sd
-        st_as_sf(coords = c("x", "y")) %>% 
+        st_as_sf(coords = c("x", "y")) %>%
         # assign crs
         `st_crs<-`(32631)#
       
       # make polygons
-      polygons = pts %>% 
+      polygons = pts %>%
         # draw a 10 m buffer (arbitrary choice)
         st_buffer(10.0) %>%
         
-        group_by(resPatch) %>% 
+        group_by(resPatch) %>%
         # make lsit column of sf objects
-        nest() %>% 
-        # union the buffers within each res patch, but not between patches
-        mutate(data = map(data, function(z) {
-          st_union(z)
-        }))
+        # nest() %>%
+        # # union the buffers within each res patch, but not between patches
+        # mutate(data = map(data, function(z) {
+        #   st_union(z)
+        # }))
+        summarise()
       
       # remove the pts sf obj
       rm(pts); gc()
       # convert the complex sf object to a simpler sfc column
       # this function, st_sfc, produces warnings. ignore them
-      polygons$data = reduce(polygons$data, c) %>% st_sfc()
+      # polygons$data = reduce(polygons$data, c) %>% st_sfc()
       
       # get patch area in m^2
-      polygons = mutate(polygons, area = as.numeric(st_area(data)))
+      polygons = mutate(polygons, area = as.numeric(st_area(polygons)))
       
       # return to summarising residence patches
-      patchSummary = df %>%  
-        group_by(id, tidalcycle, resPatch) %>% 
-        nest() %>% 
+      patchSummary = df %>%
+        group_by(id, tidalcycle, resPatch) %>%
+        nest() %>%
+        
+        # filter if too few points in patch
+        # THIS IS AN ARBITRARY CHOICE
+        filter(map_int(data, nrow) >= 3) %>% 
+        
         mutate(data = map(data, function(df){
           # arrange by time
           dff <- arrange(df, time)
           # get distance inside patch if n positions are greater than 1, else return 0
           distInPatch <- funcDistance(dff)
-          # mutate(distInPatch = 
+          # mutate(distInPatch =
           #          ifelse(nrow(df) < 2, NA, funcDistance(df))) %>%
           # get summary of other covariates
           dff <- dff %>% summarise_at(vars(x,y,time,tidaltime),
                                       list(mean = mean,
                                            start = first,
-                                           end = last)) %>% 
+                                           end = last)) %>%
             # get duration inside patch and sum of distances
             mutate(duration = time_end - time_start,
                    nFixes = nrow(dff),
-                   distInPatch = sum(distInPatch, na.rm = TRUE)) %>% 
+                   distInPatch = sum(distInPatch, na.rm = TRUE)) %>%
             mutate_at(vars(time_mean), list(round))
           
           return(dff)
           
-        })) %>% 
+        })) %>%
         # unnest
         unnest() %>%
-      # arrange in order of time for interpatch distances
-      arrange(resPatch) %>% 
+        # arrange in order of time for interpatch distances
+        arrange(resPatch) %>%
         mutate(distBwPatch = funcDistance(., a = "x_mean", b = "y_mean"))
       
       # join summary data with polygons
@@ -95,8 +101,8 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time", tidaltime = "
     # null error function, with option to collect data on errors
     error= function(e)
     {
-      print(glue('there was an error in id_tide combination... 
-                                  {unique(df$id)} {unique(df$tidalcycle)}'))
+      print(glue('\nthere was an error in id_tide combination...
+                                  {unique(df$id)} {unique(df$tidalcycle)}\n'))
       # dfErrors <- append(dfErrors, glue(z$id, "_", z$tidalCycle))
     }
   )
