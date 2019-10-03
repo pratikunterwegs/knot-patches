@@ -37,12 +37,7 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time", tidaltime = "
         st_buffer(10.0) %>%
         
         group_by(resPatch) %>%
-        # make lsit column of sf objects
-        # nest() %>%
-        # # union the buffers within each res patch, but not between patches
-        # mutate(data = map(data, function(z) {
-        #   st_union(z)
-        # }))
+        # this unions the smaller buffers
         summarise()
       
       # remove the pts sf obj
