@@ -10,9 +10,6 @@ source("codeMoveMetrics/functionEuclideanDistance.r")
 # function for resPatches arranged by time
 source("codeMakeResults/func_residencePatch.r")
 
-# add a mode function
-
-
 # read in recurse data for selected birds
 dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)[1]
 
