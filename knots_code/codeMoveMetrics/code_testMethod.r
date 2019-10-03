@@ -46,8 +46,8 @@ data <- purrr::pmap(dataToTest, function(revdata, htData, resTimeLimit, travelSe
   # set residence time to 0 or 1 predicated on <= 10 (mins)
   df <- df[!is.na(fpt),
            ][,resTime:= ifelse(resTime <= resTimeLimit, F, T)
-                         # get breakpoints if the mean over rows of length travelSeg
-                         # is below 0.5
+             # get breakpoints if the mean over rows of length travelSeg
+             # is below 0.5
              # how does this work?
              # a sequence of comparisons, resTime <= resTimeLimit
              # may be thus: c(T,T,T,F,F,T,T)
@@ -55,16 +55,16 @@ data <- purrr::pmap(dataToTest, function(revdata, htData, resTimeLimit, travelSe
              # the rolling mean over a window of length 3 will be
              # c(1,.67,.33,.33,.33,.67) which can be used to
              # smooth over false negatives of residence
-                         ][,rollResTime:=(zoo::rollmean(resTime, k = travelSeg, fill = NA) > 0.5)
-                           # drop NAs in rolling residence time evaluation
-                           # essentially the first and last elements will be dropped
-                           ][!is.na(rollResTime),
-                             ][,resPatch:= c(as.numeric(resTime[1]),
-                                         diff(resTime))
-                           # keeping fixes where restime > 10
-                           ][resTime == T,
-                             # assign res patch as change from F to T
-                             ][,resPatch:= cumsum(resPatch)]
+             ][,rollResTime:=(zoo::rollmean(resTime, k = travelSeg, fill = NA) > 0.5)
+               # drop NAs in rolling residence time evaluation
+               # essentially the first and last elements will be dropped
+               ][!is.na(rollResTime),
+                 ][,resPatch:= c(as.numeric(resTime[1]),
+                                 diff(resTime))
+                   # keeping fixes where restime > 10
+                   ][resTime == T,
+                     # assign res patch as change from F to T
+                     ][,resPatch:= cumsum(resPatch)]
   
   
   dataHt <- fread(htData)
@@ -78,32 +78,13 @@ data <- purrr::pmap(dataToTest, function(revdata, htData, resTimeLimit, travelSe
   
 })
 
-#### diagnostic plots for respatches ####
-# get griend
-griend <- st_read("../griend_polygon/griend_polygon.shp")
-{
-  x11()
-  par(mfrow = c(3,3))
-  map(data, function(df){
-    # plot(griend, col = "grey90", plot.max = 1,
-    #      main = glue('resTimeLimit = {unique(df$resTimeLimit)}\ntravelSeg = {unique(df$travelSeg)}'))
-    
-    setDT(df)
-    setorder(df, time)
-    
-    plot(df$x, df$y, type = "p", add = TRUE, cex = 0.2,
-         col = pals::kovesi.rainbow(20)[df$resPatch])
-  })
-}
-
-
 #### separate funciton to return res patches ####
 funcReturnPatchData <- function(segData){
   # get patch data
   patchData <- funcGetResPatches(segData)
   
   # remove what seems to be the sf data
-  patchData <- patchData %>% dplyr::select(-data)
+  patchData <- patchData # %>% dplyr::select(-data)
   
   # add the parameter assumptions
   patchData$resTimeLimit = resTimeLimit
@@ -115,5 +96,60 @@ funcReturnPatchData <- function(segData){
 # get patches
 patches <- map(data, funcReturnPatchData)
 
+#### diagnostic plots for respatches ####
+# get griend
+griend <- st_read("../griend_polygon/griend_polygon.shp")
 
+# plot data
+{
+  png(filename = "../figs/figSegmentationAssumptions.png",
+      width = 2400, height = 3600, res = 300)
+ # x11()
+  {  
+    par(mfrow = c(3,3), 
+         mar = rep(2,4))
+    map2(data, patches, function(df1, df2){
+      
+      g1 = st_crop(griend, xmin = min(df1$x) - 5e2,
+                   xmax = max(df1$x)+5e2,
+                   ymin = min(df1$y),
+                   ymax = max(df1$y))
+      
+      # plot griend
+      # plot(g1,
+      #      main = glue('resTimeLimit = {unique(df1$resTimeLimit)} mins, travelSeg = {unique(df1$travelSeg)} pts'),
+      #      reset = FALSE,
+      #      col = "grey95",
+      #      border = "transparent",
+      #      cex.main = 1, asp = 0.5)
+      # 
+      setDT(df1)
+      setorder(df1, time)
+      
+      # plot points
+      plot(df1$x, df1$y, type = "p", add = TRUE, cex = 0.2,
+             col = pals::kovesi.rainbow(20)[df1$resPatch],
+                main = glue('resTimeLimit = {unique(df1$resTimeLimit)} mins, travelSeg = {unique(df1$travelSeg)} pts'))
+
+      # plot patches scaled by duration
+      points(df2$x_mean, df2$y_mean,
+             pch = 21,
+             cex = df2$duration*0.002, col = "grey29", 
+             bg = scales::alpha("grey", 0.2))
+      
+      # add bg
+      # points(df2$x_mean, df2$y_mean,
+      #        pch = 19,
+      #        cex = df2$duration*0.002, alpha = 0.2)
+      text(df2$x_mean, df2$y_mean, col = 1,
+             cex = 2,
+             labels = as.character(df2$resPatch))
+      
+      # plot path
+      lines(df2$x_mean, df2$y_mean,
+             cex = df2$duration*0.002, col = 1)
+    })
+  }
+  dev.off()
+}
 
