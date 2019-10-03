@@ -61,33 +61,39 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time", tidaltime = "
         mutate(data = map(data, function(df){
           # arrange by time
           dff <- arrange(df, time)
-          # get distance inside patch if n positions are greater than 1, else return 0
-          distInPatch <- funcDistance(dff)
-          # mutate(distInPatch =
-          #          ifelse(nrow(df) < 2, NA, funcDistance(df))) %>%
-          # get summary of other covariates
-          dff <- dff %>% summarise_at(vars(x,y,time,tidaltime),
-                                      list(mean = mean,
-                                           start = first,
-                                           end = last)) %>%
-            # get duration inside patch and sum of distances
-            mutate(duration = time_end - time_start,
-                   nFixes = nrow(dff),
-                   distInPatch = sum(distInPatch, na.rm = TRUE)) %>%
-            mutate_at(vars(time_mean), list(round))
           
+          # get summary of time to determine merging based on temporal proximity
+          dff <- dff %>% summarise_at(vars(x,y,time),
+                                      list(mean = mean,
+                                           start = min,
+                                           end = max))
           return(dff)
           
         })) %>%
-        # unnest
+        # unnest the data
         unnest() %>%
         # arrange in order of time for interpatch distances
         arrange(resPatch) %>%
-        mutate(distBwPatch = funcDistance(., a = "x_mean", b = "y_mean"))
+        # needs ungrouping
+        ungroup() %>% 
+        
+        # get bw patch distance and assess patch independence
+        
+        mutate(spatDist = funcDistance(., a = "x_mean", b = "y_mean"),
+               # 1 hour temp indep
+               tempIndep = c(T, as.numeric(diff(time_mean)) >= 3600),
+               indePatch = cumsum(spatDist > 100 | tempIndep))
       
-      # join summary data with polygons
-      # the order matters for the class of the resulting object! use an inner join
-      patchSummary = inner_join(patchSummary, polygons)
+      # join summary data with polygons using a right join
+      polygons = right_join(polygons, patchSummary)
+      
+      # cast polygons to MULTIPOLYGONS and then POLYGONS
+      # this order matters per https://github.com/r-spatial/sf/issues/763
+      
+      polygons = st_cast(polygons, "MULTIPOLYGON") %>% st_cast("POLYGON") %>% 
+        # remove single point data; these have an area of approx pi*100 (10 ^ 2) from pi*(r^2)
+        filter(as.numeric(st_area(.)) > (pi*(10^2)))
+        
       
       # return the patch data as function output
       print(glue('residence patches of {unique(df$id)} in tide {unique(df$tidalcycle)} constructed...'))
