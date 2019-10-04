@@ -69,7 +69,7 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time", tidaltime = "
         # needs ungrouping
         ungroup() %>% 
         
-        # get bw patch distance and assess patch independence
+        # get bw patch distance and assess patch independence THIS IS ARBITRARY
         
         mutate(spatDist = funcDistance(., a = "x_mean", b = "y_mean"),
                # 1 hour temp indep
