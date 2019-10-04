@@ -52,14 +52,14 @@ data <- purrr::pmap(dataToTest, function(revdata, htData, resTimeLimit, travelSe
              # the rolling mean over a window of length 3 will be
              # c(1,.67,.33,.33,.33,.67) which can be used to
              # smooth over false negatives of residence
-             ][,rollResTime:=(zoo::rollmean(resTime, k = travelSeg, fill = NA) > 0.5)
+             ][,rollResTime:=(zoo::rollmean(resTimeBool, k = travelSeg, fill = NA) > 0.5)
                # drop NAs in rolling residence time evaluation
                # essentially the first and last elements will be dropped
                ][!is.na(rollResTime),
-                 ][,resPatch:= c(as.numeric(resTime[1]),
-                                 diff(resTime))
+                 ][,resPatch:= c(as.numeric(resTimeBool[1]),
+                                 diff(resTimeBool))
                    # keeping fixes where restime > 10
-                   ][resTime == T,
+                   ][resTimeBool == T,
                      # assign res patch as change from F to T
                      ][,resPatch:= cumsum(resPatch)]
   
