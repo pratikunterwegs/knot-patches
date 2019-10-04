@@ -42,7 +42,7 @@ data <- purrr::pmap(dataToTest, function(revdata, htData, resTimeLimit, travelSe
   # remove NA vals in fpt
   # set residence time to 0 or 1 predicated on <= 10 (mins)
   df <- df[!is.na(fpt),
-           ][,resTime:= ifelse(resTime <= resTimeLimit, F, T)
+           ][,resTimeBool:= ifelse(resTime <= resTimeLimit, F, T)
              # get breakpoints if the mean over rows of length travelSeg
              # is below 0.5
              # how does this work?
