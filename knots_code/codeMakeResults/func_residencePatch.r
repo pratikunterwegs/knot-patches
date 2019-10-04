@@ -79,13 +79,81 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time", tidaltime = "
       # join summary data with polygons using a right join
       polygons = right_join(polygons, patchSummary)
       
+      # union polygons by indePatch
+      polygons = polygons %>% 
+        group_by(indePatch) %>% 
+        summarise()
+      
       # cast polygons to MULTIPOLYGONS and then POLYGONS
       # this order matters per https://github.com/r-spatial/sf/issues/763
-      
       polygons = st_cast(polygons, "MULTIPOLYGON") %>% st_cast("POLYGON") %>% 
         # remove single point data; these have an area of approx pi*100 (10 ^ 2) from pi*(r^2)
-        filter(as.numeric(st_area(.)) > (pi*(10^2)))
+        filter(as.numeric(st_area(.)) > (pi*(10^2))) %>% 
+        mutate(indePatch = 1:nrow(.))
+      
+      # add area to polygons
+      polygons$area = as.numeric(st_area(polygons))
         
+      # extract patch metrics from underlying points overwriting existing patchSummary
+      rm(patchSummary); gc()
+      # identify which points are in which polygons
+      patchSummary = st_contains(polygons, pts) %>% 
+        as_tibble() %>% 
+        rename(polygon = row.id, point = col.id)
+      
+      # remove pts and save memory
+      rm(pts); gc()
+      
+      # add rownumbers to original non-sf data
+      df$point = 1:nrow(df)
+      
+      # left join points and polygons
+      patchSummary = left_join(patchSummary, df, by = "point")
+      
+      # summarise patch metrics
+      patchSummary = patchSummary %>% 
+        group_by(id, tidalcycle, polygon) %>% 
+        nest() %>% 
+        mutate(data = map(data, function(dff){
+          
+          # arrange by time
+          dff = arrange(dff, time)
+          
+          # get distance in patch
+          distInPatch = funcDistance(dff, a = "x", b = "y")
+          
+          # summarise other values
+          dff = dff %>% 
+            ungroup() %>% 
+            arrange(time) %>% 
+            summarise_at(vars(x,y,time,tidaltime),
+                         list(mean = mean, 
+                              start = first,
+                              end = last)) %>% 
+            mutate(distInPatch = sum(distInPatch, na.rm = T))
+        })) %>% 
+        unnest()
+      
+      # add patch area
+      patchSummary = left_join(patchSummary, 
+                               st_drop_geometry(polygons),
+                               by = c("polygon" = "indePatch"))
+      
+      # remove polygons
+      rm(polygons); gc()
+      
+      # arrange by time start and reorder polygon number
+      patchSummary = arrange(patchSummary, time_start) %>% 
+        ungroup() %>% 
+        mutate(patch = 1:nrow(.)) %>% 
+        select(-polygon)
+      
+      # now add between patch distance from x_mean, y_mean
+      patchSummary$distBwPatch = funcDistance(patchSummary, a = "x_mean", b = "y_mean")
+      
+      # add patch duration
+      patchSummary$duration = patchSummary$time_end - patchSummary$time_start
+      
       
       # return the patch data as function output
       print(glue('residence patches of {unique(df$id)} in tide {unique(df$tidalcycle)} constructed...'))
