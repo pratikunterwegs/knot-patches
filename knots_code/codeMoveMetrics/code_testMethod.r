@@ -84,69 +84,34 @@ funcReturnPatchData <- function(segData){
   patchData <- patchData # %>% dplyr::select(-data)
   
   # add the parameter assumptions
-  patchData$resTimeLimit = resTimeLimit
-  patchData$travelSeg = travelSeg
+  patchData$resTimeLimit = segData$resTimeLimit[1]
+  patchData$travelSeg = segData$travelSeg[1]
   
   return(patchData)
 }
 
 # get patches
 patches <- map(data, funcReturnPatchData)
-
+plotdata = patches %>% bind_rows()
 #### diagnostic plots for respatches ####
-# get griend
-griend <- st_read("../griend_polygon/griend_polygon.shp")
-
-# plot data
 {
-  png(filename = "../figs/figSegmentationAssumptions.png",
-      width = 2400, height = 3600, res = 300)
- # x11()
-  {  
-    par(mfrow = c(3,3), 
-         mar = rep(2,4))
-    map2(data, patches, function(df1, df2){
-      
-      g1 = st_crop(griend, xmin = min(df1$x) - 5e2,
-                   xmax = max(df1$x)+5e2,
-                   ymin = min(df1$y),
-                   ymax = max(df1$y))
-      
-      # plot griend
-      # plot(g1,
-      #      main = glue('resTimeLimit = {unique(df1$resTimeLimit)} mins, travelSeg = {unique(df1$travelSeg)} pts'),
-      #      reset = FALSE,
-      #      col = "grey95",
-      #      border = "transparent",
-      #      cex.main = 1, asp = 0.5)
-      # 
-      setDT(df1)
-      setorder(df1, time)
-      
-      # plot points
-      plot(df1$x, df1$y, type = "p", add = TRUE, cex = 0.2,
-             col = pals::kovesi.rainbow(20)[df1$resPatch],
-                main = glue('resTimeLimit = {unique(df1$resTimeLimit)} mins, travelSeg = {unique(df1$travelSeg)} pts'))
-
-      # plot patches scaled by duration
-      points(df2$x_mean, df2$y_mean,
-             pch = 21,
-             cex = df2$duration*0.002, col = "grey29", 
-             bg = scales::alpha("grey", 0.2))
-      
-      # add bg
-      # points(df2$x_mean, df2$y_mean,
-      #        pch = 19,
-      #        cex = df2$duration*0.002, alpha = 0.2)
-      text(df2$x_mean, df2$y_mean, col = 1,
-             cex = 2,
-             labels = as.character(df2$resPatch))
-      
-      # plot path
-      lines(df2$x_mean, df2$y_mean,
-             cex = df2$duration*0.002, col = 1)
-    })
+  x11()
+  {
+    ggplot()+
+      geom_path(data = plotdata,
+                aes(x_mean, y_mean), 
+                #size =2, 
+                col = "grey30",
+                arrow = arrow(type = "closed", angle = 7))+
+      geom_point(data = plotdata,
+                 aes(x_mean, y_mean, size = duration, fill = area), 
+                 pch = 21)+
+      scale_fill_distiller(palette = "", direction = 1)+
+      theme_bw()+
+      facet_grid(resTimeLimit~travelSeg, labeller = label_both)+
+      labs(col = "distance (m)",
+           x = "long.", y = "lat.")+
+      theme(axis.text = element_blank(),
+            panel.grid = element_blank())
   }
-  dev.off()
 }
-
