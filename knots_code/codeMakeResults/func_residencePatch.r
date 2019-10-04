@@ -40,22 +40,14 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time", tidaltime = "
         # this unions the smaller buffers
         summarise()
       
-      # remove the pts sf obj
-      rm(pts); gc()
-      # convert the complex sf object to a simpler sfc column
-      # this function, st_sfc, produces warnings. ignore them
-      # polygons$data = reduce(polygons$data, c) %>% st_sfc()
-      
-      # get patch area in m^2
-      # polygons = mutate(polygons, area = as.numeric(st_area(polygons)))
-      
       # return to summarising residence patches
       patchSummary = df %>%
         group_by(id, tidalcycle, resPatch) %>%
         nest() %>%
         
         # filter if too few points in patch
-        # THIS IS AN ARBITRARY CHOICE
+        # 3 is the minimum required to calculate distances and get variance, for example
+        # since one value is NA by default
         filter(map_int(data, nrow) >= 3) %>% 
         
         mutate(data = map(data, function(df){
