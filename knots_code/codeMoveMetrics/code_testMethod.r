@@ -98,20 +98,46 @@ plotdata = patches %>% bind_rows()
   x11()
   {
     ggplot()+
+      geom_point(data = data[[1]] %>% select(-resTimeLimit,-travelSeg),
+                 aes(x,y, col = resTime), size = 0.01)+
+      
+      geom_point(data = plotdata,
+                 aes(x_mean, y_mean, size = duration/60), 
+                 pch = 16, col = "dodgerblue", alpha = 0.5)+
+      
       geom_path(data = plotdata,
                 aes(x_mean, y_mean), 
                 #size =2, 
                 col = "grey30",
                 arrow = arrow(type = "closed", angle = 7))+
-      geom_point(data = plotdata,
-                 aes(x_mean, y_mean, size = duration, fill = area), 
-                 pch = 21)+
-      scale_fill_distiller(palette = "", direction = 1)+
+      
+      geom_segment(data = bind_rows(data),
+                   aes(x = min(x),
+                       xend = min(x) + 100,
+                       y = min(y),
+                       yend = min(y)),
+                   col = "grey", size = 2)+ 
+      
+      scale_color_distiller(palette = "Reds", direction = 1,
+                            breaks = c(0,30,60),
+                            limits = c(0,NA))+
+      
+      scale_size(range = c(0, 10))+
+      
+      # scale_fill_distiller(palette = "Greys", direction = 1,
+      #                      breaks = c(4e3, 10e3, 16e3))+
       theme_bw()+
       facet_grid(resTimeLimit~travelSeg, labeller = label_both)+
-      labs(col = "distance (m)",
-           x = "long.", y = "lat.")+
+      labs(col = "residence time (mins)",
+           x = "long.", y = "lat.",
+           size = "time in patch (mins)")+
       theme(axis.text = element_blank(),
-            panel.grid = element_blank())
+            panel.grid = element_blank(),
+            legend.position = "top")
   }
+  ggsave(filename = "../figs/fig_newPatches_testSegments.png",
+          device = png(),
+          dpi = 300,
+          height = 11, width = 8)
+  dev.off()
 }
