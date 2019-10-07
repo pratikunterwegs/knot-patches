@@ -160,7 +160,7 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
         arrange(time_mean) %>% 
         # add distance between and duration in SECONDS
         mutate(patch = 1:nrow(.),
-               distBwPatch = funcDistance(., a = "x_mean", b = "y_mean"),
+               distBwPatch = funcDistance(., a = "X_mean", b = "Y_mean"),
                duration = time_end - time_start) %>% 
         select(-indePatch)
       
@@ -169,13 +169,15 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
       
       gc();
       
-      # plot to check
-      # ggplot(pts)+
-      #   geom_point(aes(x_mean,y_mean,size = time_end - time_start))+
-      #   geom_path(aes(x_mean,y_mean), 
+      # # plot to check
+      # {
+      #   x11()
+      #   ggplot(pts)+
+      #   geom_point(aes(X_mean,Y_mean,size = time_end - time_start))+
+      #   geom_path(aes(X_mean,Y_mean),
       #             arrow = arrow(angle = 10, type = "closed"),
       #             col = 2)
-      
+      # }
       # return the patch data as function output
       print(glue('residence patches of {unique(df$id)} in tide {unique(df$tidalcycle)} constructed...'))
       return(pts)
