@@ -83,7 +83,7 @@ funcPatchTimeDiff = function(df, t1 = "time_end", t2 = "time_start"){
   t2 = t2[2:length(t2)]
   
   # get differences in minutes
-  timeDiff = as.numeric(t1 - t2)/60
+  timeDiff = as.numeric(t2 - t1)/60
   
   # return diff
   return(c(NA, timeDiff))
