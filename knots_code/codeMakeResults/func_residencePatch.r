@@ -10,7 +10,9 @@
 # use sf
 library(tidyverse); library(sf)
 
-funcGetResPatches <- function(df, x = "x", y = "y", time = "time", tidaltime = "tidaltime"){
+funcGetResPatches <- function(df, x = "x", y = "y", time = "time", 
+                              tidaltime = "tidaltime",
+                              buffsize = 10.0){
   
   # assert df is a data frame
   assertthat::assert_that(is.data.frame(df),
