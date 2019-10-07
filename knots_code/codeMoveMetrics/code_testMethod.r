@@ -33,15 +33,21 @@ data <- purrr::pmap(dataToTest, function(revdata, htData, resTimeLimit, travelSe
   print(glue('param assumpts...\n residence time threshold = {resTimeLimit}\n travel segment smoothing = {travelSeg}'))
   
   # read the file in
-  df <- fread(revdata)
+  {df <- fread(revdata)
+    dataHt <- fread(htData)
+    # merge to recurse data
+    df <- merge(df, dataHt, all = FALSE)
+    print(glue('individual {unique(df$id)} in tide {unique(df$tidalcycle)} has {nrow(df)} obs'))
+  }
   
-  print(glue('individual {unique(df$id)} in tide {unique(df$tidalcycle)} has {nrow(df)} obs'))
+  ## SET THE DF IN ORDER OF TIME ##
+  setorder(df,time)
   
   # prep to assign sequence to res patches
   # to each id.tide combination
   # remove NA vals in fpt
   # set residence time to 0 or 1 predicated on <= 10 (mins)
-  df <- df[!is.na(fpt),
+  df <- df[!is.na(fpt) #& between(tidaltime, 4*60, 9*60),
            ][,resTimeBool:= ifelse(resTime <= resTimeLimit, F, T)
              # get breakpoints if the mean over rows of length travelSeg
              # is below 0.5
