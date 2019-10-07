@@ -112,18 +112,27 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
         mutate(indePatch = cumsum(timediff > 3600 | spatdiff > 100)) #%>% 
       
       # merge polygons by indepatch and handle the underlying data
+      
+      #### THE UNDERLYING DATA NEED TO BE SUBSET SPATIALLY ####
+      
       pts = 
         pts %>% 
         `st_crs<-`(32631) %>% 
-        group_by(id, tidalcycle, indePatch) %>% 
+        group_by(id, tidalcycle, indePatch) %>%
+        # merge polygons
         summarise(data = list(data)) %>% 
         # get the distinct observations
         mutate(data = map(data, function(dff){
           dff %>% 
             bind_rows() %>% 
             distinct() %>% 
-            arrange(time)
-        })) 
+            arrange(time) %>% 
+            st_as_sf(coords = c("x", "y")) %>% 
+            `st_crs<-`(32631)
+        })) %>% 
+        mutate(data = map2(data, geometry, function(dff1, dff2){
+          st_crop(dff1, dff2)
+        }))
       
       # get patch summary from underlying data
       pts = 
@@ -131,8 +140,10 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
         # add x,y,time summary
         mutate(patchSummary = map(data, function(dff){
           dff %>% 
+            bind_cols(., st_coordinates(dff) %>% as_tibble()) %>% 
+            st_drop_geometry() %>% 
             arrange(time) %>% 
-            summarise_at(vars(x, y, time, tidaltime),
+            summarise_at(vars(X, Y, time, tidaltime),
                          list(mean = mean,
                               start = first,
                               end = last))
