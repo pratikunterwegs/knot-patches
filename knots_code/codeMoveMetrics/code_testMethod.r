@@ -107,11 +107,11 @@ plotdata = patches %>% bind_rows()
       
       
       geom_point(data = plotdata %>% filter(tidalcycle %in% c(7,8,9)),
-                 aes(x_mean, y_mean, size = duration/60), 
+                 aes(X_mean, Y_mean, size = duration/60), 
                  pch = 1, col = 1, alpha = 1)+
       
       geom_path(data = plotdata %>% filter(tidalcycle %in% c(7,8,9)),
-                aes(x_mean, y_mean), 
+                aes(X_mean, Y_mean), 
                 #size =2, 
                 col = "red",
                 arrow = arrow(type = "closed", angle = 7))+
