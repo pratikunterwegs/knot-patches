@@ -11,13 +11,13 @@ source("codeMoveMetrics/functionEuclideanDistance.r")
 source("codeMakeResults/func_residencePatch.r")
 
 # read in recurse data for selected birds
-dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)[1]
+dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)[1:5]
 
 # get time to high tide from written data
-dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)[1]
+dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)[1:5]
 
 # make dataframe of assumption parameters
-resTimeLimit = c(2, 4, 10); travelSeg = c(1, 5, 10); travelTime = c(1, 2, 5, 10)
+resTimeLimit = c(2, 4, 10); travelSeg = c(5)
 assumpData <- crossing(resTimeLimit, travelSeg)
 
 # make data - param assump combo df
@@ -68,11 +68,7 @@ data <- purrr::pmap(dataToTest, function(revdata, htData, resTimeLimit, travelSe
                    ][resTimeBool == T,
                      # assign res patch as change from F to T
                      ][,resPatch:= cumsum(resPatch)]
-  
-  
-  dataHt <- fread(htData)
-  # merge to recurse data
-  df <- merge(df, dataHt, all = FALSE)
+
   
   # add param assumptions
   df$resTimeLimit = resTimeLimit; df$travelSeg = travelSeg
