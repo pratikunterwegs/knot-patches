@@ -98,34 +98,36 @@ funcReturnPatchData <- function(segData){
 
 # get patches
 patches <- map(data, funcReturnPatchData)
+
+# prep plot data
 plotdata = patches %>% bind_rows()
 #### diagnostic plots for respatches ####
 {
   x11()
   {
     ggplot()+
-      geom_point(data = data[[1]] %>% select(-resTimeLimit,-travelSeg),
-                 aes(x,y, col = resTime), size = 0.01)+
+      geom_point(data = bind_rows(data) %>% filter(tidalcycle %in% c(7,8,9)),
+                 aes(x,y, col = resTime), alpha = 0.7, size = 0.5)+
       
-      geom_point(data = plotdata,
+      
+      geom_point(data = plotdata %>% filter(tidalcycle %in% c(7,8,9)),
                  aes(x_mean, y_mean, size = duration/60), 
-                 pch = 16, col = "dodgerblue", alpha = 0.5)+
+                 pch = 1, col = 1, alpha = 1)+
       
-      geom_path(data = plotdata,
+      geom_path(data = plotdata %>% filter(tidalcycle %in% c(7,8,9)),
                 aes(x_mean, y_mean), 
                 #size =2, 
-                col = "grey30",
+                col = "red",
                 arrow = arrow(type = "closed", angle = 7))+
       
-      geom_segment(data = bind_rows(data),
+      geom_segment(data = bind_rows(data) %>% filter(tidalcycle %in% c(7,8,9)),
                    aes(x = min(x),
                        xend = min(x) + 100,
                        y = min(y),
                        yend = min(y)),
-                   col = "grey", size = 2)+ 
-      
-      scale_color_distiller(palette = "Reds", direction = 1,
-                            breaks = c(0,30,60),
+                   col = "grey", size = 2)+
+
+      scale_color_distiller(palette = "Blues", direction = 1,
                             limits = c(0,NA))+
       
       scale_size(range = c(0, 10))+
@@ -133,17 +135,20 @@ plotdata = patches %>% bind_rows()
       # scale_fill_distiller(palette = "Greys", direction = 1,
       #                      breaks = c(4e3, 10e3, 16e3))+
       theme_bw()+
-      facet_grid(resTimeLimit~travelSeg, labeller = label_both)+
-      labs(col = "residence time (mins)",
+      facet_grid(resTimeLimit~tidalcycle, labeller = label_both,
+                 scales = "free")+
+      labs(#col = "residence time (mins)",
            x = "long.", y = "lat.",
-           size = "time in patch (mins)")+
+           size = "time in patch (mins)",
+           title = "individual 435, tidalcycle = 8 - 10, low tide (7-9)",
+           subtitle = "grey bar = 100 m")+
       theme(axis.text = element_blank(),
             panel.grid = element_blank(),
             legend.position = "top")
   }
-  ggsave(filename = "../figs/fig_newPatches_testSegments.png",
-          device = png(),
-          dpi = 300,
-          height = 11, width = 8)
+  ggsave(filename = "../figs/fig_newPatches_testSegments_435_8to10.png",
+         device = png(),
+         dpi = 300,
+         height = 12, width = 12)
   dev.off()
 }
