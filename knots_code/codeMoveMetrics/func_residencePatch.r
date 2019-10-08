@@ -84,7 +84,7 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
                     
                   })) %>%
         # unnest the data
-        unnest() %>% 
+        unnest(cols = c("summary")) %>% 
         # arrange in order of start time for interpatch distances
         arrange(start) %>%
         # needs ungrouping
