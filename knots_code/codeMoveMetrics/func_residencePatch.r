@@ -7,6 +7,8 @@
 
 # currently complains about vectorising geometry cols, but seems to work
 
+x = "x"; y = "y"; time = "time"; tidaltime = "tidaltime"; buffsize = 10
+
 # use sf
 library(tidyverse); library(sf)
 
@@ -15,14 +17,15 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
                               buffsize = 10.0){
   
   # assert df is a data frame
-  assertthat::assert_that(is.data.frame(df),
-                          is.character(c(x,y,time,tidaltime)), # check that args are strings
-                          is.numeric(c(df$time, df$tidaltime)), # check times are numerics
-                          msg = "argument classes don't match expected arg classes")
-  
-  assertthat::assert_that(length(base::intersect(c(x,y,time,tidaltime), names(df))) == 4,
-                          msg = "wrong column names provided, or df has wrong cols")
-  
+  {
+    assertthat::assert_that(is.data.frame(df),
+                           is.character(c(x,y,time,tidaltime)), # check that args are strings
+                           is.numeric(c(df$time, df$tidaltime)), # check times are numerics
+                           msg = "argument classes don't match expected arg classes")
+    
+    assertthat::assert_that(length(base::intersect(c(x,y,time,tidaltime), names(df))) == 4,
+                            msg = "wrong column names provided, or df has wrong cols")
+  }
   # try function and ignore errors for now
   tryCatch(
     {
