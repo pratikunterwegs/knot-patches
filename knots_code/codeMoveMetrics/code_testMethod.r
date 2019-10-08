@@ -68,7 +68,7 @@ data <- purrr::pmap(dataToTest, function(revdata, htData, resTimeLimit, travelSe
                    ][resTimeBool == T,
                      # assign res patch as change from F to T
                      ][,resPatch:= cumsum(resPatch)]
-
+  
   
   # add param assumptions
   df$resTimeLimit = resTimeLimit; df$travelSeg = travelSeg
