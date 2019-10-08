@@ -80,14 +80,18 @@ data <- purrr::pmap(dataToTest, function(revdata, htData, resTimeLimit, travelSe
 #### separate funciton to return res patches ####
 funcReturnPatchData <- function(segData){
   # get patch data
-  patchData <- funcGetResPatches(segData)
+  patchData <- funcGetResPatches(segData, returnSf = TRUE)
   
   # remove what seems to be the sf data
   patchData <- patchData # %>% dplyr::select(-data)
   
   # add the parameter assumptions
-  patchData$resTimeLimit = segData$resTimeLimit[1]
-  patchData$travelSeg = segData$travelSeg[1]
+  patchData[[1]]$resTimeLimit = segData$resTimeLimit[1]
+  patchData[[1]]$travelSeg = segData$travelSeg[1]
+  
+  # now add to spatial obj for plotting
+  patchData[[2]]$resTimeLimit = segData$resTimeLimit[1]
+  patchData[[2]]$travelSeg = segData$travelSeg[1]
   
   return(patchData)
 }
@@ -95,56 +99,74 @@ funcReturnPatchData <- function(segData){
 # get patches
 patches <- map(data, funcReturnPatchData)
 
-# prep plot data
-plotdata = patches %>% bind_rows()
-#### diagnostic plots for respatches ####
-{
-  x11()
-  {
-    ggplot()+
-      geom_point(data = bind_rows(data) %>% filter(tidalcycle %in% c(7,8,9)),
-                 aes(x,y, col = resTime), alpha = 0.7, size = 0.5)+
-      
-      
-      geom_point(data = plotdata %>% filter(tidalcycle %in% c(7,8,9)),
-                 aes(X_mean, Y_mean, size = duration/60), 
-                 pch = 1, col = 1, alpha = 1)+
-      
-      geom_path(data = plotdata %>% filter(tidalcycle %in% c(7,8,9)),
-                aes(X_mean, Y_mean), 
-                #size =2, 
-                col = "red",
-                arrow = arrow(type = "closed", angle = 7))+
-      
-      geom_segment(data = bind_rows(data) %>% filter(tidalcycle %in% c(7,8,9)),
-                   aes(x = min(x),
-                       xend = min(x) + 100,
-                       y = min(y),
-                       yend = min(y)),
-                   col = "grey", size = 2)+
+# add names and transpose
+patches <- map(patches, function(df){
+  names(df) = c("data", "spatial")
+  return(df)
+}) %>% 
+  transpose()
 
-      scale_color_distiller(palette = "Blues", direction = 1,
-                            limits = c(0,NA))+
-      
-      scale_size(range = c(0, 10))+
-      
-      # scale_fill_distiller(palette = "Greys", direction = 1,
-      #                      breaks = c(4e3, 10e3, 16e3))+
-      theme_bw()+
-      facet_grid(resTimeLimit~tidalcycle, labeller = label_both,
-                 scales = "free")+
-      labs(#col = "residence time (mins)",
-           x = "long.", y = "lat.",
-           size = "time in patch (mins)",
-           title = "individual 435, tidalcycle = 8 - 10, low tide (7-9)",
-           subtitle = "grey bar = 100 m")+
-      theme(axis.text = element_blank(),
-            panel.grid = element_blank(),
-            legend.position = "top")
-  }
-  ggsave(filename = "../figs/fig_newPatches_testSegments_435_8to10.png",
-         device = png(),
-         dpi = 300,
-         height = 12, width = 12)
-  dev.off()
-}
+# bind rows for plotting
+patches <- map(patches, bind_rows)
+
+# handle spatial data
+patches$spatial <- st_sf(patches$spatial, sf_column_name = "geometry")
+
+# make patch data an sf column
+patches$data <- patches$data %>% 
+  st_as_sf(coords = c("X_mean", "Y_mean"))
+
+# make data sf
+data = bind_rows(data) %>% 
+  st_as_sf(coords = c("x","y"))
+
+# set crs
+st_crs(patches$spatial) = 32631; st_crs(patches$data) = 32631; st_crs(data) = 32631
+
+# make lines from patches
+travelpaths = patches$data
+travelpaths = travelpaths %>% 
+  bind_cols(st_coordinates(.) %>% as_tibble()) %>% 
+  st_drop_geometry() %>% 
+  group_by(tidalcycle, resTimeLimit) %>% 
+  nest() %>% 
+  mutate(data = map(data, function(df){
+    st_linestring(as.matrix(df[,c("X", "Y")]))
+  }))
+travelpaths = st_sf(travelpaths, sf_column_name = "data")
+st_crs(travelpaths) = 32631
+
+#### plot data ####
+library(tmap)
+map = 
+  tm_shape(data)+
+  tm_dots(alpha = 0.2, size = 0.01, shape = 4,
+          col = "grey")+
+  tm_facets(by = c("resTimeLimit"), along = c("tidalcycle"))+
+  
+  tm_shape(patches$spatial)+
+  tm_polygons(col = "patch", style = "cat", alpha = 0.5,
+              border.col = "dodgerblue",
+              palette = "Paired")+
+  
+  
+  
+  tm_facets(by = c("resTimeLimit"), along = c("tidalcycle"))+
+  
+  tm_shape(travelpaths)+
+  tm_lines(col = "red")+
+  
+  
+  tm_facets(by = c("resTimeLimit"), along = c("tidalcycle"))+
+  
+  tm_shape(patches$data)+
+  tm_dots(shape = 21, col = "blue",
+          size = "duration")+
+  
+  
+  tm_facets(by = c("resTimeLimit"), along = c("tidalcycle"))+
+  tm_layout(legend.outside = F)
+
+tmap_save(tm = map,
+          filename = "../figs/fig_newPatches_testSegments_435_8to10.pdf",
+          height = 10, width = 12)
