@@ -95,9 +95,11 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
       
       # unnest polygons column to get data
       # this has issues because of incompatible data types - check sf/dplyr/tidyr version
-      pts = pts %>% 
-        unnest(polygons, .drop = FALSE)
-      
+      pts = pts %>%  
+        unnest_legacy(cols = c(polygons), .drop = FALSE) %>% 
+        # remove polygons col, which is now geometry
+        select(-polygons)
+        
       # clear garbage
       gc()
       
