@@ -8,7 +8,7 @@ library(glue); library(sf)
 source("codeMoveMetrics/functionEuclideanDistance.r")
 
 # function for resPatches arranged by time
-source("codeMakeResults/func_residencePatch.r")
+source("codeMoveMetrics/func_residencePatch.r")
 
 # read in recurse data for selected birds
 dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)[1:5]
