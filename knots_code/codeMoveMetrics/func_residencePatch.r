@@ -165,17 +165,21 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
       
       # arrange patches by start time and add between patch distance
       pts =
-        pts %>% 
-        unnest(patchSummary, .drop = TRUE) %>% 
+        pts %>%
+        # add area and number of fixes
+        mutate(area = as.numeric(st_area(.)),
+               nfixes = map_int(data, nrow)) %>%
+        # drop geometry
+        st_drop_geometry() %>% 
+        # remove data column
+        select(-data) %>% 
+        unnest_legacy(cols = c(patchSummary), .drop = TRUE) %>% 
         arrange(time_mean) %>% 
         # add distance between and duration in SECONDS
         mutate(patch = 1:nrow(.),
                distBwPatch = funcDistance(., a = "X_mean", b = "Y_mean"),
                duration = time_end - time_start) %>% 
         select(-indePatch)
-      
-      # drop geometry
-      pts = pts %>% st_drop_geometry()
       
       gc();
       
