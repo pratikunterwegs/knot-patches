@@ -14,14 +14,15 @@ library(tidyverse); library(sf)
 
 funcGetResPatches <- function(df, x = "x", y = "y", time = "time", 
                               tidaltime = "tidaltime",
-                              buffsize = 10.0){
+                              buffsize = 10.0,
+                              returnSf = FALSE){
   
   # assert df is a data frame
   {
     assertthat::assert_that(is.data.frame(df),
-                           is.character(c(x,y,time,tidaltime)), # check that args are strings
-                           is.numeric(c(df$time, df$tidaltime)), # check times are numerics
-                           msg = "argument classes don't match expected arg classes")
+                            is.character(c(x,y,time,tidaltime)), # check that args are strings
+                            is.numeric(c(df$time, df$tidaltime)), # check times are numerics
+                            msg = "argument classes don't match expected arg classes")
     
     assertthat::assert_that(length(base::intersect(c(x,y,time,tidaltime), names(df))) == 4,
                             msg = "wrong column names provided, or df has wrong cols")
@@ -77,7 +78,8 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
                     # get summary of time to determine merging based on temporal proximity
                     dff <- dff %>% 
                       summarise_at(vars(time),
-                                   list(start = first))
+                                   list(start = first,
+                                        mean = mean))
                     
                     # return this
                     return(dff)
@@ -99,7 +101,7 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
         unnest_legacy(cols = c(polygons), .drop = FALSE) %>% 
         # remove polygons col, which is now geometry
         select(-polygons)
-        
+      
       # clear garbage
       gc()
       
@@ -108,14 +110,14 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
         pts %>% 
         st_as_sf(., sf_column_name = "geometry")
       
-      # get distance between polygons
+      # get distance between polygons in space and time (using MEAN TIME)
       pts = pts %>% 
         # requires ungroup
         ungroup() %>% 
         mutate(spatdiff = c(Inf, as.numeric(st_distance(x = pts[1:nrow(pts)-1,], 
                                                         y = pts[2:nrow(pts),], 
                                                         by_element = T))),
-               timediff = c(Inf, diff(start)))
+               timediff = c(Inf, diff(mean)))
       
       # identify independent patches
       pts = pts %>%  
@@ -163,6 +165,10 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
           sum(dff$dist)
         }))
       
+      if(returnSf == TRUE){
+        patchSf = pts %>% select(id, tidalcycle, patch = indePatch, geometry)
+      }
+      
       # arrange patches by start time and add between patch distance
       pts =
         pts %>%
@@ -194,7 +200,12 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
       # }
       # return the patch data as function output
       print(glue('residence patches of {unique(df$id)} in tide {unique(df$tidalcycle)} constructed...'))
-      return(pts)
+      
+      if(returnSf == TRUE){
+        return(list(pts, patchSf))
+      } else{
+        return(pts)
+      }
     },
     # null error function, with option to collect data on errors
     error= function(e)
