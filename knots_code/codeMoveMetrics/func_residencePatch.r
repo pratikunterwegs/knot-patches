@@ -110,6 +110,8 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
       
       # get distance between polygons
       pts = pts %>% 
+        # requires ungroup
+        ungroup() %>% 
         mutate(spatdiff = c(Inf, as.numeric(st_distance(x = pts[1:nrow(pts)-1,], 
                                                         y = pts[2:nrow(pts),], 
                                                         by_element = T))),
