@@ -62,6 +62,8 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
       
       # return to summarising residence patch data from points
       patchSummary = pts %>%
+        # add ungroup, dplyr version changes have an effect
+        ungroup() %>% 
         transmute(id = id,
                   tidalcycle = tidalcycle,
                   resPatch = resPatch,
@@ -89,6 +91,7 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
       pts = left_join(pts, patchSummary)
       
       # unnest polygons column to get data
+      # this has issues because of incompatible data types - check sf/dplyr/tidyr version
       pts = pts %>% 
         unnest(polygons, .drop = FALSE)
       
