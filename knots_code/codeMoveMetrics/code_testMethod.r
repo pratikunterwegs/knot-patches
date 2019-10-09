@@ -136,6 +136,19 @@ travelpaths = travelpaths %>%
 travelpaths = st_sf(travelpaths, sf_column_name = "data")
 st_crs(travelpaths) = 32631
 
+#### export data as shapefile ####
+# export
+st_write(patches$data, dsn = "../data2018/spatials/testPatches/data",
+         layer = "patchData", driver = "ESRI Shapefile")
+
+st_write(data, dsn = "../data2018/spatials/testPatches/rawData",
+         layer = "rawdata", driver = "ESRI Shapefile")
+
+st_write(patches$spatial, dsn = "../data2018/spatials/testPatches/patches",
+         layer = "patchOutline", driver = "ESRI Shapefile", delete_layer = T)
+
+st_write(travelpaths, dsn = "../data2018/spatials/testPatches/paths",
+         layer = "travelPaths", driver = "ESRI Shapefile")
 #### plot data ####
 library(tmap)
 map = 
