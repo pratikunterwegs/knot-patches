@@ -5,10 +5,13 @@ library(data.table); library(tidyverse)
 library(glue); library(sf)
 
 # source distance function
-source("codeMoveMetrics/functionEuclideanDistance.r")
+source("codeFunctions/functionEuclideanDistance.r")
 
 # function for resPatches arranged by time
-source("codeMoveMetrics/func_residencePatch.r")
+source("codeFunctions/func_residencePatch.r")
+
+# function for segmentation
+source("codeFunctions/func_segmentPath.r")
 
 # read in recurse data for selected birds
 dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)[1:5]
