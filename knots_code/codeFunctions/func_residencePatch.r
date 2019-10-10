@@ -17,7 +17,7 @@ library(tidyverse); library(sf)
 funcGetResPatches <- function(df, x = "x", y = "y", time = "time", 
                               tidaltime = "tidaltime",
                               buffsize = 10.0,
-                              returnSf = FALSE){
+                              returnSf = TRUE){
   
   #### check assumptions ####
   # assert df is a data frame
