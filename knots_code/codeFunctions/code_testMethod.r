@@ -100,7 +100,7 @@ st_write(patches$spatial, dsn = "../data2018/spatials/testPatches/patches",
          layer = "patchOutline", driver = "ESRI Shapefile", delete_layer = T)
 
 st_write(travelpaths, dsn = "../data2018/spatials/testPatches/paths",
-         layer = "travelPaths", driver = "ESRI Shapefile")
+         layer = "travelPaths", driver = "ESRI Shapefile", delete_layer = T)
 #### plot data ####
 library(tmap)
 map = 
