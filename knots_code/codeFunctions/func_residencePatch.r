@@ -128,7 +128,7 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
       
       # identify independent patches
       pts = pts %>%  
-        mutate(indePatch = cumsum(timediff > 3600 | spatdiff > 50)) #%>% 
+        mutate(indePatch = cumsum(timediff > 3600 | spatdiff > 50))  
       
       # merge polygons by indepatch and handle the underlying data
       pts = 
@@ -197,15 +197,6 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
       
       gc();
       
-      # # plot to check
-      # {
-      #   x11()
-      #   ggplot(pts)+
-      #   geom_point(aes(X_mean,Y_mean,size = time_end - time_start))+
-      #   geom_path(aes(X_mean,Y_mean),
-      #             arrow = arrow(angle = 10, type = "closed"),
-      #             col = 2)
-      # }
       # return the patch data as function output
       print(glue('residence patches of {unique(df$id)} in tide {unique(df$tidalcycle)} constructed...'))
       
