@@ -128,7 +128,7 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
       
       # identify independent patches
       pts = pts %>%  
-        mutate(indePatch = cumsum(timediff > 3600 | spatdiff > 20)) #%>% 
+        mutate(indePatch = cumsum(timediff > 3600 | spatdiff > 50)) #%>% 
       
       # merge polygons by indepatch and handle the underlying data
       pts = 
