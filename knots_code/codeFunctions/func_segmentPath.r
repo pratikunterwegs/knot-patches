@@ -1,5 +1,9 @@
 #### function for residence time segmentation ####
-funcSegPath <- function(revdata, htData, resTimeLimit = 2, travelSeg = 5){
+funcSegPath <- function(revdata, htData, resTimeLimit = 2, travelSeg = 5,
+                        inferPatches = TRUE){
+  
+  # adding the inferPatches argument to prep for inferring
+  # residence patches from missing data between travel segments
   
   # print param assumpts
   print(glue('param assumpts...\n residence time threshold = {resTimeLimit}\n travel segment smoothing = {travelSeg}'))
@@ -15,6 +19,15 @@ funcSegPath <- function(revdata, htData, resTimeLimit = 2, travelSeg = 5){
   ## SET THE DF IN ORDER OF TIME ##
   setorder(df,time)
   
+  if(inferPatches == TRUE){
+    # get the max and min time
+    maxtime = max(df$time); mintime= min(df$time)
+    
+    # make a df with id, tidalcycle and time seq, with missing x and y
+    # identify where there are missing segments more than 2 mins long
+    # there, create a sequence of points with id, tide, and time in 3s intervals
+    # merge with true df
+  }
   # prep to assign sequence to res patches
   # to each id.tide combination
   # remove NA vals in fpt
