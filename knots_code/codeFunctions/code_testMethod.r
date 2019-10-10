@@ -59,7 +59,7 @@ patches <- map(patches, function(df){
   names(df) = c("data", "spatial")
   return(df)
 }) %>% 
-  transpose()
+  purrr::transpose()
 
 # bind rows for plotting
 patches <- map(patches, bind_rows)
