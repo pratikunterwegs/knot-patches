@@ -147,7 +147,10 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
             `st_crs<-`(32631)
         })) %>% 
         mutate(data = map2(data, geometry, function(dff1, dff2){
-          st_crop(dff1, dff2)
+          # keep rows contained by polygon  
+          dff1 = dff1[unlist(st_contains(dff2, dff1)),]
+          # return kept rows
+          return(dff1)
         }))
       
       # get patch summary from underlying data
