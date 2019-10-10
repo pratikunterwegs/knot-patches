@@ -30,6 +30,8 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
     assertthat::assert_that(length(base::intersect(c(x,y,time,tidaltime), names(df))) == 4,
                             msg = "wrong column names provided, or df has wrong cols")
   }
+  
+  #### pass methods to try catch ####
   # try function and ignore errors for now
   tryCatch(
     {
