@@ -95,47 +95,15 @@ st_crs(travelpaths) = 32631
 #### export data as shapefile ####
 # export
 st_write(patches$data, dsn = "../data2018/spatials/testPatches/data",
-         layer = "patchData", driver = "ESRI Shapefile")
+         layer = "patchData", driver = "ESRI Shapefile", delete_layer = T)
 
 st_write(data, dsn = "../data2018/spatials/testPatches/rawData",
-         layer = "rawdata", driver = "ESRI Shapefile")
+         layer = "rawdata", driver = "ESRI Shapefile", delete_layer = T)
 
 st_write(patches$spatial, dsn = "../data2018/spatials/testPatches/patches",
          layer = "patchOutline", driver = "ESRI Shapefile", delete_layer = T)
 
 st_write(travelpaths, dsn = "../data2018/spatials/testPatches/paths",
          layer = "travelPaths", driver = "ESRI Shapefile", delete_layer = T)
-#### plot data ####
-library(tmap)
-map = 
-  tm_shape(data)+
-  tm_dots(alpha = 0.2, size = 0.01, shape = 4,
-          col = "grey")+
-  tm_facets(by = c("resTimeLimit"), along = c("tidalcycle"))+
-  
-  tm_shape(patches$spatial)+
-  tm_polygons(col = "patch", style = "cat", alpha = 0.5,
-              border.col = "dodgerblue",
-              palette = "Paired")+
-  
-  
-  
-  tm_facets(by = c("resTimeLimit"), along = c("tidalcycle"))+
-  
-  tm_shape(travelpaths)+
-  tm_lines(col = "red")+
-  
-  
-  tm_facets(by = c("resTimeLimit"), along = c("tidalcycle"))+
-  
-  tm_shape(patches$data)+
-  tm_dots(shape = 21, col = "blue",
-          size = "duration")+
-  
-  
-  tm_facets(by = c("resTimeLimit"), along = c("tidalcycle"))+
-  tm_layout(legend.outside = F)
 
-tmap_save(tm = map,
-          filename = "../figs/fig_newPatches_testSegments_435_8to10.pdf",
-          height = 10, width = 12)
+
