@@ -119,6 +119,8 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
       pts = pts %>% 
         # requires ungroup
         ungroup() %>% 
+        # the spatial distance is already the edge to edge distance
+        # not the centroid to centroid distance
         mutate(spatdiff = c(Inf, as.numeric(st_distance(x = pts[1:nrow(pts)-1,], 
                                                         y = pts[2:nrow(pts),], 
                                                         by_element = T))),
@@ -126,12 +128,9 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
       
       # identify independent patches
       pts = pts %>%  
-        mutate(indePatch = cumsum(timediff > 3600 | spatdiff > 100)) #%>% 
+        mutate(indePatch = cumsum(timediff > 3600 | spatdiff > 20)) #%>% 
       
       # merge polygons by indepatch and handle the underlying data
-      
-      #### THE UNDERLYING DATA NEED TO BE SUBSET SPATIALLY ####
-      
       pts = 
         pts %>% 
         `st_crs<-`(32631) %>% 
