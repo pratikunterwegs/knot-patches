@@ -12,11 +12,14 @@ x = "x"; y = "y"; time = "time"; tidaltime = "tidaltime"; buffsize = 10
 # use sf
 library(tidyverse); library(sf)
 
+#### begin function here ####
+
 funcGetResPatches <- function(df, x = "x", y = "y", time = "time", 
                               tidaltime = "tidaltime",
                               buffsize = 10.0,
                               returnSf = FALSE){
   
+  #### check assumptions ####
   # assert df is a data frame
   {
     assertthat::assert_that(is.data.frame(df),
