@@ -166,7 +166,7 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
         })) %>% 
         # add total within patch distance
         mutate(distInPatch = map_dbl(data, function(dff){
-          sum(dff$dist)
+          sum(dff$dist) # this distance is calculated earlier in the processing
         }))
       
       if(returnSf == TRUE){
