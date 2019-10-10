@@ -187,7 +187,8 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
         arrange(time_mean) %>% 
         # add distance between and duration in SECONDS
         mutate(patch = 1:nrow(.),
-               distBwPatch = funcDistance(., a = "X_mean", b = "Y_mean"),
+               distBwPatch = funcPatchDistance(., x1 = "X_end", x2 = "X_start",
+                                               y1 = "Y_end", y2 = "Y_start"),
                duration = time_end - time_start) %>% 
         select(-indePatch)
       
