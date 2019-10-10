@@ -173,15 +173,23 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
         }))
       
       if(returnSf == TRUE){
-        patchSf = pts %>% select(id, tidalcycle, patch = indePatch, geometry)
+        patchSf = pts %>% select(id, tidalcycle, time_mean, 
+                                 patch = indePatch, geometry) %>% 
+          # hopefully fixes some patch misordering
+          arrange(time_mean) %>% 
+          mutate(patch = 1:nrow(.))
       }
       
       # arrange patches by start time and add between patch distance
       pts =
         pts %>%
-        # add area and number of fixes
+        # add area and number of fixes and distance per patch
+        # also proportion of expected positions received
         mutate(area = as.numeric(st_area(.)),
-               nfixes = map_int(data, nrow)) %>%
+               nfixes = map_int(data, nrow),
+               distPerPoint = distInPatch/nfixes,
+               # we expect positions every 3 seconds
+               propFixes = nfixes/((time_end - time_start)/3)) %>%
         # drop geometry
         st_drop_geometry() %>% 
         # remove data column
