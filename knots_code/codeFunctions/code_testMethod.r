@@ -77,14 +77,15 @@ st_crs(patches$spatial) = 32631; st_crs(patches$data) = 32631; st_crs(data) = 32
 
 # make lines from patches
 travelpaths = patches$data
+# source traj func
+source("codeFunctions/func_trajBwPatch.r")
 travelpaths = travelpaths %>% 
-  bind_cols(st_coordinates(.) %>% as_tibble()) %>% 
+  # bind_cols(st_coordinates(.) %>% as_tibble()) %>% 
   st_drop_geometry() %>% 
   group_by(tidalcycle, resTimeLimit) %>% 
   nest() %>% 
-  mutate(data = map(data, function(df){
-    st_linestring(as.matrix(df[,c("X", "Y")]))
-  }))
+  mutate(data = map(data, funcPatchTraj))
+
 travelpaths = st_sf(travelpaths, sf_column_name = "data")
 st_crs(travelpaths) = 32631
 
