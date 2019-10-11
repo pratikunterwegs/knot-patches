@@ -27,12 +27,13 @@ funcSegPath <- function(revdata, htData, resTimeLimit = 2, travelSeg = 5,
     # identify where there are missing segments more than 2 mins long
     # there, create a sequence of points with id, tide, and time in 3s intervals
     # merge with true df
+    tempdf = df[]
   }
   # prep to assign sequence to res patches
   # to each id.tide combination
-  # remove NA vals in fpt
+  # remove NA vals in resTime
   # set residence time to 0 or 1 predicated on <= 10 (mins)
-  df <- df[!is.na(fpt) #& between(tidaltime, 4*60, 9*60),
+  df <- df[!is.na(resTime) #& between(tidaltime, 4*60, 9*60),
            ][,resTimeBool:= ifelse(resTime <= resTimeLimit, F, T)
              # get breakpoints if the mean over rows of length travelSeg
              # is below 0.5
