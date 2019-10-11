@@ -33,7 +33,7 @@ funcSegPath <- function(revdata, htData, resTimeLimit = 2, travelSeg = 5,
                         spatdiff = funcDistance(df = df, a = "x", b = "y"))
                   # find missing patches if timediff is greater than 1 hour
                   # AND spatdiff is less than 100m
-                  ][,infPatch := cumsum(timediff > 3600 & spatdiff < 100)
+                  ][,infPatch := cumsum(timediff > 1800 & spatdiff < 100)
                     # subset the data to collect only the first two points
                     # of an inferred patch
                     ][,posId := 1:(.N), by = "infPatch"
