@@ -37,7 +37,7 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
     {
       # convert to sf points object
       pts = df %>%
-        group_by(id, tidalcycle, resPatch) %>% 
+        group_by(id, tidalcycle, resPatch, type) %>% 
         nest() %>% 
         # make sd
         mutate(sfdata = map(data, function(dff){
