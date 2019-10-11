@@ -65,7 +65,7 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
             st_cast(., "POLYGON") %>% 
             # get area for later filtering
             mutate(area = as.numeric(st_area(.))) #%>% 
-            
+          
         })) %>% 
         # remove point polygons if real
         # keeps inferred polygons, which have only a single coord
@@ -133,6 +133,7 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
         mutate(spatdiff = c(Inf, as.numeric(st_distance(x = pts[1:nrow(pts)-1,], 
                                                         y = pts[2:nrow(pts),], 
                                                         by_element = T))),
+               # temporal diffs on mean
                timediff = c(Inf, diff(mean)))
       
       # identify independent patches
@@ -140,12 +141,15 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
         mutate(indePatch = cumsum(timediff > 3600 | spatdiff > 50))  
       
       # merge polygons by indepatch and handle the underlying data
-      pts = 
+      pts =
         pts %>% 
         `st_crs<-`(32631) %>% 
         group_by(id, tidalcycle, indePatch) %>%
         # merge polygons
-        summarise(data = list(data)) %>% 
+        summarise(data = list(data),
+                  # tag patches as mixed if comprised of real and inferred
+                  type = ifelse(length(unique(type)) == 2, 
+                                "mixed", first(type))) %>% 
         # get the distinct observations
         mutate(data = map(data, function(dff){
           dff %>% 
