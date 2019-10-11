@@ -50,13 +50,17 @@ funcSegPath <- function(revdata, htData, resTimeLimit = 2, travelSeg = 5,
                              y = mean(y),
                              resTime = resTimeLimit),
                           by = c("id", "tidalcycle", "infPatch","nfixes")
-                          ][infPatch > 0,]
+                          ][infPatch > 0,
+                            ][,type:="inferred"]
       }
     
     print(glue('\n {max(tempdf$infPatch)} inferred patches with {nrow(infPatchDf)} positions\n'))
     
   }
   rm(tempdf); gc()
+  
+  # add type to df
+  df[,type:="real"]
   
   # merge inferred data to empirical data
   df <- merge(df, infPatchDf, by = intersect(names(df), names(infPatchDf)), all = T)
