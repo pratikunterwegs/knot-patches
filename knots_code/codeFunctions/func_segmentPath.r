@@ -46,12 +46,15 @@ funcSegPath <- function(revdata, htData, resTimeLimit = 2, travelSeg = 5,
       infPatchDf = tempdf[,nfixes:=length(seq(time[1], time[2], by = 3)),
                                           by = c("id", "tidalcycle", "infPatch")
                                           ][,.(time = (seq(time[1], time[2], by = 3)),
-                             x = rnorm(nfixes, mean(x), sd(x)),
-                             y = rnorm(nfixes, mean(y), sd(y)),
+                             x = mean(x),
+                             y = mean(y),
                              resTime = resTimeLimit),
                           by = c("id", "tidalcycle", "infPatch","nfixes")
                           ][infPatch > 0,]
-    }
+      }
+    
+    print(glue('\n {max(tempdf$infPatch)} inferred patches with {nrow(infPatchDf)} positions\n'))
+    
   }
   rm(tempdf); gc()
   
