@@ -63,10 +63,18 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
         mutate(polygons = map(polygons, function(dff){
           st_cast(dff, "MULTIPOLYGON") %>% 
             st_cast(., "POLYGON") %>% 
-            mutate(area = as.numeric(st_area(.))) %>% 
-            filter(area > 100*pi) %>% 
-            # remove area after filtering
-            select(-area)
+            # get area for later filtering
+            mutate(area = as.numeric(st_area(.))) #%>% 
+            
+        })) %>% 
+        # remove point polygons if real
+        # keeps inferred polygons, which have only a single coord
+        mutate(polygons = map2(polygons, type, function(spatial, kind){
+          if(kind == "real"){
+            spatial = spatial %>% 
+              filter(area > 100*pi)
+          }
+          return(spatial)
         }))
       
       # return to summarising residence patch data from points
@@ -75,6 +83,7 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
         ungroup() %>% 
         transmute(id = id,
                   tidalcycle = tidalcycle,
+                  type = type,
                   resPatch = resPatch,
                   summary = map(data, function(df){
                     # arrange by time
