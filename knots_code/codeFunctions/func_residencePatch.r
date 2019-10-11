@@ -182,16 +182,23 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
         })) %>% 
         # add total within patch distance
         mutate(distInPatch = map_dbl(data, function(dff){
-          sum(dff$dist) # this distance is calculated earlier in the processing
+          sum(dff$dist, na.rm = T) # this distance is calculated earlier in the processing
         }))
       
+      # export sf object if requested
       if(returnSf == TRUE){
-        patchSf = pts %>% select(id, tidalcycle, time_mean, 
-                                 patch = indePatch, geometry) %>% 
+        patchSf = pts %>%
+          mutate(time_mean = map_dbl(patchSummary, function(thisdata){
+            thisdata$time_mean
+          })) %>% 
+          dplyr::select(id, tidalcycle, time_mean, 
+                                 patch = indePatch, geometry,
+                                 time_mean, type) %>% 
           # hopefully fixes some patch misordering
           arrange(time_mean) %>% 
           mutate(patch = 1:nrow(.))
       }
+      
       
       # arrange patches by start time and add between patch distance
       pts =
@@ -200,11 +207,10 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
         # also proportion of expected positions received
         mutate(area = as.numeric(st_area(.)),
                nfixes = map_int(data, nrow),
-               distPerPoint = distInPatch/nfixes,
-               # we expect positions every 3 seconds
-               propFixes = nfixes/((time_end - time_start)/3)) %>%
+               distPerPoint = distInPatch/nfixes) %>%
+        
         # drop geometry
-        st_drop_geometry() %>% 
+        st_drop_geometry() %>%
         # remove data column
         select(-data) %>% 
         unnest_legacy(cols = c(patchSummary), .drop = TRUE) %>% 
@@ -213,7 +219,8 @@ funcGetResPatches <- function(df, x = "x", y = "y", time = "time",
         mutate(patch = 1:nrow(.),
                distBwPatch = funcPatchDistance(., x1 = "X_end", x2 = "X_start",
                                                y1 = "Y_end", y2 = "Y_start"),
-               duration = time_end - time_start) %>% 
+               duration = time_end - time_start,
+               propFixes = nfixes/(duration/3)) %>% 
         select(-indePatch)
       
       gc();
