@@ -94,13 +94,13 @@ st_crs(travelpaths) = 32631
 
 #### export data as shapefile ####
 # export
-st_write(patches$data, dsn = "../data2018/spatials/testPatches/data",
+st_write(patches$data, dsn = "../data2018/spatials/testPatches/patchData",
          layer = "patchData", driver = "ESRI Shapefile", delete_layer = T)
 
-st_write(data, dsn = "../data2018/spatials/testPatches/rawData",
+st_write(data %>% filter(type != "inferred"), dsn = "../data2018/spatials/testPatches/rawData",
          layer = "rawdata", driver = "ESRI Shapefile", delete_layer = T)
 
-st_write(patches$spatial, dsn = "../data2018/spatials/testPatches/patches",
+st_write(patches$spatial%>% filter(type != "inferred"), dsn = "../data2018/spatials/testPatches/patches",
          layer = "patchOutline", driver = "ESRI Shapefile", delete_layer = T)
 
 st_write(travelpaths, dsn = "../data2018/spatials/testPatches/paths",
