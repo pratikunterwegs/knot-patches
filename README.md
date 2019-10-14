@@ -1,17 +1,20 @@
 **NB:** Data, if any generated or accessed, belong to GELIFES-RUG and COS-NIOZ and/or relevant members. See contact details.
 
-# Code for: Experimental behaviour scores predict free-living space-use
+# Code for: Consistent individual differences predict free-living space-use
 
 ## Attribution
 
 Please contact the following before cloning or in case of interest:
 
-- Pratik Gupte (code maintainer)
-  - p.r.gupte@rug.nl
-  - rug.nl/staff/p.r.gupte
+- Pratik Gupte (author and maintainer)
+  - PhD student, University of Groningen
+  - Guest researcher, NIOZ
+  - p.r.gupte@rug.nl or pratik.gupte@nioz.nl
+  - https://www.rug.nl/staff/p.r.gupte
   - Nijenborgh 7/5172.0583 9747AG Groningen
 
 - Allert Bijleveld (PI): allert.bijleveld@nioz.nl
+  - Project information: https://www.nioz.nl/en/about/cos/coastal-movement-ecology/shorebird-tracking
 
 - Selin Ersoy (collab): selin.ersoy@nioz.nl
 
