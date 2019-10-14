@@ -61,3 +61,5 @@ funcSegPath <- function(revdata, htData, resTimeLimit = 2, travelSeg = 5,
   return(df)
   
 }
+
+# ends here
