@@ -9,58 +9,37 @@ library(tidyverse); library(data.table)
 library(glue); library(sf)
 
 # source distance function
-source("codeMoveMetrics/functionEuclideanDistance.r")
+source("codeFunctions/functionEuclideanDistance.r")
+
+# source segmentation function
+source("codeFunctions/func_segmentPath.r")
 
 # function for resPatches arranged by time
-source("codeMakeResults/func_residencePatch.r")
+source("codeFunctions/func_residencePatch.r")
 
 
 # read in recurse data for selected birds
-dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)
+dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)[1:3]
 
 # get time to high tide from written data
-dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)
+dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)[1:3]
 
-# read in the data
-data <- purrr::map2_df(dataRevFiles, dataHtFiles, function(filename, htData){
+# gather in a dataframe# make dataframe of assumption parameters
+resTimeLimit = c(4); travelSeg = c(5)
+assumpData <- crossing(resTimeLimit, travelSeg)
 
-  # read the file in
-  df <- fread(filename)
+# make data - param assump combo df
+dataToTest <- tibble(revdata = dataRevFiles, 
+                     htData = dataHtFiles, 
+                     assump = list(assumpData)) %>% 
+  unnest(cols = assump)
 
-  print(glue('individual {unique(df$id)} in tide {unique(df$tidalcycle)} has {nrow(df)} obs'))
+# read in the data and perform segmentation
+data <- pmap(dataToTest, funcSegPath)
 
-  # prep to assign sequence to res patches
-  # to each id.tide combination
-  # remove NA vals in fpt
-  # set residence time to 0 or 1 predicated on <= 10 (mins)
-  df <- df[!is.na(fpt),
-           ][,rollMeanResTime:= zoo::rollmean(resTime, k = 20, fill = NA)
-             ][,resTime:= ifelse(rollMeanResTime <= 10, F, T)
-                         # get breakpoints where F changes to T and vice versa
-                         ][,resPatch:= c(as.numeric(resTime[1]),
-                                         diff(resTime))
-                           # keeping fixes where restime > 10
-                           ]
-  df <- df[resTime == T,# assign res patch as change from F to T
-                             ][,resPatch:= cumsum(resPatch)]
-
-
-  dataHt <- fread(htData)
-  # merge to recurse data and order by time
-  df <- merge(df, dataHt, all = FALSE)
-  setorder(df, time)
-
-  # get patch data
-  patchData <- funcGetResPatches(df)
-
-  # remove htData
-  rm(htData)
-
-  patchData$data <- NULL
-
-  return(patchData)
-
-})
+# run the patch metric calculations
+# do not return sf
+patches <- map_df(data, funcGetResPatches)
 
 # write data to file
 fwrite(data, file = "../data2018/oneHertzData/data2018patches.csv",

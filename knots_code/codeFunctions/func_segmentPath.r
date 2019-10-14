@@ -27,13 +27,51 @@ funcSegPath <- function(revdata, htData, resTimeLimit = 2, travelSeg = 5,
     # identify where there are missing segments more than 2 mins long
     # there, create a sequence of points with id, tide, and time in 3s intervals
     # merge with true df
+    tempdf = df[!is.na(time),
+                # get difference in time and space
+                ][,`:=`(timediff = c(diff(time), NA),
+                        spatdiff = funcDistance(df = df, a = "x", b = "y"))
+                  # find missing patches if timediff is greater than 1 hour
+                  # AND spatdiff is less than 100m
+                  ][,infPatch := cumsum(timediff > 1800 & spatdiff < 100)
+                    # subset the data to collect only the first two points
+                    # of an inferred patch
+                    ][,posId := 1:(.N), by = "infPatch"
+                      ][posId <= 2 & !is.na(infPatch),]
+    # handle cases where there are inferred patches
+    # if(max(tempdf$infPatch > 0))
+      {
+      # make list column of expected times with 3 second interval
+      # assume coordinate is the mean between 'takeoff' and 'landing'
+      infPatchDf = tempdf[,nfixes:=length(seq(time[1], time[2], by = 3)),
+                                          by = c("id", "tidalcycle", "infPatch")
+                                          ][,.(time = (seq(time[1], time[2], by = 3)),
+                             x = mean(x),
+                             y = mean(y),
+                             resTime = resTimeLimit),
+                          by = c("id", "tidalcycle", "infPatch","nfixes")
+                          ][infPatch > 0,
+                            ][,type:="inferred"]
+      }
+    
+    print(glue('\n {max(tempdf$infPatch)} inferred patches with {nrow(infPatchDf)} positions\n'))
+    
   }
+  rm(tempdf); gc()
+  
+  # add type to df
+  df[,type:="real"]
+  
+  # merge inferred data to empirical data
+  df <- merge(df, infPatchDf, by = intersect(names(df), names(infPatchDf)), all = T)
+  # sort by time
+  setorder(df, time)
   # prep to assign sequence to res patches
   # to each id.tide combination
-  # remove NA vals in fpt
+  # remove NA vals in resTime
   # set residence time to 0 or 1 predicated on <= 10 (mins)
-  df <- df[!is.na(fpt) #& between(tidaltime, 4*60, 9*60),
-           ][,resTimeBool:= ifelse(resTime <= resTimeLimit, F, T)
+  df <- df[!is.na(resTime) #& between(tidaltime, 4*60, 9*60),
+           ][,resTimeBool:= ifelse(resTime < resTimeLimit, F, T)
              # get breakpoints if the mean over rows of length travelSeg
              # is below 0.5
              # how does this work?
@@ -61,3 +99,5 @@ funcSegPath <- function(revdata, htData, resTimeLimit = 2, travelSeg = 5,
   return(df)
   
 }
+
+# ends here
