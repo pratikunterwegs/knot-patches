@@ -20,7 +20,7 @@ dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names =
 dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)[1:5]
 
 # make dataframe of assumption parameters
-resTimeLimit = c(5); travelSeg = c(5)
+resTimeLimit = c(4); travelSeg = c(5)
 assumpData <- crossing(resTimeLimit, travelSeg)
 
 # make data - param assump combo df
