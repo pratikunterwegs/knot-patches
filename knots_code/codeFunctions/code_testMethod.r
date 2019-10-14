@@ -20,7 +20,7 @@ dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names =
 dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)[1:5]
 
 # make dataframe of assumption parameters
-resTimeLimit = c(2, 4, 10); travelSeg = c(5)
+resTimeLimit = c(5); travelSeg = c(5)
 assumpData <- crossing(resTimeLimit, travelSeg)
 
 # make data - param assump combo df
@@ -94,13 +94,13 @@ st_crs(travelpaths) = 32631
 
 #### export data as shapefile ####
 # export
-st_write(patches$data, dsn = "../data2018/spatials/testPatches/data",
+st_write(patches$data, dsn = "../data2018/spatials/testPatches/patchData",
          layer = "patchData", driver = "ESRI Shapefile", delete_layer = T)
 
-st_write(data, dsn = "../data2018/spatials/testPatches/rawData",
+st_write(data %>% filter(type != "inferred"), dsn = "../data2018/spatials/testPatches/rawData",
          layer = "rawdata", driver = "ESRI Shapefile", delete_layer = T)
 
-st_write(patches$spatial, dsn = "../data2018/spatials/testPatches/patches",
+st_write(patches$spatial%>% filter(type != "inferred"), dsn = "../data2018/spatials/testPatches/patches",
          layer = "patchOutline", driver = "ESRI Shapefile", delete_layer = T)
 
 st_write(travelpaths, dsn = "../data2018/spatials/testPatches/paths",
