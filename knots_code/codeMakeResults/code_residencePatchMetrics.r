@@ -12,7 +12,7 @@ library(glue); library(sf)
 source("codeMoveMetrics/functionEuclideanDistance.r")
 
 # function for resPatches arranged by time
-source("codeRawData/func_residencePatch.r")
+source("codeMakeResults/func_residencePatch.r")
 
 
 # read in recurse data for selected birds
@@ -23,44 +23,47 @@ dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = 
 
 # read in the data
 data <- purrr::map2_df(dataRevFiles, dataHtFiles, function(filename, htData){
-  
+
   # read the file in
   df <- fread(filename)
-  
+
   print(glue('individual {unique(df$id)} in tide {unique(df$tidalcycle)} has {nrow(df)} obs'))
-  
+
   # prep to assign sequence to res patches
   # to each id.tide combination
   # remove NA vals in fpt
   # set residence time to 0 or 1 predicated on <= 10 (mins)
-  df <- df[!is.na(fpt),][,resTime:= ifelse(resTime <= 2, F, T)
+  df <- df[!is.na(fpt),
+           ][,rollMeanResTime:= zoo::rollmean(resTime, k = 20, fill = NA)
+             ][,resTime:= ifelse(rollMeanResTime <= 10, F, T)
                          # get breakpoints where F changes to T and vice versa
                          ][,resPatch:= c(as.numeric(resTime[1]),
                                          diff(resTime))
                            # keeping fixes where restime > 10
-                           ][resTime == T,
-                             # assign res patch as change from F to T
+                           ]
+  df <- df[resTime == T,# assign res patch as change from F to T
                              ][,resPatch:= cumsum(resPatch)]
-  
-  
+
+
   dataHt <- fread(htData)
-  # merge to recurse data
+  # merge to recurse data and order by time
   df <- merge(df, dataHt, all = FALSE)
-  
+  setorder(df, time)
+
   # get patch data
   patchData <- funcGetResPatches(df)
-  
+
   # remove htData
   rm(htData)
-  
+
   patchData$data <- NULL
-  
+
   return(patchData)
-  
+
 })
 
 # write data to file
-fwrite(data, file = "../data2018/oneHertzData/data2018patches.csv", 
+fwrite(data, file = "../data2018/oneHertzData/data2018patches.csv",
        dateTimeAs = "epoch")
 
 
