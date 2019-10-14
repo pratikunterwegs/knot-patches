@@ -9,10 +9,13 @@ library(tidyverse); library(data.table)
 library(glue); library(sf)
 
 # source distance function
-source("codeMoveMetrics/functionEuclideanDistance.r")
+source("codeFunctions/functionEuclideanDistance.r")
+
+# source segmentation function
+source("codeFunctions/func_segmentPath.r")
 
 # function for resPatches arranged by time
-source("codeMakeResults/func_residencePatch.r")
+source("codeFunctions/func_residencePatch.r")
 
 
 # read in recurse data for selected birds
@@ -21,46 +24,13 @@ dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names =
 # get time to high tide from written data
 dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)
 
-# read in the data
-data <- purrr::map2_df(dataRevFiles, dataHtFiles, function(filename, htData){
+# gather in a dataframe
+data <- as_tibble(dataRevFiles, dataHtFiles)
 
-  # read the file in
-  df <- fread(filename)
-
-  print(glue('individual {unique(df$id)} in tide {unique(df$tidalcycle)} has {nrow(df)} obs'))
-
-  # prep to assign sequence to res patches
-  # to each id.tide combination
-  # remove NA vals in fpt
-  # set residence time to 0 or 1 predicated on <= 10 (mins)
-  df <- df[!is.na(fpt),
-           ][,rollMeanResTime:= zoo::rollmean(resTime, k = 20, fill = NA)
-             ][,resTime:= ifelse(rollMeanResTime <= 10, F, T)
-                         # get breakpoints where F changes to T and vice versa
-                         ][,resPatch:= c(as.numeric(resTime[1]),
-                                         diff(resTime))
-                           # keeping fixes where restime > 10
-                           ]
-  df <- df[resTime == T,# assign res patch as change from F to T
-                             ][,resPatch:= cumsum(resPatch)]
+# read in the data and perform segmentation
+data <- purrr::pmap_df(data, funcSegPath)
 
 
-  dataHt <- fread(htData)
-  # merge to recurse data and order by time
-  df <- merge(df, dataHt, all = FALSE)
-  setorder(df, time)
-
-  # get patch data
-  patchData <- funcGetResPatches(df)
-
-  # remove htData
-  rm(htData)
-
-  patchData$data <- NULL
-
-  return(patchData)
-
-})
 
 # write data to file
 fwrite(data, file = "../data2018/oneHertzData/data2018patches.csv",
