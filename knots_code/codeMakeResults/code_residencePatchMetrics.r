@@ -30,7 +30,7 @@ patches <- map_df(data, function(onThisData){
 })
 
 # write data to file
-fwrite(data, file = "../data2018/oneHertzData/data2018patches.csv",
+fwrite(patches, file = "../data2018/oneHertzData/data2018patches.csv",
        dateTimeAs = "epoch")
 
 
