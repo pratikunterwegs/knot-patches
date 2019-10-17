@@ -31,8 +31,11 @@ patches <- map_df(data, function(onThisData){
 
 # test some patches
 library(ggplot2)
+library(ggthemes)
 ggplot(patches)+
-  geom_point(aes(X_mean,Y_mean, size = duration))
+  geom_point(aes(X_mean,Y_mean, size = duration, col = type))+
+  geom_path(aes(X_mean,Y_mean), arrow = arrow(angle = 7))+
+  theme(legend.position = "none")
 
 # write data to file
 fwrite(patches, file = "../data2018/oneHertzData/data2018patches.csv",
