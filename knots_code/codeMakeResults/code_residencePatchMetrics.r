@@ -29,6 +29,11 @@ patches <- map_df(data, function(onThisData){
   watlasUtils::funcGetResPatches(df = onThisData)
 })
 
+# test some patches
+library(ggplot2)
+ggplot(patches)+
+  geom_point(aes(X_mean,Y_mean, size = duration))
+
 # write data to file
 fwrite(patches, file = "../data2018/oneHertzData/data2018patches.csv",
        dateTimeAs = "epoch")
