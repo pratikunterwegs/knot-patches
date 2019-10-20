@@ -18,21 +18,49 @@ dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names =
 # read in ht data
 dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)
 
+# create output folder if not present
+if(!dir.exists("../data2018/segmentData")){
+  dir.create("../data2018/segmentData")
+}
+
 # read in the data and perform segmentation
-data <- map2(dataRevFiles, dataHtFiles, function(df1, df2){
-  watlasUtils::funcSegPath(revdata = df1, htdata = df2)
+map2(dataRevFiles, dataHtFiles, function(df1, df2){
+  # make segmented data
+  somedata <- watlasUtils::funcSegPath(revdata = df1, htdata = df2)
+  # write segmented data
+  fwrite(x = somedata, file = glue::glue('../data2018/segmentData/seg_{unique(df1$id)}_{unique(df1$tidalcycle)}.csv'), dateTimeAs = "epoch")
+
 })
-
-
-# remove data with fewer than 5 rows
-data <- purrr::keep(data, function(df) nrow(df) > 0 & !is.na(nrow(df)))
 
 gc()
 
+# list files
+segFiles <- list.files("../data2018/segmentData", pattern = "seg", full.names=TRUE)
+
+
+# remove data with fewer than 5 rows
+# data <- purrr::keep(data, function(df) nrow(df) > 0 & !is.na(nrow(df)))
+
+# make patches folder
+if(!dir.exists("../data2018/patchData")){
+  dir.create("../data2018/patchData")
+}
+
 # run the patch metric calculations
 # do not return sf
-patches <- map_df(data, function(onThisData){
-  watlasUtils::funcGetResPatches(df = onThisData, returnSf = FALSE)
+map(segFiles, function(onThisData){
+  # read in data
+  data <- fread(onThisData)
+
+  # look if data are present
+  if(nrow(data) > 0 & !is.na(nrow(data))){
+
+  # run patch function if
+  patches <- watlasUtils::funcGetResPatches(df = data, returnSf = FALSE)
+
+  # write data
+  fwrite(x = patches, file = glue::glue('../data2018/patchData/patches_{unique(data$id)}_{unique(data$tidalcycle)}.csv'), , dateTimeAs = "epoch")
+
 })
 
  # test some patches
