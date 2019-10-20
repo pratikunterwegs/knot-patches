@@ -8,32 +8,43 @@
 library(tidyverse); library(data.table)
 library(glue); library(sf)
 
-# install from devbranch
-devtools::install_github("pratikunterwegs/watlasUtils", ref="devbranch", force = T)
+# load the custom library
+devtools::install_github("pratikunterwegs/watlasUtils", ref="devbranch", force = TRUE)
 library(watlasUtils)
 
 # read in recurse data for selected birds
-dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)[1:3]
+dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)
 
-# gather in a dataframe# make dataframe of assumption parameters
-resTimeLimit = c(4); travelSeg = c(5)
-assumpData <- crossing(resTimeLimit, travelSeg)
-
-# make data - param assump combo df
-dataToTest <- tibble(revdata = dataRevFiles, 
-                     htData = dataHtFiles, 
-                     assump = list(assumpData)) %>% 
-  unnest(cols = assump)
+# read in ht data
+dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)
 
 # read in the data and perform segmentation
-data <- pmap(dataToTest, funcSegPath)
+data <- map2(dataRevFiles, dataHtFiles, function(df1, df2){
+  watlasUtils::funcSegPath(revdata = df1, htdata = df2)
+})
+
+
+# remove data with fewer than 5 rows
+data <- purrr::keep(data, function(df) nrow(df) > 0 & !is.na(nrow(df)))
+
+gc()
 
 # run the patch metric calculations
 # do not return sf
-patches <- map_df(data, funcGetResPatches)
+patches <- map_df(data, function(onThisData){
+  watlasUtils::funcGetResPatches(df = onThisData, returnSf = FALSE)
+})
+
+ # test some patches
+library(ggplot2)
+library(ggthemes)
+ggplot(patches)+
+  geom_point(aes(X_mean,Y_mean, size = duration, col = type))+
+  geom_path(aes(X_mean,Y_mean), arrow = arrow(angle = 7))+
+  theme(legend.position = "none")
 
 # write data to file
-fwrite(data, file = "../data2018/oneHertzData/data2018patches.csv",
+fwrite(patches, file = "../data2018/oneHertzData/data2018patches.csv",
        dateTimeAs = "epoch")
 
 
