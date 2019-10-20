@@ -8,21 +8,12 @@
 library(tidyverse); library(data.table)
 library(glue); library(sf)
 
-# source distance function
-source("codeFunctions/functionEuclideanDistance.r")
-
-# source segmentation function
-source("codeFunctions/func_segmentPath.r")
-
-# function for resPatches arranged by time
-source("codeFunctions/func_residencePatch.r")
-
+# install from devbranch
+devtools::install_github("pratikunterwegs/watlasUtils", ref="devbranch", force = T)
+library(watlasUtils)
 
 # read in recurse data for selected birds
 dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)[1:3]
-
-# get time to high tide from written data
-dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)[1:3]
 
 # gather in a dataframe# make dataframe of assumption parameters
 resTimeLimit = c(4); travelSeg = c(5)
