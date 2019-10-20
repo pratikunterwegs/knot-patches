@@ -27,13 +27,15 @@ data <- map2(dataRevFiles, dataHtFiles, function(df1, df2){
 # remove data with fewer than 5 rows
 data <- purrr::keep(data, function(df) nrow(df) > 0 & !is.na(nrow(df)))
 
+gc()
+
 # run the patch metric calculations
 # do not return sf
 patches <- map_df(data, function(onThisData){
   watlasUtils::funcGetResPatches(df = onThisData, returnSf = FALSE)
 })
 
-# test some patches
+ # test some patches
 library(ggplot2)
 library(ggthemes)
 ggplot(patches)+
