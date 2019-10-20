@@ -28,7 +28,7 @@ map2(dataRevFiles, dataHtFiles, function(df1, df2){
   # make segmented data
   somedata <- watlasUtils::funcSegPath(revdata = df1, htdata = df2)
   # write segmented data
-  fwrite(x = somedata, file = glue::glue('../data2018/segmentData/seg_{unique(df1$id)}_{unique(df1$tidalcycle)}.csv'), dateTimeAs = "epoch")
+  fwrite(x = somedata, file = glue::glue('../data2018/segmentData/seg_{unique(somedata1$id)}_{unique(somedata$tidalcycle)}.csv'), dateTimeAs = "epoch")
 
 })
 
@@ -59,7 +59,7 @@ map(segFiles, function(onThisData){
     patches <- watlasUtils::funcGetResPatches(df = data, returnSf = FALSE)
 
     # write data
-    fwrite(x = patches, file = glue::glue('../data2018/patchData/patches_{unique(data$id)}_{unique(data$tidalcycle)}.csv'), , dateTimeAs = "epoch")
+    fwrite(x = patches, file = glue::glue('../data2018/patchData/patches_{unique(data$id)}_{unique(data$tidalcycle)}.csv'), dateTimeAs = "epoch")
   }
 
 })
