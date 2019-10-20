@@ -54,26 +54,27 @@ map(segFiles, function(onThisData){
 
   # look if data are present
   if(nrow(data) > 0 & !is.na(nrow(data))){
+    
+    # run patch function if
+    patches <- watlasUtils::funcGetResPatches(df = data, returnSf = FALSE)
 
-  # run patch function if
-  patches <- watlasUtils::funcGetResPatches(df = data, returnSf = FALSE)
-
-  # write data
-  fwrite(x = patches, file = glue::glue('../data2018/patchData/patches_{unique(data$id)}_{unique(data$tidalcycle)}.csv'), , dateTimeAs = "epoch")
+    # write data
+    fwrite(x = patches, file = glue::glue('../data2018/patchData/patches_{unique(data$id)}_{unique(data$tidalcycle)}.csv'), , dateTimeAs = "epoch")
+  }
 
 })
 
- # test some patches
+# test some patches
 library(ggplot2)
 library(ggthemes)
 ggplot(patches)+
-  geom_point(aes(X_mean,Y_mean, size = duration, col = type))+
-  geom_path(aes(X_mean,Y_mean), arrow = arrow(angle = 7))+
-  theme(legend.position = "none")
+geom_point(aes(X_mean,Y_mean, size = duration, col = type))+
+geom_path(aes(X_mean,Y_mean), arrow = arrow(angle = 7))+
+theme(legend.position = "none")
 
 # write data to file
 fwrite(patches, file = "../data2018/oneHertzData/data2018patches.csv",
-       dateTimeAs = "epoch")
+dateTimeAs = "epoch")
 
 
 # end here
