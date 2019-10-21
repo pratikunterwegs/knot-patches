@@ -10,7 +10,7 @@ library(lmerTest)
 library(viridis)
 
 # simple ci function
-ci = function(x){
+ci <- function(x){
   qnorm(0.975)*sd(x, na.rm = T)/sqrt((length(x)))}
 
 #### load data ####
@@ -19,9 +19,6 @@ fileList <- list.files(path = "../data2018/patchData/", pattern = ".csv",
                        full.names = TRUE)
 # read in patch data
 patches <- purrr::map_df(fileList, fread)
-
-# keep only low tide
-# patches <- patches %>% filter(between(tidaltime_mean, 4*60, 9*60))
 
 # read in behav scores
 behavData <- read_csv("../data2018/behavScoresRanef.csv") %>% 
@@ -45,21 +42,15 @@ modsPatches1 <- patches %>%
   select(duration, distInPatch, distBwPatch, area, tidestage, # responses
          tExplScore, tidalcycle, nfixes,id) %>% # predictors
   drop_na() %>%
-  # make long for score type, either transformed or cond ranef
-  # gather(scoreType, scoreval, -id, -tidalcycle, -tidestage,  
-  #        -duration, -distInPatch, -distBwPatch, -area, -nfixes) %>% 
-  # group_by(scoreType) %>% 
-  # # split into two dfs
-  # nest() %>% 
   # # in each df, split by response variable
- gather(respvar, respval, -tExplScore, -nfixes, -id, -tidalcycle, 
-                  -tidestage) %>% 
+  gather(respvar, respval, -tExplScore, -nfixes, -id, -tidalcycle, 
+         -tidestage) %>% 
   group_by(respvar) %>% 
   nest()
 
 # check data availability
 map_int(modsPatches1$data, nrow)
-map(modsPatches1$data, function(z){length(unique(z$id))})
+map_int(modsPatches1$data, function(z){length(unique(z$id))})
 
 ### models for within patch metrics ####
 # run models for within patch metrics
@@ -84,7 +75,7 @@ map(modsPatches1$model, summary)
 # hereon, we use only the transformed exploration score
 dataBwPatches <- patches %>%
   mutate(tidestage = factor(ifelse(between(tidaltime_mean, 4*60, 9*60), "low", "high"))) %>%
-  drop_na(tExplScore) %>% 
+  drop_na() %>% 
   group_by(id, tidalcycle, tExplScore, tidestage) %>% 
   summarise(patchChanges = max(patch),
             nfixes = sum(nfixes))
@@ -98,7 +89,7 @@ modsPatches2 <- dataBwPatches %>%
 
 # count available data
 map_int(modsPatches2$data, nrow)
-map(modsPatches2$data, function(z){length(unique(z$id))})
+map_int(modsPatches2$data, function(z){length(unique(z$id))})
 
 # run model and get preds
 modsPatches2 <- modsPatches2 %>% 
@@ -109,7 +100,7 @@ modsPatches2 <- modsPatches2 %>%
   # get predictions with random effects and nfixes includes
   mutate(predMod = map2(model, data, function(a, b){
     b %>% 
-      mutate(predval = predict(a, type = "response", re.form = NULL))
+      mutate(predval = predict(a, type = "response", re.form = NULL, allow.new.levels = T))
   }))
 
 # assign names
@@ -138,7 +129,7 @@ dataPlt <- map(list(modsPatches1, modsPatches2), function(z){
   df <- z %>% 
     select(respvar, predMod) %>% 
     unnest() %>% 
-    group_by(respvar, 
+    group_by(respvar, tidestage,
              explorebin = plyr::round_any(tExplScore, 0.1)) %>% 
     mutate(respval = ifelse(respvar == "duration", respval/60, respval),
            predval = ifelse(respvar == "duration", predval/60, predval)) %>% 
@@ -149,7 +140,7 @@ dataPlt <- map(list(modsPatches1, modsPatches2), function(z){
   ungroup()
 
 #### plot figures ####
-source("codePlotOptions/ggThemeKnots.r")
+#source("codePlotOptions/ggThemeKnots.r")
 
 # write a labeller
 patchMetLabels <- c("area" = "Patch area (m²)",
@@ -160,7 +151,7 @@ patchMetLabels <- c("area" = "Patch area (m²)",
 
 # plot with panels of three and two columns
 # get first row of within patch plots
-# plotPatchMetrics01 <-
+plotPatchMetrics01 <-
   ggplot(dataPlt %>% 
            # filter(respvar %in% c("duration", "distInPatch", "area", "distBwPatch")) %>% 
            mutate(respvar = factor(respvar, levels = c("duration",
@@ -169,14 +160,16 @@ patchMetLabels <- c("area" = "Patch area (m²)",
                                                        "distBwPatch",
                                                        "patchChanges"))))+
   
-  geom_line(aes(x = explorebin, y = predval_mean), col = 2, lty = 1)+
-  geom_line(aes(x = explorebin, y = predval_mean + predval_ci), col = 2, lty = 2)+
+  geom_line(aes(x = explorebin, y = predval_mean, col = tidestage), lty = 1)+
+  geom_line(aes(x = explorebin, y = predval_mean + predval_ci, col = tidestage), lty = 2)+
   
-  geom_line(aes(x = explorebin, y = predval_mean - predval_ci), col = 2, lty = 2)+
+  geom_line(aes(x = explorebin, y = predval_mean - predval_ci, col = tidestage), lty = 2)+
   
   geom_pointrange(aes(x = explorebin, y = respval_mean,
                       ymin = respval_mean - respval_ci,
-                      ymax = respval_mean + respval_ci), lwd = 0.3, fatten = 4)+
+                      ymax = respval_mean + respval_ci,
+                      col = tidestage), lwd = 0.3, fatten = 4,
+                  position = position_dodge(width = 0.1))+
   
   
   scale_y_continuous(labels = scales::comma)+
@@ -185,7 +178,7 @@ patchMetLabels <- c("area" = "Patch area (m²)",
   
   scale_shape_manual(values = c(16, 17))+
   
-  scale_colour_manual(values = "grey40")+
+  scale_colour_brewer(palette = "Set1")+
   
   scale_fill_manual(values = "grey40")+
   
@@ -201,16 +194,19 @@ patchMetLabels <- c("area" = "Patch area (m²)",
 
 
 # send to file
-{pdf(file = "../figs/fig05.2patchMetricsNoExtremes.pdf", width = 180/25.4, height = 120/25.4)
+library(grid)
+{
+  png(file = "../figs/fig05patchMetrics.png", width = 1200, height = 600, res = 150)
   
   # grid.arrange(plotPatchMetrics01, plotPatchMetrics02, nrow = 2,
   #              layout_matrix = matrix(c(1,1,1,1,1,1,NA,2,2,2,2,NA), nrow = 2, byrow = T));
   # add subplot labels
   print(plotPatchMetrics01)
-  grid.text(c("(a)","(b)", "(c)", "(d)", "(e)"), x = c(0.075, 0.4, 0.725, 0.075, 0.4), 
-            y = c(0.95, 0.95, 0.95, 0.48, 0.48), just = "left",
-            gp = gpar(fontface = "bold"), vp = NULL)
+  # grid.text(c("(a)","(b)", "(c)", "(d)", "(e)"), x = c(0.075, 0.4, 0.725, 0.075, 0.4), 
+  #           y = c(0.95, 0.95, 0.95, 0.48, 0.48), just = "left",
+  #           gp = gpar(fontface = "bold"), vp = NULL)
   
-  dev.off()}
+  dev.off()
+}
 
 
