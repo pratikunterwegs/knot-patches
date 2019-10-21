@@ -1,28 +1,30 @@
 $`response = patchChanges | predictor = tExplScore`
 Linear mixed model fit by REML. t-tests use Satterthwaite's method ['lmerModLmerTest']
-Formula: respval ~ tExplScore + (1 | tidalcycle)
+Formula: respval ~ tExplScore + tidestage + (1 | tidalcycle)
    Data: z
 
-REML criterion at convergence: 23637
+REML criterion at convergence: 44924.4
 
 Scaled residuals: 
     Min      1Q  Median      3Q     Max 
--1.7522 -0.5785 -0.1646  0.3294 15.6561 
+-1.9150 -0.5560 -0.1666  0.3025 16.6331 
 
 Random effects:
  Groups     Name        Variance Std.Dev.
- tidalcycle (Intercept)   8.605   2.933  
- Residual               179.956  13.415  
-Number of obs: 2933, groups:  tidalcycle, 121
+ tidalcycle (Intercept)   9.997   3.162  
+ Residual               155.838  12.484  
+Number of obs: 5677, groups:  tidalcycle, 120
 
 Fixed effects:
-             Estimate Std. Error        df t value Pr(>|t|)    
-(Intercept)   20.1012     0.6897  884.6193  29.143  < 2e-16 ***
-tExplScore     4.0752     1.0459 2832.2841   3.896 9.99e-05 ***
+              Estimate Std. Error        df t value Pr(>|t|)    
+(Intercept)    19.9317     0.5419  587.0964   36.78  < 2e-16 ***
+tExplScore      3.7610     0.7004 5585.5537    5.37 8.21e-08 ***
+tidestagelow   -7.5242     0.3317 5552.4863  -22.69  < 2e-16 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 Correlation of Fixed Effects:
-           (Intr)
-tExplScore -0.833
+            (Intr) tExplS
+tExplScore  -0.709       
+tidestagelw -0.295 -0.005
 
