@@ -14,28 +14,26 @@ ci = function(x){
   qnorm(0.975)*sd(x, na.rm = T)/sqrt((length(x)))}
 
 #### load data ####
+# load file list
+fileList <- list.files(path = "../data2018/patchData/", pattern = ".csv",
+                       full.names = TRUE)
 # read in patch data
-patches <- read_csv("../data2018/oneHertzData/summary/data2018patches.csv")
+patches <- purrr::map_df(fileList, fread)
 
 # keep only low tide
-patches <- patches %>% filter(between(tidaltime_mean, 4*60, 9*60))
-
-# keep only ids with 5 or more patches per tidal cycle
-patches <- patches %>% group_by(id, tidalcycle) %>% 
-  mutate(toKeep = max(resPatch) > 5) %>% 
-  filter(toKeep == T) %>% select(-toKeep)
+# patches <- patches %>% filter(between(tidaltime_mean, 4*60, 9*60))
 
 # read in behav scores
 behavData <- read_csv("../data2018/behavScoresRanef.csv") %>% 
   select(id, contains("Score"))
 
-extreme <- quantile(behavData$tExplScore, probs = c(0.25, 0.75), na.rm = T)
+# extreme <- quantile(behavData$tExplScore, probs = c(0.25, 0.75), na.rm = T)
 
 # link behav score and patch size and area
 patches <- left_join(patches, behavData, by= c("id"))
 
 # remove extremes, the top and bottom 5%
-patches <- patches %>% filter(tExplScore %between% extreme)
+# patches <- patches %>% filter(tExplScore %between% extreme)
 
 #### prep for models ####
 # select patch duration, patch area, within patch distance,
