@@ -132,16 +132,6 @@ if(!dir.exists("../data2018/modOutput/")){
             con = "../data2018/modOutput/modOutPatchMods2.txt")}
 
 #### section for plots ####
-# prep the within patch data for plotting
-modsPatches1 <- modsPatches1 %>% 
-  # choose only transformed explore score
-  filter(scoreType == "tExplScore") %>%
-  select(-scoreType) %>%
-  # rename all scoreval to tExplScore
-  mutate(predMod = map(predMod, function(df){
-    rename(df, tExplScore = scoreval)
-  }))
-
 # starting with within patch models
 dataPlt <- map(list(modsPatches1, modsPatches2), function(z){
   
@@ -149,7 +139,7 @@ dataPlt <- map(list(modsPatches1, modsPatches2), function(z){
     select(respvar, predMod) %>% 
     unnest() %>% 
     group_by(respvar, 
-             explorebin = plyr::round_any(tExplScore, 0.05)) %>% 
+             explorebin = plyr::round_any(tExplScore, 0.1)) %>% 
     mutate(respval = ifelse(respvar == "duration", respval/60, respval),
            predval = ifelse(respvar == "duration", predval/60, predval)) %>% 
     summarise_at(vars(respval, predval),
