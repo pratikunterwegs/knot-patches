@@ -65,7 +65,7 @@ map(modsPatches1$data, function(z){length(unique(z$id))})
 # run models for within patch metrics
 modsPatches1 <- modsPatches1 %>% 
   mutate(model = map(data, function(z){
-    lmer(respval ~ scoreval + (1|tidalcycle), data = z, na.action = na.omit)
+    lmer(respval ~ tExplScore + tidestage + (1|tidalcycle), data = z, na.action = na.omit)
   })) %>% 
   # get predictions with random effects and nfixes includes
   mutate(predMod = map2(model, data, function(a, b){
@@ -75,7 +75,7 @@ modsPatches1 <- modsPatches1 %>%
 
 # assign names
 library(glue)
-names(modsPatches1$model) <- glue("response = {modsPatches1$respvar} | predictor = {modsPatches1$scoreType}")
+names(modsPatches1$model) <- glue("response = {modsPatches1$respvar} | predictor = tExplScore")
 
 # code to get mod summary
 map(modsPatches1$model, summary)
@@ -83,17 +83,17 @@ map(modsPatches1$model, summary)
 #### models for between patch metrics ####
 # hereon, we use only the transformed exploration score
 dataBwPatches <- patches %>%
-  # mutate(tidestage = factor(ifelse(between(tidaltime_mean, 4*60, 9*60), "low", "high"))) %>%
+  mutate(tidestage = factor(ifelse(between(tidaltime_mean, 4*60, 9*60), "low", "high"))) %>%
   drop_na(tExplScore) %>% 
-  group_by(id, tidalcycle, tExplScore) %>% 
-  summarise(patchChanges = max(resPatch),
-            nFixes = sum(nFixes))
+  group_by(id, tidalcycle, tExplScore, tidestage) %>% 
+  summarise(patchChanges = max(patch),
+            nfixes = sum(nfixes))
 
 # gather and run models
 modsPatches2 <- dataBwPatches %>%
   ungroup() %>% 
   gather(respvar, respval, 
-         -tExplScore, -id, -tidalcycle, -nFixes) %>% 
+         -tExplScore, -id, -tidalcycle, -nfixes, -tidestage) %>% 
   nest(-respvar)
 
 # count available data
@@ -103,7 +103,7 @@ map(modsPatches2$data, function(z){length(unique(z$id))})
 # run model and get preds
 modsPatches2 <- modsPatches2 %>% 
   mutate(model = map(data, function(z){
-    lmer(respval ~ tExplScore + 
+    lmer(respval ~ tExplScore + tidestage +
            (1|tidalcycle), data = z, na.action = na.omit)
   })) %>% 
   # get predictions with random effects and nfixes includes
