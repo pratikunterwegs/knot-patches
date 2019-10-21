@@ -1,264 +1,120 @@
-$`response = duration | predictor = ranefScore`
-Linear mixed model fit by REML. t-tests use
-  Satterthwaite's method [lmerModLmerTest]
-Formula: respval ~ scoreval + (1 | tidalcycle)
-   Data: z
-
-REML criterion at convergence: 2156288
-
-Scaled residuals: 
-    Min      1Q  Median      3Q     Max 
--1.9876 -0.2581 -0.1783 -0.0980 24.0963 
-
-Random effects:
- Groups     Name        Variance Std.Dev.
- tidalcycle (Intercept) 1472821  1214    
- Residual               1813093  1347    
-Number of obs: 124971, groups:  tidalcycle, 120
-
-Fixed effects:
-             Estimate Std. Error        df t value
-(Intercept)    638.82     111.19     51.72   5.745
-scoreval      -167.50      23.04 124757.67  -7.268
-            Pr(>|t|)    
-(Intercept) 4.92e-07 ***
-scoreval    3.66e-13 ***
----
-Signif. codes:  
-0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-Correlation of Fixed Effects:
-         (Intr)
-scoreval 0.001 
-
-$`response = distInPatch | predictor = ranefScore`
-Linear mixed model fit by REML. t-tests use
-  Satterthwaite's method [lmerModLmerTest]
-Formula: respval ~ scoreval + (1 | tidalcycle)
-   Data: z
-
-REML criterion at convergence: 2269995
-
-Scaled residuals: 
-   Min     1Q Median     3Q    Max 
--0.787 -0.331 -0.245 -0.079 37.271 
-
-Random effects:
- Groups     Name        Variance Std.Dev.
- tidalcycle (Intercept)   66080   257.1  
- Residual               4520306  2126.1  
-Number of obs: 124971, groups:  tidalcycle, 120
-
-Fixed effects:
-             Estimate Std. Error        df t value
-(Intercept)    836.43      25.15    103.55  33.264
-scoreval      -120.98      36.30 122960.76  -3.333
-            Pr(>|t|)    
-(Intercept)  < 2e-16 ***
-scoreval    0.000859 ***
----
-Signif. codes:  
-0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-Correlation of Fixed Effects:
-         (Intr)
-scoreval 0.002 
-
-$`response = distBwPatch | predictor = ranefScore`
-Linear mixed model fit by REML. t-tests use
-  Satterthwaite's method [lmerModLmerTest]
-Formula: respval ~ scoreval + (1 | tidalcycle)
-   Data: z
-
-REML criterion at convergence: 1965696
-
-Scaled residuals: 
-   Min     1Q Median     3Q    Max 
--1.208 -0.248 -0.167 -0.102 50.569 
-
-Random effects:
- Groups     Name        Variance Std.Dev.
- tidalcycle (Intercept)  15244   123.5   
- Residual               395637   629.0   
-Number of obs: 124971, groups:  tidalcycle, 120
-
-Fixed effects:
-             Estimate Std. Error        df t value
-(Intercept)    209.39      11.65     61.07  17.972
-scoreval       -50.72      10.75 124639.36  -4.716
-            Pr(>|t|)    
-(Intercept)  < 2e-16 ***
-scoreval     2.4e-06 ***
----
-Signif. codes:  
-0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-Correlation of Fixed Effects:
-         (Intr)
-scoreval 0.002 
-
-$`response = area | predictor = ranefScore`
-Linear mixed model fit by REML. t-tests use
-  Satterthwaite's method [lmerModLmerTest]
-Formula: respval ~ scoreval + (1 | tidalcycle)
-   Data: z
-
-REML criterion at convergence: 2310430
-
-Scaled residuals: 
-    Min      1Q  Median      3Q     Max 
--1.3032 -0.5277 -0.3278  0.1522 17.4808 
-
-Random effects:
- Groups     Name        Variance Std.Dev.
- tidalcycle (Intercept)  195245   441.9  
- Residual               6243175  2498.6  
-Number of obs: 124971, groups:  tidalcycle, 120
-
-Fixed effects:
-             Estimate Std. Error        df t value
-(Intercept)   2038.75      41.93    106.31  48.619
-scoreval      -110.36      42.71 124617.37  -2.584
-            Pr(>|t|)    
-(Intercept)  < 2e-16 ***
-scoreval     0.00976 ** 
----
-Signif. codes:  
-0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-Correlation of Fixed Effects:
-         (Intr)
-scoreval 0.002 
-
 $`response = duration | predictor = tExplScore`
-Linear mixed model fit by REML. t-tests use
-  Satterthwaite's method [lmerModLmerTest]
-Formula: respval ~ scoreval + (1 | tidalcycle)
+Linear mixed model fit by REML. t-tests use Satterthwaite's method ['lmerModLmerTest']
+Formula: respval ~ tExplScore + tidestage + (1 | tidalcycle)
    Data: z
 
-REML criterion at convergence: 2156289
+REML criterion at convergence: 1226441
 
 Scaled residuals: 
     Min      1Q  Median      3Q     Max 
--1.9951 -0.2581 -0.1777 -0.0972 24.0948 
+-1.7193 -0.4386 -0.2367  0.0419  6.5270 
 
 Random effects:
  Groups     Name        Variance Std.Dev.
- tidalcycle (Intercept) 1475837  1215    
- Residual               1813097  1347    
-Number of obs: 124971, groups:  tidalcycle, 120
+ tidalcycle (Intercept)  3673980 1917    
+ Residual               49384019 7027    
+Number of obs: 59654, groups:  tidalcycle, 120
 
 Fixed effects:
-             Estimate Std. Error        df t value
-(Intercept)    707.67     111.70     52.53   6.335
-scoreval      -120.88      16.71 124750.89  -7.233
-            Pr(>|t|)    
-(Intercept) 5.45e-08 ***
-scoreval    4.74e-13 ***
+             Estimate Std. Error      df t value Pr(>|t|)    
+(Intercept)    2597.4      194.1   161.3   13.38   <2e-16 ***
+tExplScore     1347.7      124.0 59625.4   10.86   <2e-16 ***
+tidestagelow    914.8       59.4 59647.5   15.40   <2e-16 ***
 ---
-Signif. codes:  
-0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 Correlation of Fixed Effects:
-         (Intr)
-scoreval -0.084
+            (Intr) tExplS
+tExplScore  -0.356       
+tidestagelw -0.119 -0.026
 
 $`response = distInPatch | predictor = tExplScore`
-Linear mixed model fit by REML. t-tests use
-  Satterthwaite's method [lmerModLmerTest]
-Formula: respval ~ scoreval + (1 | tidalcycle)
+Linear mixed model fit by REML. t-tests use Satterthwaite's method ['lmerModLmerTest']
+Formula: respval ~ tExplScore + tidestage + (1 | tidalcycle)
    Data: z
 
-REML criterion at convergence: 2269999
-
-Scaled residuals: 
-   Min     1Q Median     3Q    Max 
--0.793 -0.330 -0.246 -0.079 37.276 
-
-Random effects:
- Groups     Name        Variance Std.Dev.
- tidalcycle (Intercept)   66038   257    
- Residual               4520425  2126    
-Number of obs: 124971, groups:  tidalcycle, 120
-
-Fixed effects:
-             Estimate Std. Error        df t value
-(Intercept)    878.45      29.22    189.06  30.058
-scoreval       -73.93      26.33 123515.74  -2.808
-            Pr(>|t|)    
-(Intercept)  < 2e-16 ***
-scoreval     0.00499 ** 
----
-Signif. codes:  
-0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-Correlation of Fixed Effects:
-         (Intr)
-scoreval -0.510
-
-$`response = distBwPatch | predictor = tExplScore`
-Linear mixed model fit by REML. t-tests use
-  Satterthwaite's method [lmerModLmerTest]
-Formula: respval ~ scoreval + (1 | tidalcycle)
-   Data: z
-
-REML criterion at convergence: 1965687
-
-Scaled residuals: 
-   Min     1Q Median     3Q    Max 
--1.207 -0.249 -0.168 -0.102 50.569 
-
-Random effects:
- Groups     Name        Variance Std.Dev.
- tidalcycle (Intercept)  15193   123.3   
- Residual               395610   629.0   
-Number of obs: 124971, groups:  tidalcycle, 120
-
-Fixed effects:
-              Estimate Std. Error         df t value
-(Intercept)    234.054     12.440     79.979  18.814
-scoreval       -43.480      7.799 124765.111  -5.575
-            Pr(>|t|)    
-(Intercept)  < 2e-16 ***
-scoreval    2.48e-08 ***
----
-Signif. codes:  
-0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
-Correlation of Fixed Effects:
-         (Intr)
-scoreval -0.354
-
-$`response = area | predictor = tExplScore`
-Linear mixed model fit by REML. t-tests use
-  Satterthwaite's method [lmerModLmerTest]
-Formula: respval ~ scoreval + (1 | tidalcycle)
-   Data: z
-
-REML criterion at convergence: 2310433
+REML criterion at convergence: 1256525
 
 Scaled residuals: 
     Min      1Q  Median      3Q     Max 
--1.3072 -0.5270 -0.3277  0.1525 17.4805 
+-1.6505 -0.4917 -0.2977  0.1110 28.2974 
 
 Random effects:
  Groups     Name        Variance Std.Dev.
- tidalcycle (Intercept)  195125   441.7  
- Residual               6243290  2498.7  
-Number of obs: 124971, groups:  tidalcycle, 120
+ tidalcycle (Intercept)  2429003 1559    
+ Residual               81913235 9051    
+Number of obs: 59654, groups:  tidalcycle, 120
 
 Fixed effects:
-             Estimate Std. Error        df t value
-(Intercept)   2075.89      45.43    146.70  45.690
-scoreval       -65.30      30.98 124738.98  -2.108
-            Pr(>|t|)    
-(Intercept)   <2e-16 ***
-scoreval       0.035 *  
+             Estimate Std. Error       df t value Pr(>|t|)    
+(Intercept)   4915.17     177.67   230.42  27.665   <2e-16 ***
+tExplScore     215.32     159.66 59647.78   1.349    0.177    
+tidestagelow  1236.03      76.41 59562.40  16.175   <2e-16 ***
 ---
-Signif. codes:  
-0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
 Correlation of Fixed Effects:
-         (Intr)
-scoreval -0.386
+            (Intr) tExplS
+tExplScore  -0.500       
+tidestagelw -0.168 -0.026
+
+$`response = distBwPatch | predictor = tExplScore`
+Linear mixed model fit by REML. t-tests use Satterthwaite's method ['lmerModLmerTest']
+Formula: respval ~ tExplScore + tidestage + (1 | tidalcycle)
+   Data: z
+
+REML criterion at convergence: 1000189
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-0.9156 -0.4430 -0.3089 -0.0112 25.1016 
+
+Random effects:
+ Groups     Name        Variance Std.Dev.
+ tidalcycle (Intercept)   14769   121.5  
+ Residual               1116030  1056.4  
+Number of obs: 59654, groups:  tidalcycle, 120
+
+Fixed effects:
+              Estimate Std. Error        df t value Pr(>|t|)    
+(Intercept)    621.469     16.541   311.777  37.571  < 2e-16 ***
+tExplScore     -95.006     18.616 59480.932  -5.104 3.34e-07 ***
+tidestagelow    -4.268      8.903 58712.637  -0.479    0.632    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) tExplS
+tExplScore  -0.626       
+tidestagelw -0.211 -0.026
+
+$`response = area | predictor = tExplScore`
+Linear mixed model fit by REML. t-tests use Satterthwaite's method ['lmerModLmerTest']
+Formula: respval ~ tExplScore + tidestage + (1 | tidalcycle)
+   Data: z
+
+REML criterion at convergence: 1189428
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.1427 -0.6261 -0.3083  0.2503 16.3954 
+
+Random effects:
+ Groups     Name        Variance Std.Dev.
+ tidalcycle (Intercept)   305203  552.5  
+ Residual               26640616 5161.5  
+Number of obs: 59654, groups:  tidalcycle, 120
+
+Fixed effects:
+             Estimate Std. Error       df t value Pr(>|t|)    
+(Intercept)   4835.65      78.24   357.08  61.805  < 2e-16 ***
+tExplScore    -320.54      90.93 59419.41  -3.525 0.000423 ***
+tidestagelow   145.21      43.48 58437.54   3.340 0.000839 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) tExplS
+tExplScore  -0.647       
+tidestagelw -0.218 -0.026
 
