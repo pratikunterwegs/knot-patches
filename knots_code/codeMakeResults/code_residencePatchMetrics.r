@@ -51,7 +51,7 @@ if(!dir.exists("../data2018/patchData")){
 
 # run the patch metric calculations
 # do not return sf
-map(segFiles[178:length(segFiles)], function(onThisData){
+map(segFiles[428:length(segFiles)], function(onThisData){
   # read in data
   data <- fread(onThisData)
   
