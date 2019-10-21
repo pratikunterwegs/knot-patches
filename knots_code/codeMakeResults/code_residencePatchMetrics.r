@@ -61,12 +61,14 @@ map(segFiles[178:length(segFiles)], function(onThisData){
   # look if data are present
   if(length(preal) > 0){
     if(preal >= 0.2){
-    
-    # run patch function if
-    patches <- watlasUtils::funcGetResPatches(df = data, returnSf = FALSE)
-    
-    # write data
-    fwrite(x = patches, file = glue::glue('../data2018/patchData/patches_{unique(data$id)}_{unique(data$tidalcycle)}.csv'), dateTimeAs = "epoch")
+      
+      # run patch function if
+      patches <- watlasUtils::funcGetResPatches(df = data, returnSf = FALSE)
+      
+      # write data if patches not glue
+      if(!"glue" %in% class(patches)){
+        fwrite(x = patches, file = glue::glue('../data2018/patchData/patches_{unique(data$id)}_{unique(data$tidalcycle)}.csv'), dateTimeAs = "epoch")
+      }
     }
   }
   
