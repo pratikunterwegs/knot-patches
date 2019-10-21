@@ -51,7 +51,7 @@ if(!dir.exists("../data2018/patchData")){
 
 # run the patch metric calculations
 # do not return sf
-map(segFiles, function(onThisData){
+map(segFiles[178:length(segFiles)], function(onThisData){
   # read in data
   data <- fread(onThisData)
   
@@ -59,13 +59,15 @@ map(segFiles, function(onThisData){
   preal <- data[,.N,by="type"][,p:=N/sum(N)][type=="real",p]
   
   # look if data are present
-  if(preal >= 0.2){
+  if(length(preal) > 0){
+    if(preal >= 0.2){
     
     # run patch function if
     patches <- watlasUtils::funcGetResPatches(df = data, returnSf = FALSE)
     
     # write data
     fwrite(x = patches, file = glue::glue('../data2018/patchData/patches_{unique(data$id)}_{unique(data$tidalcycle)}.csv'), dateTimeAs = "epoch")
+    }
   }
   
 })
