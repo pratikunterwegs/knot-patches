@@ -43,22 +43,19 @@ modsPatches1 <- patches %>%
   mutate(tidestage = as.factor(ifelse(between(tidaltime_mean, 
                                               4*60, 9*60), "low", "high"))) %>% 
   select(duration, distInPatch, distBwPatch, area, tidestage, # responses
-         contains("Score"), tidalcycle, nFixes,id) %>% # predictors
+         tExplScore, tidalcycle, nfixes,id) %>% # predictors
   drop_na() %>%
   # make long for score type, either transformed or cond ranef
-  gather(scoreType, scoreval, -id, -tidalcycle, -tidestage,  
-         -duration, -distInPatch, -distBwPatch, -area, -nFixes) %>% 
-  group_by(scoreType) %>% 
-  # split into two dfs
-  nest() %>% 
-  # in each df, split by response variable
-  mutate(data = map(data, function(df){
-    df %>% gather(respvar, respval, -scoreval, -nFixes, -id, -tidalcycle, 
-                  -tidestage) %>%
-      nest(-respvar)
-  })) %>% 
-  # unnest one level
-  unnest()
+  # gather(scoreType, scoreval, -id, -tidalcycle, -tidestage,  
+  #        -duration, -distInPatch, -distBwPatch, -area, -nfixes) %>% 
+  # group_by(scoreType) %>% 
+  # # split into two dfs
+  # nest() %>% 
+  # # in each df, split by response variable
+ gather(respvar, respval, -tExplScore, -nfixes, -id, -tidalcycle, 
+                  -tidestage) %>% 
+  group_by(respvar) %>% 
+  nest()
 
 # check data availability
 map_int(modsPatches1$data, nrow)
