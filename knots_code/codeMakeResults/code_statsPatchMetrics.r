@@ -160,7 +160,7 @@ patchMetLabels <- c("area" = "Patch area (m²)",
 
 # plot with panels of three and two columns
 # get first row of within patch plots
-plotPatchMetrics01 <-
+# plotPatchMetrics01 <-
   ggplot(dataPlt %>% 
            # filter(respvar %in% c("duration", "distInPatch", "area", "distBwPatch")) %>% 
            mutate(respvar = factor(respvar, levels = c("duration",
@@ -169,8 +169,10 @@ plotPatchMetrics01 <-
                                                        "distBwPatch",
                                                        "patchChanges"))))+
   
-  geom_smooth(aes(x = explorebin, y = predval_mean),
-              method = "lm", fill = "grey80")+
+  geom_line(aes(x = explorebin, y = predval_mean), col = 2, lty = 1)+
+  geom_line(aes(x = explorebin, y = predval_mean + predval_ci), col = 2, lty = 2)+
+  
+  geom_line(aes(x = explorebin, y = predval_mean - predval_ci), col = 2, lty = 2)+
   
   geom_pointrange(aes(x = explorebin, y = respval_mean,
                       ymin = respval_mean - respval_ci,
@@ -190,7 +192,7 @@ plotPatchMetrics01 <-
   facet_wrap(~respvar, scales = "free",
              labeller = labeller(respvar = patchMetLabels),
              strip.position = "left")+
-  themePubKnots()+
+  ggthemes::theme_few()+
   theme(strip.placement = "outside", 
         strip.background = element_blank(),
         strip.text = element_text(face = "plain", hjust = 0.5),
