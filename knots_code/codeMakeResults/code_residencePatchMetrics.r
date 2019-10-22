@@ -26,7 +26,7 @@ if(!dir.exists("../data2018/segmentData")){
 # read in the data and perform segmentation
 map2(dataRevFiles, dataHtFiles, function(df1, df2){
   # make segmented data
-  somedata <- watlasUtils::funcSegPath(revdata = df1, htdata = df2)
+  somedata <- watlasUtils::funcSegPath(revdata = df1, htdata = df2, resTimeLimit = 5)
   
   if(nrow(somedata) > 5 & !is.na(nrow(somedata))){
     
@@ -51,7 +51,7 @@ if(!dir.exists("../data2018/patchData")){
 
 # run the patch metric calculations
 # do not return sf
-map(segFiles[428:length(segFiles)], function(onThisData){
+map(segFiles, function(onThisData){
   # read in data
   data <- fread(onThisData)
   
