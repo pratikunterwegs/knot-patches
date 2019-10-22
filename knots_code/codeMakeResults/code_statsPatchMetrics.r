@@ -22,29 +22,41 @@ patches <- purrr::map_df(fileList, fread)
 
 # read in behav scores
 behavData <- read_csv("../data2018/behavScoresRanef.csv") %>% 
-  select(id, contains("Score"))
+  select(id, tExplScore)
 
 # extreme <- quantile(behavData$tExplScore, probs = c(0.25, 0.75), na.rm = T)
 
 # link behav score and patch size and area
 patches <- left_join(patches, behavData, by= c("id"))
 
-# remove extremes, the top and bottom 5%
-# patches <- patches %>% filter(tExplScore %between% extreme)
+#### sanity checks ####
+# count patches where prop fixes > 1
+{
+  count(patches, propFixes >= 1.0)
+  # remove such patches
+  patches <- filter(patches, propFixes < 1)
+  # count patches with fewer than 20% data
+  count(patches, propFixes < 0.2)
+  # remove those too
+  patches <- filter(patches, propFixes > 0.2)
+  
+  # remove high tide patches
+  patches <- filter(patches, tidaltime_start %between% c(4*60, 10*60))
+}
 
-#### prep for models ####
+#### prep for models and plotting ####
+
 # select patch duration, patch area, within patch distance,
 # between patch distance, number of patches
 modsPatches1 <- patches %>%
-  # get a predictor for tidal time, a sine transform to be cyclic
-  mutate(tidestage = as.factor(ifelse(between(tidaltime_mean, 
-                                              4*60, 9*60), "low", "high"))) %>% 
-  select(duration, distInPatch, distBwPatch, area, tidestage, # responses
-         tExplScore, tidalcycle, nfixes,id) %>% # predictors
-  drop_na() %>%
+  drop_na(duration, distInPatch, distBwPatch, area, 
+          tExplScore, tidalcycle, nfixes, id) %>%
+  
+  # make duration mins
+  mutate(duration = duration/60) %>% 
   # # in each df, split by response variable
-  gather(respvar, respval, -tExplScore, -nfixes, -id, -tidalcycle, 
-         -tidestage) %>% 
+  pivot_longer(names_to = "respvar", values_to = "respval",
+               cols = c(duration, distInPatch, distBwPatch, area)) %>% 
   group_by(respvar) %>% 
   nest()
 
