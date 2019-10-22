@@ -64,11 +64,110 @@ modsPatches1 <- patches %>%
 map_int(modsPatches1$data, nrow)
 map_int(modsPatches1$data, function(z){length(unique(z$id))})
 
-### models for within patch metrics ####
+
+#### plot metric ~ explorescore ####
+# prep data for plots
+plotdata <- modsPatches1 %>% 
+  # round to 0.1 increments of exploration score
+  mutate(data_expl = map(data, function(df){
+    select(df, tExplScore, respval) %>% 
+      mutate(tExplScore = plyr::round_any(tExplScore, 0.05)) %>% 
+      group_by(tExplScore) %>% 
+      summarise_at(vars(respval), .funs = c(~mean(.), ~ci(.)))}),
+    
+    # round to 30 min intervals of tidal cycle
+    data_tide = map(data, function(df){
+      select(df, tidaltime_start, respval) %>% 
+        mutate(tidaltime = plyr::round_any(tidaltime_start, 20)) %>% 
+        group_by(tidaltime) %>% 
+        summarise_at(vars(respval), .funs = c(~mean(.), ~ci(.)))}
+    )) %>% 
+  
+  # combine data
+  mutate(data_plot = map2(data_expl, data_tide, function(df1, df2){
+    df2 <- pivot_longer(df2, cols = tidaltime,
+                        names_to = "predictor", values_to = "predictor_value")
+    
+    df1 <- pivot_longer(df1, cols = tExplScore,
+                        names_to = "predictor", values_to = "predictor_value")
+    
+    return(bind_rows(df1, df2))
+  }))
+
+# prepare total number of patches
+dataPatchShift <- patches %>% 
+  drop_na(tExplScore, tidalcycle, nfixes, id) %>%
+  group_by(id, tidalcycle, tExplScore) %>%
+  # count patch changes
+  summarise(patchChanges = max(patch)) %>% 
+  
+  # summarise by explore score
+  mutate(tExplScore = plyr::round_any(tExplScore, 0.05)) %>% 
+  group_by(tExplScore) %>% 
+  summarise_at(vars(patchChanges),
+               .funs = c(~mean(.), ~ci(.)))
+
+# make plots for within patch metrics
+plots <- plotdata %>% 
+  ungroup() %>% 
+  mutate(y = c("time in patch (mins)",
+               "dist in patch (m)",
+               "dist b/w patch (m)",
+               "patch area (m.sq.)"),
+         title = glue::glue('{letters[1:4]} {respvar}')) %>% 
+  
+  # plots column
+  mutate(plot = pmap(.[,c("data_plot", "y", "title")], function(data_plot, y, title){
+    ggplot(data_plot)+
+      geom_pointrange(aes(x = predictor_value,
+                          y = mean,
+                          ymin = mean-ci,
+                          ymax = mean+ci,
+                          col = predictor))+
+      facet_wrap(~predictor, scales = "free_x")+
+      scale_colour_brewer(palette = "Dark2")+
+      scale_y_continuous(labels = scales::comma)+
+      theme(legend.position = "none",
+            plot.background = element_rect(colour = 1),
+            plot.margin = unit(rep(0.5, 4), "cm"),
+            axis.text.y = element_text(angle = 90),
+            plot.title = element_text(face = "bold"))+
+      labs(y = y, title = title, 
+           x = "explore score | mins since HT")
+  }),
+  plot = map(plot, cowplot::as_grob))
+
+# patch changes plot
+plotPatchShift <- 
+  ggplot(dataPatchShift)+
+  geom_pointrange(aes(x = tExplScore, y = mean,
+                      ymin = mean-ci, ymax = mean+ci), col = "steelblue")+
+  
+  theme(legend.position = "none",
+        plot.background = element_rect(colour = 1),
+        plot.margin = unit(rep(0.5, 4), "cm"),
+        axis.text.y = element_text(angle = 90),
+        plot.title = element_text(face = "bold"))+
+  labs(x = "explore score", y = "# patches", title = "e patch changes")
+
+plotPatchShift <- cowplot::as_grob(plotPatchShift)
+
+# print list of plots
+library(gridExtra)
+plotlist = plots$plot
+plotlist[[5]] <- plotPatchShift
+
+{
+  png(file = "../figs/fig05patchMetrics.png", width = 1400, height = 1200, res = 150)
+  grid.arrange(grobs = plotlist)
+  dev.off()
+}
+
+#### models for within patch metrics ####
 # run models for within patch metrics
 modsPatches1 <- modsPatches1 %>% 
   mutate(model = map(data, function(z){
-    lmer(respval ~ tExplScore + tidestage + (1|tidalcycle), data = z, na.action = na.omit)
+    lmer(respval ~ tExplScore + (1|tidalcycle) + tidaltime_start, data = z, na.action = na.omit)
   })) %>% 
   # get predictions with random effects and nfixes includes
   mutate(predMod = map2(model, data, function(a, b){
