@@ -70,40 +70,45 @@ map_int(modsPatches1$data, function(z){length(unique(z$id))})
 plotdata <- modsPatches1 %>% 
   # round to 0.1 increments of exploration score
   mutate(data_expl = map(data, function(df){
-    select(df, tExplScore, respval) %>% 
-      mutate(tExplScore = plyr::round_any(tExplScore, 0.05)) %>% 
-      group_by(tExplScore) %>% 
+    select(df, tExplScore, tidaltime_mean, respval) %>% 
+      mutate(tExplScore = plyr::round_any(tExplScore, 0.1),
+             tidalHour = round(tidaltime_mean/60)) %>% 
+      filter(tidalHour <= 9) %>% 
+      group_by(tExplScore, tidalHour) %>% 
       summarise_at(vars(respval), .funs = c(~mean(.), ~ci(.)))}),
     
     # round to 30 min intervals of tidal cycle
-    data_tide = map(data, function(df){
-      select(df, tidaltime_start, respval) %>% 
-        mutate(tidaltime = plyr::round_any(tidaltime_start, 20)) %>% 
-        group_by(tidaltime) %>% 
-        summarise_at(vars(respval), .funs = c(~mean(.), ~ci(.)))}
-    )) %>% 
+    # data_tide = map(data, function(df){
+    #   select(df, tidaltime_start, respval) %>% 
+    #     mutate(tidaltime = plyr::round_any(tidaltime_start, 20)) %>% 
+    #     group_by(tidaltime) %>% 
+    #     summarise_at(vars(respval), .funs = c(~mean(.), ~ci(.)))}
+    # )
+    )# %>% 
   
   # combine data
-  mutate(data_plot = map2(data_expl, data_tide, function(df1, df2){
-    df2 <- pivot_longer(df2, cols = tidaltime,
-                        names_to = "predictor", values_to = "predictor_value")
-    
-    df1 <- pivot_longer(df1, cols = tExplScore,
-                        names_to = "predictor", values_to = "predictor_value")
-    
-    return(bind_rows(df1, df2))
-  }))
+  # mutate(data_plot = map2(data_expl, data_tide, function(df1, df2){
+  #   df2 <- pivot_longer(df2, cols = tidaltime,
+  #                       names_to = "predictor", values_to = "predictor_value")
+  #   
+  #   df1 <- pivot_longer(df1, cols = tExplScore,
+  #                       names_to = "predictor", values_to = "predictor_value")
+  #   
+  #   return(bind_rows(df1, df2))
+  # }))
 
 # prepare total number of patches
 dataPatchShift <- patches %>% 
   drop_na(tExplScore, tidalcycle, nfixes, id) %>%
-  group_by(id, tidalcycle, tExplScore) %>%
+  mutate(tidalHour = round(tidaltime_mean/60)) %>% 
+  filter(tidalHour <= 9) %>% 
+  group_by(id, tidalcycle, tidalHour, tExplScore) %>%
   # count patch changes
   summarise(patchChanges = max(patch)) %>% 
   
   # summarise by explore score
-  mutate(tExplScore = plyr::round_any(tExplScore, 0.05)) %>% 
-  group_by(tExplScore) %>% 
+  mutate(tExplScore = plyr::round_any(tExplScore, 0.2)) %>% 
+  group_by(tExplScore, tidalHour) %>% 
   summarise_at(vars(patchChanges),
                .funs = c(~mean(.), ~ci(.)))
 
@@ -114,26 +119,34 @@ plots <- plotdata %>%
                "dist in patch (m)",
                "dist b/w patch (m)",
                "patch area (m.sq.)"),
-         title = glue::glue('{letters[1:4]} {respvar}')) %>% 
+         title = glue::glue('{letters[1:4]} {y}')) %>% 
   
   # plots column
-  mutate(plot = pmap(.[,c("data_plot", "y", "title")], function(data_plot, y, title){
-    ggplot(data_plot)+
-      geom_pointrange(aes(x = predictor_value,
+  mutate(plot = pmap(.[,c("data_expl", "y", "title")], function(data_expl, y, title){
+    ggplot(data_expl)+
+      geom_pointrange(aes(x = tExplScore,
                           y = mean,
                           ymin = mean-ci,
                           ymax = mean+ci,
-                          col = predictor))+
-      facet_wrap(~predictor, scales = "free_x")+
-      scale_colour_brewer(palette = "Dark2")+
+                          col = tidalHour),
+                      position = position_dodge(width = 0.01))+
+      facet_grid(~tidalHour, scales = "free_x")+
+      scico::scale_colour_scico(palette = "cork")+
       scale_y_continuous(labels = scales::comma)+
+      
+      coord_cartesian(xlim = c(0,1),
+                      ylim = c(0, 
+                               quantile(data_expl$mean, 0.99)))+
+      
+      scale_x_continuous(breaks = c(0,0.5,1))+
+      ggthemes::theme_clean()+
       theme(legend.position = "none",
-            plot.background = element_rect(colour = 1),
-            plot.margin = unit(rep(0.5, 4), "cm"),
-            axis.text.y = element_text(angle = 90),
+            #plot.background = element_rect(colour = 1),
+            #plot.margin = unit(rep(0.5, 4), "cm"),
+            #axis.text.y = element_text(angle = 90, vjust = 0.5),
             plot.title = element_text(face = "bold"))+
       labs(y = y, title = title, 
-           x = "explore score | mins since HT")
+           x = "explore score")
   }),
   plot = map(plot, cowplot::as_grob))
 
@@ -141,10 +154,14 @@ plots <- plotdata %>%
 plotPatchShift <- 
   ggplot(dataPatchShift)+
   geom_pointrange(aes(x = tExplScore, y = mean,
-                      ymin = mean-ci, ymax = mean+ci), col = "steelblue")+
-  
+                      ymin = mean-ci, ymax = mean+ci,
+                      col = tidalHour))+
+  scale_x_continuous(breaks = c(0,0.5,1))+
+  scico::scale_colour_scico(palette = "cork")+
+  facet_grid(~tidalHour)+
+  ggthemes::theme_clean()+
   theme(legend.position = "none",
-        plot.background = element_rect(colour = 1),
+       # plot.background = element_rect(colour = 1),
         plot.margin = unit(rep(0.5, 4), "cm"),
         axis.text.y = element_text(angle = 90),
         plot.title = element_text(face = "bold"))+
@@ -158,8 +175,8 @@ plotlist = plots$plot
 plotlist[[5]] <- plotPatchShift
 
 {
-  png(file = "../figs/fig05patchMetrics.png", width = 1400, height = 1200, res = 150)
-  grid.arrange(grobs = plotlist)
+  pdf(file = "../figs/fig05patchMetrics.pdf", width = 8, height = 12)
+  grid.arrange(grobs = plotlist, ncol = 1)
   dev.off()
 }
 
