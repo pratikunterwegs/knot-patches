@@ -1,5 +1,10 @@
 #### code add metrics ####
 
+# Code author Pratik Gupte
+# PhD student
+# MARM group, GELIFES-RUG, NL
+# Contact p.r.gupte@rug.nl
+
 # read in all birds and select some tidal cycles
 library(tidyverse); library(data.table)
 library(glue)

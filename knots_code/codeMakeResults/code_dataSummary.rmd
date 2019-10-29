@@ -1,19 +1,31 @@
 # Summary stats for paper
 
+# Attribution
+
+Code author Pratik Gupte
+PhD student
+MARM group, GELIFES-RUG, NL
+Contact p.r.gupte@rug.nl
+
 ```{r setup}
-  library(knitr)
-  opts_knit$set(root.dir=normalizePath('../'))
+library(knitr)
+opts_knit$set(root.dir=normalizePath('../'))
 ```
 
-```{r load_data_and_summarise}
+```{r load_data}
 #### code to summarise various data ####
 
 library(data.table); library(tidyverse); library(glue)
 library(fasttime)
 
+# plot theme
+source("../knots_code/codePlotOptions/ggThemeKnots.r")
+
 # read in data and add tidal cycles
 dataFiles <- list.files(path = "../data2018/oneHertzData/", full.names = TRUE, pattern = "csv")
+```
 
+```{r summarise_totaldata}
 # check total data collected
 dataSummary <- map_df(dataFiles, function(z){
   setDF(fread(z)[,.(startTime = min(TIME),
@@ -61,7 +73,7 @@ recPrepData <- map_df(recPrepFiles, function(z){
 })
 ```
 
-```{r}
+```{r fixes_days_tracked}
 # get number of fixes and days tracked
 recPrepDataSummary <- recPrepData %>% 
   group_by(id) %>% 
@@ -128,6 +140,19 @@ max(recPrepData$tidalcycle)
 recPrepData %>% 
   count(id, name = "tides") %>% 
   summarise_at(vars(tides), list(~mean(.), ~sd(.), ~min(.), ~max(.)))
+
+# plot hist tides per id
+tidesPerId <- count(recPrepData, id, name = "tides")
+
+figHistTidesId <- ggplot()+
+  geom_histogram(data = tidesPerId, aes(x = tides), fill = stdGry, col = 1)+
+  geom_vline(xintercept = c(10, 20, 60, 120), col = 2, lty = 2)+
+  geom_text(aes(x = c(10, 20, 60, 120), y = 15, label = c("5 days", "10 days", "1 month", "2 months")), nudge_x = -2, angle = 90)+
+  themePubKnots()+
+  labs(x = "Tidal cycles", y = "Number of individuals")
+
+ggsave(figHistTidesId, filename = "../figs/figHistTidesId.pdf",
+       device = pdf(), height = 4, width = 6, units = "in")
 
 ```
 

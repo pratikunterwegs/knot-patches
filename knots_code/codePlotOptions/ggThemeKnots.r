@@ -1,4 +1,10 @@
 #### ggplot publication theme ####
+
+# Code author Pratik Gupte
+# PhD student
+# MARM group, GELIFES-RUG, NL
+# Contact p.r.gupte@rug.nl
+
 #'make theme for plots
 library(ggplot2)
 
@@ -17,7 +23,7 @@ themePubKnots <- function(base_size=10) {
             axis.ticks = element_line(size = 0.3),
             axis.ticks.length = unit(-0.1, "cm"),
             panel.grid.major = element_blank(),
-            legend.position = "top",
+            legend.position = "none",
             panel.grid.minor = element_blank(),
             plot.margin=unit(c(10,5,5,5),"mm"),
             plot.background = element_rect(fill = "white", colour = "transparent"),

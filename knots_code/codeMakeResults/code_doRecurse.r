@@ -1,5 +1,10 @@
 #### code do recurse ####
 
+# Code author Pratik Gupte
+# PhD student
+# MARM group, GELIFES-RUG, NL
+# Contact p.r.gupte@rug.nl
+
 library(tidyverse); library(data.table)
 
 # list files

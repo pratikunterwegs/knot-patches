@@ -1,61 +1,89 @@
 #### code for polygons around residence patches ####
 
+# Code author Pratik Gupte
+# PhD student
+# MARM group, GELIFES-RUG, NL
+# Contact p.r.gupte@rug.nl
+
 library(tidyverse); library(data.table)
 library(glue); library(sf)
 
-# source distance function
-source("codeMoveMetrics/functionEuclideanDistance.r")
-
-# function for resPatches arranged by time
-source("codeRawData/func_residencePatch.r")
-
+# load the custom library
+devtools::install_github("pratikunterwegs/watlasUtils", ref="devbranch", force = TRUE)
+library(watlasUtils)
 
 # read in recurse data for selected birds
 dataRevFiles <- list.files("../data2018/oneHertzData/recurseData/", full.names = T)
 
-# get time to high tide from written data
+# read in ht data
 dataHtFiles <- list.files("../data2018/oneHertzData/recursePrep/", full.names = T)
 
-# read in the data
-data <- purrr::map2_df(dataRevFiles, dataHtFiles, function(filename, htData){
+# create output folder if not present
+if(!dir.exists("../data2018/segmentData")){
+  dir.create("../data2018/segmentData")
+}
+
+# read in the data and perform segmentation
+map2(dataRevFiles, dataHtFiles, function(df1, df2){
+  # make segmented data
+  somedata <- watlasUtils::funcSegPath(revdata = df1, htdata = df2, resTimeLimit = 5)
   
-  # read the file in
-  df <- fread(filename)
+  if(nrow(somedata) > 5 & !is.na(nrow(somedata))){
+    
+    # write segmented data
+    fwrite(x = somedata, file = glue::glue('../data2018/segmentData/seg_{unique(somedata$id)}_{unique(somedata$tidalcycle)}.csv'), dateTimeAs = "epoch")
+  }
+})
+
+gc()
+
+# list files
+segFiles <- list.files("../data2018/segmentData", pattern = "seg", full.names=TRUE)
+
+
+# remove data with fewer than 5 rows
+# data <- purrr::keep(data, function(df) nrow(df) > 0 & !is.na(nrow(df)))
+
+# make patches folder
+if(!dir.exists("../data2018/patchData")){
+  dir.create("../data2018/patchData")
+}
+
+# run the patch metric calculations
+# do not return sf
+map(segFiles, function(onThisData){
+  # read in data
+  data <- fread(onThisData)
   
-  print(glue('individual {unique(df$id)} in tide {unique(df$tidalcycle)} has {nrow(df)} obs'))
+  # prop inf
+  preal <- data[,.N,by="type"][,p:=N/sum(N)][type=="real",p]
   
-  # prep to assign sequence to res patches
-  # to each id.tide combination
-  # remove NA vals in fpt
-  # set residence time to 0 or 1 predicated on <= 10 (mins)
-  df <- df[!is.na(fpt),][,resTime:= ifelse(resTime <= 2, F, T)
-                         # get breakpoints where F changes to T and vice versa
-                         ][,resPatch:= c(as.numeric(resTime[1]),
-                                         diff(resTime))
-                           # keeping fixes where restime > 10
-                           ][resTime == T,
-                             # assign res patch as change from F to T
-                             ][,resPatch:= cumsum(resPatch)]
-  
-  
-  dataHt <- fread(htData)
-  # merge to recurse data
-  df <- merge(df, dataHt, all = FALSE)
-  
-  # get patch data
-  patchData <- funcGetResPatches(df)
-  
-  # remove htData
-  rm(htData)
-  
-  patchData$data <- NULL
-  
-  return(patchData)
+  # look if data are present
+  if(length(preal) > 0){
+    if(preal >= 0.2){
+      
+      # run patch function if
+      patches <- watlasUtils::funcGetResPatches(df = data, returnSf = FALSE)
+      
+      # write data if patches not glue
+      if(!"glue" %in% class(patches)){
+        fwrite(x = patches, file = glue::glue('../data2018/patchData/patches_{unique(data$id)}_{unique(data$tidalcycle)}.csv'), dateTimeAs = "epoch")
+      }
+    }
+  }
   
 })
 
+# test some patches
+library(ggplot2)
+library(ggthemes)
+ggplot(patches)+
+  geom_point(aes(X_mean,Y_mean, size = duration, col = type))+
+  geom_path(aes(X_mean,Y_mean), arrow = arrow(angle = 7))+
+  theme(legend.position = "none")
+
 # write data to file
-fwrite(data, file = "../data2018/oneHertzData/data2018patches.csv", 
+fwrite(patches, file = "../data2018/oneHertzData/data2018patches.csv",
        dateTimeAs = "epoch")
 
 

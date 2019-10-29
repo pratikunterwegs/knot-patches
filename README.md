@@ -1,51 +1,41 @@
 **NB:** Data, if any generated or accessed, belong to GELIFES-RUG and COS-NIOZ and/or relevant members. See contact details.
 
-# Wadden Sea ATLAS project
+# Code for: Consistent individual differences predict free-living space-use
 
-## What?
+## Attribution
 
-Publication branch of the repository containing code from ATLAS tracking in the Wadden Sea. *This is probably the branch you're looking for.*
+Please contact the following before cloning or in case of interest:
 
-Unlike the other branches, this branch contains only code relevant to the upcoming paper.
+- Pratik Gupte (author and maintainer)
+  - PhD student, University of Groningen
+  - Guest researcher, NIOZ
+  - p.r.gupte@rug.nl or pratik.gupte@nioz.nl
+  - https://www.rug.nl/staff/p.r.gupte
+  - Nijenborgh 7/5172.0583 9747AG Groningen
 
-## Who?
+- Allert Bijleveld (PI): allert.bijleveld@nioz.nl
+  - Project information: https://www.nioz.nl/en/about/cos/coastal-movement-ecology/shorebird-tracking
 
-Please contact before cloning or in case of interest:
+- Selin Ersoy (collab): selin.ersoy@nioz.nl
 
-Contact:
-- Pratik Gupte: p.r.gupte@rug.nl, pratik.gupte@nioz.nl
-  Nijenborgh 7/5172.0583 9747AG Groningen
-
-- Allert Bijleveld: allert.bijleveld@nioz.nl
-
-- Selin Ersoy: selin.ersoy@nioz.nl
-
-# How to handle the 2018 red knot data
-
-Here, I assume you begin from the raw data stored on NIOZ servers, and would like to replicate the results of our forthcoming paper. 
-
-If you need access to these data in advance of publication, please contact **Allert Bijleveld**: allert.bijleveld@nioz.nl.
-
-all scripts are in `knots_code/`
+Contact Allert for data.
 
 ## Downloading data and cleaning
 
-**This file is not on the repo.**
-
-1. run `codeGetData/code_getData2018.r`
+1. run `codeGetData/code_getData2018.r` (**This file is not on the repo.**)
     1. filters on wild knots
     2. gets all fixes from 1st to last
     3. removes beacons
     4. writes data to rdata file with 10 ids per file
     5. reads all rdata files, combines to one df
     6. writes combined files as rdata - `../data2018/*.Rdata`
+
 2. run `codeBehavMetrics/code_experimentData.r`
-    1. reads in behavioural score and release data csv
-    2. writes cleaned data with selected columns to csv: `../data2018/behavScores.csv`
+    1. reads in behavioural score and release data csvs. These are three separate files (one for _ranef_ scores, one for _F01_ scores, and one for morphometry)
+    2. writes cleaned data with selected columns to csv: `../data2018/behavScoresRanef.csv`
 
-**This file is not on the repo.**
 
-3. run `codeGetData/code_tidalIntervals2018.r`
+3. run `codeGetData/code_tidalIntervals2018.r` (**This file is not on the repo.**)
     1. reads west terschelling waterlevel csv
     2. selects a measure of waterlevel
     3. reads `codeGetData/high_low_tide.R` function
@@ -81,7 +71,7 @@ all scripts are in `knots_code/`
     6. merges recurse output with prepared data and writes to csv: `../data2018/oneHertzData/recurseData`
 
 7. run `codeMakeResults/code_residencePatchMetrics.r`
-    1. reads in aux functionstions `codeMoveMetrics/functionEuclideanDistance.r` and `codeMakeResults/func_residencePatch.r`
+    1. reads in aux functions `codeMoveMetrics/functionEuclideanDistance.r` and `codeMakeResults/func_residencePatch.r`
     2. reads in recurse data locs from **6.vi** and prepared data from **5.v**
     3. assigns a point as residence point if residence time is below 2 minutes, removes other points
     4. applies the `funcGetResPatches` function to the residence points
@@ -89,21 +79,34 @@ all scripts are in `knots_code/`
 
 ## Work with residence patches
 
-8. run `codeMakeResults/code_patchSizeVsTestScore.r`
-    1. reads in patch size data output from **7.v**
-    2. reads in behaviour scores from **2.ii**
-    3. plots patch metrics against exploration score at 0.2 score unit bins
-
-9. run `codeMakeResults/code_distanceMCP.r`
-    1. reads in data prepared by **5.vi**
+8. run `codeMakeResults/code_distanceMCP.r`
+    1. reads in data prepared by **5.vi** and subsets for low tide
     2. calculates total distance and convex hull area and writes to file: `../data2018/oneHertzData/dataMCParea.csv`
-    3. plots distance and area against exploration score at 0.2 score unit bins
+    3. writes the irregular boundary of unioned MCPs to file `../data2018/spatials/newUnionPatches/unionPatches.shp`
+
+9. run `codeMakeResults/code_statsCoarseMetrics.r`
+    1. reads in patch size data output from **8.ii**
+    2. reads in behaviour scores from **2.ii** and joins to **8.ii**
+    3. prepares data for models to be run automatically, and add model as a list column - running models with and without id as REff
+    4. writes model output to file with and without id as REff
+    5. prepares data and plots fig04: `../figs/fig04coarseMetrics.pdf`
+
+10. run `codeMakeResults/code_statsPatchMetrics.r`
+    1. reads in data from **7.v**
+    2. reads in behaviour scores from **2.ii** and joins to **8.ii**
+    3. prepares data for different variables related to explore score
+    4. runs models as above, not including id as REff
+    5. write model summaries to file
+    6. prepare data and plot fig05: `../figs/fig05patchMetrics.pdf`
+
+    ![Figure 5](https://github.com/pratikunterwegs/redknotMoveWaddensea/blob/devBranch/figs/fig-1.png)
+
 
 ## Aux files
 
-10. `func_residencePatch.r`: finds residence patches
-11. `functionEuclideanDistance.r`: a custom, vectorised distance function
-12. `codePlotOptions/`: custom ggplot themes.
+11. `func_residencePatch.r`: finds residence patches
+12. `functionEuclideanDistance.r`: a custom, vectorised distance function
+13. `codePlotOptions/`: custom ggplot themes.
 
 ---
 
