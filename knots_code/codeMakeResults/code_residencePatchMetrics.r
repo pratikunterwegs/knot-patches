@@ -9,7 +9,7 @@ library(tidyverse); library(data.table)
 library(glue); library(sf)
 
 # load the custom library
-devtools::install_github("pratikunterwegs/watlasUtils", ref="devbranch", force = TRUE)
+devtools::install_github("pratikunterwegs/watlasUtils", ref="master", force = TRUE)
 library(watlasUtils)
 
 # read in recurse data for selected birds
