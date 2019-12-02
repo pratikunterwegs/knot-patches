@@ -11,9 +11,7 @@
 *.rdata
 
 # anything in the data folders
-data2017/*
-data2018/*
-data2019/*
+data/
 # except model output
 !data2018/modOutput
 

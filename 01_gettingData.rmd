@@ -1,0 +1,23 @@
+---
+output: html_document
+output_dir: "docs"
+editor_options: 
+  chunk_output_type: console
+---
+
+# Introduction to getting data
+
+This section focusses on accessing and downloading WATLAS data. This is done using functions in the [WATLAS Utilities package](https://github.com/pratikunterwegs/watlasUtils).
+
+## Prepare `watlasUtils` and other libraries
+
+```{r install_watlasutils}
+# install the package watlasUtils from master branch
+install.packages("devtools")
+devtools::install_github("pratikunterwegs/watlasUtils", ref = "master")
+
+```
+
+## Read in tag deployment data
+
+## Get data and save locally

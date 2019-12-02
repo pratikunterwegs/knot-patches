@@ -1,0 +1,16 @@
+--- 
+knit: "bookdown::render_book"
+title: "Red knot personality and movement"
+author: "Pratik R Gupte"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+#bibliography: [references.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+github-repo: pratikunterwegs/redknotMoveWaddensea
+description: "Best practices for using eBird data to estimate species distributions"
+---
+
+# A heading
