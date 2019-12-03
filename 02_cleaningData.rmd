@@ -1,0 +1,53 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+# Cleaning data
+
+This section is about cleaning downloaded data using the `cleanData` function in the [WATLAS Utilities package](https://github.com/pratikunterwegs/watlasUtils).
+
+**Workflow**
+
+1. Prepare required libraries.
+2. Read in data, apply the cleaning function, and overwrite local data.
+
+## Prepare `watlasUtils` and other libraries
+
+```{r install_watlasutils_2, message=FALSE, warning=FALSE}
+# watlasUtils assumed installed from the previous step
+# if not, install from the github repo as shown below
+
+# devtools::install_github("pratikunterwegs/watlasUtils")
+library(watlasUtils)
+
+# libraries to process data
+library(data.table)
+library(purrr)
+library(glue)
+```
+
+## Read, clean, and write data
+
+```{r read_in_raw_data, eval=FALSE, message=FALSE, warning=FALSE}
+# make a list of data files to read
+data_files <- list.files(path = "data/data2018/", pattern = "_raw.csv", full.names = TRUE)
+
+# map read in, cleaning, and write out function over vector of filenames
+map(data_files, function(df){
+  
+  temp_data <- fread(df)
+  
+  clean_data <- watlasUtils::funcCleanData(somedata = temp_data,
+                                           moving_window = 5,
+                                           nbs_min = 0,
+                                           sd_threshold = 5e5,
+                                           plot = FALSE)
+  print(glue('tag {Toa_Tag} cleaned with {nrow(clean_data)} fixes'))
+  fwrite(x = clean_data, file = df, dateTimeAs = "epoch")
+  
+  rm(df); gc()
+})
+
+```
+

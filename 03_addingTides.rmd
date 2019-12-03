@@ -1,0 +1,60 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+# Adding tidal cycle data
+
+This section is about adding tidal cycle data to individual trajectories. This is done to split the data up into convenient, and biologically sensible units. This section uses the package [VulnToolkit](https://github.com/troyhill/VulnToolkit) to identify high tide times from water-level data provided by Rijkswaterstaat for the measuring point at West Terschelling.
+
+**Workflow**
+
+1. Prepare required libraries,
+2. Read in water level data and identify high tides,
+3. Write tidal cycle data to local file,
+4. Add tidal cycle time to movement data.
+
+## Prepare `watlasUtils` and other libraries
+
+```{r install_vulntoolkit_2, message=FALSE, warning=FALSE}
+# load VulnToolkit or install if not available
+if("VulnToolkit" %in% installed.packages() == FALSE){
+  devtools::install_github("troyhill/VulnToolkit")
+}
+library(VulnToolkit)
+
+# libraries to process data
+library(data.table)
+library(purrr)
+library(glue)
+```
+
+## Read water level data
+
+Water level data for [West Terschelling](https://waterinfo.rws.nl/#!/details/publiek/waterhoogte-t-o-v-nap/West-Terschelling(WTER)/Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm), a settlement approx. 10km from the field site are provided by Rijkswaterstaat's [Waterinfo](https://waterinfo.rws.nl/#!/nav/bulkdownload/parameters/Waterhoogten/), in cm above Amsterdam Ordnance Datum. These data are manually downloaded in the range July 1, 2018 -- October 31, 2018 and saved in `data/data2018`.
+
+```{r read_waterlevel_data, message=FALSE, warning=FALSE}
+# read in waterlevel data
+waterlevel <- fread("data/data2018/waterlevelWestTerschelling.csv", sep = ";")
+
+# select useful columns and rename
+waterlevel <- waterlevel[,.(WAARNEMINGDATUM, WAARNEMINGTIJD, NUMERIEKEWAARDE)]
+setnames(waterlevel, c("date", "time", "level"))
+
+# make a single POSIXct column of datetime
+waterlevel[,dateTime := as.POSIXct(paste(date, time, sep = " "), format = "%d-%m-%Y %H:%M:%S")]
+```
+
+## Calculate high tides
+
+A tidal period of 12 hours 25 minutes is taken from [Rijkswaterstaat](https://www.rijkswaterstaat.nl/water/waterdata-en-waterberichtgeving/waterdata/getij/index.aspx).
+
+```{r get_high_tide, eval=FALSE, message=FALSE, warning=FALSE}
+# use the HL function from vulnToolkit to get high tides
+tides = VulnToolkit::HL(waterlevel$level, waterlevel$dateTime, period = 12.41, tides = "H", semidiurnal = FALSE)
+
+# write to local file
+fwrite(tide, file = "data/data2018/tidesSummer2018.csv", 
+       dateTimeAs = "epoch")
+```
+

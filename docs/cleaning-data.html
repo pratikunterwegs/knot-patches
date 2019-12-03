@@ -4,21 +4,21 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Linking experimental measures of personality to free-living space-use in red knots</title>
-  <meta name="description" content="Linking experimental measures of personality to free-living space-use in red knots" />
+  <title>3 Cleaning data | Linking experimental measures of personality to free-living space-use in red knots</title>
+  <meta name="description" content="3 Cleaning data | Linking experimental measures of personality to free-living space-use in red knots" />
   <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta property="og:title" content="3 Cleaning data | Linking experimental measures of personality to free-living space-use in red knots" />
   <meta property="og:type" content="book" />
   
   
-  <meta property="og:description" content="Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta property="og:description" content="3 Cleaning data | Linking experimental measures of personality to free-living space-use in red knots" />
   <meta name="github-repo" content="pratikunterwegs/redknotMoveWaddensea" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta name="twitter:title" content="3 Cleaning data | Linking experimental measures of personality to free-living space-use in red knots" />
   
-  <meta name="twitter:description" content="Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta name="twitter:description" content="3 Cleaning data | Linking experimental measures of personality to free-living space-use in red knots" />
   
 
 <meta name="author" content="Pratik R Gupte" />
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="getting-data.html"/>
+<link rel="prev" href="getting-data.html"/>
+<link rel="next" href="adding-tidal-cycle-data.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -169,39 +169,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Linking experimental measures of personality to free-living space-use in red knots</h1>
-<p class="author"><em>Pratik R Gupte</em></p>
-<p class="date"><em>2019-12-03</em></p>
+<div id="cleaning-data" class="section level1">
+<h1 number="3"><span class="header-section-number">3</span> Cleaning data</h1>
+<p>This section is about cleaning downloaded data using the <code>cleanData</code> function in the <a href="https://github.com/pratikunterwegs/watlasUtils">WATLAS Utilities package</a>.</p>
+<p><strong>Workflow</strong></p>
+<ol style="list-style-type: decimal">
+<li>Prepare required libraries.</li>
+<li>Read in data, apply the cleaning function, and overwrite local data.</li>
+</ol>
+<div id="prepare-watlasutils-and-other-libraries-1" class="section level2">
+<h2 number="3.1"><span class="header-section-number">3.1</span> Prepare <code>watlasUtils</code> and other libraries</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="cleaning-data.html#cb6-1"></a><span class="co"># watlasUtils assumed installed from the previous step</span></span>
+<span id="cb6-2"><a href="cleaning-data.html#cb6-2"></a><span class="co"># if not, install from the github repo as shown below</span></span>
+<span id="cb6-3"><a href="cleaning-data.html#cb6-3"></a></span>
+<span id="cb6-4"><a href="cleaning-data.html#cb6-4"></a><span class="co"># devtools::install_github(&quot;pratikunterwegs/watlasUtils&quot;)</span></span>
+<span id="cb6-5"><a href="cleaning-data.html#cb6-5"></a><span class="kw">library</span>(watlasUtils)</span>
+<span id="cb6-6"><a href="cleaning-data.html#cb6-6"></a></span>
+<span id="cb6-7"><a href="cleaning-data.html#cb6-7"></a><span class="co"># libraries to process data</span></span>
+<span id="cb6-8"><a href="cleaning-data.html#cb6-8"></a><span class="kw">library</span>(data.table)</span>
+<span id="cb6-9"><a href="cleaning-data.html#cb6-9"></a><span class="kw">library</span>(purrr)</span>
+<span id="cb6-10"><a href="cleaning-data.html#cb6-10"></a><span class="kw">library</span>(glue)</span></code></pre></div>
 </div>
-<div id="introduction" class="section level1">
-<h1 number="1"><span class="header-section-number">1</span> Introduction</h1>
-<p>This is the <code>bookdown</code> version of a project in preparation that links high-resolution tracking data from individual red knots <em>Calidris canutus islandica</em> to fine-scale experimental behaviour measurements in captivity, and aims to explore whether free-living space-use can be predicted by lab assays of consistent individual differences.</p>
-<div id="attribution" class="section level2">
-<h2 number="1.1"><span class="header-section-number">1.1</span> Attribution</h2>
-<p>Please contact the following before cloning or in case of interest in the project.</p>
-<ul>
-<li>Pratik Gupte (author and maintainer)
-<ul>
-<li><a href="https://www.rug.nl/staff/p.r.gupte">PhD student, GELIFES – University of Groningen</a></li>
-<li>Guest researcher, COS – NIOZ</li>
-<li><a href="mailto:p.r.gupte@rug.nl" class="email">p.r.gupte@rug.nl</a></li>
-<li>Nijenborgh 7/5172.0583 9747AG Groningen</li>
-</ul></li>
-<li>Allert Bijleveld (PI): <a href="mailto:allert.bijleveld@nioz.nl" class="email">allert.bijleveld@nioz.nl</a>
-<ul>
-<li>Project information: <a href="https://www.nioz.nl/en/about/cos/coastal-movement-ecology/shorebird-tracking" class="uri">https://www.nioz.nl/en/about/cos/coastal-movement-ecology/shorebird-tracking</a></li>
-</ul></li>
-<li>Selin Ersoy (collab): <a href="mailto:selin.ersoy@nioz.nl" class="email">selin.ersoy@nioz.nl</a></li>
-</ul>
-</div>
-<div id="data-access" class="section level2">
-<h2 number="1.2"><span class="header-section-number">1.2</span> Data access</h2>
-<p>The data used in this work are not publicly available. Contact PI Allert Bijleveld for data access.</p>
-</div>
-<div id="data-processing" class="section level2">
-<h2 number="1.3"><span class="header-section-number">1.3</span> Data processing</h2>
-<p>The data processing for this project is described in the following sections. Navigate through them using the links in the sidebar.</p>
+<div id="read-clean-and-write-data" class="section level2">
+<h2 number="3.2"><span class="header-section-number">3.2</span> Read, clean, and write data</h2>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="cleaning-data.html#cb7-1"></a><span class="co"># make a list of data files to read</span></span>
+<span id="cb7-2"><a href="cleaning-data.html#cb7-2"></a>data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data/data2018/&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;_raw.csv&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb7-3"><a href="cleaning-data.html#cb7-3"></a></span>
+<span id="cb7-4"><a href="cleaning-data.html#cb7-4"></a><span class="co"># map read in, cleaning, and write out function over vector of filenames</span></span>
+<span id="cb7-5"><a href="cleaning-data.html#cb7-5"></a><span class="kw">map</span>(data_files, <span class="cf">function</span>(df){</span>
+<span id="cb7-6"><a href="cleaning-data.html#cb7-6"></a>  </span>
+<span id="cb7-7"><a href="cleaning-data.html#cb7-7"></a>  temp_data &lt;-<span class="st"> </span><span class="kw">fread</span>(df)</span>
+<span id="cb7-8"><a href="cleaning-data.html#cb7-8"></a>  </span>
+<span id="cb7-9"><a href="cleaning-data.html#cb7-9"></a>  clean_data &lt;-<span class="st"> </span>watlasUtils<span class="op">::</span><span class="kw">funcCleanData</span>(<span class="dt">somedata =</span> temp_data,</span>
+<span id="cb7-10"><a href="cleaning-data.html#cb7-10"></a>                                           <span class="dt">moving_window =</span> <span class="dv">5</span>,</span>
+<span id="cb7-11"><a href="cleaning-data.html#cb7-11"></a>                                           <span class="dt">nbs_min =</span> <span class="dv">0</span>,</span>
+<span id="cb7-12"><a href="cleaning-data.html#cb7-12"></a>                                           <span class="dt">sd_threshold =</span> <span class="fl">5e5</span>,</span>
+<span id="cb7-13"><a href="cleaning-data.html#cb7-13"></a>                                           <span class="dt">plot =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb7-14"><a href="cleaning-data.html#cb7-14"></a>  <span class="kw">print</span>(<span class="kw">glue</span>(<span class="st">&#39;tag {Toa_Tag} cleaned with {nrow(clean_data)} fixes&#39;</span>))</span>
+<span id="cb7-15"><a href="cleaning-data.html#cb7-15"></a>  <span class="kw">fwrite</span>(<span class="dt">x =</span> clean_data, <span class="dt">file =</span> df, <span class="dt">dateTimeAs =</span> <span class="st">&quot;epoch&quot;</span>)</span>
+<span id="cb7-16"><a href="cleaning-data.html#cb7-16"></a>  </span>
+<span id="cb7-17"><a href="cleaning-data.html#cb7-17"></a>  <span class="kw">rm</span>(df); <span class="kw">gc</span>()</span>
+<span id="cb7-18"><a href="cleaning-data.html#cb7-18"></a>})</span></code></pre></div>
 
 </div>
 </div>
@@ -210,8 +218,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-
-<a href="getting-data.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="getting-data.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="adding-tidal-cycle-data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -233,7 +241,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/pratikunterwegs/redknotMoveWaddensea/edit/master/index.rmd",
+"link": "https://github.com/pratikunterwegs/redknotMoveWaddensea/edit/master/02_cleaningData.rmd",
 "text": "Edit"
 },
 "history": {

@@ -4,21 +4,21 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Linking experimental measures of personality to free-living space-use in red knots</title>
-  <meta name="description" content="Linking experimental measures of personality to free-living space-use in red knots" />
+  <title>4 Adding tidal cycle data | Linking experimental measures of personality to free-living space-use in red knots</title>
+  <meta name="description" content="4 Adding tidal cycle data | Linking experimental measures of personality to free-living space-use in red knots" />
   <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta property="og:title" content="4 Adding tidal cycle data | Linking experimental measures of personality to free-living space-use in red knots" />
   <meta property="og:type" content="book" />
   
   
-  <meta property="og:description" content="Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta property="og:description" content="4 Adding tidal cycle data | Linking experimental measures of personality to free-living space-use in red knots" />
   <meta name="github-repo" content="pratikunterwegs/redknotMoveWaddensea" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta name="twitter:title" content="4 Adding tidal cycle data | Linking experimental measures of personality to free-living space-use in red knots" />
   
-  <meta name="twitter:description" content="Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta name="twitter:description" content="4 Adding tidal cycle data | Linking experimental measures of personality to free-living space-use in red knots" />
   
 
 <meta name="author" content="Pratik R Gupte" />
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
+<link rel="prev" href="cleaning-data.html"/>
 
-<link rel="next" href="getting-data.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -169,39 +169,51 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Linking experimental measures of personality to free-living space-use in red knots</h1>
-<p class="author"><em>Pratik R Gupte</em></p>
-<p class="date"><em>2019-12-03</em></p>
+<div id="adding-tidal-cycle-data" class="section level1">
+<h1 number="4"><span class="header-section-number">4</span> Adding tidal cycle data</h1>
+<p>This section is about adding tidal cycle data to individual trajectories. This is done to split the data up into convenient, and biologically sensible units. This section uses the package <a href="https://github.com/troyhill/VulnToolkit">VulnToolkit</a> to identify high tide times from water-level data provided by Rijkswaterstaat for the measuring point at West Terschelling.</p>
+<p><strong>Workflow</strong></p>
+<ol style="list-style-type: decimal">
+<li>Prepare required libraries,</li>
+<li>Read in water level data and identify high tides,</li>
+<li>Write tidal cycle data to local file,</li>
+<li>Add tidal cycle time to movement data.</li>
+</ol>
+<div id="prepare-watlasutils-and-other-libraries-2" class="section level2">
+<h2 number="4.1"><span class="header-section-number">4.1</span> Prepare <code>watlasUtils</code> and other libraries</h2>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="adding-tidal-cycle-data.html#cb8-1"></a><span class="co"># load VulnToolkit or install if not available</span></span>
+<span id="cb8-2"><a href="adding-tidal-cycle-data.html#cb8-2"></a><span class="cf">if</span>(<span class="st">&quot;VulnToolkit&quot;</span> <span class="op">%in%</span><span class="st"> </span><span class="kw">installed.packages</span>() <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>){</span>
+<span id="cb8-3"><a href="adding-tidal-cycle-data.html#cb8-3"></a>  devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;troyhill/VulnToolkit&quot;</span>)</span>
+<span id="cb8-4"><a href="adding-tidal-cycle-data.html#cb8-4"></a>}</span>
+<span id="cb8-5"><a href="adding-tidal-cycle-data.html#cb8-5"></a><span class="kw">library</span>(VulnToolkit)</span>
+<span id="cb8-6"><a href="adding-tidal-cycle-data.html#cb8-6"></a></span>
+<span id="cb8-7"><a href="adding-tidal-cycle-data.html#cb8-7"></a><span class="co"># libraries to process data</span></span>
+<span id="cb8-8"><a href="adding-tidal-cycle-data.html#cb8-8"></a><span class="kw">library</span>(data.table)</span>
+<span id="cb8-9"><a href="adding-tidal-cycle-data.html#cb8-9"></a><span class="kw">library</span>(purrr)</span>
+<span id="cb8-10"><a href="adding-tidal-cycle-data.html#cb8-10"></a><span class="kw">library</span>(glue)</span></code></pre></div>
 </div>
-<div id="introduction" class="section level1">
-<h1 number="1"><span class="header-section-number">1</span> Introduction</h1>
-<p>This is the <code>bookdown</code> version of a project in preparation that links high-resolution tracking data from individual red knots <em>Calidris canutus islandica</em> to fine-scale experimental behaviour measurements in captivity, and aims to explore whether free-living space-use can be predicted by lab assays of consistent individual differences.</p>
-<div id="attribution" class="section level2">
-<h2 number="1.1"><span class="header-section-number">1.1</span> Attribution</h2>
-<p>Please contact the following before cloning or in case of interest in the project.</p>
-<ul>
-<li>Pratik Gupte (author and maintainer)
-<ul>
-<li><a href="https://www.rug.nl/staff/p.r.gupte">PhD student, GELIFES – University of Groningen</a></li>
-<li>Guest researcher, COS – NIOZ</li>
-<li><a href="mailto:p.r.gupte@rug.nl" class="email">p.r.gupte@rug.nl</a></li>
-<li>Nijenborgh 7/5172.0583 9747AG Groningen</li>
-</ul></li>
-<li>Allert Bijleveld (PI): <a href="mailto:allert.bijleveld@nioz.nl" class="email">allert.bijleveld@nioz.nl</a>
-<ul>
-<li>Project information: <a href="https://www.nioz.nl/en/about/cos/coastal-movement-ecology/shorebird-tracking" class="uri">https://www.nioz.nl/en/about/cos/coastal-movement-ecology/shorebird-tracking</a></li>
-</ul></li>
-<li>Selin Ersoy (collab): <a href="mailto:selin.ersoy@nioz.nl" class="email">selin.ersoy@nioz.nl</a></li>
-</ul>
+<div id="read-water-level-data" class="section level2">
+<h2 number="4.2"><span class="header-section-number">4.2</span> Read water level data</h2>
+<p>Water level data for <a href="https://waterinfo.rws.nl/#!/details/publiek/waterhoogte-t-o-v-nap/West-Terschelling(WTER)/Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm">West Terschelling</a>, a settlement approx. 10km from the field site are provided by Rijkswaterstaat’s <a href="https://waterinfo.rws.nl/#!/nav/bulkdownload/parameters/Waterhoogten/">Waterinfo</a>, in cm above Amsterdam Ordnance Datum. These data are manually downloaded in the range July 1, 2018 – October 31, 2018 and saved in <code>data/data2018</code>.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="adding-tidal-cycle-data.html#cb9-1"></a><span class="co"># read in waterlevel data</span></span>
+<span id="cb9-2"><a href="adding-tidal-cycle-data.html#cb9-2"></a>waterlevel &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data2018/waterlevelWestTerschelling.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>)</span>
+<span id="cb9-3"><a href="adding-tidal-cycle-data.html#cb9-3"></a></span>
+<span id="cb9-4"><a href="adding-tidal-cycle-data.html#cb9-4"></a><span class="co"># select useful columns and rename</span></span>
+<span id="cb9-5"><a href="adding-tidal-cycle-data.html#cb9-5"></a>waterlevel &lt;-<span class="st"> </span>waterlevel[,.(WAARNEMINGDATUM, WAARNEMINGTIJD, NUMERIEKEWAARDE)]</span>
+<span id="cb9-6"><a href="adding-tidal-cycle-data.html#cb9-6"></a><span class="kw">setnames</span>(waterlevel, <span class="kw">c</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;time&quot;</span>, <span class="st">&quot;level&quot;</span>))</span>
+<span id="cb9-7"><a href="adding-tidal-cycle-data.html#cb9-7"></a></span>
+<span id="cb9-8"><a href="adding-tidal-cycle-data.html#cb9-8"></a><span class="co"># make a single POSIXct column of datetime</span></span>
+<span id="cb9-9"><a href="adding-tidal-cycle-data.html#cb9-9"></a>waterlevel[,dateTime <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(date, time, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>), <span class="dt">format =</span> <span class="st">&quot;%d-%m-%Y %H:%M:%S&quot;</span>)]</span></code></pre></div>
 </div>
-<div id="data-access" class="section level2">
-<h2 number="1.2"><span class="header-section-number">1.2</span> Data access</h2>
-<p>The data used in this work are not publicly available. Contact PI Allert Bijleveld for data access.</p>
-</div>
-<div id="data-processing" class="section level2">
-<h2 number="1.3"><span class="header-section-number">1.3</span> Data processing</h2>
-<p>The data processing for this project is described in the following sections. Navigate through them using the links in the sidebar.</p>
+<div id="calculate-high-tides" class="section level2">
+<h2 number="4.3"><span class="header-section-number">4.3</span> Calculate high tides</h2>
+<p>A tidal period of 12 hours 25 minutes is taken from <a href="https://www.rijkswaterstaat.nl/water/waterdata-en-waterberichtgeving/waterdata/getij/index.aspx">Rijkswaterstaat</a>.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="adding-tidal-cycle-data.html#cb10-1"></a><span class="co"># use the HL function from vulnToolkit to get high tides</span></span>
+<span id="cb10-2"><a href="adding-tidal-cycle-data.html#cb10-2"></a>tides =<span class="st"> </span>VulnToolkit<span class="op">::</span><span class="kw">HL</span>(waterlevel<span class="op">$</span>level, waterlevel<span class="op">$</span>dateTime, <span class="dt">period =</span> <span class="fl">12.41</span>, <span class="dt">tides =</span> <span class="st">&quot;H&quot;</span>, <span class="dt">semidiurnal =</span> <span class="ot">FALSE</span>)</span>
+<span id="cb10-3"><a href="adding-tidal-cycle-data.html#cb10-3"></a></span>
+<span id="cb10-4"><a href="adding-tidal-cycle-data.html#cb10-4"></a><span class="co"># write to local file</span></span>
+<span id="cb10-5"><a href="adding-tidal-cycle-data.html#cb10-5"></a><span class="kw">fwrite</span>(tide, <span class="dt">file =</span> <span class="st">&quot;data/data2018/tidesSummer2018.csv&quot;</span>, </span>
+<span id="cb10-6"><a href="adding-tidal-cycle-data.html#cb10-6"></a>       <span class="dt">dateTimeAs =</span> <span class="st">&quot;epoch&quot;</span>)</span></code></pre></div>
 
 </div>
 </div>
@@ -210,8 +222,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
+<a href="cleaning-data.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
-<a href="getting-data.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -233,7 +245,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/pratikunterwegs/redknotMoveWaddensea/edit/master/index.rmd",
+"link": "https://github.com/pratikunterwegs/redknotMoveWaddensea/edit/master/03_addingTides.rmd",
 "text": "Edit"
 },
 "history": {
