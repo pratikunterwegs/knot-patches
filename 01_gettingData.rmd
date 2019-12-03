@@ -3,9 +3,15 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Introduction to getting data
+# Getting data
 
-This section focusses on accessing and downloading WATLAS data. This is done using functions in the [WATLAS Utilities package](https://github.com/pratikunterwegs/watlasUtils).
+This section focusses on accessing and downloading WATLAS data. This is done using functions in the [WATLAS Utilities package](https://github.com/pratikunterwegs/watlasUtils). 
+
+**Workflow**
+
+1. Preparing required libraries.
+2. Reading tag data with deployment start dates from a local file. This file is not yet publicly available.
+3. Connecting to the NIOZ databse and downloading data. This database is also not public-access.
 
 ## Prepare `watlasUtils` and other libraries
 
@@ -17,7 +23,7 @@ library(devtools)
 # devtools::install_github("pratikunterwegs/watlasUtils")
 library(watlasUtils)
 
-# CRAN libraries
+# libraries to process data
 library(data.table)
 library(ggplot2)
 library(ggthemes)
@@ -76,7 +82,8 @@ pmap(tag_info[,.(Toa_Tag, Release_Date)], function(Toa_Tag, Release_Date){
   
   print(glue('tag {Toa_Tag} accessed with {nrow(prelim_data)} fixes'))
   
-  fwrite(prelim_data, file = glue('data/data2018/{Toa_Tag}.csv'))
+  fwrite(prelim_data, file = glue('data/data2018/{Toa_Tag}_raw.csv'),
+         dateTimeAs = "epoch")
   
 })
 ```
