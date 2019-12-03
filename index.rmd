@@ -10,7 +10,7 @@ documentclass: book
 biblio-style: apalike
 link-citations: yes
 github-repo: pratikunterwegs/redknotMoveWaddensea
-description: "Best practices for using eBird data to estimate species distributions"
+description: "Linking experimental measures of personality to free-living space-use in red knots"
 ---
 
 # A heading

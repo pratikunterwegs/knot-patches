@@ -13,8 +13,9 @@ This section focusses on accessing and downloading WATLAS data. This is done usi
 
 ```{r install_watlasutils}
 # install the package watlasUtils from master branch
-install.packages("devtools")
-devtools::install_github("pratikunterwegs/watlasUtils", ref = "master")
+
+library(devtools)
+library(watlasUtils)
 
 ```
 
