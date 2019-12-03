@@ -14,7 +14,7 @@ This section is about adding tidal cycle data to individual trajectories. This i
 3. Write tidal cycle data to local file,
 4. Add time since high tide to movement data.
 
-## Prepare `watlasUtils` and other libraries
+## Prepare libraries
 
 ```{r install_vulntoolkit_2, message=FALSE, warning=FALSE}
 # load VulnToolkit or install if not available

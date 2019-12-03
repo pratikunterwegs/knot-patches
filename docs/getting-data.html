@@ -148,9 +148,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html"><i class="fa fa-check"></i><b>4</b> Adding tidal cycle data</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-watlasutils-and-other-libraries-2"><i class="fa fa-check"></i><b>4.1</b> Prepare <code>watlasUtils</code> and other libraries</a></li>
+<li class="chapter" data-level="4.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>4.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="4.2" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#read-water-level-data"><i class="fa fa-check"></i><b>4.2</b> Read water level data</a></li>
 <li class="chapter" data-level="4.3" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#calculate-high-tides"><i class="fa fa-check"></i><b>4.3</b> Calculate high tides</a></li>
+<li class="chapter" data-level="4.4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#add-time-since-high-tide"><i class="fa fa-check"></i><b>4.4</b> Add time since high tide</a></li>
 </ul></li>
 </ul>
 
@@ -241,8 +242,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-14"><a href="getting-data.html#cb5-14"></a>  </span>
 <span id="cb5-15"><a href="getting-data.html#cb5-15"></a>  <span class="kw">print</span>(<span class="kw">glue</span>(<span class="st">&#39;tag {Toa_Tag} accessed with {nrow(prelim_data)} fixes&#39;</span>))</span>
 <span id="cb5-16"><a href="getting-data.html#cb5-16"></a>  </span>
-<span id="cb5-17"><a href="getting-data.html#cb5-17"></a>  <span class="kw">fwrite</span>(prelim_data, <span class="dt">file =</span> <span class="kw">glue</span>(<span class="st">&#39;data/data2018/{Toa_Tag}_raw.csv&#39;</span>),</span>
-<span id="cb5-18"><a href="getting-data.html#cb5-18"></a>         <span class="dt">dateTimeAs =</span> <span class="st">&quot;epoch&quot;</span>)</span>
+<span id="cb5-17"><a href="getting-data.html#cb5-17"></a>  <span class="kw">fwrite</span>(prelim_data, <span class="dt">file =</span> <span class="kw">glue</span>(<span class="st">&#39;data/data2018/{Toa_Tag}_data.csv&#39;</span>),</span>
+<span id="cb5-18"><a href="getting-data.html#cb5-18"></a>         <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</span>
 <span id="cb5-19"><a href="getting-data.html#cb5-19"></a>  </span>
 <span id="cb5-20"><a href="getting-data.html#cb5-20"></a>})</span></code></pre></div>
 

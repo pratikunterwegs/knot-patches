@@ -148,9 +148,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html"><i class="fa fa-check"></i><b>4</b> Adding tidal cycle data</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-watlasutils-and-other-libraries-2"><i class="fa fa-check"></i><b>4.1</b> Prepare <code>watlasUtils</code> and other libraries</a></li>
+<li class="chapter" data-level="4.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>4.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="4.2" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#read-water-level-data"><i class="fa fa-check"></i><b>4.2</b> Read water level data</a></li>
 <li class="chapter" data-level="4.3" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#calculate-high-tides"><i class="fa fa-check"></i><b>4.3</b> Calculate high tides</a></li>
+<li class="chapter" data-level="4.4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#add-time-since-high-tide"><i class="fa fa-check"></i><b>4.4</b> Add time since high tide</a></li>
 </ul></li>
 </ul>
 
@@ -193,7 +194,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="read-clean-and-write-data" class="section level2">
 <h2 number="3.2"><span class="header-section-number">3.2</span> Read, clean, and write data</h2>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="cleaning-data.html#cb7-1"></a><span class="co"># make a list of data files to read</span></span>
-<span id="cb7-2"><a href="cleaning-data.html#cb7-2"></a>data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data/data2018/&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;_raw.csv&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb7-2"><a href="cleaning-data.html#cb7-2"></a>data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data/data2018/&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;_data.csv&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</span>
 <span id="cb7-3"><a href="cleaning-data.html#cb7-3"></a></span>
 <span id="cb7-4"><a href="cleaning-data.html#cb7-4"></a><span class="co"># map read in, cleaning, and write out function over vector of filenames</span></span>
 <span id="cb7-5"><a href="cleaning-data.html#cb7-5"></a><span class="kw">map</span>(data_files, <span class="cf">function</span>(df){</span>
@@ -206,7 +207,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb7-12"><a href="cleaning-data.html#cb7-12"></a>                                           <span class="dt">sd_threshold =</span> <span class="fl">5e5</span>,</span>
 <span id="cb7-13"><a href="cleaning-data.html#cb7-13"></a>                                           <span class="dt">plot =</span> <span class="ot">FALSE</span>)</span>
 <span id="cb7-14"><a href="cleaning-data.html#cb7-14"></a>  <span class="kw">print</span>(<span class="kw">glue</span>(<span class="st">&#39;tag {Toa_Tag} cleaned with {nrow(clean_data)} fixes&#39;</span>))</span>
-<span id="cb7-15"><a href="cleaning-data.html#cb7-15"></a>  <span class="kw">fwrite</span>(<span class="dt">x =</span> clean_data, <span class="dt">file =</span> df, <span class="dt">dateTimeAs =</span> <span class="st">&quot;epoch&quot;</span>)</span>
+<span id="cb7-15"><a href="cleaning-data.html#cb7-15"></a>  <span class="kw">fwrite</span>(<span class="dt">x =</span> clean_data, <span class="dt">file =</span> df, <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</span>
 <span id="cb7-16"><a href="cleaning-data.html#cb7-16"></a>  </span>
 <span id="cb7-17"><a href="cleaning-data.html#cb7-17"></a>  <span class="kw">rm</span>(df); <span class="kw">gc</span>()</span>
 <span id="cb7-18"><a href="cleaning-data.html#cb7-18"></a>})</span></code></pre></div>
