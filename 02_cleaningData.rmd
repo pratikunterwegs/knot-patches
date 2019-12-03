@@ -31,7 +31,7 @@ library(glue)
 
 ```{r read_in_raw_data, eval=FALSE, message=FALSE, warning=FALSE}
 # make a list of data files to read
-data_files <- list.files(path = "data/data2018/", pattern = "_raw.csv", full.names = TRUE)
+data_files <- list.files(path = "data/data2018/", pattern = "_data.csv", full.names = TRUE)
 
 # map read in, cleaning, and write out function over vector of filenames
 map(data_files, function(df){
@@ -44,7 +44,7 @@ map(data_files, function(df){
                                            sd_threshold = 5e5,
                                            plot = FALSE)
   print(glue('tag {Toa_Tag} cleaned with {nrow(clean_data)} fixes'))
-  fwrite(x = clean_data, file = df, dateTimeAs = "epoch")
+  fwrite(x = clean_data, file = df, dateTimeAs = "ISO")
   
   rm(df); gc()
 })

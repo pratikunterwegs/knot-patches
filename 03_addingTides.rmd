@@ -12,7 +12,7 @@ This section is about adding tidal cycle data to individual trajectories. This i
 1. Prepare required libraries,
 2. Read in water level data and identify high tides,
 3. Write tidal cycle data to local file,
-4. Add tidal cycle time to movement data.
+4. Add time since high tide to movement data.
 
 ## Prepare `watlasUtils` and other libraries
 
@@ -27,6 +27,7 @@ library(VulnToolkit)
 library(data.table)
 library(purrr)
 library(glue)
+library(dplyr)
 ```
 
 ## Read water level data
@@ -39,10 +40,13 @@ waterlevel <- fread("data/data2018/waterlevelWestTerschelling.csv", sep = ";")
 
 # select useful columns and rename
 waterlevel <- waterlevel[,.(WAARNEMINGDATUM, WAARNEMINGTIJD, NUMERIEKEWAARDE)]
+
 setnames(waterlevel, c("date", "time", "level"))
 
 # make a single POSIXct column of datetime
 waterlevel[,dateTime := as.POSIXct(paste(date, time, sep = " "), format = "%d-%m-%Y %H:%M:%S")]
+
+waterlevel <- setDT(distinct(setDF(waterlevel), dateTime, .keep_all = TRUE))
 ```
 
 ## Calculate high tides
@@ -51,10 +55,44 @@ A tidal period of 12 hours 25 minutes is taken from [Rijkswaterstaat](https://ww
 
 ```{r get_high_tide, eval=FALSE, message=FALSE, warning=FALSE}
 # use the HL function from vulnToolkit to get high tides
-tides = VulnToolkit::HL(waterlevel$level, waterlevel$dateTime, period = 12.41, tides = "H", semidiurnal = FALSE)
+tides <- VulnToolkit::HL(waterlevel$level, waterlevel$dateTime, period = 12.41, tides = "H", semidiurnal = TRUE)
 
 # write to local file
-fwrite(tide, file = "data/data2018/tidesSummer2018.csv", 
-       dateTimeAs = "epoch")
+fwrite(tides, file = "data/data2018/tidesSummer2018.csv", 
+       dateTimeAs = "ISO")
+```
+
+## Add time since high tide
+
+```{r time_to_high_tide, eval=FALSE, message=FALSE, warning=FALSE}
+# read in data and add time since high tide
+data_files <- list.files(path = "data/data2018/", pattern = "_data.csv", full.names = TRUE)
+
+# map read in and tidal time calculation over data
+# merge data to insert high tides within movement data
+# arrange by time to position high tides correctly
+map(data_files, function(df){
+  
+  temp_data <- fread(df)
+  
+  temp_data <- merge(temp_data, tides, by.x = "ts", by.y = "time", 
+                     all = TRUE)
+  
+  setorder(temp_data, ts)
+  
+  temp_data <- temp_data[,tide := !is.na(tide) 
+         ][, tidalCycle := cumsum(tide) 
+           ][,tidalTime := as.numeric(difftime(ts, ts[1], units = "mins")), 
+             by = tidalCycle 
+             ][complete.cases(X),]
+              
+  temp_data[,`:=`(tide = NULL, level = NULL, time = NULL)
+         ][,tidalCycle := tidalCycle - min(tidalCycle) + 1]
+
+  fwrite(temp_data, file = df, dateTimeAs = "ISO")
+  print(glue('tag {Toa_Tag} added time since high tide'))
+  
+  rm(df); gc()
+})
 ```
 
