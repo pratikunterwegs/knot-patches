@@ -37,8 +37,5 @@ data/
 # any unnamed rplots
 *Rplots*
 
-# any html files
-*.html
-
 # the presentation folder
 presentation/
