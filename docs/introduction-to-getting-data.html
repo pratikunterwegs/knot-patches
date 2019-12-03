@@ -4,21 +4,21 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2 Introduction to getting data | Red knot personality and movement</title>
-  <meta name="description" content="Linking experimental measures of personality to free-living space-use in red knots" />
+  <title>2 Introduction to getting data | Linking experimental measures of personality to free-living space-use in red knots</title>
+  <meta name="description" content="2 Introduction to getting data | Linking experimental measures of personality to free-living space-use in red knots" />
   <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2 Introduction to getting data | Red knot personality and movement" />
+  <meta property="og:title" content="2 Introduction to getting data | Linking experimental measures of personality to free-living space-use in red knots" />
   <meta property="og:type" content="book" />
   
   
-  <meta property="og:description" content="Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta property="og:description" content="2 Introduction to getting data | Linking experimental measures of personality to free-living space-use in red knots" />
   <meta name="github-repo" content="pratikunterwegs/redknotMoveWaddensea" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2 Introduction to getting data | Red knot personality and movement" />
+  <meta name="twitter:title" content="2 Introduction to getting data | Linking experimental measures of personality to free-living space-use in red knots" />
   
-  <meta name="twitter:description" content="Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta name="twitter:description" content="2 Introduction to getting data | Linking experimental measures of personality to free-living space-use in red knots" />
   
 
 <meta name="author" content="Pratik R Gupte" />
@@ -129,7 +129,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> A heading</a></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#attribution"><i class="fa fa-check"></i><b>1.1</b> Attribution</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#data"><i class="fa fa-check"></i><b>1.2</b> Data</a></li>
+</ul></li>
 <li class="chapter" data-level="2" data-path="introduction-to-getting-data.html"><a href="introduction-to-getting-data.html"><i class="fa fa-check"></i><b>2</b> Introduction to getting data</a>
 <ul>
 <li class="chapter" data-level="2.1" data-path="introduction-to-getting-data.html"><a href="introduction-to-getting-data.html#prepare-watlasutils-and-other-libraries"><i class="fa fa-check"></i><b>2.1</b> Prepare <code>watlasUtils</code> and other libraries</a></li>
@@ -145,7 +149,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Red knot personality and movement</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Linking experimental measures of personality to free-living space-use in red knots</a>
           </h1>
         </div>
 
@@ -186,9 +190,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-10"><a href="introduction-to-getting-data.html#cb2-10"></a></span>
 <span id="cb2-11"><a href="introduction-to-getting-data.html#cb2-11"></a><span class="co"># check new release date column</span></span>
 <span id="cb2-12"><a href="introduction-to-getting-data.html#cb2-12"></a><span class="kw">head</span>(tag_info<span class="op">$</span>Release_Date)</span></code></pre></div>
-<pre><code>## [1] &quot;2018-09-14 20:00:00 CEST&quot; &quot;2018-09-13 15:30:00 CEST&quot;
-## [3] &quot;2018-09-14 20:00:00 CEST&quot; &quot;2018-09-13 18:30:00 CEST&quot;
-## [5] &quot;2018-08-11 15:00:00 CEST&quot; &quot;2018-08-16 18:04:00 CEST&quot;</code></pre>
+<pre><code>## [1] &quot;2018-09-14 20:00:00 CEST&quot;
+## [2] &quot;2018-09-13 15:30:00 CEST&quot;
+## [3] &quot;2018-09-14 20:00:00 CEST&quot;
+## [4] &quot;2018-09-13 18:30:00 CEST&quot;
+## [5] &quot;2018-08-11 15:00:00 CEST&quot;
+## [6] &quot;2018-08-16 18:04:00 CEST&quot;</code></pre>
 <div class="figure">
 <img src="knots_paper_2019_files/figure-html/plot_release_schedule-1.png" alt="Knots released per week of 2018." width="672" />
 <p class="caption">
@@ -200,7 +207,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2 number="2.3"><span class="header-section-number">2.3</span> Get data and save locally</h2>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="introduction-to-getting-data.html#cb4-1"></a><span class="co"># read in database access parameters from a local file</span></span>
 <span id="cb4-2"><a href="introduction-to-getting-data.html#cb4-2"></a>data_access &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/access_params.txt&quot;</span>)</span></code></pre></div>
-<hr />
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="introduction-to-getting-data.html#cb5-1"></a><span class="co"># create a data storage file if not present</span></span>
+<span id="cb5-2"><a href="introduction-to-getting-data.html#cb5-2"></a><span class="co"># use the getData function from watlasUtils on the tag_info data frame</span></span>
+<span id="cb5-3"><a href="introduction-to-getting-data.html#cb5-3"></a><span class="co"># this is placed inside a pmap wrapper to automate access for all birds</span></span>
+<span id="cb5-4"><a href="introduction-to-getting-data.html#cb5-4"></a></span>
+<span id="cb5-5"><a href="introduction-to-getting-data.html#cb5-5"></a><span class="cf">if</span>(<span class="op">!</span><span class="kw">dir.exists</span>(<span class="st">&quot;data/data2018&quot;</span>)) { <span class="kw">dir.create</span>(<span class="st">&quot;data/data2018&quot;</span>) }</span>
+<span id="cb5-6"><a href="introduction-to-getting-data.html#cb5-6"></a></span>
+<span id="cb5-7"><a href="introduction-to-getting-data.html#cb5-7"></a><span class="kw">pmap</span>(tag_info[,.(Toa_Tag, Release_Date)], <span class="cf">function</span>(Toa_Tag, Release_Date){</span>
+<span id="cb5-8"><a href="introduction-to-getting-data.html#cb5-8"></a></span>
+<span id="cb5-9"><a href="introduction-to-getting-data.html#cb5-9"></a>  prelim_data &lt;-<span class="st"> </span>watlasUtils<span class="op">::</span><span class="kw">funcGetData</span>(<span class="dt">tag =</span> Toa_Tag,</span>
+<span id="cb5-10"><a href="introduction-to-getting-data.html#cb5-10"></a>                           <span class="dt">tracking_time_start =</span> <span class="kw">as.character</span>(Release_Date),</span>
+<span id="cb5-11"><a href="introduction-to-getting-data.html#cb5-11"></a>                           <span class="dt">tracking_time_end =</span> <span class="st">&quot;2018-10-31&quot;</span>,</span>
+<span id="cb5-12"><a href="introduction-to-getting-data.html#cb5-12"></a>                           <span class="dt">username =</span> data_access<span class="op">$</span>username,</span>
+<span id="cb5-13"><a href="introduction-to-getting-data.html#cb5-13"></a>                           <span class="dt">password =</span> data_access<span class="op">$</span>password)</span>
+<span id="cb5-14"><a href="introduction-to-getting-data.html#cb5-14"></a>  </span>
+<span id="cb5-15"><a href="introduction-to-getting-data.html#cb5-15"></a>  <span class="kw">print</span>(<span class="kw">glue</span>(<span class="st">&#39;tag {Toa_Tag} accessed with {nrow(prelim_data)} fixes&#39;</span>))</span>
+<span id="cb5-16"><a href="introduction-to-getting-data.html#cb5-16"></a>  </span>
+<span id="cb5-17"><a href="introduction-to-getting-data.html#cb5-17"></a>  <span class="kw">fwrite</span>(prelim_data, <span class="dt">file =</span> <span class="kw">glue</span>(<span class="st">&#39;data/data2018/{Toa_Tag}.csv&#39;</span>))</span>
+<span id="cb5-18"><a href="introduction-to-getting-data.html#cb5-18"></a>  </span>
+<span id="cb5-19"><a href="introduction-to-getting-data.html#cb5-19"></a>})</span></code></pre></div>
 
 </div>
 </div>

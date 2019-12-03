@@ -59,7 +59,7 @@ ggplot(tag_info)+
 data_access <- fread("data/access_params.txt")
 ```
 
-```{r get_data, eval=FALSE, echo=TRUE, message=FALSE, warning=FALSE, include=FALSE}
+```{r get_data, eval=FALSE, message=FALSE, warning=FALSE}
 # create a data storage file if not present
 # use the getData function from watlasUtils on the tag_info data frame
 # this is placed inside a pmap wrapper to automate access for all birds
@@ -81,4 +81,3 @@ pmap(tag_info[,.(Toa_Tag, Release_Date)], function(Toa_Tag, Release_Date){
 })
 ```
 
----

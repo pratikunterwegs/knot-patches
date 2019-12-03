@@ -1,16 +1,37 @@
 --- 
 knit: "bookdown::render_book"
-title: "Red knot personality and movement"
+title: "Linking experimental measures of personality to free-living space-use in red knots"
 author: "Pratik R Gupte"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
 #bibliography: [references.bib, packages.bib]
-biblio-style: apalike
+#biblio-style: apalike
 link-citations: yes
 github-repo: pratikunterwegs/redknotMoveWaddensea
 description: "Linking experimental measures of personality to free-living space-use in red knots"
 ---
 
-# A heading
+# Introduction
+
+This is the `bookdown` version of a project in preparation that links high-resolution tracking data from individual red knots _Calidris canutus islandica_ to fine-scale experimental behaviour measurements in captivity, and aims to explore whether free-living space-use can be predicted by lab assays of consistent individual differences.
+
+## Attribution
+
+Please contact the following before cloning or in case of interest in the project.
+
+- Pratik Gupte (author and maintainer)
+  - [PhD student, GELIFES -- University of Groningen](https://www.rug.nl/staff/p.r.gupte)
+  - Guest researcher, COS -- NIOZ
+  - p.r.gupte@rug.nl
+  - Nijenborgh 7/5172.0583 9747AG Groningen
+
+- Allert Bijleveld (PI): allert.bijleveld@nioz.nl
+  - Project information: https://www.nioz.nl/en/about/cos/coastal-movement-ecology/shorebird-tracking
+
+- Selin Ersoy (collab): selin.ersoy@nioz.nl
+
+## Data
+
+The data used in this work are not publicly available. Contact PI Allert Bijleveld for data access.
