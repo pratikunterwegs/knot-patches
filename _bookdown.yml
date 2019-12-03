@@ -1,6 +1,6 @@
 book_filename: "knots_paper_2019"
 delete_merged_file: true
-before_chapter_script: "_common.r"
+#before_chapter_script: "_common.r"
 output_dir: "docs"
 language:
   ui:
