@@ -80,10 +80,13 @@ pmap(tag_info[,.(Toa_Tag, Release_Date)], function(Toa_Tag, Release_Date){
                            username = data_access$username,
                            password = data_access$password)
   
+  setDT(prelim_data)
+  prelim_data[,TAG:= = as.numeric(TAG) - prefix_num]
+
   print(glue('tag {Toa_Tag} accessed with {nrow(prelim_data)} fixes'))
   
-  fwrite(prelim_data, file = glue('data/data2018/{Toa_Tag}_raw.csv'),
-         dateTimeAs = "epoch")
+  fwrite(prelim_data, file = glue('data/data2018/{Toa_Tag}_data.csv'),
+         dateTimeAs = "ISO")
   
 })
 ```
