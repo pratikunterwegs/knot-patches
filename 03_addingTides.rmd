@@ -29,6 +29,7 @@ library(purrr)
 library(glue)
 library(dplyr)
 library(stringr)
+library(fasttime)
 ```
 
 ## Read water level data
@@ -75,6 +76,7 @@ data_files <- list.files(path = "data/data2018/", pattern = "_data.csv", full.na
 map(data_files, function(df){
   
   temp_data <- fread(df)
+  temp_data[,ts:=fastPOSIXct(ts)]
   
   temp_data <- merge(temp_data, tides, by.x = "ts", by.y = "time", 
                      all = TRUE)
@@ -92,7 +94,7 @@ map(data_files, function(df){
            ][,tidalCycle := str_pad(tidalCycle, 3, pad = 0)]
 
   fwrite(temp_data, file = df, dateTimeAs = "ISO")
-  print(glue('tag {unique(temp_data$TAG)} added time since high tide'))
+  print(glue('tag {unique(temp_data$id)} added time since high tide'))
   
   rm(df); gc()
 })
