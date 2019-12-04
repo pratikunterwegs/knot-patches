@@ -24,7 +24,7 @@
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2019-12-03" />
+<meta name="date" content="2019-12-04" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="cleaning-data.html"/>
-
+<link rel="next" href="revisit-analysis.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -153,6 +153,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="4.3" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#calculate-high-tides"><i class="fa fa-check"></i><b>4.3</b> Calculate high tides</a></li>
 <li class="chapter" data-level="4.4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#add-time-since-high-tide"><i class="fa fa-check"></i><b>4.4</b> Add time since high tide</a></li>
 </ul></li>
+<li class="chapter" data-level="5" data-path="revisit-analysis.html"><a href="revisit-analysis.html"><i class="fa fa-check"></i><b>5</b> Revisit analysis</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="revisit-analysis.html"><a href="revisit-analysis.html#prepare-libraries-1"><i class="fa fa-check"></i><b>5.1</b> Prepare libraries</a></li>
+<li class="chapter" data-level="5.2" data-path="revisit-analysis.html"><a href="revisit-analysis.html#read-data-split-recurse-write"><i class="fa fa-check"></i><b>5.2</b> Read data, split, recurse, write</a></li>
+</ul></li>
 </ul>
 
       </nav>
@@ -172,7 +177,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="adding-tidal-cycle-data" class="section level1">
 <h1 number="4"><span class="header-section-number">4</span> Adding tidal cycle data</h1>
-<p>This section is about adding tidal cycle data to individual trajectories. This is done to split the data up into convenient, and biologically sensible units. This section uses the package <a href="https://github.com/troyhill/VulnToolkit">VulnToolkit</a> to identify high tide times from water-level data provided by Rijkswaterstaat for the measuring point at West Terschelling.</p>
+<p>This section is about adding tidal cycle data to individual trajectories. This is done to split the data up into convenient, and biologically sensible units. This section uses the package <code>VulnToolkit</code> <span class="citation">(Troy D. Hill, Shimon C. Anisfeld <a href="revisit-analysis.html#ref-VulnToolkit2014" role="doc-biblioref">2014</a>)</span> to identify high tide times from water-level data provided by Rijkswaterstaat for the measuring point at West Terschelling.</p>
 <p><strong>Workflow</strong></p>
 <ol style="list-style-type: decimal">
 <li>Prepare required libraries,</li>
@@ -192,7 +197,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb8-8"><a href="adding-tidal-cycle-data.html#cb8-8"></a><span class="kw">library</span>(data.table)</span>
 <span id="cb8-9"><a href="adding-tidal-cycle-data.html#cb8-9"></a><span class="kw">library</span>(purrr)</span>
 <span id="cb8-10"><a href="adding-tidal-cycle-data.html#cb8-10"></a><span class="kw">library</span>(glue)</span>
-<span id="cb8-11"><a href="adding-tidal-cycle-data.html#cb8-11"></a><span class="kw">library</span>(dplyr)</span></code></pre></div>
+<span id="cb8-11"><a href="adding-tidal-cycle-data.html#cb8-11"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb8-12"><a href="adding-tidal-cycle-data.html#cb8-12"></a><span class="kw">library</span>(stringr)</span></code></pre></div>
 </div>
 <div id="read-water-level-data" class="section level2">
 <h2 number="4.2"><span class="header-section-number">4.2</span> Read water level data</h2>
@@ -244,13 +250,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb11-20"><a href="adding-tidal-cycle-data.html#cb11-20"></a>             ][<span class="kw">complete.cases</span>(X),]</span>
 <span id="cb11-21"><a href="adding-tidal-cycle-data.html#cb11-21"></a>              </span>
 <span id="cb11-22"><a href="adding-tidal-cycle-data.html#cb11-22"></a>  temp_data[,<span class="st">`</span><span class="dt">:=</span><span class="st">`</span>(<span class="dt">tide =</span> <span class="ot">NULL</span>, <span class="dt">level =</span> <span class="ot">NULL</span>, <span class="dt">time =</span> <span class="ot">NULL</span>)</span>
-<span id="cb11-23"><a href="adding-tidal-cycle-data.html#cb11-23"></a>         ][,tidalCycle <span class="op">:</span><span class="er">=</span><span class="st"> </span>tidalCycle <span class="op">-</span><span class="st"> </span><span class="kw">min</span>(tidalCycle) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>]</span>
-<span id="cb11-24"><a href="adding-tidal-cycle-data.html#cb11-24"></a></span>
-<span id="cb11-25"><a href="adding-tidal-cycle-data.html#cb11-25"></a>  <span class="kw">fwrite</span>(temp_data, <span class="dt">file =</span> df, <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</span>
-<span id="cb11-26"><a href="adding-tidal-cycle-data.html#cb11-26"></a>  <span class="kw">print</span>(<span class="kw">glue</span>(<span class="st">&#39;tag {Toa_Tag} added time since high tide&#39;</span>))</span>
-<span id="cb11-27"><a href="adding-tidal-cycle-data.html#cb11-27"></a>  </span>
-<span id="cb11-28"><a href="adding-tidal-cycle-data.html#cb11-28"></a>  <span class="kw">rm</span>(df); <span class="kw">gc</span>()</span>
-<span id="cb11-29"><a href="adding-tidal-cycle-data.html#cb11-29"></a>})</span></code></pre></div>
+<span id="cb11-23"><a href="adding-tidal-cycle-data.html#cb11-23"></a>         ][,tidalCycle <span class="op">:</span><span class="er">=</span><span class="st"> </span>tidalCycle <span class="op">-</span><span class="st"> </span><span class="kw">min</span>(tidalCycle) <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb11-24"><a href="adding-tidal-cycle-data.html#cb11-24"></a>           ][,tidalCycle <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">str_pad</span>(tidalCycle, <span class="dv">3</span>, <span class="dt">pad =</span> <span class="dv">0</span>)]</span>
+<span id="cb11-25"><a href="adding-tidal-cycle-data.html#cb11-25"></a></span>
+<span id="cb11-26"><a href="adding-tidal-cycle-data.html#cb11-26"></a>  <span class="kw">fwrite</span>(temp_data, <span class="dt">file =</span> df, <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</span>
+<span id="cb11-27"><a href="adding-tidal-cycle-data.html#cb11-27"></a>  <span class="kw">print</span>(<span class="kw">glue</span>(<span class="st">&#39;tag {unique(temp_data$TAG)} added time since high tide&#39;</span>))</span>
+<span id="cb11-28"><a href="adding-tidal-cycle-data.html#cb11-28"></a>  </span>
+<span id="cb11-29"><a href="adding-tidal-cycle-data.html#cb11-29"></a>  <span class="kw">rm</span>(df); <span class="kw">gc</span>()</span>
+<span id="cb11-30"><a href="adding-tidal-cycle-data.html#cb11-30"></a>})</span></code></pre></div>
 
 </div>
 </div>
@@ -259,8 +266,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="cleaning-data.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="cleaning-data.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="revisit-analysis.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

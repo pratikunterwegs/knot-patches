@@ -6,8 +6,8 @@ date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 documentclass: book
-#bibliography: [references.bib, packages.bib]
-#biblio-style: apalike
+bibliography: [refs.bib]
+biblio-style: apalike
 link-citations: yes
 github-repo: pratikunterwegs/redknotMoveWaddensea
 description: "Linking experimental measures of personality to free-living space-use in red knots"
