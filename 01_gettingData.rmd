@@ -81,7 +81,7 @@ pmap(tag_info[,.(Toa_Tag, Release_Date)], function(Toa_Tag, Release_Date){
                            password = data_access$password)
   
   setDT(prelim_data)
-  prelim_data[,TAG:= = as.numeric(TAG) - prefix_num]
+  # prelim_data[,TAG:= = as.numeric(TAG) - prefix_num]
 
   print(glue('tag {Toa_Tag} accessed with {nrow(prelim_data)} fixes'))
   
