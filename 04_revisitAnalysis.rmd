@@ -1,0 +1,106 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+# Revisit analysis
+
+This section is about splitting the data by tidal cycle, and passing the individual- and tidal cycle-specific data to revisit analysis, which is implemented using the package `recurse`.
+
+**Workflow**
+
+1. Prepare required libraries,
+2. Performing recurse:
+  - Read in movement data and split by tidal cycle,
+  - Perform revisit analysis using `recurse`,
+  - Write data with revisit metrics to file.
+
+## Prepare libraries
+
+This section uses the recurse package [@bracis2018].
+
+```{r install_recurse, message=FALSE, warning=FALSE}
+# load VulnToolkit or install if not available
+if("recurse" %in% installed.packages() == FALSE){
+  install.packages("recurse")
+}
+library(recurse)
+
+# libraries to process data
+library(data.table)
+library(purrr)
+library(glue)
+library(dplyr)
+```
+
+## Read data, split, recurse, write
+
+```{r recurse_analysis, eval=FALSE, message=FALSE, warning=FALSE}
+# read in data
+data_files <- list.files(path = "data/data2018/", pattern = "_data.csv", full.names = TRUE)
+
+# prepare recurse data folder
+if(!dir.exists("data/data2018/revisitData")){ dir.create("data/data2018/revisitData") }
+
+
+# prepare recurse in parameters
+# radius (m), cutoff (mins)
+radius <- 50
+timeunits <- "mins"
+revisit_cutoff <- 60
+
+# map read in, splitting, and recurse over individual level data
+# remove visits where the bird left for 60 mins, and then returned
+# this is regardless of whether after its return it stayed there
+# the removal counts the cumulative sum of all (timeSinceLastVisit <= 60)
+# thus after the first 60 minute absence, all points are assigned TRUE
+# this must be grouped by the coordinate
+map(data_files, function(df){
+  
+  temp_data <- fread(df)
+  setDF(temp_data)
+  
+  temp_data <- split(temp_data, temp_data$tidalCycle)
+  
+  # map over the tidal cycle level data
+  map(temp_data, function(tempdf){
+    
+    # perform the recursion analysis
+    df_recurse <- getRecursions(x = temp_data[,c("X","Y","ts","TAG")], 
+                                radius = radius, 
+                                timeunits = timeunits, verbose = TRUE)
+    
+    df_recurse <- setDT(df_recurse[["revisitStats"]])
+    
+    df_recurse[,timeSinceLastVisit:= 
+                 ifelse(is.na(timeSinceLastVisit), -Inf, timeSinceLastVisit)]
+    
+    df_recurse[,longAbsenceCounter:= cumsum(timeSinceLastVisit > 60), 
+               by= .(coordIdx)]
+    
+    df_recurse <- df_recurse[longAbsenceCounter < 1,]
+    
+    df_recurse <- df_recurse[,.(resTime = sum(timeInside), 
+                                fpt = first(timeInside),
+                                revisits = max(visitIdx)),
+                             by=.(coordIdx,x,y)]
+    
+    # prepare and merge existing data with recursion data
+    setDT(temp_df)[,coordIdx:=1:nrow(temp_df)]
+    
+    temp_df <- merge(temp_df, df_recurse, by = c("X", "Y", "coordIdx"))
+    
+    setorder(temp_df, ts)
+    
+    # write each data frame to file
+    fwrite(temp_df, file = glue('data/data2018/revisitData/{unique(temp_df$TAG)}_{unique(temp_df$tidalCycle)}_revisit.csv'))
+    
+    print(glue('recurse {unique(temp_df$TAG)}_{unique(temp_df$tidalCycle)} done'))
+    
+    rm(temp_df, df_recurse); gc()
+    
+  })
+  
+})
+```
+
