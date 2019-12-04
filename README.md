@@ -12,8 +12,6 @@ Please contact the following before cloning or in case of interest in the projec
   - p.r.gupte@rug.nl
   - Nijenborgh 7/5172.0583 9747AG Groningen
 
-![](https://github.com/pratikunterwegs/redknotMoveWaddensea/raw/master/marm_logo_prg9.png)
-
 - Allert Bijleveld (PI): allert.bijleveld@nioz.nl
   - Project information: https://www.nioz.nl/en/about/cos/coastal-movement-ecology/shorebird-tracking
 
