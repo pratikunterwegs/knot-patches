@@ -70,6 +70,8 @@ map(data_files, function(df){
                                 radius = radius, 
                                 timeunits = timeunits, verbose = TRUE)
     
+    # extract revisit statistics and calculate residence time
+    # and revisits with a 1 hour cutoff
     df_recurse <- setDT(df_recurse[["revisitStats"]])
     
     df_recurse[,timeSinceLastVisit:= 
