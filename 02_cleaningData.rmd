@@ -33,6 +33,8 @@ library(glue)
 # make a list of data files to read
 data_files <- list.files(path = "data/data2018/", pattern = "_data.csv", full.names = TRUE)
 
+prefix_num <- 31001000000
+
 # map read in, cleaning, and write out function over vector of filenames
 map(data_files, function(df){
   
@@ -43,7 +45,9 @@ map(data_files, function(df){
                                            nbs_min = 0,
                                            sd_threshold = 5e5,
                                            plot = FALSE)
-  print(glue('tag {Toa_Tag} cleaned with {nrow(clean_data)} fixes'))
+  
+  print(glue('tag {unique(clean_data$TAG)} cleaned with {nrow(clean_data)} fixes'))
+
   fwrite(x = clean_data, file = df, dateTimeAs = "ISO")
   
   rm(df); gc()
