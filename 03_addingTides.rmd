@@ -5,7 +5,7 @@ editor_options:
 
 # Adding tidal cycle data
 
-This section is about adding tidal cycle data to individual trajectories. This is done to split the data up into convenient, and biologically sensible units. This section uses the package [VulnToolkit](https://github.com/troyhill/VulnToolkit) to identify high tide times from water-level data provided by Rijkswaterstaat for the measuring point at West Terschelling.
+This section is about adding tidal cycle data to individual trajectories. This is done to split the data up into convenient, and biologically sensible units. This section uses the package `VulnToolkit` [@VulnToolkit2014] to identify high tide times from water-level data provided by Rijkswaterstaat for the measuring point at West Terschelling.
 
 **Workflow**
 
@@ -28,6 +28,7 @@ library(data.table)
 library(purrr)
 library(glue)
 library(dplyr)
+library(stringr)
 ```
 
 ## Read water level data
@@ -87,10 +88,11 @@ map(data_files, function(df){
              ][complete.cases(X),]
               
   temp_data[,`:=`(tide = NULL, level = NULL, time = NULL)
-         ][,tidalCycle := tidalCycle - min(tidalCycle) + 1]
+         ][,tidalCycle := tidalCycle - min(tidalCycle) + 1
+           ][,tidalCycle := str_pad(tidalCycle, 3, pad = 0)]
 
   fwrite(temp_data, file = df, dateTimeAs = "ISO")
-  print(glue('tag {Toa_Tag} added time since high tide'))
+  print(glue('tag {unique(temp_data$TAG)} added time since high tide'))
   
   rm(df); gc()
 })
