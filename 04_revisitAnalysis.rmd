@@ -20,7 +20,7 @@ This section is about splitting the data by tidal cycle, and passing the individ
 This section uses the recurse package [@bracis2018].
 
 ```{r install_recurse, message=FALSE, warning=FALSE}
-# load VulnToolkit or install if not available
+# load recurse or install if not available
 if("recurse" %in% installed.packages() == FALSE){
   install.packages("recurse")
 }
@@ -31,6 +31,7 @@ library(data.table)
 library(purrr)
 library(glue)
 library(dplyr)
+library(fasttime)
 ```
 
 ## Read data, split, recurse, write
@@ -58,6 +59,7 @@ revisit_cutoff <- 60
 map(data_files, function(df){
   
   temp_data <- fread(df)
+  temp_data[,ts:=fastPOSIXct(ts)]
   setDF(temp_data)
   
   temp_data <- split(temp_data, temp_data$tidalCycle)
@@ -66,10 +68,12 @@ map(data_files, function(df){
   map(temp_data, function(tempdf){
     
     # perform the recursion analysis
-    df_recurse <- getRecursions(x = temp_data[,c("X","Y","ts","TAG")], 
+    df_recurse <- getRecursions(x = temp_data[,c("X","Y","ts","id")], 
                                 radius = radius, 
                                 timeunits = timeunits, verbose = TRUE)
     
+    # extract revisit statistics and calculate residence time
+    # and revisits with a 1 hour cutoff
     df_recurse <- setDT(df_recurse[["revisitStats"]])
     
     df_recurse[,timeSinceLastVisit:= 
@@ -93,9 +97,9 @@ map(data_files, function(df){
     setorder(temp_df, ts)
     
     # write each data frame to file
-    fwrite(temp_df, file = glue('data/data2018/revisitData/{unique(temp_df$TAG)}_{unique(temp_df$tidalCycle)}_revisit.csv'))
+    fwrite(temp_df, file = glue('data/data2018/revisitData/{unique(temp_df$id)}_{unique(temp_df$tidalCycle)}_revisit.csv'))
     
-    print(glue('recurse {unique(temp_df$TAG)}_{unique(temp_df$tidalCycle)} done'))
+    print(glue('recurse {unique(temp_df$id)}_{unique(temp_df$tidalCycle)} done'))
     
     rm(temp_df, df_recurse); gc()
     

@@ -1,0 +1,95 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+# Linking patch metrics to personality
+
+This section is about linking patch metrics to individual personality measures, using the previously derived patch summary data, and experimentally measured exploration scores as a proxy for personality.
+
+**Workflow**
+
+1. Prepare required libraries,
+2. Link patch metrics with individual behaviour score,
+3. Run models for patch metrics of interest,
+4. Plot figures for metrics ~ personality,
+5. Export figures and model output.
+
+## Prepare libraries
+
+```{r prep_libs_2, message=FALSE, warning=FALSE}
+# libraries to process data
+library(data.table)
+library(purrr)
+library(glue)
+library(dplyr)
+library(tidyr)
+
+# libraries for stats
+library(lmerTest)
+
+# libraries for plotting
+library(ggplot2)
+library(ggthemes)
+library(scico)
+```
+
+## Link patch data with exploration score
+
+```{r link_patches_explorescore, eval=FALSE, message=FALSE, warning=FALSE}
+# read in tag info
+tag_info <- fread("data/data2018/SelinDB.csv")
+tag_info <- tag_info[,.(RINGNR, Toa_Tag)]
+tag_info <- tag_info[!is.na(Toa_Tag),]
+
+# read in updated behavioural data
+behav_score <- fread("data/data2018/Selindb-updated_2019-07-17.csv", sep=";")
+
+behav_score <- merge(tag_info, behav_score, by.x = "RINGNR", by.y = "FB")
+
+behav_score <- behav_score[trial == "F01" & !is.na(Toa_Tag),.(Toa_Tag, texpl)]
+
+# link behavioural data to patch data
+patch_data <- fread("data/data2018/patch_data.csv")
+
+patch_data <- merge(patch_data, behav_score, 
+                    by.x = "id", by.y ="Toa_Tag")
+```
+
+## Patch metrics as an outcome of exploration score
+
+```{r patch_models, eval=FALSE, message=FALSE, warning=FALSE}
+# filter for patch quality on the proportion of expected fixes acheived
+patch_data <- patch_data[prop_fixes %between% c(0.2, 1.0),]
+
+# prepare for simultaneous modelling
+model_data <- setDF(patch_data) %>% 
+  pivot_longer(names_to = "response_variable", values_to = "response_value",
+               cols = c(duration, distInPatch, distBwPatch, area)) %>%
+  group_by(response_variable) %>%
+  nest()
+
+# run models using glmerTest and get predict output
+model_data <- mutate(model = map(data, function(z){
+  lmer(respval ~ tExplScore + 
+         (1|tidalcycle) + 
+         tidaltime_start, 
+       data = z, na.action = na.omit)})) %>% 
+  
+  mutate(predMod = map2(model, data, function(a, b){
+    mutate(b, predval = predict(a, type = "response"))
+  }))
+
+# assign names to model object
+names(model_data$model) <- glue("response = {modsPatches1$response_variable} | predictor = tExplScore")
+```
+
+## Plot model figures
+
+WIP
+
+## Export figures and model output
+
+WIP
+
+## References

@@ -1,0 +1,86 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+# Residence patch construction
+
+This section is about using the main `watlasUtils` functions to infer residence points when data is missing from a movement track, to classify points into residence or travelling, and to construct low-tide residence patches from the residence points. Summary statistics on these spatial outputs are then exported to file for further use.
+
+**Workflow**
+
+1. Prepare `watlasUtils` and required libraries,
+2. Read data, infer residence, classify points, construct low-tide patches, and get spatial data from patches,
+3. Get patch trajectories,
+4. Export spatial data.
+
+## Prepare libraries
+
+```{r prep_libs, message=FALSE, warning=FALSE}
+# load watlasUtils or install if not available
+if("watlasUtils" %in% installed.packages() == FALSE){
+  devtools::install_github("pratikunterwegs/watlasUtils")
+}
+library(watlasUtils)
+
+# libraries to process data
+library(data.table)
+library(purrr)
+library(glue)
+library(dplyr)
+```
+
+## Patch construction
+
+```{r make_patches, eval=FALSE, message=FALSE, warning=FALSE}
+# make a list of data files to read
+data_files <- list.files(path = "data/data2018/revisitData", pattern = "_revisit.csv", full.names = TRUE)
+
+# map inferResidence, classifyPath, and getPatches over data
+
+output_data <- map(data_files, function(df){
+  
+  temp_data <- fread(df)
+  temp_data[,ts:=fastPOSIXct(ts)]
+  
+  # watlasUtils function to infer residence
+  temp_data <- funcInferResidence(somedata = temp_data,
+                                  infResTime = 2,
+                                  infPatchTimeDiff = 30,
+                                  infPatchSpatDiff = 100)
+  
+  # watlasUtils function to classify path
+  temp_data <- funcClassifyPath(somedata = temp_data,
+                                resTimeLimit = 2)
+  
+  # watlasUtils function to get patches
+  patch_data <- funcGetResPatch(somedata = temp_data,
+                                bufferSize = 10,
+                                spatIndepLim = 100,
+                                tempIndepLim = 30,
+                                restIndepLim = 30,
+                                minFixes = 3,
+                                tideLims = c(4,10))
+  
+  # watlasUtils function to get patch data as spatial
+  patch_data <- funcGetPatchData(resPatchData = patch_data,
+                                 dataColumn = "data",
+                                 whichData = "spatial")
+  
+})
+
+```
+
+## Get patch trajectories
+
+```{r patch_trajectories, eval=FALSE, message=FALSE, warning=FALSE}
+# filter non-sf objects from the list
+output_data <- keep(output_data, function(obj){"sf" %in% class(obj)})
+
+# get non-spatial summary data, bind rows, and save
+output_data <- map_df(output_data, funcGetPatchData, whichData="summary")
+
+fwrite(output_data, file = "data/data2018/patch_summary.csv",
+       dateTimeAs = "ISO")
+```
+
