@@ -83,14 +83,14 @@ map(data_files, function(df){
   
   setorder(temp_data, ts)
   
-  temp_data <- temp_data[,tide := !is.na(tide) 
-         ][, tidalCycle := cumsum(tide) 
-           ][,tidalTime := as.numeric(difftime(ts, ts[1], units = "mins")), 
-             by = tidalCycle 
-             ][complete.cases(X),]
+  temp_data[,tide := !is.na(tide)]
+  temp_data[, tidalCycle := cumsum(tide)]
+  temp_data[,tidalTime := as.numeric(difftime(ts, ts[1], units = "mins")), 
+             by = tidalCycle]
+  temp_data <- temp_data[complete.cases(x),]
               
-  temp_data[,`:=`(tide = NULL, level = NULL, time = NULL)
-         ][,tidalCycle := tidalCycle - min(tidalCycle) + 1
+  temp_data[,`:=`(tide = NULL, tide2 = NULL, level = NULL)
+         #][,tidalCycle := tidalCycle - min(tidalCycle) + 1
            ][,tidalCycle := str_pad(tidalCycle, 3, pad = 0)]
 
   fwrite(temp_data, file = df, dateTimeAs = "ISO")
