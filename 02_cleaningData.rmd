@@ -37,14 +37,13 @@ data_files <- list.files(path = "data/data2018/", pattern = "_data.csv", full.na
 # map read in, cleaning, and write out function over vector of filenames
 map(data_files, function(df){
   
-  temp_data <- fread(df)
-  temp_data[,ts:=fastPOSIXct(ts)]
-  clean_data <- watlasUtils::funcCleanData(somedata = temp_data,
+  temp_data <- fread(df, integer64 = "numeric")
+  
+  clean_data <- funcCleanData(somedata = temp_data,
                                            moving_window = 5,
                                            nbs_min = 0,
-                                           sd_threshold = 5e5,
-                                           plot = FALSE)
-
+                                           sd_threshold = 5e5)
+  clean_data[,ts:=fastPOSIXct(ts)]
   print(glue('tag {unique(clean_data$id)} cleaned with {nrow(clean_data)} fixes'))
 
   fwrite(x = clean_data, file = df, dateTimeAs = "ISO")

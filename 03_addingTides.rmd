@@ -59,6 +59,17 @@ A tidal period of 12 hours 25 minutes is taken from [Rijkswaterstaat](https://ww
 # use the HL function from vulnToolkit to get high tides
 tides <- VulnToolkit::HL(waterlevel$level, waterlevel$dateTime, period = 12.41, tides = "H", semidiurnal = TRUE)
 
+# read in release data and get first release - 24 hrs
+tag_info <- fread("data/data2018/SelinDB.csv")
+tag_info <- tag_info[!is.na(Release_Date) & !is.na(Release_Time),]
+tag_info[,Release_Date := as.POSIXct(paste(Release_Date, Release_Time, sep = " "), format = "%d.%m.%y %H:%M", tz = "CET")]
+
+first_release <- min(tag_info$Release_Date) - (3600*24)
+
+# remove tides before first release
+tides <- setDT(tides)[time > first_release, ][,tide2:=NULL]
+tides[,tide_number:=1:nrow(tides)]
+
 # write to local file
 fwrite(tides, file = "data/data2018/tidesSummer2018.csv", 
        dateTimeAs = "ISO")
@@ -75,7 +86,7 @@ data_files <- list.files(path = "data/data2018/", pattern = "_data.csv", full.na
 # arrange by time to position high tides correctly
 map(data_files, function(df){
   
-  temp_data <- fread(df)
+  temp_data <- fread(df, integer64 = "numeric")
   temp_data[,ts:=fastPOSIXct(ts)]
   
   temp_data <- merge(temp_data, tides, by.x = "ts", by.y = "time", 
@@ -83,20 +94,19 @@ map(data_files, function(df){
   
   setorder(temp_data, ts)
   
-  temp_data <- temp_data[,tide := !is.na(tide) 
-         ][, tidalCycle := cumsum(tide) 
-           ][,tidalTime := as.numeric(difftime(ts, ts[1], units = "mins")), 
-             by = tidalCycle 
-             ][complete.cases(X),]
+  temp_data[, tide_number := nafill(tide_number, "locf")]
+  temp_data[, tidaltime := as.numeric(difftime(ts, ts[1], units = "mins")), 
+             by = tide_number]
+  temp_data <- temp_data[complete.cases(x),]
               
-  temp_data[,`:=`(tide = NULL, level = NULL, time = NULL)
-         ][,tidalCycle := tidalCycle - min(tidalCycle) + 1
-           ][,tidalCycle := str_pad(tidalCycle, 3, pad = 0)]
+  temp_data[,`:=`(tide = NULL, level = NULL)]
+         #][,tidalCycle := tidalCycle - min(tidalCycle) + 1
+  temp_data[,tide_number := str_pad(tide_number, 3, pad = 0)]
 
   fwrite(temp_data, file = df, dateTimeAs = "ISO")
   print(glue('tag {unique(temp_data$id)} added time since high tide'))
   
-  rm(df); gc()
+  rm(temp_data); gc()
 })
 ```
 

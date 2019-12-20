@@ -41,8 +41,7 @@ tag_info <- fread("data/data2018/SelinDB.csv")
 tag_info <- tag_info[!is.na(Release_Date) & !is.na(Release_Time),]
 
 # make release date column as POSIXct
-tag_info[,Release_Date := as.POSIXct(paste(Release_Date, Release_Time, sep = " "),
-                                    format = "%d.%m.%y %H:%M", tz = "CET")]
+tag_info[,Release_Date := as.POSIXct(paste(Release_Date, Release_Time, sep = " "), format = "%d.%m.%y %H:%M", tz = "CET")]
 
 # check new release date column
 head(tag_info$Release_Date)
