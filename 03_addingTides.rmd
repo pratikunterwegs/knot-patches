@@ -68,6 +68,7 @@ first_release <- min(tag_info$Release_Date) - (3600*24)
 
 # remove tides before first release
 tides <- setDT(tides)[time > first_release, ][,tide2:=NULL]
+tides[,tide_number:=1:nrow(tides)]
 
 # write to local file
 fwrite(tides, file = "data/data2018/tidesSummer2018.csv", 
