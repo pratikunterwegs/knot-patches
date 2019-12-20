@@ -59,6 +59,16 @@ A tidal period of 12 hours 25 minutes is taken from [Rijkswaterstaat](https://ww
 # use the HL function from vulnToolkit to get high tides
 tides <- VulnToolkit::HL(waterlevel$level, waterlevel$dateTime, period = 12.41, tides = "H", semidiurnal = TRUE)
 
+# read in release data and get first release - 24 hrs
+tag_info <- fread("data/data2018/SelinDB.csv")
+tag_info <- tag_info[!is.na(Release_Date) & !is.na(Release_Time),]
+tag_info[,Release_Date := as.POSIXct(paste(Release_Date, Release_Time, sep = " "), format = "%d.%m.%y %H:%M", tz = "CET")]
+
+first_release <- min(tag_info$Release_Date) - (3600*24)
+
+# remove tides before first release
+tides <- setDT(tides)[time > first_release, ][,tide2:=NULL]
+
 # write to local file
 fwrite(tides, file = "data/data2018/tidesSummer2018.csv", 
        dateTimeAs = "ISO")
