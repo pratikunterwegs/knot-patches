@@ -58,17 +58,17 @@ revisit_cutoff <- 60
 # this must be grouped by the coordinate
 map(data_files, function(df){
   
-  temp_data <- fread(df)
+  # read in, fix data type, and split
+  temp_data <- fread(df, integer64 = "numeric")
   temp_data[,ts:=fastPOSIXct(ts)]
   setDF(temp_data)
-  
-  temp_data <- split(temp_data, temp_data$tidalCycle)
+  temp_data <- split(temp_data, temp_data$tide_number)
   
   # map over the tidal cycle level data
   map(temp_data, function(tempdf){
     
     # perform the recursion analysis
-    df_recurse <- getRecursions(x = temp_data[,c("X","Y","ts","id")], 
+    df_recurse <- getRecursions(x = tempdf[,c("x","y","ts","id")], 
                                 radius = radius, 
                                 timeunits = timeunits, verbose = TRUE)
     
@@ -90,18 +90,19 @@ map(data_files, function(df){
                              by=.(coordIdx,x,y)]
     
     # prepare and merge existing data with recursion data
-    setDT(temp_df)[,coordIdx:=1:nrow(temp_df)]
+    setDT(tempdf)[,coordIdx:=1:nrow(tempdf)]
     
-    temp_df <- merge(temp_df, df_recurse, by = c("X", "Y", "coordIdx"))
+    tempdf <- merge(tempdf, df_recurse, by = c("x", "y", "coordIdx"))
     
-    setorder(temp_df, ts)
+    setorder(tempdf, ts)
     
     # write each data frame to file
-    fwrite(temp_df, file = glue('data/data2018/revisitData/{unique(temp_df$id)}_{unique(temp_df$tidalCycle)}_revisit.csv'))
+    fwrite(tempdf, 
+           file = glue('data/data2018/revisitData/{unique(tempdf$id)}_{str_pad(unique(tempdf$tide_number), width=3, pad="0")}_revisit.csv'))
     
-    print(glue('recurse {unique(temp_df$id)}_{unique(temp_df$tidalCycle)} done'))
+    print(glue('recurse {unique(tempdf$id)}_{str_pad(unique(tempdf$tide_number), width=3, pad="0")} done'))
     
-    rm(temp_df, df_recurse); gc()
+    rm(tempdf, df_recurse); invisible(gc())
     
   })
   
