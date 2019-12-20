@@ -86,7 +86,7 @@ data_files <- list.files(path = "data/data2018/", pattern = "_data.csv", full.na
 # arrange by time to position high tides correctly
 map(data_files, function(df){
   
-  temp_data <- fread(df)
+  temp_data <- fread(df, integer64 = "numeric")
   temp_data[,ts:=fastPOSIXct(ts)]
   
   temp_data <- merge(temp_data, tides, by.x = "ts", by.y = "time", 
