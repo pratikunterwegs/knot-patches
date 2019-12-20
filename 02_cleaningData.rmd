@@ -48,7 +48,7 @@ map(data_files, function(df){
 
   fwrite(x = clean_data, file = df, dateTimeAs = "ISO")
   
-  rm(df); gc()
+  rm(temp_data, clean_data); invisible(gc(full = FALSE))
 })
 
 ```

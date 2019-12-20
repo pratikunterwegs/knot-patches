@@ -69,7 +69,9 @@ first_release <- min(tag_info$Release_Date) - (3600*24)
 # remove tides before first release
 tides <- setDT(tides)[time > first_release, ][,tide2:=NULL]
 tides[,tide_number:=1:nrow(tides)]
+```
 
+```{r write_tide_data, eval=FALSE, message=FALSE, warning=FALSE}
 # write to local file
 fwrite(tides, file = "data/data2018/tidesSummer2018.csv", 
        dateTimeAs = "ISO")
@@ -97,7 +99,6 @@ map(data_files, function(df){
   
   # get tide_number and time since high tide
   temp_data[, tide_number := nafill(tide_number, "locf")]
-  temp_data[,tide_number := str_pad(tide_number, 3, pad = 0)]
   temp_data[, tidaltime := as.numeric(difftime(ts, ts[1], units = "mins")), 
              by = tide_number]
   
@@ -108,7 +109,7 @@ map(data_files, function(df){
   # export data, print msg, remove data
   fwrite(temp_data, file = df, dateTimeAs = "ISO")
   print(glue('tag {unique(temp_data$id)} added time since high tide'))
-  rm(temp_data); gc()
+  rm(temp_data); invisible(gc(full = FALSE))
 })
 ```
 
