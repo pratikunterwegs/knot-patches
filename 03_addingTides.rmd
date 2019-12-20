@@ -86,26 +86,28 @@ data_files <- list.files(path = "data/data2018/", pattern = "_data.csv", full.na
 # arrange by time to position high tides correctly
 map(data_files, function(df){
   
+  # read and fix data types
   temp_data <- fread(df, integer64 = "numeric")
   temp_data[,ts:=fastPOSIXct(ts)]
   
+  # merge with tides and order on time
   temp_data <- merge(temp_data, tides, by.x = "ts", by.y = "time", 
                      all = TRUE)
-  
   setorder(temp_data, ts)
   
+  # get tide_number and time since high tide
   temp_data[, tide_number := nafill(tide_number, "locf")]
+  temp_data[,tide_number := str_pad(tide_number, 3, pad = 0)]
   temp_data[, tidaltime := as.numeric(difftime(ts, ts[1], units = "mins")), 
              by = tide_number]
+  
+  # remove bad rows and columns
   temp_data <- temp_data[complete.cases(x),]
-              
   temp_data[,`:=`(tide = NULL, level = NULL)]
-         #][,tidalCycle := tidalCycle - min(tidalCycle) + 1
-  temp_data[,tide_number := str_pad(tide_number, 3, pad = 0)]
 
+  # export data, print msg, remove data
   fwrite(temp_data, file = df, dateTimeAs = "ISO")
   print(glue('tag {unique(temp_data$id)} added time since high tide'))
-  
   rm(temp_data); gc()
 })
 ```
