@@ -1,6 +1,6 @@
 --- 
 knit: "bookdown::render_book"
-title: "Linking experimental measures of personality to free-living space-use in red knots"
+title: "Individual consistency in space-use across scales"
 author: "Pratik R Gupte"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -10,12 +10,12 @@ bibliography: [refs.bib]
 biblio-style: apalike
 link-citations: yes
 github-repo: pratikunterwegs/redknotMoveWaddensea
-description: "Linking experimental measures of personality to free-living space-use in red knots"
+description: "Individual consistency in space-use across scales"
 ---
 
 # Introduction
 
-This is the `bookdown` version of a project in preparation that links high-resolution tracking data from individual red knots _Calidris canutus islandica_ to fine-scale experimental behaviour measurements in captivity, and aims to explore whether free-living space-use can be predicted by lab assays of consistent individual differences.
+This is the `bookdown` version of a project in preparation that links high-resolution tracking data from individual red knots _Calidris canutus islandica_ to fine-scale experimental behaviour measurements in captivity, and examines whether individuals are consistent across scales in their space-use.
 
 ## Attribution
 
