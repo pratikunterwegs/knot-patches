@@ -1,6 +1,6 @@
 # Linking experimental measures of personality to free-living space-use in red knots
 
-This repository is the source for a project in preparation that links high-resolution tracking data from individual red knots _Calidris canutus islandica_ to fine-scale experimental behaviour measurements in captivity, and aims to explore whether free-living space-use can be predicted by lab assays of consistent individual differences.
+This repository is the source for a project in preparation that links high-resolution tracking data from individual red knots _Calidris canutus islandica_ to fine-scale experimental behaviour measurements in captivity, and examines whether individuals are consistent across scales in their space-use.
 
 ## [Readable version](https://pratikunterwegs.github.io/redknotMoveWaddensea/)
 
