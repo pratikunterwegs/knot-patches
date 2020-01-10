@@ -29,6 +29,13 @@ library(fasttime)
 library(bit64)
 ```
 
+## Prepare to remove attractors points
+
+```{r read_attractors, eval=FALSE, message=FALSE, warning=FALSE}
+# read in identified attractor points
+atp <- fread("data/data2018/attractor_points.txt")
+```
+
 ## Read, clean, and write data
 
 ```{r read_in_raw_data, eval=FALSE, message=FALSE, warning=FALSE}
@@ -39,6 +46,12 @@ data_files <- list.files(path = "data/data2018/", pattern = "_data.csv", full.na
 map(data_files, function(df){
   
   temp_data <- fread(df, integer64 = "numeric")
+
+  temp_data <- wat_rm_attractor(df = temp_data,
+                  atp_xmin = atp$xmin,
+                  atp_xmax = atp$xmax,
+                  atp_ymin = atp$ymin,
+                  atp_ymax = atp$ymax)
   
   clean_data <- wat_clean_data(somedata = temp_data,
                                            moving_window = 5,
