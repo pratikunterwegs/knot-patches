@@ -4,27 +4,27 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>4 Adding tidal cycle data | Linking experimental measures of personality to free-living space-use in red knots</title>
-  <meta name="description" content="4 Adding tidal cycle data | Linking experimental measures of personality to free-living space-use in red knots" />
+  <title>4 Adding tidal cycle data | Individual consistency in space-use across scales</title>
+  <meta name="description" content="4 Adding tidal cycle data | Individual consistency in space-use across scales" />
   <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="4 Adding tidal cycle data | Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta property="og:title" content="4 Adding tidal cycle data | Individual consistency in space-use across scales" />
   <meta property="og:type" content="book" />
   
   
-  <meta property="og:description" content="4 Adding tidal cycle data | Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta property="og:description" content="4 Adding tidal cycle data | Individual consistency in space-use across scales" />
   <meta name="github-repo" content="pratikunterwegs/redknotMoveWaddensea" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="4 Adding tidal cycle data | Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta name="twitter:title" content="4 Adding tidal cycle data | Individual consistency in space-use across scales" />
   
-  <meta name="twitter:description" content="4 Adding tidal cycle data | Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta name="twitter:description" content="4 Adding tidal cycle data | Individual consistency in space-use across scales" />
   
 
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2019-12-04" />
+<meta name="date" content="2020-01-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -34,6 +34,7 @@
 <link rel="prev" href="cleaning-data.html"/>
 <link rel="next" href="revisit-analysis.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/elevate-section-attrs-2.0/elevate-section-attrs.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -182,7 +183,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Linking experimental measures of personality to free-living space-use in red knots</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Individual consistency in space-use across scales</a>
           </h1>
         </div>
 
@@ -238,43 +239,53 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="adding-tidal-cycle-data.html#cb10-1"></a><span class="co"># use the HL function from vulnToolkit to get high tides</span></span>
 <span id="cb10-2"><a href="adding-tidal-cycle-data.html#cb10-2"></a>tides &lt;-<span class="st"> </span>VulnToolkit<span class="op">::</span><span class="kw">HL</span>(waterlevel<span class="op">$</span>level, waterlevel<span class="op">$</span>dateTime, <span class="dt">period =</span> <span class="fl">12.41</span>, <span class="dt">tides =</span> <span class="st">&quot;H&quot;</span>, <span class="dt">semidiurnal =</span> <span class="ot">TRUE</span>)</span>
 <span id="cb10-3"><a href="adding-tidal-cycle-data.html#cb10-3"></a></span>
-<span id="cb10-4"><a href="adding-tidal-cycle-data.html#cb10-4"></a><span class="co"># write to local file</span></span>
-<span id="cb10-5"><a href="adding-tidal-cycle-data.html#cb10-5"></a><span class="kw">fwrite</span>(tides, <span class="dt">file =</span> <span class="st">&quot;data/data2018/tidesSummer2018.csv&quot;</span>, </span>
-<span id="cb10-6"><a href="adding-tidal-cycle-data.html#cb10-6"></a>       <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</span></code></pre></div>
+<span id="cb10-4"><a href="adding-tidal-cycle-data.html#cb10-4"></a><span class="co"># read in release data and get first release - 24 hrs</span></span>
+<span id="cb10-5"><a href="adding-tidal-cycle-data.html#cb10-5"></a>tag_info &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data2018/SelinDB.csv&quot;</span>)</span>
+<span id="cb10-6"><a href="adding-tidal-cycle-data.html#cb10-6"></a>tag_info &lt;-<span class="st"> </span>tag_info[<span class="op">!</span><span class="kw">is.na</span>(Release_Date) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(Release_Time),]</span>
+<span id="cb10-7"><a href="adding-tidal-cycle-data.html#cb10-7"></a>tag_info[,Release_Date <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(Release_Date, Release_Time, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>), <span class="dt">format =</span> <span class="st">&quot;%d.%m.%y %H:%M&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span>)]</span>
+<span id="cb10-8"><a href="adding-tidal-cycle-data.html#cb10-8"></a></span>
+<span id="cb10-9"><a href="adding-tidal-cycle-data.html#cb10-9"></a>first_release &lt;-<span class="st"> </span><span class="kw">min</span>(tag_info<span class="op">$</span>Release_Date) <span class="op">-</span><span class="st"> </span>(<span class="dv">3600</span><span class="op">*</span><span class="dv">24</span>)</span>
+<span id="cb10-10"><a href="adding-tidal-cycle-data.html#cb10-10"></a></span>
+<span id="cb10-11"><a href="adding-tidal-cycle-data.html#cb10-11"></a><span class="co"># remove tides before first release</span></span>
+<span id="cb10-12"><a href="adding-tidal-cycle-data.html#cb10-12"></a>tides &lt;-<span class="st"> </span><span class="kw">setDT</span>(tides)[time <span class="op">&gt;</span><span class="st"> </span>first_release, ][,tide2<span class="op">:</span><span class="er">=</span><span class="ot">NULL</span>]</span>
+<span id="cb10-13"><a href="adding-tidal-cycle-data.html#cb10-13"></a>tides[,tide_number<span class="op">:</span><span class="er">=</span><span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(tides)]</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="adding-tidal-cycle-data.html#cb11-1"></a><span class="co"># write to local file</span></span>
+<span id="cb11-2"><a href="adding-tidal-cycle-data.html#cb11-2"></a><span class="kw">fwrite</span>(tides, <span class="dt">file =</span> <span class="st">&quot;data/data2018/tidesSummer2018.csv&quot;</span>, </span>
+<span id="cb11-3"><a href="adding-tidal-cycle-data.html#cb11-3"></a>       <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</span></code></pre></div>
 </div>
 <div id="add-time-since-high-tide" class="section level2">
 <h2 number="4.4"><span class="header-section-number">4.4</span> Add time since high tide</h2>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="adding-tidal-cycle-data.html#cb11-1"></a><span class="co"># read in data and add time since high tide</span></span>
-<span id="cb11-2"><a href="adding-tidal-cycle-data.html#cb11-2"></a>data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data/data2018/&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;_data.csv&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb11-3"><a href="adding-tidal-cycle-data.html#cb11-3"></a></span>
-<span id="cb11-4"><a href="adding-tidal-cycle-data.html#cb11-4"></a><span class="co"># map read in and tidal time calculation over data</span></span>
-<span id="cb11-5"><a href="adding-tidal-cycle-data.html#cb11-5"></a><span class="co"># merge data to insert high tides within movement data</span></span>
-<span id="cb11-6"><a href="adding-tidal-cycle-data.html#cb11-6"></a><span class="co"># arrange by time to position high tides correctly</span></span>
-<span id="cb11-7"><a href="adding-tidal-cycle-data.html#cb11-7"></a><span class="kw">map</span>(data_files, <span class="cf">function</span>(df){</span>
-<span id="cb11-8"><a href="adding-tidal-cycle-data.html#cb11-8"></a>  </span>
-<span id="cb11-9"><a href="adding-tidal-cycle-data.html#cb11-9"></a>  temp_data &lt;-<span class="st"> </span><span class="kw">fread</span>(df)</span>
-<span id="cb11-10"><a href="adding-tidal-cycle-data.html#cb11-10"></a>  temp_data[,ts<span class="op">:</span><span class="er">=</span><span class="kw">fastPOSIXct</span>(ts)]</span>
-<span id="cb11-11"><a href="adding-tidal-cycle-data.html#cb11-11"></a>  </span>
-<span id="cb11-12"><a href="adding-tidal-cycle-data.html#cb11-12"></a>  temp_data &lt;-<span class="st"> </span><span class="kw">merge</span>(temp_data, tides, <span class="dt">by.x =</span> <span class="st">&quot;ts&quot;</span>, <span class="dt">by.y =</span> <span class="st">&quot;time&quot;</span>, </span>
-<span id="cb11-13"><a href="adding-tidal-cycle-data.html#cb11-13"></a>                     <span class="dt">all =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb11-14"><a href="adding-tidal-cycle-data.html#cb11-14"></a>  </span>
-<span id="cb11-15"><a href="adding-tidal-cycle-data.html#cb11-15"></a>  <span class="kw">setorder</span>(temp_data, ts)</span>
-<span id="cb11-16"><a href="adding-tidal-cycle-data.html#cb11-16"></a>  </span>
-<span id="cb11-17"><a href="adding-tidal-cycle-data.html#cb11-17"></a>  temp_data &lt;-<span class="st"> </span>temp_data[,tide <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(tide) </span>
-<span id="cb11-18"><a href="adding-tidal-cycle-data.html#cb11-18"></a>         ][, tidalCycle <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">cumsum</span>(tide) </span>
-<span id="cb11-19"><a href="adding-tidal-cycle-data.html#cb11-19"></a>           ][,tidalTime <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">difftime</span>(ts, ts[<span class="dv">1</span>], <span class="dt">units =</span> <span class="st">&quot;mins&quot;</span>)), </span>
-<span id="cb11-20"><a href="adding-tidal-cycle-data.html#cb11-20"></a>             by =<span class="st"> </span>tidalCycle </span>
-<span id="cb11-21"><a href="adding-tidal-cycle-data.html#cb11-21"></a>             ][<span class="kw">complete.cases</span>(X),]</span>
-<span id="cb11-22"><a href="adding-tidal-cycle-data.html#cb11-22"></a>              </span>
-<span id="cb11-23"><a href="adding-tidal-cycle-data.html#cb11-23"></a>  temp_data[,<span class="st">`</span><span class="dt">:=</span><span class="st">`</span>(<span class="dt">tide =</span> <span class="ot">NULL</span>, <span class="dt">level =</span> <span class="ot">NULL</span>, <span class="dt">time =</span> <span class="ot">NULL</span>)</span>
-<span id="cb11-24"><a href="adding-tidal-cycle-data.html#cb11-24"></a>         ][,tidalCycle <span class="op">:</span><span class="er">=</span><span class="st"> </span>tidalCycle <span class="op">-</span><span class="st"> </span><span class="kw">min</span>(tidalCycle) <span class="op">+</span><span class="st"> </span><span class="dv">1</span></span>
-<span id="cb11-25"><a href="adding-tidal-cycle-data.html#cb11-25"></a>           ][,tidalCycle <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">str_pad</span>(tidalCycle, <span class="dv">3</span>, <span class="dt">pad =</span> <span class="dv">0</span>)]</span>
-<span id="cb11-26"><a href="adding-tidal-cycle-data.html#cb11-26"></a></span>
-<span id="cb11-27"><a href="adding-tidal-cycle-data.html#cb11-27"></a>  <span class="kw">fwrite</span>(temp_data, <span class="dt">file =</span> df, <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</span>
-<span id="cb11-28"><a href="adding-tidal-cycle-data.html#cb11-28"></a>  <span class="kw">print</span>(<span class="kw">glue</span>(<span class="st">&#39;tag {unique(temp_data$id)} added time since high tide&#39;</span>))</span>
-<span id="cb11-29"><a href="adding-tidal-cycle-data.html#cb11-29"></a>  </span>
-<span id="cb11-30"><a href="adding-tidal-cycle-data.html#cb11-30"></a>  <span class="kw">rm</span>(df); <span class="kw">gc</span>()</span>
-<span id="cb11-31"><a href="adding-tidal-cycle-data.html#cb11-31"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="adding-tidal-cycle-data.html#cb12-1"></a><span class="co"># read in data and add time since high tide</span></span>
+<span id="cb12-2"><a href="adding-tidal-cycle-data.html#cb12-2"></a>data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data/data2018/&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;_data.csv&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb12-3"><a href="adding-tidal-cycle-data.html#cb12-3"></a></span>
+<span id="cb12-4"><a href="adding-tidal-cycle-data.html#cb12-4"></a><span class="co"># map read in and tidal time calculation over data</span></span>
+<span id="cb12-5"><a href="adding-tidal-cycle-data.html#cb12-5"></a><span class="co"># merge data to insert high tides within movement data</span></span>
+<span id="cb12-6"><a href="adding-tidal-cycle-data.html#cb12-6"></a><span class="co"># arrange by time to position high tides correctly</span></span>
+<span id="cb12-7"><a href="adding-tidal-cycle-data.html#cb12-7"></a><span class="kw">map</span>(data_files, <span class="cf">function</span>(df){</span>
+<span id="cb12-8"><a href="adding-tidal-cycle-data.html#cb12-8"></a>  </span>
+<span id="cb12-9"><a href="adding-tidal-cycle-data.html#cb12-9"></a>  <span class="co"># read and fix data types</span></span>
+<span id="cb12-10"><a href="adding-tidal-cycle-data.html#cb12-10"></a>  temp_data &lt;-<span class="st"> </span><span class="kw">fread</span>(df, <span class="dt">integer64 =</span> <span class="st">&quot;numeric&quot;</span>)</span>
+<span id="cb12-11"><a href="adding-tidal-cycle-data.html#cb12-11"></a>  temp_data[,ts<span class="op">:</span><span class="er">=</span><span class="kw">fastPOSIXct</span>(ts)]</span>
+<span id="cb12-12"><a href="adding-tidal-cycle-data.html#cb12-12"></a>  </span>
+<span id="cb12-13"><a href="adding-tidal-cycle-data.html#cb12-13"></a>  <span class="co"># merge with tides and order on time</span></span>
+<span id="cb12-14"><a href="adding-tidal-cycle-data.html#cb12-14"></a>  temp_data &lt;-<span class="st"> </span><span class="kw">merge</span>(temp_data, tides, <span class="dt">by.x =</span> <span class="st">&quot;ts&quot;</span>, <span class="dt">by.y =</span> <span class="st">&quot;time&quot;</span>, </span>
+<span id="cb12-15"><a href="adding-tidal-cycle-data.html#cb12-15"></a>                     <span class="dt">all =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb12-16"><a href="adding-tidal-cycle-data.html#cb12-16"></a>  <span class="kw">setorder</span>(temp_data, ts)</span>
+<span id="cb12-17"><a href="adding-tidal-cycle-data.html#cb12-17"></a>  </span>
+<span id="cb12-18"><a href="adding-tidal-cycle-data.html#cb12-18"></a>  <span class="co"># get tide_number and time since high tide</span></span>
+<span id="cb12-19"><a href="adding-tidal-cycle-data.html#cb12-19"></a>  temp_data[, tide_number <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">nafill</span>(tide_number, <span class="st">&quot;locf&quot;</span>)]</span>
+<span id="cb12-20"><a href="adding-tidal-cycle-data.html#cb12-20"></a>  temp_data[, tidaltime <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">difftime</span>(ts, ts[<span class="dv">1</span>], <span class="dt">units =</span> <span class="st">&quot;mins&quot;</span>)), </span>
+<span id="cb12-21"><a href="adding-tidal-cycle-data.html#cb12-21"></a>             by =<span class="st"> </span>tide_number]</span>
+<span id="cb12-22"><a href="adding-tidal-cycle-data.html#cb12-22"></a>  </span>
+<span id="cb12-23"><a href="adding-tidal-cycle-data.html#cb12-23"></a>  <span class="co"># remove bad rows and columns</span></span>
+<span id="cb12-24"><a href="adding-tidal-cycle-data.html#cb12-24"></a>  temp_data &lt;-<span class="st"> </span>temp_data[<span class="kw">complete.cases</span>(x),]</span>
+<span id="cb12-25"><a href="adding-tidal-cycle-data.html#cb12-25"></a>  temp_data[,<span class="st">`</span><span class="dt">:=</span><span class="st">`</span>(<span class="dt">tide =</span> <span class="ot">NULL</span>, <span class="dt">level =</span> <span class="ot">NULL</span>)]</span>
+<span id="cb12-26"><a href="adding-tidal-cycle-data.html#cb12-26"></a></span>
+<span id="cb12-27"><a href="adding-tidal-cycle-data.html#cb12-27"></a>  <span class="co"># export data, print msg, remove data</span></span>
+<span id="cb12-28"><a href="adding-tidal-cycle-data.html#cb12-28"></a>  <span class="kw">fwrite</span>(temp_data, <span class="dt">file =</span> df, <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</span>
+<span id="cb12-29"><a href="adding-tidal-cycle-data.html#cb12-29"></a>  <span class="kw">message</span>(<span class="kw">glue</span>(<span class="st">&#39;tag {unique(temp_data$id)} added time since high tide&#39;</span>))</span>
+<span id="cb12-30"><a href="adding-tidal-cycle-data.html#cb12-30"></a>  <span class="kw">rm</span>(temp_data); <span class="kw">invisible</span>(<span class="kw">gc</span>(<span class="dt">full =</span> <span class="ot">FALSE</span>))</span>
+<span id="cb12-31"><a href="adding-tidal-cycle-data.html#cb12-31"></a>})</span></code></pre></div>
 
 </div>
 </div>

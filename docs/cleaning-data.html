@@ -4,27 +4,27 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>3 Cleaning data | Linking experimental measures of personality to free-living space-use in red knots</title>
-  <meta name="description" content="3 Cleaning data | Linking experimental measures of personality to free-living space-use in red knots" />
+  <title>3 Cleaning data | Individual consistency in space-use across scales</title>
+  <meta name="description" content="3 Cleaning data | Individual consistency in space-use across scales" />
   <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="3 Cleaning data | Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta property="og:title" content="3 Cleaning data | Individual consistency in space-use across scales" />
   <meta property="og:type" content="book" />
   
   
-  <meta property="og:description" content="3 Cleaning data | Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta property="og:description" content="3 Cleaning data | Individual consistency in space-use across scales" />
   <meta name="github-repo" content="pratikunterwegs/redknotMoveWaddensea" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="3 Cleaning data | Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta name="twitter:title" content="3 Cleaning data | Individual consistency in space-use across scales" />
   
-  <meta name="twitter:description" content="3 Cleaning data | Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta name="twitter:description" content="3 Cleaning data | Individual consistency in space-use across scales" />
   
 
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2019-12-04" />
+<meta name="date" content="2020-01-10" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -34,6 +34,7 @@
 <link rel="prev" href="getting-data.html"/>
 <link rel="next" href="adding-tidal-cycle-data.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/elevate-section-attrs-2.0/elevate-section-attrs.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -182,7 +183,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Linking experimental measures of personality to free-living space-use in red knots</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Individual consistency in space-use across scales</a>
           </h1>
         </div>
 
@@ -210,7 +211,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-8"><a href="cleaning-data.html#cb6-8"></a><span class="kw">library</span>(data.table)</span>
 <span id="cb6-9"><a href="cleaning-data.html#cb6-9"></a><span class="kw">library</span>(purrr)</span>
 <span id="cb6-10"><a href="cleaning-data.html#cb6-10"></a><span class="kw">library</span>(glue)</span>
-<span id="cb6-11"><a href="cleaning-data.html#cb6-11"></a><span class="kw">library</span>(fasttime)</span></code></pre></div>
+<span id="cb6-11"><a href="cleaning-data.html#cb6-11"></a><span class="kw">library</span>(fasttime)</span>
+<span id="cb6-12"><a href="cleaning-data.html#cb6-12"></a><span class="kw">library</span>(bit64)</span></code></pre></div>
 </div>
 <div id="read-clean-and-write-data" class="section level2">
 <h2 number="3.2"><span class="header-section-number">3.2</span> Read, clean, and write data</h2>
@@ -220,20 +222,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb7-4"><a href="cleaning-data.html#cb7-4"></a><span class="co"># map read in, cleaning, and write out function over vector of filenames</span></span>
 <span id="cb7-5"><a href="cleaning-data.html#cb7-5"></a><span class="kw">map</span>(data_files, <span class="cf">function</span>(df){</span>
 <span id="cb7-6"><a href="cleaning-data.html#cb7-6"></a>  </span>
-<span id="cb7-7"><a href="cleaning-data.html#cb7-7"></a>  temp_data &lt;-<span class="st"> </span><span class="kw">fread</span>(df)</span>
-<span id="cb7-8"><a href="cleaning-data.html#cb7-8"></a>  temp_data[,ts<span class="op">:</span><span class="er">=</span><span class="kw">fastPOSIXct</span>(ts)]</span>
-<span id="cb7-9"><a href="cleaning-data.html#cb7-9"></a>  clean_data &lt;-<span class="st"> </span>watlasUtils<span class="op">::</span><span class="kw">funcCleanData</span>(<span class="dt">somedata =</span> temp_data,</span>
+<span id="cb7-7"><a href="cleaning-data.html#cb7-7"></a>  temp_data &lt;-<span class="st"> </span><span class="kw">fread</span>(df, <span class="dt">integer64 =</span> <span class="st">&quot;numeric&quot;</span>)</span>
+<span id="cb7-8"><a href="cleaning-data.html#cb7-8"></a>  </span>
+<span id="cb7-9"><a href="cleaning-data.html#cb7-9"></a>  clean_data &lt;-<span class="st"> </span><span class="kw">wat_clean_data</span>(<span class="dt">somedata =</span> temp_data,</span>
 <span id="cb7-10"><a href="cleaning-data.html#cb7-10"></a>                                           <span class="dt">moving_window =</span> <span class="dv">5</span>,</span>
 <span id="cb7-11"><a href="cleaning-data.html#cb7-11"></a>                                           <span class="dt">nbs_min =</span> <span class="dv">0</span>,</span>
-<span id="cb7-12"><a href="cleaning-data.html#cb7-12"></a>                                           <span class="dt">sd_threshold =</span> <span class="fl">5e5</span>,</span>
-<span id="cb7-13"><a href="cleaning-data.html#cb7-13"></a>                                           <span class="dt">plot =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb7-14"><a href="cleaning-data.html#cb7-14"></a></span>
-<span id="cb7-15"><a href="cleaning-data.html#cb7-15"></a>  <span class="kw">print</span>(<span class="kw">glue</span>(<span class="st">&#39;tag {unique(clean_data$id)} cleaned with {nrow(clean_data)} fixes&#39;</span>))</span>
-<span id="cb7-16"><a href="cleaning-data.html#cb7-16"></a></span>
-<span id="cb7-17"><a href="cleaning-data.html#cb7-17"></a>  <span class="kw">fwrite</span>(<span class="dt">x =</span> clean_data, <span class="dt">file =</span> df, <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</span>
-<span id="cb7-18"><a href="cleaning-data.html#cb7-18"></a>  </span>
-<span id="cb7-19"><a href="cleaning-data.html#cb7-19"></a>  <span class="kw">rm</span>(df); <span class="kw">gc</span>()</span>
-<span id="cb7-20"><a href="cleaning-data.html#cb7-20"></a>})</span></code></pre></div>
+<span id="cb7-12"><a href="cleaning-data.html#cb7-12"></a>                                           <span class="dt">sd_threshold =</span> <span class="fl">5e5</span>)</span>
+<span id="cb7-13"><a href="cleaning-data.html#cb7-13"></a>  clean_data[,ts<span class="op">:</span><span class="er">=</span><span class="kw">fastPOSIXct</span>(ts)]</span>
+<span id="cb7-14"><a href="cleaning-data.html#cb7-14"></a>  <span class="kw">message</span>(<span class="kw">glue</span>(<span class="st">&#39;tag {unique(clean_data$id)} cleaned with {nrow(clean_data)} fixes&#39;</span>))</span>
+<span id="cb7-15"><a href="cleaning-data.html#cb7-15"></a></span>
+<span id="cb7-16"><a href="cleaning-data.html#cb7-16"></a>  <span class="kw">fwrite</span>(<span class="dt">x =</span> clean_data, <span class="dt">file =</span> df, <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</span>
+<span id="cb7-17"><a href="cleaning-data.html#cb7-17"></a>  </span>
+<span id="cb7-18"><a href="cleaning-data.html#cb7-18"></a>  <span class="kw">rm</span>(temp_data, clean_data); <span class="kw">invisible</span>(<span class="kw">gc</span>(<span class="dt">full =</span> <span class="ot">FALSE</span>))</span>
+<span id="cb7-19"><a href="cleaning-data.html#cb7-19"></a>})</span></code></pre></div>
 
 </div>
 </div>
