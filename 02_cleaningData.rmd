@@ -26,6 +26,15 @@ library(data.table)
 library(purrr)
 library(glue)
 library(fasttime)
+library(bit64)
+library(stringr)
+```
+
+## Prepare to remove attractor points
+
+```{r read_attractors, eval=FALSE, message=FALSE, warning=FALSE}
+# read in identified attractor points
+atp <- fread("data/data2018/attractor_points.txt")
 ```
 
 ## Read, clean, and write data
@@ -34,17 +43,41 @@ library(fasttime)
 # make a list of data files to read
 data_files <- list.files(path = "data/data2018/", pattern = "_data.csv", full.names = TRUE)
 
+# read deployment data from local file in data folder
+tag_info <- fread("data/data2018/SelinDB.csv")
+
+# filter out NAs in release date and time
+tag_info <- tag_info[!is.na(Release_Date) & !is.na(Release_Time),]
+
+# make release date column as POSIXct
+tag_info[,Release_Date := as.POSIXct(paste(Release_Date, Release_Time, sep = " "), format = "%d.%m.%y %H:%M", tz = "CET")]
+
 # map read in, cleaning, and write out function over vector of filenames
 map(data_files, function(df){
   
   temp_data <- fread(df, integer64 = "numeric")
   
-  clean_data <- funcCleanData(somedata = temp_data,
+  # filter for release date
+  {
+    temp_id <- str_sub(temp_data[1, TAG], -3, -1)
+    
+    rel_date <- tag_info[Toa_Tag == temp_id, Release_Date]
+    
+    temp_data <- temp_data[TIME/1e3 > (rel_date),]
+  }
+
+  temp_data <- wat_rm_attractor(df = temp_data,
+                  atp_xmin = atp$xmin,
+                  atp_xmax = atp$xmax,
+                  atp_ymin = atp$ymin,
+                  atp_ymax = atp$ymax)
+  
+  clean_data <- wat_clean_data(somedata = temp_data,
                                            moving_window = 5,
                                            nbs_min = 0,
                                            sd_threshold = 5e5)
-  clean_data[,ts:=fastPOSIXct(ts)]
-  print(glue('tag {unique(clean_data$id)} cleaned with {nrow(clean_data)} fixes'))
+  
+  message(glue('tag {unique(clean_data$id)} cleaned with {nrow(clean_data)} fixes'))
 
   fwrite(x = clean_data, file = df, dateTimeAs = "ISO")
   

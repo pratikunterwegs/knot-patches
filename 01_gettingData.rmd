@@ -73,7 +73,7 @@ if(!dir.exists("data/data2018")) { dir.create("data/data2018") }
 
 pmap(tag_info[,.(Toa_Tag, Release_Date)], function(Toa_Tag, Release_Date){
 
-  prelim_data <- watlasUtils::funcGetData(tag = Toa_Tag,
+  prelim_data <- watlasUtils::wat_get_data(tag = Toa_Tag,
                            tracking_time_start = as.character(Release_Date),
                            tracking_time_end = "2018-10-31",
                            username = data_access$username,
@@ -82,7 +82,7 @@ pmap(tag_info[,.(Toa_Tag, Release_Date)], function(Toa_Tag, Release_Date){
   setDT(prelim_data)
   # prelim_data[,TAG:= = as.numeric(TAG) - prefix_num]
 
-  print(glue('tag {Toa_Tag} accessed with {nrow(prelim_data)} fixes'))
+  message(glue('tag {Toa_Tag} accessed with {nrow(prelim_data)} fixes'))
   
   fwrite(prelim_data, file = glue('data/data2018/{Toa_Tag}_data.csv'),
          dateTimeAs = "ISO")

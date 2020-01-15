@@ -46,9 +46,9 @@ if(!dir.exists("data/data2018/revisitData")){ dir.create("data/data2018/revisitD
 
 # prepare recurse in parameters
 # radius (m), cutoff (mins)
-radius <- 50
+{radius <- 50
 timeunits <- "mins"
-revisit_cutoff <- 60
+revisit_cutoff <- 60}
 
 # map read in, splitting, and recurse over individual level data
 # remove visits where the bird left for 60 mins, and then returned
@@ -60,7 +60,7 @@ map(data_files, function(df){
   
   # read in, fix data type, and split
   temp_data <- fread(df, integer64 = "numeric")
-  temp_data[,ts:=fastPOSIXct(ts)]
+  temp_data[,ts:=fastPOSIXct(ts, tz = 'CET')]
   setDF(temp_data)
   temp_data <- split(temp_data, temp_data$tide_number)
   
@@ -100,7 +100,7 @@ map(data_files, function(df){
     fwrite(tempdf, 
            file = glue('data/data2018/revisitData/{unique(tempdf$id)}_{str_pad(unique(tempdf$tide_number), width=3, pad="0")}_revisit.csv'))
     
-    print(glue('recurse {unique(tempdf$id)}_{str_pad(unique(tempdf$tide_number), width=3, pad="0")} done'))
+    message(glue('recurse {unique(tempdf$id)}_{str_pad(unique(tempdf$tide_number), width=3, pad="0")} done'))
     
     rm(tempdf, df_recurse); invisible(gc())
     

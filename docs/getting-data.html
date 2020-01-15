@@ -4,27 +4,27 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>2 Getting data | Linking experimental measures of personality to free-living space-use in red knots</title>
-  <meta name="description" content="2 Getting data | Linking experimental measures of personality to free-living space-use in red knots" />
+  <title>2 Getting data | Individual consistency in space-use across scales</title>
+  <meta name="description" content="2 Getting data | Individual consistency in space-use across scales" />
   <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="2 Getting data | Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta property="og:title" content="2 Getting data | Individual consistency in space-use across scales" />
   <meta property="og:type" content="book" />
   
   
-  <meta property="og:description" content="2 Getting data | Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta property="og:description" content="2 Getting data | Individual consistency in space-use across scales" />
   <meta name="github-repo" content="pratikunterwegs/redknotMoveWaddensea" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2 Getting data | Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta name="twitter:title" content="2 Getting data | Individual consistency in space-use across scales" />
   
-  <meta name="twitter:description" content="2 Getting data | Linking experimental measures of personality to free-living space-use in red knots" />
+  <meta name="twitter:description" content="2 Getting data | Individual consistency in space-use across scales" />
   
 
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2019-12-04" />
+<meta name="date" content="2020-01-15" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -34,6 +34,7 @@
 <link rel="prev" href="index.html"/>
 <link rel="next" href="cleaning-data.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/elevate-section-attrs-2.0/elevate-section-attrs.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -144,7 +145,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="3" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning data</a>
 <ul>
 <li class="chapter" data-level="3.1" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-watlasutils-and-other-libraries-1"><i class="fa fa-check"></i><b>3.1</b> Prepare <code>watlasUtils</code> and other libraries</a></li>
-<li class="chapter" data-level="3.2" data-path="cleaning-data.html"><a href="cleaning-data.html#read-clean-and-write-data"><i class="fa fa-check"></i><b>3.2</b> Read, clean, and write data</a></li>
+<li class="chapter" data-level="3.2" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-to-remove-attractor-points"><i class="fa fa-check"></i><b>3.2</b> Prepare to remove attractor points</a></li>
+<li class="chapter" data-level="3.3" data-path="cleaning-data.html"><a href="cleaning-data.html#read-clean-and-write-data"><i class="fa fa-check"></i><b>3.3</b> Read, clean, and write data</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html"><i class="fa fa-check"></i><b>4</b> Adding tidal cycle data</a>
 <ul>
@@ -182,7 +184,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Linking experimental measures of personality to free-living space-use in red knots</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Individual consistency in space-use across scales</a>
           </h1>
         </div>
 
@@ -224,19 +226,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-5"><a href="getting-data.html#cb2-5"></a>tag_info &lt;-<span class="st"> </span>tag_info[<span class="op">!</span><span class="kw">is.na</span>(Release_Date) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(Release_Time),]</span>
 <span id="cb2-6"><a href="getting-data.html#cb2-6"></a></span>
 <span id="cb2-7"><a href="getting-data.html#cb2-7"></a><span class="co"># make release date column as POSIXct</span></span>
-<span id="cb2-8"><a href="getting-data.html#cb2-8"></a>tag_info[,Release_Date <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(Release_Date, Release_Time, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>),</span>
-<span id="cb2-9"><a href="getting-data.html#cb2-9"></a>                                    <span class="dt">format =</span> <span class="st">&quot;%d.%m.%y %H:%M&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span>)]</span>
-<span id="cb2-10"><a href="getting-data.html#cb2-10"></a></span>
-<span id="cb2-11"><a href="getting-data.html#cb2-11"></a><span class="co"># check new release date column</span></span>
-<span id="cb2-12"><a href="getting-data.html#cb2-12"></a><span class="kw">head</span>(tag_info<span class="op">$</span>Release_Date)</span></code></pre></div>
-<pre><code>## [1] &quot;2018-09-14 20:00:00 CEST&quot;
-## [2] &quot;2018-09-13 15:30:00 CEST&quot;
-## [3] &quot;2018-09-14 20:00:00 CEST&quot;
-## [4] &quot;2018-09-13 18:30:00 CEST&quot;
-## [5] &quot;2018-08-11 15:00:00 CEST&quot;
-## [6] &quot;2018-08-16 18:04:00 CEST&quot;</code></pre>
+<span id="cb2-8"><a href="getting-data.html#cb2-8"></a>tag_info[,Release_Date <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(Release_Date, Release_Time, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>), <span class="dt">format =</span> <span class="st">&quot;%d.%m.%y %H:%M&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span>)]</span>
+<span id="cb2-9"><a href="getting-data.html#cb2-9"></a></span>
+<span id="cb2-10"><a href="getting-data.html#cb2-10"></a><span class="co"># check new release date column</span></span>
+<span id="cb2-11"><a href="getting-data.html#cb2-11"></a><span class="kw">head</span>(tag_info<span class="op">$</span>Release_Date)</span></code></pre></div>
+<pre><code>## [1] &quot;2018-09-14 20:00:00 CEST&quot; &quot;2018-09-13 15:30:00 CEST&quot;
+## [3] &quot;2018-09-14 20:00:00 CEST&quot; &quot;2018-09-13 18:30:00 CEST&quot;
+## [5] &quot;2018-08-11 15:00:00 CEST&quot; &quot;2018-08-16 18:04:00 CEST&quot;</code></pre>
 <div class="figure">
-<img src="knots_paper_2019_files/figure-html/plot_release_schedule-1.png" alt="Knots released per week of 2018." width="672" />
+<img src="knots_paper_patches_2019_files/figure-html/plot_release_schedule-1.png" alt="Knots released per week of 2018." width="672" />
 <p class="caption">
 (#fig:plot_release_schedule)Knots released per week of 2018.
 </p>
@@ -254,7 +252,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-6"><a href="getting-data.html#cb5-6"></a></span>
 <span id="cb5-7"><a href="getting-data.html#cb5-7"></a><span class="kw">pmap</span>(tag_info[,.(Toa_Tag, Release_Date)], <span class="cf">function</span>(Toa_Tag, Release_Date){</span>
 <span id="cb5-8"><a href="getting-data.html#cb5-8"></a></span>
-<span id="cb5-9"><a href="getting-data.html#cb5-9"></a>  prelim_data &lt;-<span class="st"> </span>watlasUtils<span class="op">::</span><span class="kw">funcGetData</span>(<span class="dt">tag =</span> Toa_Tag,</span>
+<span id="cb5-9"><a href="getting-data.html#cb5-9"></a>  prelim_data &lt;-<span class="st"> </span>watlasUtils<span class="op">::</span><span class="kw">wat_get_data</span>(<span class="dt">tag =</span> Toa_Tag,</span>
 <span id="cb5-10"><a href="getting-data.html#cb5-10"></a>                           <span class="dt">tracking_time_start =</span> <span class="kw">as.character</span>(Release_Date),</span>
 <span id="cb5-11"><a href="getting-data.html#cb5-11"></a>                           <span class="dt">tracking_time_end =</span> <span class="st">&quot;2018-10-31&quot;</span>,</span>
 <span id="cb5-12"><a href="getting-data.html#cb5-12"></a>                           <span class="dt">username =</span> data_access<span class="op">$</span>username,</span>
@@ -263,7 +261,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-15"><a href="getting-data.html#cb5-15"></a>  <span class="kw">setDT</span>(prelim_data)</span>
 <span id="cb5-16"><a href="getting-data.html#cb5-16"></a>  <span class="co"># prelim_data[,TAG:= = as.numeric(TAG) - prefix_num]</span></span>
 <span id="cb5-17"><a href="getting-data.html#cb5-17"></a></span>
-<span id="cb5-18"><a href="getting-data.html#cb5-18"></a>  <span class="kw">print</span>(<span class="kw">glue</span>(<span class="st">&#39;tag {Toa_Tag} accessed with {nrow(prelim_data)} fixes&#39;</span>))</span>
+<span id="cb5-18"><a href="getting-data.html#cb5-18"></a>  <span class="kw">message</span>(<span class="kw">glue</span>(<span class="st">&#39;tag {Toa_Tag} accessed with {nrow(prelim_data)} fixes&#39;</span>))</span>
 <span id="cb5-19"><a href="getting-data.html#cb5-19"></a>  </span>
 <span id="cb5-20"><a href="getting-data.html#cb5-20"></a>  <span class="kw">fwrite</span>(prelim_data, <span class="dt">file =</span> <span class="kw">glue</span>(<span class="st">&#39;data/data2018/{Toa_Tag}_data.csv&#39;</span>),</span>
 <span id="cb5-21"><a href="getting-data.html#cb5-21"></a>         <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</span>

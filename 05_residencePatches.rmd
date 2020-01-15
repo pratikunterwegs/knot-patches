@@ -44,17 +44,17 @@ output_data <- map(data_files, function(df){
   temp_data[,ts:=fastPOSIXct(ts)]
   
   # watlasUtils function to infer residence
-  temp_data <- funcInferResidence(somedata = temp_data,
+  temp_data <- wat_infer_residence(somedata = temp_data,
                                   infResTime = 2,
                                   infPatchTimeDiff = 30,
                                   infPatchSpatDiff = 100)
   
   # watlasUtils function to classify path
-  temp_data <- funcClassifyPath(somedata = temp_data,
+  temp_data <- wat_classify_points(somedata = temp_data,
                                 resTimeLimit = 2)
   
   # watlasUtils function to get patches
-  patch_data <- funcGetResPatch(somedata = temp_data,
+  patch_data <- wat_make_res_patch(somedata = temp_data,
                                 bufferSize = 10,
                                 spatIndepLim = 100,
                                 tempIndepLim = 30,
@@ -63,7 +63,7 @@ output_data <- map(data_files, function(df){
                                 tideLims = c(4,10))
   
   # watlasUtils function to get patch data as spatial
-  patch_data <- funcGetPatchData(resPatchData = patch_data,
+  patch_data <- wat_get_patch_summary(resPatchData = patch_data,
                                  dataColumn = "data",
                                  whichData = "spatial")
   
