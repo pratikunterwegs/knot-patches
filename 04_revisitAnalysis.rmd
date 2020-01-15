@@ -38,7 +38,7 @@ library(fasttime)
 
 ```{r recurse_analysis, eval=FALSE, message=FALSE, warning=FALSE}
 # read in data
-data_files <- list.files(path = "data/data2018/", pattern = "_data.csv", full.names = TRUE)
+data_files <- list.files(path = "data/data2018/", pattern = "whole_season*.csv", full.names = TRUE)
 
 # prepare recurse data folder
 if(!dir.exists("data/data2018/revisitData")){ dir.create("data/data2018/revisitData") }

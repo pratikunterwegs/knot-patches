@@ -18,7 +18,7 @@ This section is about cleaning downloaded data using the `cleanData` function in
 # watlasUtils assumed installed from the previous step
 # if not, install from the github repo as shown below
 
-# devtools::install_github("pratikunterwegs/watlasUtils")
+devtools::install_github("pratikunterwegs/watlasUtils")
 library(watlasUtils)
 
 # libraries to process data
@@ -41,7 +41,7 @@ atp <- fread("data/data2018/attractor_points.txt")
 
 ```{r read_in_raw_data, eval=FALSE, message=FALSE, warning=FALSE}
 # make a list of data files to read
-data_files <- list.files(path = "data/data2018/", pattern = "_data.csv", full.names = TRUE)
+data_files <- list.files(path = "data/data2018/", pattern = "whole_season*.csv", full.names = TRUE)
 
 # read deployment data from local file in data folder
 tag_info <- fread("data/data2018/SelinDB.csv")

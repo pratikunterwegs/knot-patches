@@ -84,7 +84,7 @@ fwrite(tides, file = "data/data2018/tidesSummer2018.csv",
 
 ```{r time_to_high_tide, eval=FALSE, message=FALSE, warning=FALSE}
 # read in data and add time since high tide
-data_files <- list.files(path = "data/data2018/", pattern = "_data.csv", full.names = TRUE)
+data_files <- list.files(path = "data/data2018/", pattern = "whole_season*.csv", full.names = TRUE)
 
 # map read in and tidal time calculation over data
 # merge data to insert high tides within movement data
