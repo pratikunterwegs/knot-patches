@@ -115,7 +115,7 @@ map(data_files, function(df){
   # export data, print msg, remove data
   fwrite(temp_data, file = df, dateTimeAs = "ISO")
   message(glue('tag {unique(temp_data$id)} added time since high tide'))
-  rm(temp_data); invisible(gc(full = FALSE))
+  rm(temp_data)
 })
 ```
 
