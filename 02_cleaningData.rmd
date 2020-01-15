@@ -27,9 +27,10 @@ library(purrr)
 library(glue)
 library(fasttime)
 library(bit64)
+library(stringr)
 ```
 
-## Prepare to remove attractors points
+## Prepare to remove attractor points
 
 ```{r read_attractors, eval=FALSE, message=FALSE, warning=FALSE}
 # read in identified attractor points
