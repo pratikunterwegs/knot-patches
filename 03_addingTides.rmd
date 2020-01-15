@@ -46,7 +46,8 @@ waterlevel <- waterlevel[,.(WAARNEMINGDATUM, WAARNEMINGTIJD, NUMERIEKEWAARDE)]
 setnames(waterlevel, c("date", "time", "level"))
 
 # make a single POSIXct column of datetime
-waterlevel[,dateTime := as.POSIXct(paste(date, time, sep = " "), format = "%d-%m-%Y %H:%M:%S")]
+waterlevel[,dateTime := as.POSIXct(paste(date, time, sep = " "), 
+                                   format = "%d-%m-%Y %H:%M:%S", tz = "CET")]
 
 waterlevel <- setDT(distinct(setDF(waterlevel), dateTime, .keep_all = TRUE))
 ```
@@ -57,7 +58,9 @@ A tidal period of 12 hours 25 minutes is taken from [Rijkswaterstaat](https://ww
 
 ```{r get_high_tide, eval=FALSE, message=FALSE, warning=FALSE}
 # use the HL function from vulnToolkit to get high tides
-tides <- VulnToolkit::HL(waterlevel$level, waterlevel$dateTime, period = 12.41, tides = "H", semidiurnal = TRUE)
+tides <- VulnToolkit::HL(waterlevel$level,
+                         waterlevel$dateTime, period = 12.41, 
+                         tides = "H", semidiurnal = TRUE)
 
 # read in release data and get first release - 24 hrs
 tag_info <- fread("data/data2018/SelinDB.csv")
@@ -67,7 +70,7 @@ tag_info[,Release_Date := as.POSIXct(paste(Release_Date, Release_Time, sep = " "
 first_release <- min(tag_info$Release_Date) - (3600*24)
 
 # remove tides before first release
-tides <- setDT(tides)[time > first_release, ][,tide2:=NULL]
+tides <- setDT(tides)#[time > first_release, ][,tide2:=NULL]
 tides[,tide_number:=1:nrow(tides)]
 ```
 
