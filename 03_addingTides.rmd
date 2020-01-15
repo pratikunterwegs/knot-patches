@@ -93,7 +93,7 @@ map(data_files, function(df){
   
   # read and fix data types
   temp_data <- fread(df, integer64 = "numeric")
-  temp_data[,ts:=fastPOSIXct(ts)]
+  temp_data[,ts:=fastPOSIXct(ts, tz = "CET")]
   
   # merge with tides and order on time
   temp_data <- merge(temp_data, tides, by.x = "ts", by.y = "time", 
