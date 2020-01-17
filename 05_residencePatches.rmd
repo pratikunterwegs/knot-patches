@@ -28,6 +28,7 @@ library(data.table)
 library(purrr)
 library(glue)
 library(dplyr)
+library(fasttime)
 ```
 
 ## Patch construction
