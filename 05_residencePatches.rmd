@@ -28,6 +28,7 @@ library(data.table)
 library(purrr)
 library(glue)
 library(dplyr)
+library(fasttime)
 ```
 
 ## Patch construction
@@ -42,31 +43,49 @@ output_data <- map(data_files, function(df){
   
   temp_data <- fread(df)
   temp_data[,ts:=fastPOSIXct(ts)]
+      
+  id <- unique(temp_data$id)
+  tide_number <- unique(temp_data$tide_number)
   
-  # watlasUtils function to infer residence
-  temp_data <- wat_infer_residence(somedata = temp_data,
-                                  infResTime = 2,
-                                  infPatchTimeDiff = 30,
-                                  infPatchSpatDiff = 100)
-  
-  # watlasUtils function to classify path
-  temp_data <- wat_classify_points(somedata = temp_data,
-                                resTimeLimit = 2)
-  
-  # watlasUtils function to get patches
-  patch_data <- wat_make_res_patch(somedata = temp_data,
-                                bufferSize = 10,
-                                spatIndepLim = 100,
-                                tempIndepLim = 30,
-                                restIndepLim = 30,
-                                minFixes = 3,
-                                tideLims = c(4,10))
-  
-  # watlasUtils function to get patch data as spatial
-  patch_data <- wat_get_patch_summary(resPatchData = patch_data,
-                                 dataColumn = "data",
-                                 whichData = "spatial")
-  
+  # wrap process in try catch
+  tryCatch(
+    {
+      # watlasUtils function to infer residence
+      temp_data <- wat_infer_residence(df = temp_data,
+                                       infResTime = 2,
+                                       infPatchTimeDiff = 30,
+                                       infPatchSpatDiff = 100)
+      
+      # watlasUtils function to classify path
+      temp_data <- wat_classify_points(somedata = temp_data,
+                                       resTimeLimit = 2)
+      
+      # watlasUtils function to get patches
+      patch_data <- wat_make_res_patch(somedata = temp_data,
+                                       bufferSize = 10,
+                                       spatIndepLim = 100,
+                                       tempIndepLim = 30,
+                                       restIndepLim = 30,
+                                       minFixes = 3,
+                                       tideLims = c(4,10))
+      
+      # watlasUtils function to get patch data as spatial
+      patch_data <- wat_get_patch_summary(resPatchData = patch_data,
+                                          dataColumn = "data",
+                                          whichData = "summary")
+      
+      # print message
+      message(as.character(glue('patches {id}_{tide_number} done')))
+      
+      return(patch_data)
+    },
+    # null error function, with option to collect data on errors
+    error= function(e)
+    {
+      message(glue::glue('patches {id}_{tide_number} errored'))
+    }
+    
+  )
 })
 
 ```
@@ -74,11 +93,11 @@ output_data <- map(data_files, function(df){
 ## Get patch trajectories
 
 ```{r patch_trajectories, eval=FALSE, message=FALSE, warning=FALSE}
+# save as temp data
+save(output_data, file = "data/data2018/patch_data_2018.rdata")
 # filter non-sf objects from the list
-output_data <- keep(output_data, function(obj){"sf" %in% class(obj)})
-
-# get non-spatial summary data, bind rows, and save
-output_data <- map_df(output_data, funcGetPatchData, whichData="summary")
+output_data <- keep(output_data, function(obj){"data.frame" %in% class(obj)})
+output_data <- bind_rows(output_data)
 
 fwrite(output_data, file = "data/data2018/patch_summary.csv",
        dateTimeAs = "ISO")

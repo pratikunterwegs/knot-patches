@@ -38,7 +38,18 @@ library(fasttime)
 
 ```{r recurse_analysis, eval=FALSE, message=FALSE, warning=FALSE}
 # read in data
-data_files <- list.files(path = "data/data2018/", pattern = "_data.csv", full.names = TRUE)
+data_files <- list.files(path = "data/data2018/", pattern = "whole_season*", full.names = TRUE)
+
+data_ids <- str_extract(data_files, "(tx_\\d+)") %>% str_sub(-3,-1)
+
+{
+  # read in release data and get first release - 24 hrs
+  tag_info <- fread("data/data2018/SelinDB.csv")
+  tag_info <- tag_info[!is.na(Release_Date) & !is.na(Release_Time),]
+  tag_info[,Release_Date := as.POSIXct(paste(Release_Date, Release_Time, sep = " "), format = "%d.%m.%y %H:%M", tz = "CET")]
+}
+
+data_files <- data_files[as.integer(data_ids) %in% tag_info$Toa_Tag]
 
 # prepare recurse data folder
 if(!dir.exists("data/data2018/revisitData")){ dir.create("data/data2018/revisitData") }
@@ -102,7 +113,7 @@ map(data_files, function(df){
     
     message(glue('recurse {unique(tempdf$id)}_{str_pad(unique(tempdf$tide_number), width=3, pad="0")} done'))
     
-    rm(tempdf, df_recurse); invisible(gc())
+    rm(tempdf, df_recurse)
     
   })
   

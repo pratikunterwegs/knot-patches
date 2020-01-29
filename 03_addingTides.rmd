@@ -70,7 +70,7 @@ tag_info[,Release_Date := as.POSIXct(paste(Release_Date, Release_Time, sep = " "
 first_release <- min(tag_info$Release_Date) - (3600*24)
 
 # remove tides before first release
-tides <- setDT(tides)#[time > first_release, ][,tide2:=NULL]
+tides <- setDT(tides)[time > first_release, ][,tide2:=NULL]
 tides[,tide_number:=1:nrow(tides)]
 ```
 
@@ -84,7 +84,10 @@ fwrite(tides, file = "data/data2018/tidesSummer2018.csv",
 
 ```{r time_to_high_tide, eval=FALSE, message=FALSE, warning=FALSE}
 # read in data and add time since high tide
-data_files <- list.files(path = "data/data2018/", pattern = "_data.csv", full.names = TRUE)
+data_files <- list.files(path = "data/data2018/", pattern = "whole_season*", full.names = TRUE)
+data_ids <- str_extract(data_files, "(tx_\\d+)") %>% str_sub(-3,-1)
+
+data_files <- data_files[as.integer(data_ids) %in% tag_info$Toa_Tag]
 
 # map read in and tidal time calculation over data
 # merge data to insert high tides within movement data
@@ -112,7 +115,7 @@ map(data_files, function(df){
   # export data, print msg, remove data
   fwrite(temp_data, file = df, dateTimeAs = "ISO")
   message(glue('tag {unique(temp_data$id)} added time since high tide'))
-  rm(temp_data); invisible(gc(full = FALSE))
+  rm(temp_data)
 })
 ```
 

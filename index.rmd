@@ -9,7 +9,7 @@ documentclass: book
 bibliography: [refs.bib]
 biblio-style: apalike
 link-citations: yes
-github-repo: pratikunterwegs/redknotMoveWaddensea
+github-repo: pratikunterwegs/knotPatches
 description: "Individual consistency in space-use across scales"
 ---
 

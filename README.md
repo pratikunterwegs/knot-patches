@@ -2,7 +2,7 @@
 
 This repository is the source for a project in preparation that links high-resolution tracking data from individual red knots _Calidris canutus islandica_ to fine-scale experimental behaviour measurements in captivity, and examines whether individuals are consistent across scales in their space-use.
 
-## [Readable version](https://pratikunterwegs.github.io/redknotMoveWaddensea/)
+## [Readable version](https://pratikunterwegs.github.io/knotPatches/)
 
 A human-readable version of this code is available in bookdown format by clicking on the heading.
 
