@@ -5,7 +5,7 @@ editor_options:
 
 # Applying CTMM to WATLAS data
 
-CTMM [@some citation] can estimate speed from poor quality data. However, CTMM has its limits, and fails most frequently _when the movement model is identified as being fractal_. A solution to this is to decrease the temporal resolution of the data _within_ residence patches, i.e., to aggregate positions over a certain interval. However, data resulting from this procedure may run afoul of another CTMM feature, _outlier removal_, which may recommend the removal of nearly all points in a trajectory. This depends on the percentile of the data (in terms of speed and distance from the centroid(?)) considered to be outliers, as well as on the scale of aggregation used earlier to avoid fractal movement models.
+CTMM [@calabrese2016] can estimate speed from poor quality data. However, CTMM has its limits, and fails most frequently _when the movement model is identified as being fractal_. A solution to this is to decrease the temporal resolution of the data _within_ residence patches, i.e., to aggregate positions over a certain interval. However, data resulting from this procedure may run afoul of another CTMM feature, _outlier removal_, which may recommend the removal of nearly all points in a trajectory. This depends on the percentile of the data (in terms of speed and distance from the centroid(?)) considered to be outliers, as well as on the scale of aggregation used earlier to avoid fractal movement models.
 
 Here, we examine the effect of different aggregation scales on the proportion of patches that would be discarded.
 
@@ -27,6 +27,10 @@ library(tidyr)
 # devtools::install_github("pratikunterwegs/watlasUtils", ref = "devbranch")
 library(watlasUtils)
 library(ctmm)
+
+# plot libs
+library(ggplot2)
+library(ggthemes)
 ```
 
 ## Load a random subset of data
@@ -47,7 +51,7 @@ scales <- c(15, 30, 60)
 data_to_test <- crossing(scales, data_files)
 ```
 
-```{r count_patches_remaining}
+```{r count_patches_remaining, eval=FALSE}
 rm(data_files, scales)
 some_output <- pmap(data_to_test, function(scales, data_files){
   {
@@ -162,6 +166,33 @@ some_output <- pmap(data_to_test, function(scales, data_files){
   }
   
 })
+
+```
+
+```{r add_ratio, eval=FALSE}
+# get ratios
+data_to_test$ratio <- map_if(.x = some_output, .p = is.null, .f = function(l){NA}) %>% 
+  unlist()
+
+# plot ratios
+fig_patch_thinning <- ggplot(data_to_test)+
+  geom_jitter(aes(x = factor(scales), y = ratio, 
+                  group = scales, col = factor(scales), 
+                  shape = factor(scales)), size = 2,
+              stroke = 1)+
+  scale_fill_brewer()+
+  scale_shape_few()+
+  theme_few()+
+  theme(legend.position = "none")+
+  labs(x = "aggregation interval (s)", y = "% patches retained")
+
+# save to figs
+ggsave(plot = fig_patch_thinning, filename = "figs/fig_patch_thinning.png")
+```
+
+```{r show_fig, eval=TRUE}
+
+knitr::include_graphics("figs/fig_patch_thinning.png")
 
 ```
 
