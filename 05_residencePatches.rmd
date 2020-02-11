@@ -26,66 +26,80 @@ library(watlasUtils)
 # libraries to process data
 library(data.table)
 library(purrr)
+library(stringr)
 library(glue)
+library(readr)
 library(dplyr)
 library(fasttime)
+
+# libraries for the cluster
+library(ssh)
 ```
 
 ## Patch construction
 
+Connect to cluster and process data up to and beyond patches.
+
 ```{r make_patches, eval=FALSE, message=FALSE, warning=FALSE}
+# read password
+password = read_csv("data/password.txt")$password
+
+# get bird ids
+data_ids <- str_extract(data_files, "(tx_\\d+)") %>% str_sub(-3,-1)
+
 # make a list of data files to read
 data_files <- list.files(path = "data/data2018/revisitData", pattern = "_revisit.csv", full.names = TRUE)
 
 # map inferResidence, classifyPath, and getPatches over data
 
 output_data <- map(data_files, function(df){
-  
-  temp_data <- fread(df)
-  temp_data[,ts:=fastPOSIXct(ts)]
-      
-  id <- unique(temp_data$id)
-  tide_number <- unique(temp_data$tide_number)
-  
-  # wrap process in try catch
-  tryCatch(
-    {
-      # watlasUtils function to infer residence
-      temp_data <- wat_infer_residence(df = temp_data,
-                                       infResTime = 2,
-                                       infPatchTimeDiff = 30,
-                                       infPatchSpatDiff = 100)
-      
-      # watlasUtils function to classify path
-      temp_data <- wat_classify_points(somedata = temp_data,
-                                       resTimeLimit = 2)
-      
-      # watlasUtils function to get patches
-      patch_data <- wat_make_res_patch(somedata = temp_data,
-                                       bufferSize = 10,
-                                       spatIndepLim = 100,
-                                       tempIndepLim = 30,
-                                       restIndepLim = 30,
-                                       minFixes = 3,
-                                       tideLims = c(4,10))
-      
-      # watlasUtils function to get patch data as spatial
-      patch_data <- wat_get_patch_summary(resPatchData = patch_data,
-                                          dataColumn = "data",
-                                          whichData = "summary")
-      
-      # print message
-      message(as.character(glue('patches {id}_{tide_number} done')))
-      
-      return(patch_data)
-    },
-    # null error function, with option to collect data on errors
-    error= function(e)
-    {
-      message(glue::glue('patches {id}_{tide_number} errored'))
-    }
+
+  # connect to peregrine and transfer data
+  {
+    s <- ssh_connect("p284074@peregrine.hpc.rug.nl", passwd = password)
+    # make directory if non-existent
+    ssh_exec_wait(s, command = "mkdir -p data/watlas_2018")
     
-  )
+    # list files already present
+    files_on_prg <- ssh_exec_internal(s, command = "ls data/watlas_2018")
+    files_on_prg <- rawToChar(files_on_prg$stdout) %>% 
+      str_split("\n") %>% 
+      unlist()
+    
+    # check name
+    data_name <- df %>% 
+      str_split("/") %>% 
+      unlist() %>% .[3]
+    
+    if(!data_name %in% files_on_prg){
+      # upload data file for processing
+      scp_upload(s, df, to = "data/watlas_2018/")
+    }
+  }
+
+  # get id tide combination
+  id_tide <- as.character(glue('{unique(df$id)}_{unique(df$tide_number)}'))
+
+  # make job file
+  {
+    shebang <- readLines("code/template_job_patches.sh")
+    
+    # rename job
+    shebang[2] <- glue('#SBATCH --job-name=patches_{id_tide}')
+    
+    text <- glue('Rscript code/code_process_patches.r {df}')
+    jobfile <- glue('code/job_patches_{id_tide}.sh')
+    
+    writeLines(c(shebang, text), con = jobfile)
+    scp_upload(s, jobfile, to = "code/")
+  }
+  
+  ssh_exec_wait(s, command = glue('dos2unix {jobfile}'))
+  # process using ctmm
+  ssh_exec_wait(s, command = glue('sbatch {jobfile}'))
+  
+  # disconnect
+  ssh_disconnect(s)
 })
 
 ```
