@@ -13,7 +13,7 @@
   
   
   <meta property="og:description" content="5 Revisit analysis | Individual consistency in space-use across scales" />
-  <meta name="github-repo" content="pratikunterwegs/redknotMoveWaddensea" />
+  <meta name="github-repo" content="pratikunterwegs/knotPatches" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="5 Revisit analysis | Individual consistency in space-use across scales" />
@@ -24,7 +24,7 @@
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2020-01-15" />
+<meta name="date" content="2020-02-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -169,11 +169,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html"><i class="fa fa-check"></i><b>7</b> Linking patch metrics to personality</a>
 <ul>
 <li class="chapter" data-level="7.1" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#prepare-libraries-3"><i class="fa fa-check"></i><b>7.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="7.2" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#link-patch-data-with-exploration-score"><i class="fa fa-check"></i><b>7.2</b> Link patch data with exploration score</a></li>
-<li class="chapter" data-level="7.3" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#patch-metrics-as-an-outcome-of-exploration-score"><i class="fa fa-check"></i><b>7.3</b> Patch metrics as an outcome of exploration score</a></li>
-<li class="chapter" data-level="7.4" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#plot-model-figures"><i class="fa fa-check"></i><b>7.4</b> Plot model figures</a></li>
-<li class="chapter" data-level="7.5" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#export-figures-and-model-output"><i class="fa fa-check"></i><b>7.5</b> Export figures and model output</a></li>
-<li class="chapter" data-level="7.6" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#references"><i class="fa fa-check"></i><b>7.6</b> References</a></li>
+<li class="chapter" data-level="7.2" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#read-in-exploration-score"><i class="fa fa-check"></i><b>7.2</b> Read in exploration score</a></li>
+<li class="chapter" data-level="7.3" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#exploratory-analysis-on-patch-metrics"><i class="fa fa-check"></i><b>7.3</b> Exploratory analysis on patch metrics</a></li>
+<li class="chapter" data-level="7.4" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#patch-metrics-as-an-outcome-of-exploration-score"><i class="fa fa-check"></i><b>7.4</b> Patch metrics as an outcome of exploration score</a></li>
+<li class="chapter" data-level="7.5" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#plot-model-figures"><i class="fa fa-check"></i><b>7.5</b> Plot model figures</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="applying-ctmm-to-watlas-data.html"><a href="applying-ctmm-to-watlas-data.html"><i class="fa fa-check"></i><b>8</b> Applying CTMM to WATLAS data</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="applying-ctmm-to-watlas-data.html"><a href="applying-ctmm-to-watlas-data.html#load-libraries"><i class="fa fa-check"></i><b>8.1</b> Load libraries</a></li>
+<li class="chapter" data-level="8.2" data-path="applying-ctmm-to-watlas-data.html"><a href="applying-ctmm-to-watlas-data.html#load-a-random-subset-of-data"><i class="fa fa-check"></i><b>8.2</b> Load a random subset of data</a></li>
+<li class="chapter" data-level="8.3" data-path="applying-ctmm-to-watlas-data.html"><a href="applying-ctmm-to-watlas-data.html#choose-scales-of-aggregation"><i class="fa fa-check"></i><b>8.3</b> Choose scales of aggregation</a></li>
 </ul></li>
 </ul>
 
@@ -207,7 +212,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <div id="prepare-libraries-1" class="section level2">
 <h2 number="5.1"><span class="header-section-number">5.1</span> Prepare libraries</h2>
-<p>This section uses the recurse package <span class="citation">(Bracis, Bildstein, and Mueller <a href="linking-patch-metrics-to-personality.html#ref-bracis2018" role="doc-biblioref">2018</a>)</span>.</p>
+<p>This section uses the recurse package <span class="citation">(Bracis, Bildstein, and Mueller <a href="applying-ctmm-to-watlas-data.html#ref-bracis2018" role="doc-biblioref">2018</a>)</span>.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="revisit-analysis.html#cb14-1"></a><span class="co"># load recurse or install if not available</span></span>
 <span id="cb14-2"><a href="revisit-analysis.html#cb14-2"></a><span class="cf">if</span>(<span class="st">&quot;recurse&quot;</span> <span class="op">%in%</span><span class="st"> </span><span class="kw">installed.packages</span>() <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>){</span>
 <span id="cb14-3"><a href="revisit-analysis.html#cb14-3"></a>  <span class="kw">install.packages</span>(<span class="st">&quot;recurse&quot;</span>)</span>
@@ -224,75 +229,86 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="read-data-split-recurse-write" class="section level2">
 <h2 number="5.2"><span class="header-section-number">5.2</span> Read data, split, recurse, write</h2>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="revisit-analysis.html#cb15-1"></a><span class="co"># read in data</span></span>
-<span id="cb15-2"><a href="revisit-analysis.html#cb15-2"></a>data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data/data2018/&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;_data.csv&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb15-2"><a href="revisit-analysis.html#cb15-2"></a>data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data/data2018/&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;whole_season*&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</span>
 <span id="cb15-3"><a href="revisit-analysis.html#cb15-3"></a></span>
-<span id="cb15-4"><a href="revisit-analysis.html#cb15-4"></a><span class="co"># prepare recurse data folder</span></span>
-<span id="cb15-5"><a href="revisit-analysis.html#cb15-5"></a><span class="cf">if</span>(<span class="op">!</span><span class="kw">dir.exists</span>(<span class="st">&quot;data/data2018/revisitData&quot;</span>)){ <span class="kw">dir.create</span>(<span class="st">&quot;data/data2018/revisitData&quot;</span>) }</span>
-<span id="cb15-6"><a href="revisit-analysis.html#cb15-6"></a></span>
-<span id="cb15-7"><a href="revisit-analysis.html#cb15-7"></a></span>
-<span id="cb15-8"><a href="revisit-analysis.html#cb15-8"></a><span class="co"># prepare recurse in parameters</span></span>
-<span id="cb15-9"><a href="revisit-analysis.html#cb15-9"></a><span class="co"># radius (m), cutoff (mins)</span></span>
-<span id="cb15-10"><a href="revisit-analysis.html#cb15-10"></a>{radius &lt;-<span class="st"> </span><span class="dv">50</span></span>
-<span id="cb15-11"><a href="revisit-analysis.html#cb15-11"></a>timeunits &lt;-<span class="st"> &quot;mins&quot;</span></span>
-<span id="cb15-12"><a href="revisit-analysis.html#cb15-12"></a>revisit_cutoff &lt;-<span class="st"> </span><span class="dv">60</span>}</span>
-<span id="cb15-13"><a href="revisit-analysis.html#cb15-13"></a></span>
-<span id="cb15-14"><a href="revisit-analysis.html#cb15-14"></a><span class="co"># map read in, splitting, and recurse over individual level data</span></span>
-<span id="cb15-15"><a href="revisit-analysis.html#cb15-15"></a><span class="co"># remove visits where the bird left for 60 mins, and then returned</span></span>
-<span id="cb15-16"><a href="revisit-analysis.html#cb15-16"></a><span class="co"># this is regardless of whether after its return it stayed there</span></span>
-<span id="cb15-17"><a href="revisit-analysis.html#cb15-17"></a><span class="co"># the removal counts the cumulative sum of all (timeSinceLastVisit &lt;= 60)</span></span>
-<span id="cb15-18"><a href="revisit-analysis.html#cb15-18"></a><span class="co"># thus after the first 60 minute absence, all points are assigned TRUE</span></span>
-<span id="cb15-19"><a href="revisit-analysis.html#cb15-19"></a><span class="co"># this must be grouped by the coordinate</span></span>
-<span id="cb15-20"><a href="revisit-analysis.html#cb15-20"></a><span class="kw">map</span>(data_files, <span class="cf">function</span>(df){</span>
-<span id="cb15-21"><a href="revisit-analysis.html#cb15-21"></a>  </span>
-<span id="cb15-22"><a href="revisit-analysis.html#cb15-22"></a>  <span class="co"># read in, fix data type, and split</span></span>
-<span id="cb15-23"><a href="revisit-analysis.html#cb15-23"></a>  temp_data &lt;-<span class="st"> </span><span class="kw">fread</span>(df, <span class="dt">integer64 =</span> <span class="st">&quot;numeric&quot;</span>)</span>
-<span id="cb15-24"><a href="revisit-analysis.html#cb15-24"></a>  temp_data[,ts<span class="op">:</span><span class="er">=</span><span class="kw">fastPOSIXct</span>(ts, <span class="dt">tz =</span> <span class="st">&#39;CET&#39;</span>)]</span>
-<span id="cb15-25"><a href="revisit-analysis.html#cb15-25"></a>  <span class="kw">setDF</span>(temp_data)</span>
-<span id="cb15-26"><a href="revisit-analysis.html#cb15-26"></a>  temp_data &lt;-<span class="st"> </span><span class="kw">split</span>(temp_data, temp_data<span class="op">$</span>tide_number)</span>
-<span id="cb15-27"><a href="revisit-analysis.html#cb15-27"></a>  </span>
-<span id="cb15-28"><a href="revisit-analysis.html#cb15-28"></a>  <span class="co"># map over the tidal cycle level data</span></span>
-<span id="cb15-29"><a href="revisit-analysis.html#cb15-29"></a>  <span class="kw">map</span>(temp_data, <span class="cf">function</span>(tempdf){</span>
-<span id="cb15-30"><a href="revisit-analysis.html#cb15-30"></a>    </span>
-<span id="cb15-31"><a href="revisit-analysis.html#cb15-31"></a>    <span class="co"># perform the recursion analysis</span></span>
-<span id="cb15-32"><a href="revisit-analysis.html#cb15-32"></a>    df_recurse &lt;-<span class="st"> </span><span class="kw">getRecursions</span>(<span class="dt">x =</span> tempdf[,<span class="kw">c</span>(<span class="st">&quot;x&quot;</span>,<span class="st">&quot;y&quot;</span>,<span class="st">&quot;ts&quot;</span>,<span class="st">&quot;id&quot;</span>)], </span>
-<span id="cb15-33"><a href="revisit-analysis.html#cb15-33"></a>                                <span class="dt">radius =</span> radius, </span>
-<span id="cb15-34"><a href="revisit-analysis.html#cb15-34"></a>                                <span class="dt">timeunits =</span> timeunits, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb15-35"><a href="revisit-analysis.html#cb15-35"></a>    </span>
-<span id="cb15-36"><a href="revisit-analysis.html#cb15-36"></a>    <span class="co"># extract revisit statistics and calculate residence time</span></span>
-<span id="cb15-37"><a href="revisit-analysis.html#cb15-37"></a>    <span class="co"># and revisits with a 1 hour cutoff</span></span>
-<span id="cb15-38"><a href="revisit-analysis.html#cb15-38"></a>    df_recurse &lt;-<span class="st"> </span><span class="kw">setDT</span>(df_recurse[[<span class="st">&quot;revisitStats&quot;</span>]])</span>
-<span id="cb15-39"><a href="revisit-analysis.html#cb15-39"></a>    </span>
-<span id="cb15-40"><a href="revisit-analysis.html#cb15-40"></a>    df_recurse[,timeSinceLastVisit<span class="op">:</span><span class="er">=</span><span class="st"> </span></span>
-<span id="cb15-41"><a href="revisit-analysis.html#cb15-41"></a><span class="st">                 </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(timeSinceLastVisit), <span class="op">-</span><span class="ot">Inf</span>, timeSinceLastVisit)]</span>
-<span id="cb15-42"><a href="revisit-analysis.html#cb15-42"></a>    </span>
-<span id="cb15-43"><a href="revisit-analysis.html#cb15-43"></a>    df_recurse[,longAbsenceCounter<span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">cumsum</span>(timeSinceLastVisit <span class="op">&gt;</span><span class="st"> </span><span class="dv">60</span>), </span>
-<span id="cb15-44"><a href="revisit-analysis.html#cb15-44"></a>               by=<span class="st"> </span>.(coordIdx)]</span>
-<span id="cb15-45"><a href="revisit-analysis.html#cb15-45"></a>    </span>
-<span id="cb15-46"><a href="revisit-analysis.html#cb15-46"></a>    df_recurse &lt;-<span class="st"> </span>df_recurse[longAbsenceCounter <span class="op">&lt;</span><span class="st"> </span><span class="dv">1</span>,]</span>
-<span id="cb15-47"><a href="revisit-analysis.html#cb15-47"></a>    </span>
-<span id="cb15-48"><a href="revisit-analysis.html#cb15-48"></a>    df_recurse &lt;-<span class="st"> </span>df_recurse[,.(<span class="dt">resTime =</span> <span class="kw">sum</span>(timeInside), </span>
-<span id="cb15-49"><a href="revisit-analysis.html#cb15-49"></a>                                <span class="dt">fpt =</span> <span class="kw">first</span>(timeInside),</span>
-<span id="cb15-50"><a href="revisit-analysis.html#cb15-50"></a>                                <span class="dt">revisits =</span> <span class="kw">max</span>(visitIdx)),</span>
-<span id="cb15-51"><a href="revisit-analysis.html#cb15-51"></a>                             by=.(coordIdx,x,y)]</span>
-<span id="cb15-52"><a href="revisit-analysis.html#cb15-52"></a>    </span>
-<span id="cb15-53"><a href="revisit-analysis.html#cb15-53"></a>    <span class="co"># prepare and merge existing data with recursion data</span></span>
-<span id="cb15-54"><a href="revisit-analysis.html#cb15-54"></a>    <span class="kw">setDT</span>(tempdf)[,coordIdx<span class="op">:</span><span class="er">=</span><span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(tempdf)]</span>
-<span id="cb15-55"><a href="revisit-analysis.html#cb15-55"></a>    </span>
-<span id="cb15-56"><a href="revisit-analysis.html#cb15-56"></a>    tempdf &lt;-<span class="st"> </span><span class="kw">merge</span>(tempdf, df_recurse, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="st">&quot;coordIdx&quot;</span>))</span>
-<span id="cb15-57"><a href="revisit-analysis.html#cb15-57"></a>    </span>
-<span id="cb15-58"><a href="revisit-analysis.html#cb15-58"></a>    <span class="kw">setorder</span>(tempdf, ts)</span>
-<span id="cb15-59"><a href="revisit-analysis.html#cb15-59"></a>    </span>
-<span id="cb15-60"><a href="revisit-analysis.html#cb15-60"></a>    <span class="co"># write each data frame to file</span></span>
-<span id="cb15-61"><a href="revisit-analysis.html#cb15-61"></a>    <span class="kw">fwrite</span>(tempdf, </span>
-<span id="cb15-62"><a href="revisit-analysis.html#cb15-62"></a>           <span class="dt">file =</span> <span class="kw">glue</span>(<span class="st">&#39;data/data2018/revisitData/{unique(tempdf$id)}_{str_pad(unique(tempdf$tide_number), width=3, pad=&quot;0&quot;)}_revisit.csv&#39;</span>))</span>
+<span id="cb15-4"><a href="revisit-analysis.html#cb15-4"></a>data_ids &lt;-<span class="st"> </span><span class="kw">str_extract</span>(data_files, <span class="st">&quot;(tx_</span><span class="ch">\\</span><span class="st">d+)&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_sub</span>(<span class="op">-</span><span class="dv">3</span>,<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb15-5"><a href="revisit-analysis.html#cb15-5"></a></span>
+<span id="cb15-6"><a href="revisit-analysis.html#cb15-6"></a>{</span>
+<span id="cb15-7"><a href="revisit-analysis.html#cb15-7"></a>  <span class="co"># read in release data and get first release - 24 hrs</span></span>
+<span id="cb15-8"><a href="revisit-analysis.html#cb15-8"></a>  tag_info &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data2018/SelinDB.csv&quot;</span>)</span>
+<span id="cb15-9"><a href="revisit-analysis.html#cb15-9"></a>  tag_info &lt;-<span class="st"> </span>tag_info[<span class="op">!</span><span class="kw">is.na</span>(Release_Date) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(Release_Time),]</span>
+<span id="cb15-10"><a href="revisit-analysis.html#cb15-10"></a>  tag_info[,Release_Date <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(Release_Date, Release_Time, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>), <span class="dt">format =</span> <span class="st">&quot;%d.%m.%y %H:%M&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span>)]</span>
+<span id="cb15-11"><a href="revisit-analysis.html#cb15-11"></a>}</span>
+<span id="cb15-12"><a href="revisit-analysis.html#cb15-12"></a></span>
+<span id="cb15-13"><a href="revisit-analysis.html#cb15-13"></a>data_files &lt;-<span class="st"> </span>data_files[<span class="kw">as.integer</span>(data_ids) <span class="op">%in%</span><span class="st"> </span>tag_info<span class="op">$</span>Toa_Tag]</span>
+<span id="cb15-14"><a href="revisit-analysis.html#cb15-14"></a></span>
+<span id="cb15-15"><a href="revisit-analysis.html#cb15-15"></a><span class="co"># prepare recurse data folder</span></span>
+<span id="cb15-16"><a href="revisit-analysis.html#cb15-16"></a><span class="cf">if</span>(<span class="op">!</span><span class="kw">dir.exists</span>(<span class="st">&quot;data/data2018/revisitData&quot;</span>)){ <span class="kw">dir.create</span>(<span class="st">&quot;data/data2018/revisitData&quot;</span>) }</span>
+<span id="cb15-17"><a href="revisit-analysis.html#cb15-17"></a></span>
+<span id="cb15-18"><a href="revisit-analysis.html#cb15-18"></a></span>
+<span id="cb15-19"><a href="revisit-analysis.html#cb15-19"></a><span class="co"># prepare recurse in parameters</span></span>
+<span id="cb15-20"><a href="revisit-analysis.html#cb15-20"></a><span class="co"># radius (m), cutoff (mins)</span></span>
+<span id="cb15-21"><a href="revisit-analysis.html#cb15-21"></a>{radius &lt;-<span class="st"> </span><span class="dv">50</span></span>
+<span id="cb15-22"><a href="revisit-analysis.html#cb15-22"></a>timeunits &lt;-<span class="st"> &quot;mins&quot;</span></span>
+<span id="cb15-23"><a href="revisit-analysis.html#cb15-23"></a>revisit_cutoff &lt;-<span class="st"> </span><span class="dv">60</span>}</span>
+<span id="cb15-24"><a href="revisit-analysis.html#cb15-24"></a></span>
+<span id="cb15-25"><a href="revisit-analysis.html#cb15-25"></a><span class="co"># map read in, splitting, and recurse over individual level data</span></span>
+<span id="cb15-26"><a href="revisit-analysis.html#cb15-26"></a><span class="co"># remove visits where the bird left for 60 mins, and then returned</span></span>
+<span id="cb15-27"><a href="revisit-analysis.html#cb15-27"></a><span class="co"># this is regardless of whether after its return it stayed there</span></span>
+<span id="cb15-28"><a href="revisit-analysis.html#cb15-28"></a><span class="co"># the removal counts the cumulative sum of all (timeSinceLastVisit &lt;= 60)</span></span>
+<span id="cb15-29"><a href="revisit-analysis.html#cb15-29"></a><span class="co"># thus after the first 60 minute absence, all points are assigned TRUE</span></span>
+<span id="cb15-30"><a href="revisit-analysis.html#cb15-30"></a><span class="co"># this must be grouped by the coordinate</span></span>
+<span id="cb15-31"><a href="revisit-analysis.html#cb15-31"></a><span class="kw">map</span>(data_files, <span class="cf">function</span>(df){</span>
+<span id="cb15-32"><a href="revisit-analysis.html#cb15-32"></a>  </span>
+<span id="cb15-33"><a href="revisit-analysis.html#cb15-33"></a>  <span class="co"># read in, fix data type, and split</span></span>
+<span id="cb15-34"><a href="revisit-analysis.html#cb15-34"></a>  temp_data &lt;-<span class="st"> </span><span class="kw">fread</span>(df, <span class="dt">integer64 =</span> <span class="st">&quot;numeric&quot;</span>)</span>
+<span id="cb15-35"><a href="revisit-analysis.html#cb15-35"></a>  temp_data[,ts<span class="op">:</span><span class="er">=</span><span class="kw">fastPOSIXct</span>(ts, <span class="dt">tz =</span> <span class="st">&#39;CET&#39;</span>)]</span>
+<span id="cb15-36"><a href="revisit-analysis.html#cb15-36"></a>  <span class="kw">setDF</span>(temp_data)</span>
+<span id="cb15-37"><a href="revisit-analysis.html#cb15-37"></a>  temp_data &lt;-<span class="st"> </span><span class="kw">split</span>(temp_data, temp_data<span class="op">$</span>tide_number)</span>
+<span id="cb15-38"><a href="revisit-analysis.html#cb15-38"></a>  </span>
+<span id="cb15-39"><a href="revisit-analysis.html#cb15-39"></a>  <span class="co"># map over the tidal cycle level data</span></span>
+<span id="cb15-40"><a href="revisit-analysis.html#cb15-40"></a>  <span class="kw">map</span>(temp_data, <span class="cf">function</span>(tempdf){</span>
+<span id="cb15-41"><a href="revisit-analysis.html#cb15-41"></a>    </span>
+<span id="cb15-42"><a href="revisit-analysis.html#cb15-42"></a>    <span class="co"># perform the recursion analysis</span></span>
+<span id="cb15-43"><a href="revisit-analysis.html#cb15-43"></a>    df_recurse &lt;-<span class="st"> </span><span class="kw">getRecursions</span>(<span class="dt">x =</span> tempdf[,<span class="kw">c</span>(<span class="st">&quot;x&quot;</span>,<span class="st">&quot;y&quot;</span>,<span class="st">&quot;ts&quot;</span>,<span class="st">&quot;id&quot;</span>)], </span>
+<span id="cb15-44"><a href="revisit-analysis.html#cb15-44"></a>                                <span class="dt">radius =</span> radius, </span>
+<span id="cb15-45"><a href="revisit-analysis.html#cb15-45"></a>                                <span class="dt">timeunits =</span> timeunits, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb15-46"><a href="revisit-analysis.html#cb15-46"></a>    </span>
+<span id="cb15-47"><a href="revisit-analysis.html#cb15-47"></a>    <span class="co"># extract revisit statistics and calculate residence time</span></span>
+<span id="cb15-48"><a href="revisit-analysis.html#cb15-48"></a>    <span class="co"># and revisits with a 1 hour cutoff</span></span>
+<span id="cb15-49"><a href="revisit-analysis.html#cb15-49"></a>    df_recurse &lt;-<span class="st"> </span><span class="kw">setDT</span>(df_recurse[[<span class="st">&quot;revisitStats&quot;</span>]])</span>
+<span id="cb15-50"><a href="revisit-analysis.html#cb15-50"></a>    </span>
+<span id="cb15-51"><a href="revisit-analysis.html#cb15-51"></a>    df_recurse[,timeSinceLastVisit<span class="op">:</span><span class="er">=</span><span class="st"> </span></span>
+<span id="cb15-52"><a href="revisit-analysis.html#cb15-52"></a><span class="st">                 </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(timeSinceLastVisit), <span class="op">-</span><span class="ot">Inf</span>, timeSinceLastVisit)]</span>
+<span id="cb15-53"><a href="revisit-analysis.html#cb15-53"></a>    </span>
+<span id="cb15-54"><a href="revisit-analysis.html#cb15-54"></a>    df_recurse[,longAbsenceCounter<span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">cumsum</span>(timeSinceLastVisit <span class="op">&gt;</span><span class="st"> </span><span class="dv">60</span>), </span>
+<span id="cb15-55"><a href="revisit-analysis.html#cb15-55"></a>               by=<span class="st"> </span>.(coordIdx)]</span>
+<span id="cb15-56"><a href="revisit-analysis.html#cb15-56"></a>    </span>
+<span id="cb15-57"><a href="revisit-analysis.html#cb15-57"></a>    df_recurse &lt;-<span class="st"> </span>df_recurse[longAbsenceCounter <span class="op">&lt;</span><span class="st"> </span><span class="dv">1</span>,]</span>
+<span id="cb15-58"><a href="revisit-analysis.html#cb15-58"></a>    </span>
+<span id="cb15-59"><a href="revisit-analysis.html#cb15-59"></a>    df_recurse &lt;-<span class="st"> </span>df_recurse[,.(<span class="dt">resTime =</span> <span class="kw">sum</span>(timeInside), </span>
+<span id="cb15-60"><a href="revisit-analysis.html#cb15-60"></a>                                <span class="dt">fpt =</span> <span class="kw">first</span>(timeInside),</span>
+<span id="cb15-61"><a href="revisit-analysis.html#cb15-61"></a>                                <span class="dt">revisits =</span> <span class="kw">max</span>(visitIdx)),</span>
+<span id="cb15-62"><a href="revisit-analysis.html#cb15-62"></a>                             by=.(coordIdx,x,y)]</span>
 <span id="cb15-63"><a href="revisit-analysis.html#cb15-63"></a>    </span>
-<span id="cb15-64"><a href="revisit-analysis.html#cb15-64"></a>    <span class="kw">message</span>(<span class="kw">glue</span>(<span class="st">&#39;recurse {unique(tempdf$id)}_{str_pad(unique(tempdf$tide_number), width=3, pad=&quot;0&quot;)} done&#39;</span>))</span>
-<span id="cb15-65"><a href="revisit-analysis.html#cb15-65"></a>    </span>
-<span id="cb15-66"><a href="revisit-analysis.html#cb15-66"></a>    <span class="kw">rm</span>(tempdf, df_recurse); <span class="kw">invisible</span>(<span class="kw">gc</span>())</span>
-<span id="cb15-67"><a href="revisit-analysis.html#cb15-67"></a>    </span>
-<span id="cb15-68"><a href="revisit-analysis.html#cb15-68"></a>  })</span>
-<span id="cb15-69"><a href="revisit-analysis.html#cb15-69"></a>  </span>
-<span id="cb15-70"><a href="revisit-analysis.html#cb15-70"></a>})</span></code></pre></div>
+<span id="cb15-64"><a href="revisit-analysis.html#cb15-64"></a>    <span class="co"># prepare and merge existing data with recursion data</span></span>
+<span id="cb15-65"><a href="revisit-analysis.html#cb15-65"></a>    <span class="kw">setDT</span>(tempdf)[,coordIdx<span class="op">:</span><span class="er">=</span><span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(tempdf)]</span>
+<span id="cb15-66"><a href="revisit-analysis.html#cb15-66"></a>    </span>
+<span id="cb15-67"><a href="revisit-analysis.html#cb15-67"></a>    tempdf &lt;-<span class="st"> </span><span class="kw">merge</span>(tempdf, df_recurse, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="st">&quot;coordIdx&quot;</span>))</span>
+<span id="cb15-68"><a href="revisit-analysis.html#cb15-68"></a>    </span>
+<span id="cb15-69"><a href="revisit-analysis.html#cb15-69"></a>    <span class="kw">setorder</span>(tempdf, ts)</span>
+<span id="cb15-70"><a href="revisit-analysis.html#cb15-70"></a>    </span>
+<span id="cb15-71"><a href="revisit-analysis.html#cb15-71"></a>    <span class="co"># write each data frame to file</span></span>
+<span id="cb15-72"><a href="revisit-analysis.html#cb15-72"></a>    <span class="kw">fwrite</span>(tempdf, </span>
+<span id="cb15-73"><a href="revisit-analysis.html#cb15-73"></a>           <span class="dt">file =</span> <span class="kw">glue</span>(<span class="st">&#39;data/data2018/revisitData/{unique(tempdf$id)}_{str_pad(unique(tempdf$tide_number), width=3, pad=&quot;0&quot;)}_revisit.csv&#39;</span>))</span>
+<span id="cb15-74"><a href="revisit-analysis.html#cb15-74"></a>    </span>
+<span id="cb15-75"><a href="revisit-analysis.html#cb15-75"></a>    <span class="kw">message</span>(<span class="kw">glue</span>(<span class="st">&#39;recurse {unique(tempdf$id)}_{str_pad(unique(tempdf$tide_number), width=3, pad=&quot;0&quot;)} done&#39;</span>))</span>
+<span id="cb15-76"><a href="revisit-analysis.html#cb15-76"></a>    </span>
+<span id="cb15-77"><a href="revisit-analysis.html#cb15-77"></a>    <span class="kw">rm</span>(tempdf, df_recurse)</span>
+<span id="cb15-78"><a href="revisit-analysis.html#cb15-78"></a>    </span>
+<span id="cb15-79"><a href="revisit-analysis.html#cb15-79"></a>  })</span>
+<span id="cb15-80"><a href="revisit-analysis.html#cb15-80"></a>  </span>
+<span id="cb15-81"><a href="revisit-analysis.html#cb15-81"></a>})</span></code></pre></div>
 
 </div>
 </div>
@@ -324,7 +340,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/pratikunterwegs/redknotMoveWaddensea/edit/master/04_revisitAnalysis.rmd",
+"link": "https://github.com/pratikunterwegs/knotPatches/edit/master/04_revisitAnalysis.rmd",
 "text": "Edit"
 },
 "history": {
