@@ -51,16 +51,14 @@ data_to_test <- crossing(scales, data_files)
 rm(data_files, scales)
 some_output <- pmap(data_to_test, function(scales, data_files){
   {
-    temp_data <- fread(data_files)
+    temp_data <- fread(data_files[[1]])
     temp_data[,ts:=fastPOSIXct(ts)]
     
     id <- unique(temp_data$id)
     tide_number <- unique(temp_data$tide_number)
     
-    success = FALSE
-    #ratio = NA
     # wrap process in try catch
-    tryCatch(
+    patch_points = tryCatch(
       {
         # watlasUtils function to infer residence
         temp_data <- wat_infer_residence(df = temp_data,
@@ -85,7 +83,6 @@ some_output <- pmap(data_to_test, function(scales, data_files){
         patch_points <- wat_get_patch_summary(resPatchData = patch_data,
                                               dataColumn = "data",
                                               whichData = "points")
-        success = TRUE
       },
       # null error function, with option to collect data on errors
       error= function(e)
@@ -96,18 +93,17 @@ some_output <- pmap(data_to_test, function(scales, data_files){
     )
   }
   
-  if(success == TRUE){
-    tryCatch({
+  if("data.frame" %in% class(patch_points)){
+    ratio <- tryCatch({
       # prepare for telemetry
       {
         data_for_ctmm <- setDT(patch_points)[,.(id, tide_number, x, y, patch, time, VARX, VARY)]
         
-        # count points in patch and filter
-        data_for_ctmm <- data[, ]
-        
         # aggregate within a patch to 10 seconds
-        data_for_ctmm <- split(data_for_ctmm, f = data_for_ctmm$patch) %>% 
-          map(wat_agg_data, interval = scales) %>% 
+        data_for_ctmm <- split(data_for_ctmm, f = data_for_ctmm$patch)
+        
+        data_for_ctmm <- map(data_for_ctmm, wat_agg_data, interval = 15) %>%
+          keep(function(z) nrow(z) > 10) %>% 
           bind_rows()
         
         # make each patch an indiv
@@ -161,10 +157,8 @@ some_output <- pmap(data_to_test, function(scales, data_files){
     },
     error= function(e)
     {
-      return(NA)
+      #return(NA)
     })
-  }else{
-    return(NA)
   }
   
 })
