@@ -13,7 +13,7 @@
   
   
   <meta property="og:description" content="Individual consistency in space-use across scales" />
-  <meta name="github-repo" content="pratikunterwegs/redknotMoveWaddensea" />
+  <meta name="github-repo" content="pratikunterwegs/knotPatches" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Individual consistency in space-use across scales" />
@@ -24,7 +24,7 @@
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2020-01-15" />
+<meta name="date" content="2020-02-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -169,11 +169,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html"><i class="fa fa-check"></i><b>7</b> Linking patch metrics to personality</a>
 <ul>
 <li class="chapter" data-level="7.1" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#prepare-libraries-3"><i class="fa fa-check"></i><b>7.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="7.2" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#link-patch-data-with-exploration-score"><i class="fa fa-check"></i><b>7.2</b> Link patch data with exploration score</a></li>
-<li class="chapter" data-level="7.3" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#patch-metrics-as-an-outcome-of-exploration-score"><i class="fa fa-check"></i><b>7.3</b> Patch metrics as an outcome of exploration score</a></li>
-<li class="chapter" data-level="7.4" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#plot-model-figures"><i class="fa fa-check"></i><b>7.4</b> Plot model figures</a></li>
-<li class="chapter" data-level="7.5" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#export-figures-and-model-output"><i class="fa fa-check"></i><b>7.5</b> Export figures and model output</a></li>
-<li class="chapter" data-level="7.6" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#references"><i class="fa fa-check"></i><b>7.6</b> References</a></li>
+<li class="chapter" data-level="7.2" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#read-in-exploration-score"><i class="fa fa-check"></i><b>7.2</b> Read in exploration score</a></li>
+<li class="chapter" data-level="7.3" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#exploratory-analysis-on-patch-metrics"><i class="fa fa-check"></i><b>7.3</b> Exploratory analysis on patch metrics</a></li>
+<li class="chapter" data-level="7.4" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#patch-metrics-as-an-outcome-of-exploration-score"><i class="fa fa-check"></i><b>7.4</b> Patch metrics as an outcome of exploration score</a></li>
+<li class="chapter" data-level="7.5" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#plot-model-figures"><i class="fa fa-check"></i><b>7.5</b> Plot model figures</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="applying-ctmm-to-watlas-data.html"><a href="applying-ctmm-to-watlas-data.html"><i class="fa fa-check"></i><b>8</b> Applying CTMM to WATLAS data</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="applying-ctmm-to-watlas-data.html"><a href="applying-ctmm-to-watlas-data.html#load-libraries"><i class="fa fa-check"></i><b>8.1</b> Load libraries</a></li>
+<li class="chapter" data-level="8.2" data-path="applying-ctmm-to-watlas-data.html"><a href="applying-ctmm-to-watlas-data.html#load-a-random-subset-of-data"><i class="fa fa-check"></i><b>8.2</b> Load a random subset of data</a></li>
+<li class="chapter" data-level="8.3" data-path="applying-ctmm-to-watlas-data.html"><a href="applying-ctmm-to-watlas-data.html#choose-scales-of-aggregation"><i class="fa fa-check"></i><b>8.3</b> Choose scales of aggregation</a></li>
 </ul></li>
 </ul>
 
@@ -195,7 +200,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="header">
 <h1 class="title">Individual consistency in space-use across scales</h1>
 <p class="author"><em>Pratik R Gupte</em></p>
-<p class="date"><em>2020-01-15</em></p>
+<p class="date"><em>2020-02-11</em></p>
 </div>
 <div id="introduction" class="section level1">
 <h1 number="1"><span class="header-section-number">1</span> Introduction</h1>
@@ -256,7 +261,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/pratikunterwegs/redknotMoveWaddensea/edit/master/index.rmd",
+"link": "https://github.com/pratikunterwegs/knotPatches/edit/master/index.rmd",
 "text": "Edit"
 },
 "history": {

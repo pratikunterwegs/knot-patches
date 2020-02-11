@@ -13,7 +13,7 @@
   
   
   <meta property="og:description" content="3 Cleaning data | Individual consistency in space-use across scales" />
-  <meta name="github-repo" content="pratikunterwegs/redknotMoveWaddensea" />
+  <meta name="github-repo" content="pratikunterwegs/knotPatches" />
 
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="3 Cleaning data | Individual consistency in space-use across scales" />
@@ -24,7 +24,7 @@
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2020-01-15" />
+<meta name="date" content="2020-02-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -169,11 +169,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html"><i class="fa fa-check"></i><b>7</b> Linking patch metrics to personality</a>
 <ul>
 <li class="chapter" data-level="7.1" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#prepare-libraries-3"><i class="fa fa-check"></i><b>7.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="7.2" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#link-patch-data-with-exploration-score"><i class="fa fa-check"></i><b>7.2</b> Link patch data with exploration score</a></li>
-<li class="chapter" data-level="7.3" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#patch-metrics-as-an-outcome-of-exploration-score"><i class="fa fa-check"></i><b>7.3</b> Patch metrics as an outcome of exploration score</a></li>
-<li class="chapter" data-level="7.4" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#plot-model-figures"><i class="fa fa-check"></i><b>7.4</b> Plot model figures</a></li>
-<li class="chapter" data-level="7.5" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#export-figures-and-model-output"><i class="fa fa-check"></i><b>7.5</b> Export figures and model output</a></li>
-<li class="chapter" data-level="7.6" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#references"><i class="fa fa-check"></i><b>7.6</b> References</a></li>
+<li class="chapter" data-level="7.2" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#read-in-exploration-score"><i class="fa fa-check"></i><b>7.2</b> Read in exploration score</a></li>
+<li class="chapter" data-level="7.3" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#exploratory-analysis-on-patch-metrics"><i class="fa fa-check"></i><b>7.3</b> Exploratory analysis on patch metrics</a></li>
+<li class="chapter" data-level="7.4" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#patch-metrics-as-an-outcome-of-exploration-score"><i class="fa fa-check"></i><b>7.4</b> Patch metrics as an outcome of exploration score</a></li>
+<li class="chapter" data-level="7.5" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#plot-model-figures"><i class="fa fa-check"></i><b>7.5</b> Plot model figures</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="applying-ctmm-to-watlas-data.html"><a href="applying-ctmm-to-watlas-data.html"><i class="fa fa-check"></i><b>8</b> Applying CTMM to WATLAS data</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="applying-ctmm-to-watlas-data.html"><a href="applying-ctmm-to-watlas-data.html#load-libraries"><i class="fa fa-check"></i><b>8.1</b> Load libraries</a></li>
+<li class="chapter" data-level="8.2" data-path="applying-ctmm-to-watlas-data.html"><a href="applying-ctmm-to-watlas-data.html#load-a-random-subset-of-data"><i class="fa fa-check"></i><b>8.2</b> Load a random subset of data</a></li>
+<li class="chapter" data-level="8.3" data-path="applying-ctmm-to-watlas-data.html"><a href="applying-ctmm-to-watlas-data.html#choose-scales-of-aggregation"><i class="fa fa-check"></i><b>8.3</b> Choose scales of aggregation</a></li>
 </ul></li>
 </ul>
 
@@ -205,7 +210,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="cleaning-data.html#cb6-1"></a><span class="co"># watlasUtils assumed installed from the previous step</span></span>
 <span id="cb6-2"><a href="cleaning-data.html#cb6-2"></a><span class="co"># if not, install from the github repo as shown below</span></span>
 <span id="cb6-3"><a href="cleaning-data.html#cb6-3"></a></span>
-<span id="cb6-4"><a href="cleaning-data.html#cb6-4"></a><span class="co"># devtools::install_github(&quot;pratikunterwegs/watlasUtils&quot;)</span></span>
+<span id="cb6-4"><a href="cleaning-data.html#cb6-4"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;pratikunterwegs/watlasUtils&quot;</span>)</span>
 <span id="cb6-5"><a href="cleaning-data.html#cb6-5"></a><span class="kw">library</span>(watlasUtils)</span>
 <span id="cb6-6"><a href="cleaning-data.html#cb6-6"></a></span>
 <span id="cb6-7"><a href="cleaning-data.html#cb6-7"></a><span class="co"># libraries to process data</span></span>
@@ -224,48 +229,53 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="read-clean-and-write-data" class="section level2">
 <h2 number="3.3"><span class="header-section-number">3.3</span> Read, clean, and write data</h2>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="cleaning-data.html#cb8-1"></a><span class="co"># make a list of data files to read</span></span>
-<span id="cb8-2"><a href="cleaning-data.html#cb8-2"></a>data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data/data2018/&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;_data.csv&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb8-2"><a href="cleaning-data.html#cb8-2"></a>data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data/data2018/&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;whole_season*&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</span>
 <span id="cb8-3"><a href="cleaning-data.html#cb8-3"></a></span>
-<span id="cb8-4"><a href="cleaning-data.html#cb8-4"></a><span class="co"># read deployment data from local file in data folder</span></span>
-<span id="cb8-5"><a href="cleaning-data.html#cb8-5"></a>tag_info &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data2018/SelinDB.csv&quot;</span>)</span>
-<span id="cb8-6"><a href="cleaning-data.html#cb8-6"></a></span>
-<span id="cb8-7"><a href="cleaning-data.html#cb8-7"></a><span class="co"># filter out NAs in release date and time</span></span>
-<span id="cb8-8"><a href="cleaning-data.html#cb8-8"></a>tag_info &lt;-<span class="st"> </span>tag_info[<span class="op">!</span><span class="kw">is.na</span>(Release_Date) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(Release_Time),]</span>
-<span id="cb8-9"><a href="cleaning-data.html#cb8-9"></a></span>
-<span id="cb8-10"><a href="cleaning-data.html#cb8-10"></a><span class="co"># make release date column as POSIXct</span></span>
-<span id="cb8-11"><a href="cleaning-data.html#cb8-11"></a>tag_info[,Release_Date <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(Release_Date, Release_Time, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>), <span class="dt">format =</span> <span class="st">&quot;%d.%m.%y %H:%M&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span>)]</span>
-<span id="cb8-12"><a href="cleaning-data.html#cb8-12"></a></span>
-<span id="cb8-13"><a href="cleaning-data.html#cb8-13"></a><span class="co"># map read in, cleaning, and write out function over vector of filenames</span></span>
-<span id="cb8-14"><a href="cleaning-data.html#cb8-14"></a><span class="kw">map</span>(data_files, <span class="cf">function</span>(df){</span>
-<span id="cb8-15"><a href="cleaning-data.html#cb8-15"></a>  </span>
-<span id="cb8-16"><a href="cleaning-data.html#cb8-16"></a>  temp_data &lt;-<span class="st"> </span><span class="kw">fread</span>(df, <span class="dt">integer64 =</span> <span class="st">&quot;numeric&quot;</span>)</span>
-<span id="cb8-17"><a href="cleaning-data.html#cb8-17"></a>  </span>
-<span id="cb8-18"><a href="cleaning-data.html#cb8-18"></a>  <span class="co"># filter for release date</span></span>
-<span id="cb8-19"><a href="cleaning-data.html#cb8-19"></a>  {</span>
-<span id="cb8-20"><a href="cleaning-data.html#cb8-20"></a>    temp_id &lt;-<span class="st"> </span><span class="kw">str_sub</span>(temp_data[<span class="dv">1</span>, TAG], <span class="dv">-3</span>, <span class="dv">-1</span>)</span>
-<span id="cb8-21"><a href="cleaning-data.html#cb8-21"></a>    </span>
-<span id="cb8-22"><a href="cleaning-data.html#cb8-22"></a>    rel_date &lt;-<span class="st"> </span>tag_info[Toa_Tag <span class="op">==</span><span class="st"> </span>temp_id, Release_Date]</span>
-<span id="cb8-23"><a href="cleaning-data.html#cb8-23"></a>    </span>
-<span id="cb8-24"><a href="cleaning-data.html#cb8-24"></a>    temp_data &lt;-<span class="st"> </span>temp_data[TIME<span class="op">/</span><span class="fl">1e3</span> <span class="op">&gt;</span><span class="st"> </span>(rel_date),]</span>
-<span id="cb8-25"><a href="cleaning-data.html#cb8-25"></a>  }</span>
-<span id="cb8-26"><a href="cleaning-data.html#cb8-26"></a></span>
-<span id="cb8-27"><a href="cleaning-data.html#cb8-27"></a>  temp_data &lt;-<span class="st"> </span><span class="kw">wat_rm_attractor</span>(<span class="dt">df =</span> temp_data,</span>
-<span id="cb8-28"><a href="cleaning-data.html#cb8-28"></a>                  <span class="dt">atp_xmin =</span> atp<span class="op">$</span>xmin,</span>
-<span id="cb8-29"><a href="cleaning-data.html#cb8-29"></a>                  <span class="dt">atp_xmax =</span> atp<span class="op">$</span>xmax,</span>
-<span id="cb8-30"><a href="cleaning-data.html#cb8-30"></a>                  <span class="dt">atp_ymin =</span> atp<span class="op">$</span>ymin,</span>
-<span id="cb8-31"><a href="cleaning-data.html#cb8-31"></a>                  <span class="dt">atp_ymax =</span> atp<span class="op">$</span>ymax)</span>
-<span id="cb8-32"><a href="cleaning-data.html#cb8-32"></a>  </span>
-<span id="cb8-33"><a href="cleaning-data.html#cb8-33"></a>  clean_data &lt;-<span class="st"> </span><span class="kw">wat_clean_data</span>(<span class="dt">somedata =</span> temp_data,</span>
-<span id="cb8-34"><a href="cleaning-data.html#cb8-34"></a>                                           <span class="dt">moving_window =</span> <span class="dv">5</span>,</span>
-<span id="cb8-35"><a href="cleaning-data.html#cb8-35"></a>                                           <span class="dt">nbs_min =</span> <span class="dv">0</span>,</span>
-<span id="cb8-36"><a href="cleaning-data.html#cb8-36"></a>                                           <span class="dt">sd_threshold =</span> <span class="fl">5e5</span>)</span>
+<span id="cb8-4"><a href="cleaning-data.html#cb8-4"></a>data_ids &lt;-<span class="st"> </span><span class="kw">str_extract</span>(data_files, <span class="st">&quot;(tx_</span><span class="ch">\\</span><span class="st">d+)&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_sub</span>(<span class="op">-</span><span class="dv">3</span>,<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb8-5"><a href="cleaning-data.html#cb8-5"></a></span>
+<span id="cb8-6"><a href="cleaning-data.html#cb8-6"></a><span class="co"># read deployment data from local file in data folder</span></span>
+<span id="cb8-7"><a href="cleaning-data.html#cb8-7"></a>tag_info &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data2018/SelinDB.csv&quot;</span>)</span>
+<span id="cb8-8"><a href="cleaning-data.html#cb8-8"></a></span>
+<span id="cb8-9"><a href="cleaning-data.html#cb8-9"></a><span class="co"># filter out NAs in release date and time</span></span>
+<span id="cb8-10"><a href="cleaning-data.html#cb8-10"></a>tag_info &lt;-<span class="st"> </span>tag_info[<span class="op">!</span><span class="kw">is.na</span>(Release_Date) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(Release_Time),]</span>
+<span id="cb8-11"><a href="cleaning-data.html#cb8-11"></a></span>
+<span id="cb8-12"><a href="cleaning-data.html#cb8-12"></a><span class="co"># make release date column as POSIXct</span></span>
+<span id="cb8-13"><a href="cleaning-data.html#cb8-13"></a>tag_info[,Release_Date <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(Release_Date, Release_Time, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>), <span class="dt">format =</span> <span class="st">&quot;%d.%m.%y %H:%M&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span>)]</span>
+<span id="cb8-14"><a href="cleaning-data.html#cb8-14"></a></span>
+<span id="cb8-15"><a href="cleaning-data.html#cb8-15"></a><span class="co"># sub for knots in data</span></span>
+<span id="cb8-16"><a href="cleaning-data.html#cb8-16"></a>data_files &lt;-<span class="st"> </span>data_files[<span class="kw">as.integer</span>(data_ids) <span class="op">%in%</span><span class="st"> </span>tag_info<span class="op">$</span>Toa_Tag]</span>
+<span id="cb8-17"><a href="cleaning-data.html#cb8-17"></a></span>
+<span id="cb8-18"><a href="cleaning-data.html#cb8-18"></a><span class="co"># map read in, cleaning, and write out function over vector of filenames</span></span>
+<span id="cb8-19"><a href="cleaning-data.html#cb8-19"></a><span class="kw">map</span>(data_files, <span class="cf">function</span>(df){</span>
+<span id="cb8-20"><a href="cleaning-data.html#cb8-20"></a>  </span>
+<span id="cb8-21"><a href="cleaning-data.html#cb8-21"></a>  temp_data &lt;-<span class="st"> </span><span class="kw">fread</span>(df, <span class="dt">integer64 =</span> <span class="st">&quot;numeric&quot;</span>)</span>
+<span id="cb8-22"><a href="cleaning-data.html#cb8-22"></a>  </span>
+<span id="cb8-23"><a href="cleaning-data.html#cb8-23"></a>  <span class="co"># filter for release date</span></span>
+<span id="cb8-24"><a href="cleaning-data.html#cb8-24"></a>  {</span>
+<span id="cb8-25"><a href="cleaning-data.html#cb8-25"></a>    temp_id &lt;-<span class="st"> </span><span class="kw">str_sub</span>(temp_data[<span class="dv">1</span>, TAG], <span class="dv">-3</span>, <span class="dv">-1</span>)</span>
+<span id="cb8-26"><a href="cleaning-data.html#cb8-26"></a>    </span>
+<span id="cb8-27"><a href="cleaning-data.html#cb8-27"></a>    rel_date &lt;-<span class="st"> </span>tag_info[Toa_Tag <span class="op">==</span><span class="st"> </span>temp_id, Release_Date]</span>
+<span id="cb8-28"><a href="cleaning-data.html#cb8-28"></a>    </span>
+<span id="cb8-29"><a href="cleaning-data.html#cb8-29"></a>    temp_data &lt;-<span class="st"> </span>temp_data[TIME<span class="op">/</span><span class="fl">1e3</span> <span class="op">&gt;</span><span class="st"> </span>(rel_date),]</span>
+<span id="cb8-30"><a href="cleaning-data.html#cb8-30"></a>  }</span>
+<span id="cb8-31"><a href="cleaning-data.html#cb8-31"></a></span>
+<span id="cb8-32"><a href="cleaning-data.html#cb8-32"></a>  temp_data &lt;-<span class="st"> </span><span class="kw">wat_rm_attractor</span>(<span class="dt">df =</span> temp_data,</span>
+<span id="cb8-33"><a href="cleaning-data.html#cb8-33"></a>                  <span class="dt">atp_xmin =</span> atp<span class="op">$</span>xmin,</span>
+<span id="cb8-34"><a href="cleaning-data.html#cb8-34"></a>                  <span class="dt">atp_xmax =</span> atp<span class="op">$</span>xmax,</span>
+<span id="cb8-35"><a href="cleaning-data.html#cb8-35"></a>                  <span class="dt">atp_ymin =</span> atp<span class="op">$</span>ymin,</span>
+<span id="cb8-36"><a href="cleaning-data.html#cb8-36"></a>                  <span class="dt">atp_ymax =</span> atp<span class="op">$</span>ymax)</span>
 <span id="cb8-37"><a href="cleaning-data.html#cb8-37"></a>  </span>
-<span id="cb8-38"><a href="cleaning-data.html#cb8-38"></a>  <span class="kw">message</span>(<span class="kw">glue</span>(<span class="st">&#39;tag {unique(clean_data$id)} cleaned with {nrow(clean_data)} fixes&#39;</span>))</span>
-<span id="cb8-39"><a href="cleaning-data.html#cb8-39"></a></span>
-<span id="cb8-40"><a href="cleaning-data.html#cb8-40"></a>  <span class="kw">fwrite</span>(<span class="dt">x =</span> clean_data, <span class="dt">file =</span> df, <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</span>
-<span id="cb8-41"><a href="cleaning-data.html#cb8-41"></a>  </span>
-<span id="cb8-42"><a href="cleaning-data.html#cb8-42"></a>  <span class="kw">rm</span>(temp_data, clean_data); <span class="kw">invisible</span>(<span class="kw">gc</span>(<span class="dt">full =</span> <span class="ot">FALSE</span>))</span>
-<span id="cb8-43"><a href="cleaning-data.html#cb8-43"></a>})</span></code></pre></div>
+<span id="cb8-38"><a href="cleaning-data.html#cb8-38"></a>  clean_data &lt;-<span class="st"> </span><span class="kw">wat_clean_data</span>(<span class="dt">somedata =</span> temp_data,</span>
+<span id="cb8-39"><a href="cleaning-data.html#cb8-39"></a>                                           <span class="dt">moving_window =</span> <span class="dv">5</span>,</span>
+<span id="cb8-40"><a href="cleaning-data.html#cb8-40"></a>                                           <span class="dt">nbs_min =</span> <span class="dv">0</span>,</span>
+<span id="cb8-41"><a href="cleaning-data.html#cb8-41"></a>                                           <span class="dt">sd_threshold =</span> <span class="fl">5e5</span>)</span>
+<span id="cb8-42"><a href="cleaning-data.html#cb8-42"></a>  </span>
+<span id="cb8-43"><a href="cleaning-data.html#cb8-43"></a>  <span class="kw">message</span>(<span class="kw">glue</span>(<span class="st">&#39;tag {unique(clean_data$id)} cleaned with {nrow(clean_data)} fixes&#39;</span>))</span>
+<span id="cb8-44"><a href="cleaning-data.html#cb8-44"></a></span>
+<span id="cb8-45"><a href="cleaning-data.html#cb8-45"></a>  <span class="kw">fwrite</span>(<span class="dt">x =</span> clean_data, <span class="dt">file =</span> df, <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</span>
+<span id="cb8-46"><a href="cleaning-data.html#cb8-46"></a>  </span>
+<span id="cb8-47"><a href="cleaning-data.html#cb8-47"></a>  <span class="kw">rm</span>(temp_data, clean_data)</span>
+<span id="cb8-48"><a href="cleaning-data.html#cb8-48"></a>})</span></code></pre></div>
 
 </div>
 </div>
@@ -297,7 +307,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/pratikunterwegs/redknotMoveWaddensea/edit/master/02_cleaningData.rmd",
+"link": "https://github.com/pratikunterwegs/knotPatches/edit/master/02_cleaningData.rmd",
 "text": "Edit"
 },
 "history": {
