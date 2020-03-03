@@ -59,21 +59,16 @@ process_patches_2018 <- function(df){
         patch_data <- wat_make_res_patch(somedata = temp_data,
                                          bufferSize = 10,
                                          spatIndepLim = 100,
-                                         tempIndepLim = 10,
+                                         tempIndepLim = 30,
                                          restIndepLim = 30,
                                          minFixes = 3,
-                                         tideLims = c(4,10))
+                                         tideLims = c(3,10))
         
         # watlasUtils function to get patch data as spatial
         patch_summary <- wat_get_patch_summary(resPatchData = patch_data,
-                                            dataColumn = "data",
-                                            whichData = "summary")
-
-        # get patch data points
-        patch_points <- wat_get_patch_summary(resPatchData = patch_data,
-                                            dataColumn = "data",
-                                            whichData = "points")
-
+                                               dataColumn = "data",
+                                               whichData = "summary")
+        
         # print message
         message(as.character(glue('patches {id}_{tide_number} done')))
         
