@@ -16,17 +16,31 @@ library(glue)
 library(stringr)
 
 process_patches_2018 <- function(df){
-
-  # global counter for success
-  success = FALSE
   
+  success = FALSE
   {
     temp_data <- fread(df)
     temp_data[,ts:=fastPOSIXct(ts)]
-    orig_data <- wat_agg_data(temp_data, interval = 30)
-        
+    
     id <- unique(temp_data$id)
     tide_number <- unique(temp_data$tide_number)
+    
+    # get data summary
+    {
+      data_summary <- temp_data[,.(duration = (max(time) - min(time))/60,
+                                   n_fixes = length(x),
+                                   prop_fixes = length(x) / ((max(time) - min(time))/3)),
+                                by = .(id, tide_number)]
+      
+      sld <- watlasUtils::wat_simple_dist(temp_data, "x", "y")
+      timelag <- c(NA, as.numeric(diff(tempd_data$time)))
+      speed <- sld/timelag
+      
+      data_summary <- temp_data[,mean_speed:=mean(speed, na.rm=TRUE)]
+      
+      # write data
+      fwrite(data_summary, file = "output/tidal_mean_speed_2018.csv", append = TRUE)
+    }
     
     # wrap process in try catch
     tryCatch(
