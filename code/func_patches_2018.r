@@ -79,88 +79,9 @@ process_patches_2018 <- function(df){
     fwrite(patch_summary, file = "data/watlas_2018/data_patch_summaries.csv",
       append = TRUE)
   }
-  
-  
-  # prepare for telemetry
-  {
-    data_for_ctmm <- setDT(patch_points)[,.(id, tide_number, x, y, patch, time, VARX, VARY)]
-    
-    # aggregate within a patch to 10 seconds
-    data_for_ctmm <- split(data_for_ctmm, f = data_for_ctmm$patch) %>% 
-      map(wat_agg_data, interval = 60) %>% 
-      bind_rows()
-    
-    # make each patch an indiv
-    setDT(data_for_ctmm)
-    data_for_ctmm[,individual.local.identifier:= paste(id, tide_number, patch,
-                                                       sep = "_")]
-    # get horizontal error
-    data_for_ctmm[,HDOP := sqrt(VARX+VARY)/10]
-    # subset columns
-    data_for_ctmm <- data_for_ctmm[,.(individual.local.identifier, time, x, y, HDOP)]
-
-    # get new names
-    setnames(data_for_ctmm, old = c("x", "y", "time"), 
-      new = c("UTM.x","UTM.y", "timestamp"))
-    
-    # convert time to posixct
-    data_for_ctmm[,timestamp:=as.POSIXct(timestamp, origin = "1970-01-01")]
-    # add UTM zone
-    data_for_ctmm[,zone:="31 +north"]
-    
-  }
-  
-  # make telemetry
-  {
-    tel <- as.telemetry(data_for_ctmm)
-  }
-  
-  # ctmm section
-  {
-    # get the outliers but do not plot
-    outliers <- map(tel, outlie, plot=FALSE)
-    # get a list of 99 th percentile outliers
-    q90 <- map(outliers, function(this_outlier_set){
-      quantile(this_outlier_set[[1]], probs = c(0.99))
-    })
-    # remove outliers from telemetry data
-    tel <- pmap(list(tel, outliers, q90), 
-                function(this_tel_obj, this_outlier_set, outlier_quantile) 
-                  {this_tel_obj[-(which(this_outlier_set[[1]] >= outlier_quantile)),]})
-    
-    # some patches have no data remaining, filter them out
-    tel <- keep(tel, function(this_tel){nrow(this_tel) > 0})
-    
-    # guess ctmm params
-    guess_list <- lapply(tel, ctmm.guess, interactive = F)
-    
-    # run ctmm fit
-    mod <- map2(tel, guess_list, function(obj_tel, obj_guess){
-      ctmm.fit(obj_tel, CTMM = obj_guess)
-    })
-  }
-  
-  message("model fit!")
-  
-  summary(mod)
-  
-  # check output
-  {
-    png(filename = as.character(glue('vg_ctmm_{id_data}.png')))
-    plot(vg, CTMM=mod)
-    dev.off()
-  }
-  
-  # print model
-  {
-    if(dir.exists("mod_output") == F)
-    {
-      dir.create("mod_output")
-    }
-    writeLines(R.utils::captureOutput(summary(mod)), 
-            con = as.character(glue('mod_output/ctmm_{id_data}.txt')))
-  }
-  
 }
+  
+  
+  
 # ends here
 
