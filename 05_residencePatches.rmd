@@ -92,6 +92,9 @@ output_data <- map(data_files, function(df){
     
     writeLines(c(shebang, text), con = jobfile)
     scp_upload(s, jobfile, to = "code/")
+    
+    # remove jobfile
+    file.remove(jobfile)
   }
   
   ssh_exec_wait(s, command = glue('dos2unix {jobfile}'))
