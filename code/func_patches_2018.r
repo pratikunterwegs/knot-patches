@@ -82,15 +82,12 @@ process_patches_2018 <- function(df){
       
     )
   }
-
+  
   # write patch summary data
   if(success == TRUE){
     fwrite(patch_summary, file = "data/watlas_2018/data_patch_summaries.csv",
-      append = TRUE)
+           append = TRUE)
   }
 }
-  
-  
-  
-# ends here
 
+# ends here
