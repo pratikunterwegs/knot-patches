@@ -70,20 +70,25 @@ map(data_files, function(df){
     
     temp_data <- temp_data[TIME/1e3 > (rel_date),]
   }
-
+  
   temp_data <- wat_rm_attractor(df = temp_data,
-                  atp_xmin = atp$xmin,
-                  atp_xmax = atp$xmax,
-                  atp_ymin = atp$ymin,
-                  atp_ymax = atp$ymax)
+                                atp_xmin = atp$xmin,
+                                atp_xmax = atp$xmax,
+                                atp_ymin = atp$ymin,
+                                atp_ymax = atp$ymax)
   
   clean_data <- wat_clean_data(somedata = temp_data,
-                                           moving_window = 5,
-                                           nbs_min = 0,
-                                           sd_threshold = 5e5)
+                               moving_window = 3,
+                               nbs_min = 0,
+                               sd_threshold = 100,
+                               filter_speed = TRUE,
+                               speed_cutoff = 150)
+  
+  agg_data <- wat_agg_data(df = clean_data,
+                           interval = 30)
   
   message(glue('tag {unique(clean_data$id)} cleaned with {nrow(clean_data)} fixes'))
-
+  
   fwrite(x = clean_data, file = df, dateTimeAs = "ISO")
   
   rm(temp_data, clean_data)
