@@ -62,13 +62,13 @@ map(data_files, function(df){
   
   temp_data <- fread(df, integer64 = "numeric")
   
-  # filter for release date
+  # filter for release date + 24 hrs
   {
     temp_id <- str_sub(temp_data[1, TAG], -3, -1)
     
     rel_date <- tag_info[Toa_Tag == temp_id, Release_Date]
     
-    temp_data <- temp_data[TIME/1e3 > (rel_date),]
+    temp_data <- temp_data[TIME/1e3 > as.numeric(rel_date + 26*3600),]
   }
   
   temp_data <- wat_rm_attractor(df = temp_data,
