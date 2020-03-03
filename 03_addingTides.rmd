@@ -30,6 +30,7 @@ library(glue)
 library(dplyr)
 library(stringr)
 library(fasttime)
+library(lubridate)
 ```
 
 ## Read water level data
@@ -99,19 +100,15 @@ map(data_files, function(df){
   temp_data[,ts:=fastPOSIXct(ts, tz = "CET")]
   
   # merge with tides and order on time
-  temp_data <- merge(temp_data, tides, by.x = "ts", by.y = "time", 
-                     all = TRUE)
-  setorder(temp_data, ts)
-  
-  # get tide_number and time since high tide
-  temp_data[, tide_number := nafill(tide_number, "locf")]
-  temp_data[, tidaltime := as.numeric(difftime(ts, ts[1], units = "mins")), 
-             by = tide_number]
-  
-  # remove bad rows and columns
-  temp_data <- temp_data[complete.cases(x),]
-  temp_data[,`:=`(tide = NULL, level = NULL)]
+  temp_data <- wat_add_tide(df = temp_data,
+               tide_data = "data/data2018/tidesSummer2018.csv")
 
+  # add waterlevel
+  temp_data[,temp_time := lubridate::round_date(ts, unit = "10 minute")]
+  temp_data <- merge(temp_data, waterlevel[,.(dateTime, level)], 
+                     by.x = "temp_time", by.y = "dateTime")
+  setnames(temp_data, old = "level", new = "waterlevel")
+  
   # export data, print msg, remove data
   fwrite(temp_data, file = df, dateTimeAs = "ISO")
   message(glue('tag {unique(temp_data$id)} added time since high tide'))
