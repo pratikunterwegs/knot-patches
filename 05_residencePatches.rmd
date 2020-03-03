@@ -87,7 +87,7 @@ output_data <- map(data_files, function(df){
     # rename job
     shebang[2] <- glue('#SBATCH --job-name=patches_{id_tide}')
     
-    text <- glue('Rscript code/code_process_patches.r {df}')
+    text <- glue('Rscript code/do_patches_2018.r {df}')
     jobfile <- glue('code/job_patches_{id_tide}.sh')
     
     writeLines(c(shebang, text), con = jobfile)
