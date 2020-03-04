@@ -90,7 +90,7 @@ map(data_files, function(df){
       
       message(glue('tag {unique(agg_data$id)} cleaned with {nrow(agg_data)} fixes'))
       
-      fwrite(x = agg_data, file = glue('data/data2018/id_{temp_id}.csv'), dateTimeAs = "ISO")
+      fwrite(x = agg_data, file = glue('data/data2018/locs_proc/id_{temp_id}.csv'), dateTimeAs = "ISO")
       rm(temp_data, clean_data, agg_data)
       },
     error = function(e){
