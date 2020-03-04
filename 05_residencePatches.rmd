@@ -33,12 +33,22 @@ library(dplyr)
 library(fasttime)
 
 # functions for this stage alone
-source("code/func_patches_2018.r")
+ci <- function(x){qnorm(0.975)*sd(x, na.rm = T)/sqrt((length(x)))}
 ```
 
 ## Patch construction
 
-Connect to cluster and process data up to and beyond patches.
+```{r remove_old_data, eval=FALSE}
+if(file.exists("data/data2018/tidal_mean_speed_2018.csv")){
+  file.remove("data/data2018/tidal_mean_speed_2018.csv")
+}
+
+if(file.exists("data/data2018/data_patch_summary.csv")){
+  file.remove("data/data2018/data_patch_summary.csv")
+}
+```
+
+Process patches. Takes approx. 5 hours for 3 second data.
 
 ```{r make_patches, eval=FALSE, message=FALSE, warning=FALSE}
 # make a list of data files to read
@@ -46,7 +56,8 @@ data_files <- list.files(path = "data/data2018/revisitData", pattern = "_revisit
 
 # map inferResidence, classifyPath, and getPatches over data
 
-map(data_files, function(df){
+for(i in 1:length(data_files)){
+  df = data_files[i]
   
   success = FALSE
   {
