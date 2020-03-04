@@ -3,196 +3,118 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Applying CTMM to WATLAS data
+# Bathymetry of the Griend mudflats
 
-CTMM [@calabrese2016] can estimate speed from poor quality data. However, CTMM has its limits, and fails most frequently _when the movement model is identified as being fractal_. A solution to this is to decrease the temporal resolution of the data _within_ residence patches, i.e., to aggregate positions over a certain interval. However, data resulting from this procedure may run afoul of another CTMM feature, _outlier removal_, which may recommend the removal of nearly all points in a trajectory. This depends on the percentile of the data (in terms of speed and distance from the centroid(?)) considered to be outliers, as well as on the scale of aggregation used earlier to avoid fractal movement models.
+## Get data and plot basic trend
 
-Here, we examine the effect of different aggregation scales on the proportion of patches that would be discarded.
-
-## Load libraries
-
-```{r load_libs_supp_01, eval=FALSE}
-# load libs
-library(data.table)
-library(lubridate)
+```{r load_libs_s01, eval=FALSE}
+# load libs to read bathymetry
+library(raster)
+library(rayshader)
 library(sf)
-library(glue)
-library(stringr)
-library(fasttime)
-library(tibble)
-library(dplyr)
-library(purrr)
-library(tidyr)
 
-# devtools::install_github("pratikunterwegs/watlasUtils", ref = "devbranch")
-library(watlasUtils)
-library(ctmm)
+# data libs
+library(data.table)
+library(purrr)
+library(stringr)
 
 # plot libs
 library(ggplot2)
 library(ggthemes)
 ```
 
-## Load a random subset of data
+```{r load_data_s01}
+# load bathymetry and subset
+data <- raster("data/bathymetry_waddenSea_2015.tif")
+griend <- st_read("griend_polygon/griend_polygon.shp") %>% 
+  st_buffer(10.5e3)
 
-```{r prep_data_load_s01, eval=FALSE}
-# make a list of data files to read
-data_files <- list.files(path = "data/data2018/revisitData", pattern = "_revisit.csv", full.names = TRUE)
+# assign utm 31 crs and subset
+crs(data) <- unlist(st_crs(griend)[2])
+data <- crop(data, as(griend, "Spatial"))
+data <- aggregate(data, fact = 2)
+# remove 20m outliers
+#data[data > 500] <- NA
+data_m <- raster_to_matrix(data)
 
-# select a random subset of around 1%
-data_files <- data_files[runif(length(data_files)) < 0.01]
+# get quantiles of the matrix
+data_q <- quantile(data_m, na.rm = T, probs = 1:1000/1000)
 ```
 
-## Choose scales of aggregation
+```{r load_waterlevel_s01, eval=FALSE}
+# read in waterlevel data
+waterlevel <- fread("data/data2018/waterlevelWestTerschelling.csv", sep = ";")
 
-```{r choose_agg_scale, eval=FALSE}
-scales <- c(15, 30, 60)
+# select useful columns and rename
+waterlevel <- waterlevel[,.(WAARNEMINGDATUM, WAARNEMINGTIJD, NUMERIEKEWAARDE)]
 
-data_to_test <- crossing(scales, data_files)
+setnames(waterlevel, c("date", "time", "level"))
+
+# make a single POSIXct column of datetime
+waterlevel[,dateTime := as.POSIXct(paste(date, time, sep = " "), 
+                                   format = "%d-%m-%Y %H:%M:%S", tz = "CET")]
+
+waterlevel <- setDT(distinct(setDF(waterlevel), dateTime, .keep_all = TRUE))
 ```
 
-```{r count_patches_remaining, eval=FALSE}
-rm(data_files, scales)
-some_output <- pmap(data_to_test, function(scales, data_files){
-  {
-    temp_data <- fread(data_files[[1]])
-    temp_data[,ts:=fastPOSIXct(ts)]
+```{r plot_bathymetry_quantiles, eval=FALSE}
+# plot waterlevel quantiles with data from west terschelling
+waterlimits <- range(waterlevel$level)
+
+fig_waterlevel_area <- ggplot()+
+  geom_line(aes(x = 1:1000/1000, y = data_q))+
+  geom_hline(yintercept = waterlimits, col = "blue", lty = 2)+
+  geom_hline(yintercept = 0, lty = 2, col = "red")+
+  scale_x_continuous(labels = scales::percent)+
+  theme_bw()+
+  coord_flip(xlim = c(0.25, 1.01), ylim = c(-250, 250))+
+  labs(x = "% area covered", y = "waterlevel (cm over NAP)")
+
+ggsave(fig_waterlevel_area, filename = "figs/fig_waterlevel_area.png",
+       dpi = 300, height = 4, width = 6); dev.off()
+```
+
+## Plot as 3D maps
+
+```{r make_water_seq, eval=FALSE}
+# make sequence
+waterdepth <- seq(waterlimits[1], waterlimits[2], length.out = 30)
+waterdepth <- c(waterdepth, rev(waterdepth))
+```
+
+
+```{r vis_data, eval=FALSE}
+# make visualisation
+for(i in 1:length(waterdepth)) {
+  data_m %>%
+    sphere_shade(texture = "imhof1", zscale = 50) %>%
+    # add_water(detect_water(data_m, zscale = 100, 
+    #                        max_height = waterdepth[i],cutoff = 0.1), 
+    #           color = "desert") %>%
+    add_shadow(hillshade = data_m) %>%
+    plot_3d(data_m, zscale = 75, wateralpha = 0.6,
+            solid =F, shadow=F,
+            water = TRUE,
+            waterdepth = waterdepth[i],
+            watercolor = "dodgerblue1",
+            phi = 90,
+            theta = 0, zoom = 0.75, windowsize = c(1000, 800),
+            background = "black", calculate_normals = F)
+  render_label(data_m, x = 500, y = 500, z = 500,
+               text = glue::glue('waterdepth = {round(waterdepth[i])} cm'), 
+               freetype = F, textcolor = "black")
     
-    id <- unique(temp_data$id)
-    tide_number <- unique(temp_data$tide_number)
-    
-    # wrap process in try catch
-    patch_points = tryCatch(
-      {
-        # watlasUtils function to infer residence
-        temp_data <- wat_infer_residence(df = temp_data,
-                                         infResTime = 2,
-                                         infPatchTimeDiff = 30,
-                                         infPatchSpatDiff = 100)
-        
-        # watlasUtils function to classify path
-        temp_data <- wat_classify_points(somedata = temp_data,
-                                         resTimeLimit = 2)
-        
-        # watlasUtils function to get patches
-        patch_data <- wat_make_res_patch(somedata = temp_data,
-                                         bufferSize = 10,
-                                         spatIndepLim = 100,
-                                         tempIndepLim = 30,
-                                         restIndepLim = 30,
-                                         minFixes = 3,
-                                         tideLims = c(4,10))
-        
-        # get patch data points
-        patch_points <- wat_get_patch_summary(resPatchData = patch_data,
-                                              dataColumn = "data",
-                                              whichData = "points")
-      },
-      # null error function, with option to collect data on errors
-      error= function(e)
-      {
-        message(glue::glue('patches {id}_{tide_number} errored'))
-      }
-      
-    )
-  }
-  
-  if("data.frame" %in% class(patch_points)){
-    ratio <- tryCatch({
-      # prepare for telemetry
-      {
-        data_for_ctmm <- setDT(patch_points)[,.(id, tide_number, x, y, patch, time, VARX, VARY)]
-        
-        # aggregate within a patch to 10 seconds
-        data_for_ctmm <- split(data_for_ctmm, f = data_for_ctmm$patch)
-        
-        data_for_ctmm <- map(data_for_ctmm, wat_agg_data, interval = 15) %>%
-          keep(function(z) nrow(z) > 10) %>% 
-          bind_rows()
-        
-        # make each patch an indiv
-        setDT(data_for_ctmm)
-        data_for_ctmm[,individual.local.identifier:= paste(id, tide_number, patch,
-                                                           sep = "_")]
-        # get horizontal error
-        data_for_ctmm[,HDOP := sqrt(VARX+VARY)/10]
-        # subset columns
-        data_for_ctmm <- data_for_ctmm[,.(individual.local.identifier, time, x, y, HDOP)]
-        
-        # get new names
-        setnames(data_for_ctmm, old = c("x", "y", "time"), 
-                 new = c("UTM.x","UTM.y", "timestamp"))
-        
-        # convert time to posixct
-        data_for_ctmm[,timestamp:=as.POSIXct(timestamp, origin = "1970-01-01")]
-        # add UTM zone
-        data_for_ctmm[,zone:="31 +north"]
-        
-      }
-      
-      # make telemetry
-      {
-        tel <- as.telemetry(data_for_ctmm)
-      }
-      
-      n_patches <- length(tel)
-      
-      # ctmm section
-      {
-        # get the outliers but do not plot
-        outliers <- map(tel, outlie, plot=FALSE)
-        # get a list of 99 th percentile outliers
-        q90 <- map(outliers, function(this_outlier_set){
-          quantile(this_outlier_set[[1]], probs = c(0.99))
-        })
-        # remove outliers from telemetry data
-        tel <- pmap(list(tel, outliers, q90), 
-                    function(this_tel_obj, this_outlier_set, outlier_quantile) 
-                    {this_tel_obj[-(which(this_outlier_set[[1]] >= outlier_quantile)),]})
-        
-        # some patches have no data remaining, filter them out
-        tel <- keep(tel, function(this_tel){nrow(this_tel) > 0})
-        
-        r_patches <- length(tel)
-      }
-      ratio = r_patches/n_patches
-      message(ratio)
-      return(ratio)
-    },
-    error= function(e)
-    {
-      #return(NA)
-    })
-  }
-  
-})
-
+  rgl::snapshot3d(paste0("figs/tide_rise/fig",str_pad(i, 2, pad = "0"),".png"))
+  rgl::rgl.close()
+}
 ```
 
-```{r add_ratio, eval=FALSE}
-# get ratios
-data_to_test$ratio <- map_if(.x = some_output, .p = is.null, .f = function(l){NA}) %>% 
-  unlist()
-
-# plot ratios
-fig_patch_thinning <- ggplot(data_to_test)+
-  geom_jitter(aes(x = factor(scales), y = ratio, 
-                  group = scales, col = factor(scales), 
-                  shape = factor(scales)), size = 2,
-              stroke = 1)+
-  scale_fill_brewer()+
-  scale_shape_few()+
-  theme_few()+
-  theme(legend.position = "none")+
-  labs(x = "aggregation interval (s)", y = "% patches retained")
-
-# save to figs
-ggsave(plot = fig_patch_thinning, filename = "figs/fig_patch_thinning.png")
-```
-
-```{r show_fig, eval=TRUE}
-
-knitr::include_graphics("figs/fig_patch_thinning.png")
-
+```{r make_tide_gif, eval=FALSE}
+library(magick)
+list.files(path = "figs/tide_rise/", pattern = "*.png", full.names = T) %>% 
+  map(image_read) %>% # reads each path file
+  image_join() %>% # joins image
+  image_animate(fps=2) %>% # animates, can opt for number of loops
+  image_write("figs/fig_tide_rise_anim.gif") # write to current dir
 ```
 
