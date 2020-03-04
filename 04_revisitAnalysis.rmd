@@ -19,7 +19,7 @@ This section is about splitting the data by tidal cycle, and passing the individ
 
 This section uses the recurse package [@bracis2018].
 
-```{r install_recurse, message=FALSE, warning=FALSE}
+```{r install_recurse, message=FALSE, warning=FALSE, eval=FALSE}
 # load recurse or install if not available
 if("recurse" %in% installed.packages() == FALSE){
   install.packages("recurse")

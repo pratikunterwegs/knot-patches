@@ -14,7 +14,7 @@ This section is about cleaning downloaded data using the `cleanData` function in
 
 ## Prepare `watlasUtils` and other libraries
 
-```{r install_watlasutils_2, message=FALSE, warning=FALSE}
+```{r install_watlasutils_2, message=FALSE, warning=FALSE, eval=FALSE}
 # watlasUtils assumed installed from the previous step
 # if not, install from the github repo as shown below
 

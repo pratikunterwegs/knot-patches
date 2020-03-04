@@ -16,7 +16,7 @@ This section is about adding tidal cycle data to individual trajectories. This i
 
 ## Prepare libraries
 
-```{r install_vulntoolkit_2, message=FALSE, warning=FALSE}
+```{r install_vulntoolkit_2, message=FALSE, warning=FALSE, eval=FALSE}
 # load VulnToolkit or install if not available
 if("VulnToolkit" %in% installed.packages() == FALSE){
   devtools::install_github("troyhill/VulnToolkit")
@@ -39,7 +39,7 @@ library(watlasUtils)
 
 Water level data for [West Terschelling](https://waterinfo.rws.nl/#!/details/publiek/waterhoogte-t-o-v-nap/West-Terschelling(WTER)/Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm), a settlement approx. 10km from the field site are provided by Rijkswaterstaat's [Waterinfo](https://waterinfo.rws.nl/#!/nav/bulkdownload/parameters/Waterhoogten/), in cm above Amsterdam Ordnance Datum. These data are manually downloaded in the range July 1, 2018 -- October 31, 2018 and saved in `data/data2018`.
 
-```{r read_waterlevel_data, message=FALSE, warning=FALSE}
+```{r read_waterlevel_data, message=FALSE, warning=FALSE, eval=FALSE}
 # read in waterlevel data
 waterlevel <- fread("data/data2018/waterlevelWestTerschelling.csv", sep = ";")
 
