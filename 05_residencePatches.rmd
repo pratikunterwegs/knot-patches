@@ -129,11 +129,11 @@ for(i in 1:length(data_files)){
   
   # write patch summary data
   if(success == TRUE){
-    fwrite(patch_summary, file = "data/watlas_2018/data_patch_summaries.csv",
+    fwrite(patch_summary, file = "data/data_patch_summary.csv",
            append = TRUE)
   }
   
-})
+}
 
 ```
 
