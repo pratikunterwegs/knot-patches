@@ -71,17 +71,19 @@ for(i in 1:length(data_files)){
     {
       data_summary <- temp_data[,.(duration = (max(time) - min(time))/60,
                                    n_fixes = length(x),
-                                   prop_fixes = length(x) / ((max(time) - min(time))/3)),
+                                   prop_fixes = length(x) / ((max(time) - min(time))/30)),
                                 by = .(id, tide_number)]
       
       sld <- watlasUtils::wat_simple_dist(temp_data, "x", "y")
-      timelag <- c(NA, as.numeric(diff(tempd_data$time)))
+      timelag <- c(NA, as.numeric(diff(temp_data$time)))
       speed <- sld/timelag
       
-      data_summary <- temp_data[,mean_speed:=mean(speed, na.rm=TRUE)]
+      data_summary[,`:=`(mean_speed = mean(speed, na.rm=TRUE),
+                         ci95_speed = ci(speed))]
       
       # write data
-      fwrite(data_summary, file = "output/tidal_mean_speed_2018.csv", append = TRUE)
+      fwrite(data_summary, file = "data/data2018/tidal_mean_speed_2018.csv", 
+             append = TRUE, scipen = 6)
     }
     
     # wrap process in try catch
