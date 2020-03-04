@@ -23,7 +23,7 @@ library(ggplot2)
 library(ggthemes)
 ```
 
-```{r load_data_s01}
+```{r load_data_s01, eval=FALSE}
 # load bathymetry and subset
 data <- raster("data/bathymetry_waddenSea_2015.tif")
 griend <- st_read("griend_polygon/griend_polygon.shp") %>% 
@@ -116,5 +116,10 @@ list.files(path = "figs/tide_rise/", pattern = "*.png", full.names = T) %>%
   image_join() %>% # joins image
   image_animate(fps=2) %>% # animates, can opt for number of loops
   image_write("figs/fig_tide_rise_anim.gif") # write to current dir
+```
+
+
+```{r include_gif, eval=TRUE, fig.cap="Waterlevel at West Terschelling and effect on coverage of mudflats around Griend."}
+knitr::include_graphics("figs/fig_tide_rise_anim.gif")
 ```
 
