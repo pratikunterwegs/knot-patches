@@ -14,7 +14,7 @@ This section is about cleaning downloaded data using the `cleanData` function in
 
 ## Prepare `watlasUtils` and other libraries
 
-```{r install_watlasutils_2, message=FALSE, warning=FALSE}
+```{r install_watlasutils_2, message=FALSE, warning=FALSE, eval=FALSE}
 # watlasUtils assumed installed from the previous step
 # if not, install from the github repo as shown below
 
@@ -41,7 +41,7 @@ atp <- fread("data/data2018/attractor_points.txt")
 
 ```{r read_in_raw_data, eval=FALSE, message=FALSE, warning=FALSE}
 # make a list of data files to read
-data_files <- list.files(path = "data/data2018/", pattern = "whole_season*", full.names = TRUE)
+data_files <- list.files(path = "data/data2018/locs_raw", pattern = "whole_season*", full.names = TRUE)
 
 data_ids <- str_extract(data_files, "(tx_\\d+)") %>% str_sub(-3,-1)
 
@@ -62,31 +62,40 @@ map(data_files, function(df){
   
   temp_data <- fread(df, integer64 = "numeric")
   
-  # filter for release date
+  # filter for release date + 24 hrs
   {
     temp_id <- str_sub(temp_data[1, TAG], -3, -1)
     
     rel_date <- tag_info[Toa_Tag == temp_id, Release_Date]
     
-    temp_data <- temp_data[TIME/1e3 > (rel_date),]
+    temp_data <- temp_data[TIME/1e3 > as.numeric(rel_date + (24*3600)),]
   }
-
-  temp_data <- wat_rm_attractor(df = temp_data,
-                  atp_xmin = atp$xmin,
-                  atp_xmax = atp$xmax,
-                  atp_ymin = atp$ymin,
-                  atp_ymax = atp$ymax)
-  
-  clean_data <- wat_clean_data(somedata = temp_data,
-                                           moving_window = 5,
-                                           nbs_min = 0,
-                                           sd_threshold = 5e5)
-  
-  message(glue('tag {unique(clean_data$id)} cleaned with {nrow(clean_data)} fixes'))
-
-  fwrite(x = clean_data, file = df, dateTimeAs = "ISO")
-  
-  rm(temp_data, clean_data)
+  tryCatch(
+    {
+      temp_data <- wat_rm_attractor(df = temp_data,
+                                    atp_xmin = atp$xmin,
+                                    atp_xmax = atp$xmax,
+                                    atp_ymin = atp$ymin,
+                                    atp_ymax = atp$ymax)
+      
+      clean_data <- wat_clean_data(somedata = temp_data,
+                                   moving_window = 3,
+                                   nbs_min = 0,
+                                   sd_threshold = 100,
+                                   filter_speed = TRUE,
+                                   speed_cutoff = 150)
+      
+      agg_data <- wat_agg_data(df = clean_data,
+                               interval = 30)
+      
+      message(glue('tag {unique(agg_data$id)} cleaned with {nrow(agg_data)} fixes'))
+      
+      fwrite(x = agg_data, file = glue('data/data2018/locs_proc/id_{temp_id}.csv'), dateTimeAs = "ISO")
+      rm(temp_data, clean_data, agg_data)
+      },
+    error = function(e){
+      message(glue('tag {unique(temp_id)} failed'))
+    })
 })
 
 ```

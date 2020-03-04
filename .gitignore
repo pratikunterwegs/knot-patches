@@ -26,6 +26,7 @@ data/
 *.docx
 *.eps
 *.svg
+tide_rise/
 
 # any zip files
 *.zip

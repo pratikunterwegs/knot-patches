@@ -24,7 +24,7 @@
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2020-02-11" />
+<meta name="date" content="2020-03-04" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="residence-patch-construction.html"/>
-<link rel="next" href="applying-ctmm-to-watlas-data.html"/>
+<link rel="next" href="bathymetry-of-the-griend-mudflats.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <script src="libs/elevate-section-attrs-2.0/elevate-section-attrs.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -174,11 +174,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="7.4" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#patch-metrics-as-an-outcome-of-exploration-score"><i class="fa fa-check"></i><b>7.4</b> Patch metrics as an outcome of exploration score</a></li>
 <li class="chapter" data-level="7.5" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html#plot-model-figures"><i class="fa fa-check"></i><b>7.5</b> Plot model figures</a></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="applying-ctmm-to-watlas-data.html"><a href="applying-ctmm-to-watlas-data.html"><i class="fa fa-check"></i><b>8</b> Applying CTMM to WATLAS data</a>
+<li class="chapter" data-level="8" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html"><i class="fa fa-check"></i><b>8</b> Bathymetry of the Griend mudflats</a>
 <ul>
-<li class="chapter" data-level="8.1" data-path="applying-ctmm-to-watlas-data.html"><a href="applying-ctmm-to-watlas-data.html#load-libraries"><i class="fa fa-check"></i><b>8.1</b> Load libraries</a></li>
-<li class="chapter" data-level="8.2" data-path="applying-ctmm-to-watlas-data.html"><a href="applying-ctmm-to-watlas-data.html#load-a-random-subset-of-data"><i class="fa fa-check"></i><b>8.2</b> Load a random subset of data</a></li>
-<li class="chapter" data-level="8.3" data-path="applying-ctmm-to-watlas-data.html"><a href="applying-ctmm-to-watlas-data.html#choose-scales-of-aggregation"><i class="fa fa-check"></i><b>8.3</b> Choose scales of aggregation</a></li>
+<li class="chapter" data-level="8.1" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#get-data-and-plot-basic-trend"><i class="fa fa-check"></i><b>8.1</b> Get data and plot basic trend</a></li>
+<li class="chapter" data-level="8.2" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#plot-as-3d-maps"><i class="fa fa-check"></i><b>8.2</b> Plot as 3D maps</a></li>
 </ul></li>
 </ul>
 
@@ -210,164 +209,164 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <div id="prepare-libraries-3" class="section level2">
 <h2 number="7.1"><span class="header-section-number">7.1</span> Prepare libraries</h2>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="linking-patch-metrics-to-personality.html#cb19-1"></a><span class="co"># libraries to process data</span></span>
-<span id="cb19-2"><a href="linking-patch-metrics-to-personality.html#cb19-2"></a><span class="kw">library</span>(readr) <span class="co"># using readr here since data is small</span></span>
-<span id="cb19-3"><a href="linking-patch-metrics-to-personality.html#cb19-3"></a><span class="kw">library</span>(purrr)</span>
-<span id="cb19-4"><a href="linking-patch-metrics-to-personality.html#cb19-4"></a><span class="kw">library</span>(glue)</span>
-<span id="cb19-5"><a href="linking-patch-metrics-to-personality.html#cb19-5"></a><span class="kw">library</span>(dplyr)</span>
-<span id="cb19-6"><a href="linking-patch-metrics-to-personality.html#cb19-6"></a><span class="kw">library</span>(tidyr)</span>
-<span id="cb19-7"><a href="linking-patch-metrics-to-personality.html#cb19-7"></a></span>
-<span id="cb19-8"><a href="linking-patch-metrics-to-personality.html#cb19-8"></a><span class="co"># libraries for stats</span></span>
-<span id="cb19-9"><a href="linking-patch-metrics-to-personality.html#cb19-9"></a><span class="kw">library</span>(lmerTest)</span>
-<span id="cb19-10"><a href="linking-patch-metrics-to-personality.html#cb19-10"></a></span>
-<span id="cb19-11"><a href="linking-patch-metrics-to-personality.html#cb19-11"></a><span class="co"># libraries for plotting</span></span>
-<span id="cb19-12"><a href="linking-patch-metrics-to-personality.html#cb19-12"></a><span class="kw">library</span>(ggplot2)</span>
-<span id="cb19-13"><a href="linking-patch-metrics-to-personality.html#cb19-13"></a><span class="kw">library</span>(ggthemes)</span>
-<span id="cb19-14"><a href="linking-patch-metrics-to-personality.html#cb19-14"></a><span class="kw">library</span>(scico)</span>
-<span id="cb19-15"><a href="linking-patch-metrics-to-personality.html#cb19-15"></a><span class="kw">library</span>(scales)</span>
-<span id="cb19-16"><a href="linking-patch-metrics-to-personality.html#cb19-16"></a><span class="kw">library</span>(gridExtra)</span>
-<span id="cb19-17"><a href="linking-patch-metrics-to-personality.html#cb19-17"></a><span class="kw">library</span>(cowplot)</span>
-<span id="cb19-18"><a href="linking-patch-metrics-to-personality.html#cb19-18"></a></span>
-<span id="cb19-19"><a href="linking-patch-metrics-to-personality.html#cb19-19"></a><span class="co"># ci func</span></span>
-<span id="cb19-20"><a href="linking-patch-metrics-to-personality.html#cb19-20"></a><span class="co"># simple ci function</span></span>
-<span id="cb19-21"><a href="linking-patch-metrics-to-personality.html#cb19-21"></a>ci &lt;-<span class="st"> </span><span class="cf">function</span>(x){</span>
-<span id="cb19-22"><a href="linking-patch-metrics-to-personality.html#cb19-22"></a>  <span class="kw">qnorm</span>(<span class="fl">0.975</span>)<span class="op">*</span><span class="kw">sd</span>(x, <span class="dt">na.rm =</span> T)<span class="op">/</span><span class="kw">sqrt</span>((<span class="kw">length</span>(x)))}</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="linking-patch-metrics-to-personality.html#cb20-1"></a><span class="co"># libraries to process data</span></span>
+<span id="cb20-2"><a href="linking-patch-metrics-to-personality.html#cb20-2"></a><span class="kw">library</span>(readr) <span class="co"># using readr here since data is small</span></span>
+<span id="cb20-3"><a href="linking-patch-metrics-to-personality.html#cb20-3"></a><span class="kw">library</span>(purrr)</span>
+<span id="cb20-4"><a href="linking-patch-metrics-to-personality.html#cb20-4"></a><span class="kw">library</span>(glue)</span>
+<span id="cb20-5"><a href="linking-patch-metrics-to-personality.html#cb20-5"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb20-6"><a href="linking-patch-metrics-to-personality.html#cb20-6"></a><span class="kw">library</span>(tidyr)</span>
+<span id="cb20-7"><a href="linking-patch-metrics-to-personality.html#cb20-7"></a></span>
+<span id="cb20-8"><a href="linking-patch-metrics-to-personality.html#cb20-8"></a><span class="co"># libraries for stats</span></span>
+<span id="cb20-9"><a href="linking-patch-metrics-to-personality.html#cb20-9"></a><span class="kw">library</span>(lmerTest)</span>
+<span id="cb20-10"><a href="linking-patch-metrics-to-personality.html#cb20-10"></a></span>
+<span id="cb20-11"><a href="linking-patch-metrics-to-personality.html#cb20-11"></a><span class="co"># libraries for plotting</span></span>
+<span id="cb20-12"><a href="linking-patch-metrics-to-personality.html#cb20-12"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb20-13"><a href="linking-patch-metrics-to-personality.html#cb20-13"></a><span class="kw">library</span>(ggthemes)</span>
+<span id="cb20-14"><a href="linking-patch-metrics-to-personality.html#cb20-14"></a><span class="kw">library</span>(scico)</span>
+<span id="cb20-15"><a href="linking-patch-metrics-to-personality.html#cb20-15"></a><span class="kw">library</span>(scales)</span>
+<span id="cb20-16"><a href="linking-patch-metrics-to-personality.html#cb20-16"></a><span class="kw">library</span>(gridExtra)</span>
+<span id="cb20-17"><a href="linking-patch-metrics-to-personality.html#cb20-17"></a><span class="kw">library</span>(cowplot)</span>
+<span id="cb20-18"><a href="linking-patch-metrics-to-personality.html#cb20-18"></a></span>
+<span id="cb20-19"><a href="linking-patch-metrics-to-personality.html#cb20-19"></a><span class="co"># ci func</span></span>
+<span id="cb20-20"><a href="linking-patch-metrics-to-personality.html#cb20-20"></a><span class="co"># simple ci function</span></span>
+<span id="cb20-21"><a href="linking-patch-metrics-to-personality.html#cb20-21"></a>ci &lt;-<span class="st"> </span><span class="cf">function</span>(x){</span>
+<span id="cb20-22"><a href="linking-patch-metrics-to-personality.html#cb20-22"></a>  <span class="kw">qnorm</span>(<span class="fl">0.975</span>)<span class="op">*</span><span class="kw">sd</span>(x, <span class="dt">na.rm =</span> T)<span class="op">/</span><span class="kw">sqrt</span>((<span class="kw">length</span>(x)))}</span></code></pre></div>
 </div>
 <div id="read-in-exploration-score" class="section level2">
 <h2 number="7.2"><span class="header-section-number">7.2</span> Read in exploration score</h2>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="linking-patch-metrics-to-personality.html#cb20-1"></a><span class="co"># read in tag info</span></span>
-<span id="cb20-2"><a href="linking-patch-metrics-to-personality.html#cb20-2"></a>tag_info &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/data2018/SelinDB.csv&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb20-3"><a href="linking-patch-metrics-to-personality.html#cb20-3"></a><span class="st">  </span><span class="kw">select</span>(RINGNR, Toa_Tag) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb20-4"><a href="linking-patch-metrics-to-personality.html#cb20-4"></a><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(Toa_Tag))</span>
-<span id="cb20-5"><a href="linking-patch-metrics-to-personality.html#cb20-5"></a></span>
-<span id="cb20-6"><a href="linking-patch-metrics-to-personality.html#cb20-6"></a><span class="co"># read in updated behavioural data</span></span>
-<span id="cb20-7"><a href="linking-patch-metrics-to-personality.html#cb20-7"></a>behav_score &lt;-<span class="st"> </span><span class="kw">read_delim</span>(<span class="st">&quot;data/data2018/Selindb-updated_2019-07-17.csv&quot;</span>, <span class="dt">delim =</span> <span class="st">&quot;;&quot;</span>)</span>
-<span id="cb20-8"><a href="linking-patch-metrics-to-personality.html#cb20-8"></a></span>
-<span id="cb20-9"><a href="linking-patch-metrics-to-personality.html#cb20-9"></a>behav_score &lt;-<span class="st"> </span><span class="kw">inner_join</span>(tag_info, behav_score, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;RINGNR&quot;</span> =<span class="st"> &quot;FB&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb20-10"><a href="linking-patch-metrics-to-personality.html#cb20-10"></a><span class="st">  </span><span class="kw">filter</span>(trial <span class="op">==</span><span class="st"> &quot;F01&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb20-11"><a href="linking-patch-metrics-to-personality.html#cb20-11"></a><span class="st">  </span><span class="kw">select</span>(Toa_Tag, texpl)</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="linking-patch-metrics-to-personality.html#cb21-1"></a><span class="co"># read in tag info</span></span>
+<span id="cb21-2"><a href="linking-patch-metrics-to-personality.html#cb21-2"></a>tag_info &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/data2018/SelinDB.csv&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb21-3"><a href="linking-patch-metrics-to-personality.html#cb21-3"></a><span class="st">  </span><span class="kw">select</span>(RINGNR, Toa_Tag) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb21-4"><a href="linking-patch-metrics-to-personality.html#cb21-4"></a><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(Toa_Tag))</span>
+<span id="cb21-5"><a href="linking-patch-metrics-to-personality.html#cb21-5"></a></span>
+<span id="cb21-6"><a href="linking-patch-metrics-to-personality.html#cb21-6"></a><span class="co"># read in updated behavioural data</span></span>
+<span id="cb21-7"><a href="linking-patch-metrics-to-personality.html#cb21-7"></a>behav_score &lt;-<span class="st"> </span><span class="kw">read_delim</span>(<span class="st">&quot;data/data2018/Selindb-updated_2019-07-17.csv&quot;</span>, <span class="dt">delim =</span> <span class="st">&quot;;&quot;</span>)</span>
+<span id="cb21-8"><a href="linking-patch-metrics-to-personality.html#cb21-8"></a></span>
+<span id="cb21-9"><a href="linking-patch-metrics-to-personality.html#cb21-9"></a>behav_score &lt;-<span class="st"> </span><span class="kw">inner_join</span>(tag_info, behav_score, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;RINGNR&quot;</span> =<span class="st"> &quot;FB&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb21-10"><a href="linking-patch-metrics-to-personality.html#cb21-10"></a><span class="st">  </span><span class="kw">filter</span>(trial <span class="op">==</span><span class="st"> &quot;F01&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb21-11"><a href="linking-patch-metrics-to-personality.html#cb21-11"></a><span class="st">  </span><span class="kw">select</span>(Toa_Tag, texpl)</span></code></pre></div>
 </div>
 <div id="exploratory-analysis-on-patch-metrics" class="section level2">
 <h2 number="7.3"><span class="header-section-number">7.3</span> Exploratory analysis on patch metrics</h2>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="linking-patch-metrics-to-personality.html#cb21-1"></a><span class="co"># read in patch data</span></span>
-<span id="cb21-2"><a href="linking-patch-metrics-to-personality.html#cb21-2"></a>patch_data &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/data2018/patch_summary.csv&quot;</span>)</span>
-<span id="cb21-3"><a href="linking-patch-metrics-to-personality.html#cb21-3"></a></span>
-<span id="cb21-4"><a href="linking-patch-metrics-to-personality.html#cb21-4"></a><span class="co"># process data to plot histograms of area, duration, circularity, displacement</span></span>
-<span id="cb21-5"><a href="linking-patch-metrics-to-personality.html#cb21-5"></a><span class="co"># propfixes and tidal time</span></span>
-<span id="cb21-6"><a href="linking-patch-metrics-to-personality.html#cb21-6"></a>patch_data &lt;-<span class="st"> </span>patch_data <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb21-7"><a href="linking-patch-metrics-to-personality.html#cb21-7"></a><span class="st">  </span><span class="kw">select</span>(id, tide_number, area, circularity, duration, dispInPatch, propfixes,</span>
-<span id="cb21-8"><a href="linking-patch-metrics-to-personality.html#cb21-8"></a>         tidaltime_mean, distBwPatch) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb21-9"><a href="linking-patch-metrics-to-personality.html#cb21-9"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="kw">c</span>(area, circularity, duration, dispInPatch, propfixes,</span>
-<span id="cb21-10"><a href="linking-patch-metrics-to-personality.html#cb21-10"></a>                        tidaltime_mean, distBwPatch),</span>
-<span id="cb21-11"><a href="linking-patch-metrics-to-personality.html#cb21-11"></a>               <span class="dt">names_to =</span> <span class="st">&quot;variable&quot;</span>,</span>
-<span id="cb21-12"><a href="linking-patch-metrics-to-personality.html#cb21-12"></a>               <span class="dt">values_to =</span> <span class="st">&quot;value&quot;</span>)</span>
-<span id="cb21-13"><a href="linking-patch-metrics-to-personality.html#cb21-13"></a></span>
-<span id="cb21-14"><a href="linking-patch-metrics-to-personality.html#cb21-14"></a><span class="co"># filter out 95% values in each variable</span></span>
-<span id="cb21-15"><a href="linking-patch-metrics-to-personality.html#cb21-15"></a>patch_data &lt;-<span class="st"> </span>patch_data <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb21-16"><a href="linking-patch-metrics-to-personality.html#cb21-16"></a><span class="st">  </span><span class="kw">group_by</span>(variable) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb21-17"><a href="linking-patch-metrics-to-personality.html#cb21-17"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">scaled_val =</span> <span class="kw">rescale</span>(value)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb21-18"><a href="linking-patch-metrics-to-personality.html#cb21-18"></a><span class="st">  </span><span class="kw">filter</span>(scaled_val <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.90</span>)</span>
-<span id="cb21-19"><a href="linking-patch-metrics-to-personality.html#cb21-19"></a></span>
-<span id="cb21-20"><a href="linking-patch-metrics-to-personality.html#cb21-20"></a><span class="co"># plot histograms</span></span>
-<span id="cb21-21"><a href="linking-patch-metrics-to-personality.html#cb21-21"></a><span class="kw">ggplot</span>(patch_data)<span class="op">+</span></span>
-<span id="cb21-22"><a href="linking-patch-metrics-to-personality.html#cb21-22"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">x =</span> value))<span class="op">+</span></span>
-<span id="cb21-23"><a href="linking-patch-metrics-to-personality.html#cb21-23"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>variable, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>)<span class="op">+</span></span>
-<span id="cb21-24"><a href="linking-patch-metrics-to-personality.html#cb21-24"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="linking-patch-metrics-to-personality.html#cb22-1"></a><span class="co"># read in patch data</span></span>
+<span id="cb22-2"><a href="linking-patch-metrics-to-personality.html#cb22-2"></a>patch_data &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/data2018/patch_summary.csv&quot;</span>)</span>
+<span id="cb22-3"><a href="linking-patch-metrics-to-personality.html#cb22-3"></a></span>
+<span id="cb22-4"><a href="linking-patch-metrics-to-personality.html#cb22-4"></a><span class="co"># process data to plot histograms of area, duration, circularity, displacement</span></span>
+<span id="cb22-5"><a href="linking-patch-metrics-to-personality.html#cb22-5"></a><span class="co"># propfixes and tidal time</span></span>
+<span id="cb22-6"><a href="linking-patch-metrics-to-personality.html#cb22-6"></a>patch_data &lt;-<span class="st"> </span>patch_data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-7"><a href="linking-patch-metrics-to-personality.html#cb22-7"></a><span class="st">  </span><span class="kw">select</span>(id, tide_number, area, circularity, duration, dispInPatch, propfixes,</span>
+<span id="cb22-8"><a href="linking-patch-metrics-to-personality.html#cb22-8"></a>         tidaltime_mean, distBwPatch) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-9"><a href="linking-patch-metrics-to-personality.html#cb22-9"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="kw">c</span>(area, circularity, duration, dispInPatch, propfixes,</span>
+<span id="cb22-10"><a href="linking-patch-metrics-to-personality.html#cb22-10"></a>                        tidaltime_mean, distBwPatch),</span>
+<span id="cb22-11"><a href="linking-patch-metrics-to-personality.html#cb22-11"></a>               <span class="dt">names_to =</span> <span class="st">&quot;variable&quot;</span>,</span>
+<span id="cb22-12"><a href="linking-patch-metrics-to-personality.html#cb22-12"></a>               <span class="dt">values_to =</span> <span class="st">&quot;value&quot;</span>)</span>
+<span id="cb22-13"><a href="linking-patch-metrics-to-personality.html#cb22-13"></a></span>
+<span id="cb22-14"><a href="linking-patch-metrics-to-personality.html#cb22-14"></a><span class="co"># filter out 95% values in each variable</span></span>
+<span id="cb22-15"><a href="linking-patch-metrics-to-personality.html#cb22-15"></a>patch_data &lt;-<span class="st"> </span>patch_data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-16"><a href="linking-patch-metrics-to-personality.html#cb22-16"></a><span class="st">  </span><span class="kw">group_by</span>(variable) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-17"><a href="linking-patch-metrics-to-personality.html#cb22-17"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">scaled_val =</span> <span class="kw">rescale</span>(value)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb22-18"><a href="linking-patch-metrics-to-personality.html#cb22-18"></a><span class="st">  </span><span class="kw">filter</span>(scaled_val <span class="op">&lt;</span><span class="st"> </span><span class="fl">0.90</span>)</span>
+<span id="cb22-19"><a href="linking-patch-metrics-to-personality.html#cb22-19"></a></span>
+<span id="cb22-20"><a href="linking-patch-metrics-to-personality.html#cb22-20"></a><span class="co"># plot histograms</span></span>
+<span id="cb22-21"><a href="linking-patch-metrics-to-personality.html#cb22-21"></a><span class="kw">ggplot</span>(patch_data)<span class="op">+</span></span>
+<span id="cb22-22"><a href="linking-patch-metrics-to-personality.html#cb22-22"></a><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="kw">aes</span>(<span class="dt">x =</span> value))<span class="op">+</span></span>
+<span id="cb22-23"><a href="linking-patch-metrics-to-personality.html#cb22-23"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>variable, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>)<span class="op">+</span></span>
+<span id="cb22-24"><a href="linking-patch-metrics-to-personality.html#cb22-24"></a><span class="st">  </span><span class="kw">theme_bw</span>()</span></code></pre></div>
 </div>
 <div id="patch-metrics-as-an-outcome-of-exploration-score" class="section level2">
 <h2 number="7.4"><span class="header-section-number">7.4</span> Patch metrics as an outcome of exploration score</h2>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="linking-patch-metrics-to-personality.html#cb22-1"></a><span class="co"># read in patch data</span></span>
-<span id="cb22-2"><a href="linking-patch-metrics-to-personality.html#cb22-2"></a>patch_data &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/data2018/patch_summary.csv&quot;</span>)</span>
-<span id="cb22-3"><a href="linking-patch-metrics-to-personality.html#cb22-3"></a><span class="co"># filter for patch quality on the proportion of expected fixes acheived</span></span>
-<span id="cb22-4"><a href="linking-patch-metrics-to-personality.html#cb22-4"></a>patch_data &lt;-<span class="st"> </span><span class="kw">filter</span>(patch_data, propfixes <span class="op">%between%</span><span class="st"> </span><span class="kw">c</span>(<span class="fl">0.2</span>, <span class="fl">1.0</span>))</span>
-<span id="cb22-5"><a href="linking-patch-metrics-to-personality.html#cb22-5"></a></span>
-<span id="cb22-6"><a href="linking-patch-metrics-to-personality.html#cb22-6"></a><span class="co"># join to behav data</span></span>
-<span id="cb22-7"><a href="linking-patch-metrics-to-personality.html#cb22-7"></a>patch_data &lt;-<span class="st"> </span><span class="kw">inner_join</span>(patch_data, behav_score, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;id&quot;</span> =<span class="st"> &quot;Toa_Tag&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb22-8"><a href="linking-patch-metrics-to-personality.html#cb22-8"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">texpl =</span> <span class="kw">as.numeric</span>(texpl)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb22-9"><a href="linking-patch-metrics-to-personality.html#cb22-9"></a><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(texpl))</span>
-<span id="cb22-10"><a href="linking-patch-metrics-to-personality.html#cb22-10"></a></span>
-<span id="cb22-11"><a href="linking-patch-metrics-to-personality.html#cb22-11"></a><span class="co"># prepare for simultaneous modelling</span></span>
-<span id="cb22-12"><a href="linking-patch-metrics-to-personality.html#cb22-12"></a>model_data &lt;-<span class="st"> </span><span class="kw">setDF</span>(patch_data) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb22-13"><a href="linking-patch-metrics-to-personality.html#cb22-13"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">names_to =</span> <span class="st">&quot;response_variable&quot;</span>, <span class="dt">values_to =</span> <span class="st">&quot;response_value&quot;</span>,</span>
-<span id="cb22-14"><a href="linking-patch-metrics-to-personality.html#cb22-14"></a>               <span class="dt">cols =</span> <span class="kw">c</span>(duration, dispInPatch, distBwPatch, area)) <span class="op">%&gt;%</span></span>
-<span id="cb22-15"><a href="linking-patch-metrics-to-personality.html#cb22-15"></a><span class="st">  </span><span class="kw">group_by</span>(response_variable) <span class="op">%&gt;%</span></span>
-<span id="cb22-16"><a href="linking-patch-metrics-to-personality.html#cb22-16"></a><span class="st">  </span><span class="kw">nest</span>()</span>
-<span id="cb22-17"><a href="linking-patch-metrics-to-personality.html#cb22-17"></a></span>
-<span id="cb22-18"><a href="linking-patch-metrics-to-personality.html#cb22-18"></a><span class="co"># run models using glmerTest and get predict output</span></span>
-<span id="cb22-19"><a href="linking-patch-metrics-to-personality.html#cb22-19"></a>model_data &lt;-<span class="st"> </span><span class="kw">mutate</span>(model_data, </span>
-<span id="cb22-20"><a href="linking-patch-metrics-to-personality.html#cb22-20"></a>                     <span class="dt">model =</span> <span class="kw">map</span>(data, <span class="cf">function</span>(z){</span>
-<span id="cb22-21"><a href="linking-patch-metrics-to-personality.html#cb22-21"></a>                       <span class="kw">lmer</span>(response_value <span class="op">~</span><span class="st"> </span>texpl <span class="op">+</span><span class="st"> </span></span>
-<span id="cb22-22"><a href="linking-patch-metrics-to-personality.html#cb22-22"></a><span class="st">                              </span>(<span class="dv">1</span><span class="op">|</span>tide_number) <span class="op">+</span><span class="st"> </span></span>
-<span id="cb22-23"><a href="linking-patch-metrics-to-personality.html#cb22-23"></a><span class="st">                              </span>tidaltime_mean <span class="op">+</span><span class="st"> </span><span class="kw">I</span>((tidaltime_mean)<span class="op">^</span><span class="dv">2</span>), </span>
-<span id="cb22-24"><a href="linking-patch-metrics-to-personality.html#cb22-24"></a>                            <span class="dt">data =</span> z, <span class="dt">na.action =</span> na.omit)})) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb22-25"><a href="linking-patch-metrics-to-personality.html#cb22-25"></a><span class="st">  </span></span>
-<span id="cb22-26"><a href="linking-patch-metrics-to-personality.html#cb22-26"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">predMod =</span> <span class="kw">map2</span>(model, data, <span class="cf">function</span>(a, b){</span>
-<span id="cb22-27"><a href="linking-patch-metrics-to-personality.html#cb22-27"></a>    <span class="kw">mutate</span>(b, <span class="dt">predval =</span> <span class="kw">predict</span>(a, <span class="dt">type =</span> <span class="st">&quot;response&quot;</span>, <span class="dt">newdata =</span> b, </span>
-<span id="cb22-28"><a href="linking-patch-metrics-to-personality.html#cb22-28"></a>                                <span class="dt">allow.new.levels =</span> <span class="ot">TRUE</span>))</span>
-<span id="cb22-29"><a href="linking-patch-metrics-to-personality.html#cb22-29"></a>  }))</span>
-<span id="cb22-30"><a href="linking-patch-metrics-to-personality.html#cb22-30"></a></span>
-<span id="cb22-31"><a href="linking-patch-metrics-to-personality.html#cb22-31"></a><span class="co"># assign names to model object</span></span>
-<span id="cb22-32"><a href="linking-patch-metrics-to-personality.html#cb22-32"></a><span class="kw">names</span>(model_data<span class="op">$</span>model) &lt;-<span class="st"> </span><span class="kw">glue</span>(<span class="st">&quot;response = {model_data$response_variable} | predictor = tExplScore&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="linking-patch-metrics-to-personality.html#cb23-1"></a><span class="co"># read in patch data</span></span>
+<span id="cb23-2"><a href="linking-patch-metrics-to-personality.html#cb23-2"></a>patch_data &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/data2018/patch_summary.csv&quot;</span>)</span>
+<span id="cb23-3"><a href="linking-patch-metrics-to-personality.html#cb23-3"></a><span class="co"># filter for patch quality on the proportion of expected fixes acheived</span></span>
+<span id="cb23-4"><a href="linking-patch-metrics-to-personality.html#cb23-4"></a>patch_data &lt;-<span class="st"> </span><span class="kw">filter</span>(patch_data, propfixes <span class="op">%between%</span><span class="st"> </span><span class="kw">c</span>(<span class="fl">0.2</span>, <span class="fl">1.0</span>))</span>
+<span id="cb23-5"><a href="linking-patch-metrics-to-personality.html#cb23-5"></a></span>
+<span id="cb23-6"><a href="linking-patch-metrics-to-personality.html#cb23-6"></a><span class="co"># join to behav data</span></span>
+<span id="cb23-7"><a href="linking-patch-metrics-to-personality.html#cb23-7"></a>patch_data &lt;-<span class="st"> </span><span class="kw">inner_join</span>(patch_data, behav_score, <span class="dt">by=</span><span class="kw">c</span>(<span class="st">&quot;id&quot;</span> =<span class="st"> &quot;Toa_Tag&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb23-8"><a href="linking-patch-metrics-to-personality.html#cb23-8"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">texpl =</span> <span class="kw">as.numeric</span>(texpl)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb23-9"><a href="linking-patch-metrics-to-personality.html#cb23-9"></a><span class="st">  </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.na</span>(texpl))</span>
+<span id="cb23-10"><a href="linking-patch-metrics-to-personality.html#cb23-10"></a></span>
+<span id="cb23-11"><a href="linking-patch-metrics-to-personality.html#cb23-11"></a><span class="co"># prepare for simultaneous modelling</span></span>
+<span id="cb23-12"><a href="linking-patch-metrics-to-personality.html#cb23-12"></a>model_data &lt;-<span class="st"> </span><span class="kw">setDF</span>(patch_data) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb23-13"><a href="linking-patch-metrics-to-personality.html#cb23-13"></a><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">names_to =</span> <span class="st">&quot;response_variable&quot;</span>, <span class="dt">values_to =</span> <span class="st">&quot;response_value&quot;</span>,</span>
+<span id="cb23-14"><a href="linking-patch-metrics-to-personality.html#cb23-14"></a>               <span class="dt">cols =</span> <span class="kw">c</span>(duration, dispInPatch, distBwPatch, area)) <span class="op">%&gt;%</span></span>
+<span id="cb23-15"><a href="linking-patch-metrics-to-personality.html#cb23-15"></a><span class="st">  </span><span class="kw">group_by</span>(response_variable) <span class="op">%&gt;%</span></span>
+<span id="cb23-16"><a href="linking-patch-metrics-to-personality.html#cb23-16"></a><span class="st">  </span><span class="kw">nest</span>()</span>
+<span id="cb23-17"><a href="linking-patch-metrics-to-personality.html#cb23-17"></a></span>
+<span id="cb23-18"><a href="linking-patch-metrics-to-personality.html#cb23-18"></a><span class="co"># run models using glmerTest and get predict output</span></span>
+<span id="cb23-19"><a href="linking-patch-metrics-to-personality.html#cb23-19"></a>model_data &lt;-<span class="st"> </span><span class="kw">mutate</span>(model_data, </span>
+<span id="cb23-20"><a href="linking-patch-metrics-to-personality.html#cb23-20"></a>                     <span class="dt">model =</span> <span class="kw">map</span>(data, <span class="cf">function</span>(z){</span>
+<span id="cb23-21"><a href="linking-patch-metrics-to-personality.html#cb23-21"></a>                       <span class="kw">lmer</span>(response_value <span class="op">~</span><span class="st"> </span>texpl <span class="op">+</span><span class="st"> </span></span>
+<span id="cb23-22"><a href="linking-patch-metrics-to-personality.html#cb23-22"></a><span class="st">                              </span>(<span class="dv">1</span><span class="op">|</span>tide_number) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb23-23"><a href="linking-patch-metrics-to-personality.html#cb23-23"></a><span class="st">                              </span>tidaltime_mean <span class="op">+</span><span class="st"> </span><span class="kw">I</span>((tidaltime_mean)<span class="op">^</span><span class="dv">2</span>), </span>
+<span id="cb23-24"><a href="linking-patch-metrics-to-personality.html#cb23-24"></a>                            <span class="dt">data =</span> z, <span class="dt">na.action =</span> na.omit)})) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb23-25"><a href="linking-patch-metrics-to-personality.html#cb23-25"></a><span class="st">  </span></span>
+<span id="cb23-26"><a href="linking-patch-metrics-to-personality.html#cb23-26"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">predMod =</span> <span class="kw">map2</span>(model, data, <span class="cf">function</span>(a, b){</span>
+<span id="cb23-27"><a href="linking-patch-metrics-to-personality.html#cb23-27"></a>    <span class="kw">mutate</span>(b, <span class="dt">predval =</span> <span class="kw">predict</span>(a, <span class="dt">type =</span> <span class="st">&quot;response&quot;</span>, <span class="dt">newdata =</span> b, </span>
+<span id="cb23-28"><a href="linking-patch-metrics-to-personality.html#cb23-28"></a>                                <span class="dt">allow.new.levels =</span> <span class="ot">TRUE</span>))</span>
+<span id="cb23-29"><a href="linking-patch-metrics-to-personality.html#cb23-29"></a>  }))</span>
+<span id="cb23-30"><a href="linking-patch-metrics-to-personality.html#cb23-30"></a></span>
+<span id="cb23-31"><a href="linking-patch-metrics-to-personality.html#cb23-31"></a><span class="co"># assign names to model object</span></span>
+<span id="cb23-32"><a href="linking-patch-metrics-to-personality.html#cb23-32"></a><span class="kw">names</span>(model_data<span class="op">$</span>model) &lt;-<span class="st"> </span><span class="kw">glue</span>(<span class="st">&quot;response = {model_data$response_variable} | predictor = tExplScore&quot;</span>)</span></code></pre></div>
 </div>
 <div id="plot-model-figures" class="section level2">
 <h2 number="7.5"><span class="header-section-number">7.5</span> Plot model figures</h2>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="linking-patch-metrics-to-personality.html#cb23-1"></a><span class="co"># prepare data for plotting</span></span>
-<span id="cb23-2"><a href="linking-patch-metrics-to-personality.html#cb23-2"></a>plot_data &lt;-<span class="st"> </span><span class="kw">mutate</span>(model_data,</span>
-<span id="cb23-3"><a href="linking-patch-metrics-to-personality.html#cb23-3"></a>                    <span class="dt">data_expl =</span> <span class="kw">map</span>(data, <span class="cf">function</span>(df){</span>
-<span id="cb23-4"><a href="linking-patch-metrics-to-personality.html#cb23-4"></a>                      <span class="kw">select</span>(df, texpl, response_value, tide_number) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-5"><a href="linking-patch-metrics-to-personality.html#cb23-5"></a><span class="st">                        </span><span class="kw">filter</span>(tide_number <span class="op">&lt;</span><span class="st"> </span><span class="dv">100</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-6"><a href="linking-patch-metrics-to-personality.html#cb23-6"></a><span class="st">                        </span><span class="kw">mutate</span>(<span class="dt">texpl =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(texpl, <span class="fl">0.1</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-7"><a href="linking-patch-metrics-to-personality.html#cb23-7"></a><span class="st">                        </span><span class="kw">group_by</span>(texpl) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-8"><a href="linking-patch-metrics-to-personality.html#cb23-8"></a><span class="st">                        </span><span class="kw">summarise_at</span>(<span class="kw">vars</span>(response_value), </span>
-<span id="cb23-9"><a href="linking-patch-metrics-to-personality.html#cb23-9"></a>                                     <span class="dt">.funs =</span> <span class="kw">c</span>(<span class="op">~</span><span class="kw">mean</span>(., <span class="dt">na.rm=</span>T), <span class="op">~</span><span class="kw">ci</span>(.)))}))</span>
-<span id="cb23-10"><a href="linking-patch-metrics-to-personality.html#cb23-10"></a>                    </span>
-<span id="cb23-11"><a href="linking-patch-metrics-to-personality.html#cb23-11"></a><span class="co"># prepare plots to arrange</span></span>
-<span id="cb23-12"><a href="linking-patch-metrics-to-personality.html#cb23-12"></a>plots &lt;-<span class="st"> </span>plot_data <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-13"><a href="linking-patch-metrics-to-personality.html#cb23-13"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-14"><a href="linking-patch-metrics-to-personality.html#cb23-14"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">y =</span> <span class="kw">c</span>(<span class="st">&quot;time in patch (mins)&quot;</span>,</span>
-<span id="cb23-15"><a href="linking-patch-metrics-to-personality.html#cb23-15"></a>               <span class="st">&quot;disp in patch (m)&quot;</span>,</span>
-<span id="cb23-16"><a href="linking-patch-metrics-to-personality.html#cb23-16"></a>               <span class="st">&quot;dist b/w patch (m)&quot;</span>,</span>
-<span id="cb23-17"><a href="linking-patch-metrics-to-personality.html#cb23-17"></a>               <span class="st">&quot;patch area (m.sq.)&quot;</span>),</span>
-<span id="cb23-18"><a href="linking-patch-metrics-to-personality.html#cb23-18"></a>         <span class="dt">title =</span> glue<span class="op">::</span><span class="kw">glue</span>(<span class="st">&#39;{letters[1:4]} {y}&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb23-19"><a href="linking-patch-metrics-to-personality.html#cb23-19"></a><span class="st">  </span></span>
-<span id="cb23-20"><a href="linking-patch-metrics-to-personality.html#cb23-20"></a><span class="st">  </span><span class="co"># plots column</span></span>
-<span id="cb23-21"><a href="linking-patch-metrics-to-personality.html#cb23-21"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">plot =</span> <span class="kw">pmap</span>(<span class="kw">select</span>(., data_expl, y, title), <span class="cf">function</span>(data_expl, y, title){</span>
-<span id="cb23-22"><a href="linking-patch-metrics-to-personality.html#cb23-22"></a>    <span class="kw">ggplot</span>(data_expl)<span class="op">+</span></span>
-<span id="cb23-23"><a href="linking-patch-metrics-to-personality.html#cb23-23"></a><span class="st">      </span><span class="kw">geom_pointrange</span>(<span class="kw">aes</span>(<span class="dt">x =</span> texpl,</span>
-<span id="cb23-24"><a href="linking-patch-metrics-to-personality.html#cb23-24"></a>                          <span class="dt">y =</span> mean,</span>
-<span id="cb23-25"><a href="linking-patch-metrics-to-personality.html#cb23-25"></a>                          <span class="dt">ymin =</span> mean<span class="op">-</span>ci,</span>
-<span id="cb23-26"><a href="linking-patch-metrics-to-personality.html#cb23-26"></a>                          <span class="dt">ymax =</span> mean<span class="op">+</span>ci),</span>
-<span id="cb23-27"><a href="linking-patch-metrics-to-personality.html#cb23-27"></a>                      <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="dt">width =</span> <span class="fl">0.01</span>))<span class="op">+</span></span>
-<span id="cb23-28"><a href="linking-patch-metrics-to-personality.html#cb23-28"></a><span class="st">      </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> scales<span class="op">::</span>comma)<span class="op">+</span></span>
-<span id="cb23-29"><a href="linking-patch-metrics-to-personality.html#cb23-29"></a><span class="co">#      facet_grid(~phase, scales = &quot;free_x&quot;)+</span></span>
-<span id="cb23-30"><a href="linking-patch-metrics-to-personality.html#cb23-30"></a><span class="st">      </span><span class="co">#scico::scale_colour_scico(palette = &quot;cork&quot;)+</span></span>
-<span id="cb23-31"><a href="linking-patch-metrics-to-personality.html#cb23-31"></a><span class="st">      </span></span>
-<span id="cb23-32"><a href="linking-patch-metrics-to-personality.html#cb23-32"></a><span class="co"># </span></span>
-<span id="cb23-33"><a href="linking-patch-metrics-to-personality.html#cb23-33"></a><span class="co">#       coord_cartesian(xlim = c(0,1),</span></span>
-<span id="cb23-34"><a href="linking-patch-metrics-to-personality.html#cb23-34"></a><span class="co">#                       ylim = c(quantile(data_expl$mean, 0.00, na.rm = TRUE),</span></span>
-<span id="cb23-35"><a href="linking-patch-metrics-to-personality.html#cb23-35"></a><span class="co">#                                quantile(data_expl$mean, 0.999, na.rm = TRUE)))+</span></span>
-<span id="cb23-36"><a href="linking-patch-metrics-to-personality.html#cb23-36"></a></span>
-<span id="cb23-37"><a href="linking-patch-metrics-to-personality.html#cb23-37"></a><span class="st">      </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="fl">0.5</span>,<span class="dv">1</span>))<span class="op">+</span></span>
-<span id="cb23-38"><a href="linking-patch-metrics-to-personality.html#cb23-38"></a><span class="st">      </span><span class="kw">theme_few</span>()<span class="op">+</span></span>
-<span id="cb23-39"><a href="linking-patch-metrics-to-personality.html#cb23-39"></a><span class="st">      </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>,</span>
-<span id="cb23-40"><a href="linking-patch-metrics-to-personality.html#cb23-40"></a>            <span class="co">#plot.background = element_rect(colour = 1),</span></span>
-<span id="cb23-41"><a href="linking-patch-metrics-to-personality.html#cb23-41"></a>            <span class="co">#plot.margin = unit(rep(0.5, 4), &quot;cm&quot;),</span></span>
-<span id="cb23-42"><a href="linking-patch-metrics-to-personality.html#cb23-42"></a>            <span class="co">#axis.text.y = element_text(angle = 90, vjust = 0.5),</span></span>
-<span id="cb23-43"><a href="linking-patch-metrics-to-personality.html#cb23-43"></a>            <span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>))<span class="op">+</span></span>
-<span id="cb23-44"><a href="linking-patch-metrics-to-personality.html#cb23-44"></a><span class="st">      </span><span class="kw">labs</span>(<span class="dt">y =</span> y, <span class="dt">title =</span> title,</span>
-<span id="cb23-45"><a href="linking-patch-metrics-to-personality.html#cb23-45"></a>           <span class="dt">x =</span> <span class="st">&quot;exploration score&quot;</span>)</span>
-<span id="cb23-46"><a href="linking-patch-metrics-to-personality.html#cb23-46"></a>  }),</span>
-<span id="cb23-47"><a href="linking-patch-metrics-to-personality.html#cb23-47"></a>  <span class="dt">plot =</span> <span class="kw">map</span>(plot, cowplot<span class="op">::</span>as_grob))</span>
-<span id="cb23-48"><a href="linking-patch-metrics-to-personality.html#cb23-48"></a></span>
-<span id="cb23-49"><a href="linking-patch-metrics-to-personality.html#cb23-49"></a><span class="co"># arrange plots</span></span>
-<span id="cb23-50"><a href="linking-patch-metrics-to-personality.html#cb23-50"></a></span>
-<span id="cb23-51"><a href="linking-patch-metrics-to-personality.html#cb23-51"></a>plotlist =<span class="st"> </span>plots<span class="op">$</span>plot</span>
-<span id="cb23-52"><a href="linking-patch-metrics-to-personality.html#cb23-52"></a></span>
-<span id="cb23-53"><a href="linking-patch-metrics-to-personality.html#cb23-53"></a>{</span>
-<span id="cb23-54"><a href="linking-patch-metrics-to-personality.html#cb23-54"></a>  <span class="co"># pdf(file = &quot;../figs/fig05patchMetrics.pdf&quot;, width = 8, height = 12)</span></span>
-<span id="cb23-55"><a href="linking-patch-metrics-to-personality.html#cb23-55"></a>  <span class="kw">grid.arrange</span>(<span class="dt">grobs =</span> plotlist, <span class="dt">ncol =</span> <span class="dv">2</span>)</span>
-<span id="cb23-56"><a href="linking-patch-metrics-to-personality.html#cb23-56"></a>  <span class="co"># dev.off()</span></span>
-<span id="cb23-57"><a href="linking-patch-metrics-to-personality.html#cb23-57"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="linking-patch-metrics-to-personality.html#cb24-1"></a><span class="co"># prepare data for plotting</span></span>
+<span id="cb24-2"><a href="linking-patch-metrics-to-personality.html#cb24-2"></a>plot_data &lt;-<span class="st"> </span><span class="kw">mutate</span>(model_data,</span>
+<span id="cb24-3"><a href="linking-patch-metrics-to-personality.html#cb24-3"></a>                    <span class="dt">data_expl =</span> <span class="kw">map</span>(data, <span class="cf">function</span>(df){</span>
+<span id="cb24-4"><a href="linking-patch-metrics-to-personality.html#cb24-4"></a>                      <span class="kw">select</span>(df, texpl, response_value, tide_number) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb24-5"><a href="linking-patch-metrics-to-personality.html#cb24-5"></a><span class="st">                        </span><span class="kw">filter</span>(tide_number <span class="op">&lt;</span><span class="st"> </span><span class="dv">100</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb24-6"><a href="linking-patch-metrics-to-personality.html#cb24-6"></a><span class="st">                        </span><span class="kw">mutate</span>(<span class="dt">texpl =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(texpl, <span class="fl">0.1</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb24-7"><a href="linking-patch-metrics-to-personality.html#cb24-7"></a><span class="st">                        </span><span class="kw">group_by</span>(texpl) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb24-8"><a href="linking-patch-metrics-to-personality.html#cb24-8"></a><span class="st">                        </span><span class="kw">summarise_at</span>(<span class="kw">vars</span>(response_value), </span>
+<span id="cb24-9"><a href="linking-patch-metrics-to-personality.html#cb24-9"></a>                                     <span class="dt">.funs =</span> <span class="kw">c</span>(<span class="op">~</span><span class="kw">mean</span>(., <span class="dt">na.rm=</span>T), <span class="op">~</span><span class="kw">ci</span>(.)))}))</span>
+<span id="cb24-10"><a href="linking-patch-metrics-to-personality.html#cb24-10"></a>                    </span>
+<span id="cb24-11"><a href="linking-patch-metrics-to-personality.html#cb24-11"></a><span class="co"># prepare plots to arrange</span></span>
+<span id="cb24-12"><a href="linking-patch-metrics-to-personality.html#cb24-12"></a>plots &lt;-<span class="st"> </span>plot_data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb24-13"><a href="linking-patch-metrics-to-personality.html#cb24-13"></a><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb24-14"><a href="linking-patch-metrics-to-personality.html#cb24-14"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">y =</span> <span class="kw">c</span>(<span class="st">&quot;time in patch (mins)&quot;</span>,</span>
+<span id="cb24-15"><a href="linking-patch-metrics-to-personality.html#cb24-15"></a>               <span class="st">&quot;disp in patch (m)&quot;</span>,</span>
+<span id="cb24-16"><a href="linking-patch-metrics-to-personality.html#cb24-16"></a>               <span class="st">&quot;dist b/w patch (m)&quot;</span>,</span>
+<span id="cb24-17"><a href="linking-patch-metrics-to-personality.html#cb24-17"></a>               <span class="st">&quot;patch area (m.sq.)&quot;</span>),</span>
+<span id="cb24-18"><a href="linking-patch-metrics-to-personality.html#cb24-18"></a>         <span class="dt">title =</span> glue<span class="op">::</span><span class="kw">glue</span>(<span class="st">&#39;{letters[1:4]} {y}&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb24-19"><a href="linking-patch-metrics-to-personality.html#cb24-19"></a><span class="st">  </span></span>
+<span id="cb24-20"><a href="linking-patch-metrics-to-personality.html#cb24-20"></a><span class="st">  </span><span class="co"># plots column</span></span>
+<span id="cb24-21"><a href="linking-patch-metrics-to-personality.html#cb24-21"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">plot =</span> <span class="kw">pmap</span>(<span class="kw">select</span>(., data_expl, y, title), <span class="cf">function</span>(data_expl, y, title){</span>
+<span id="cb24-22"><a href="linking-patch-metrics-to-personality.html#cb24-22"></a>    <span class="kw">ggplot</span>(data_expl)<span class="op">+</span></span>
+<span id="cb24-23"><a href="linking-patch-metrics-to-personality.html#cb24-23"></a><span class="st">      </span><span class="kw">geom_pointrange</span>(<span class="kw">aes</span>(<span class="dt">x =</span> texpl,</span>
+<span id="cb24-24"><a href="linking-patch-metrics-to-personality.html#cb24-24"></a>                          <span class="dt">y =</span> mean,</span>
+<span id="cb24-25"><a href="linking-patch-metrics-to-personality.html#cb24-25"></a>                          <span class="dt">ymin =</span> mean<span class="op">-</span>ci,</span>
+<span id="cb24-26"><a href="linking-patch-metrics-to-personality.html#cb24-26"></a>                          <span class="dt">ymax =</span> mean<span class="op">+</span>ci),</span>
+<span id="cb24-27"><a href="linking-patch-metrics-to-personality.html#cb24-27"></a>                      <span class="dt">position =</span> <span class="kw">position_dodge</span>(<span class="dt">width =</span> <span class="fl">0.01</span>))<span class="op">+</span></span>
+<span id="cb24-28"><a href="linking-patch-metrics-to-personality.html#cb24-28"></a><span class="st">      </span><span class="kw">scale_y_continuous</span>(<span class="dt">labels =</span> scales<span class="op">::</span>comma)<span class="op">+</span></span>
+<span id="cb24-29"><a href="linking-patch-metrics-to-personality.html#cb24-29"></a><span class="co">#      facet_grid(~phase, scales = &quot;free_x&quot;)+</span></span>
+<span id="cb24-30"><a href="linking-patch-metrics-to-personality.html#cb24-30"></a><span class="st">      </span><span class="co">#scico::scale_colour_scico(palette = &quot;cork&quot;)+</span></span>
+<span id="cb24-31"><a href="linking-patch-metrics-to-personality.html#cb24-31"></a><span class="st">      </span></span>
+<span id="cb24-32"><a href="linking-patch-metrics-to-personality.html#cb24-32"></a><span class="co"># </span></span>
+<span id="cb24-33"><a href="linking-patch-metrics-to-personality.html#cb24-33"></a><span class="co">#       coord_cartesian(xlim = c(0,1),</span></span>
+<span id="cb24-34"><a href="linking-patch-metrics-to-personality.html#cb24-34"></a><span class="co">#                       ylim = c(quantile(data_expl$mean, 0.00, na.rm = TRUE),</span></span>
+<span id="cb24-35"><a href="linking-patch-metrics-to-personality.html#cb24-35"></a><span class="co">#                                quantile(data_expl$mean, 0.999, na.rm = TRUE)))+</span></span>
+<span id="cb24-36"><a href="linking-patch-metrics-to-personality.html#cb24-36"></a></span>
+<span id="cb24-37"><a href="linking-patch-metrics-to-personality.html#cb24-37"></a><span class="st">      </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="fl">0.5</span>,<span class="dv">1</span>))<span class="op">+</span></span>
+<span id="cb24-38"><a href="linking-patch-metrics-to-personality.html#cb24-38"></a><span class="st">      </span><span class="kw">theme_few</span>()<span class="op">+</span></span>
+<span id="cb24-39"><a href="linking-patch-metrics-to-personality.html#cb24-39"></a><span class="st">      </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>,</span>
+<span id="cb24-40"><a href="linking-patch-metrics-to-personality.html#cb24-40"></a>            <span class="co">#plot.background = element_rect(colour = 1),</span></span>
+<span id="cb24-41"><a href="linking-patch-metrics-to-personality.html#cb24-41"></a>            <span class="co">#plot.margin = unit(rep(0.5, 4), &quot;cm&quot;),</span></span>
+<span id="cb24-42"><a href="linking-patch-metrics-to-personality.html#cb24-42"></a>            <span class="co">#axis.text.y = element_text(angle = 90, vjust = 0.5),</span></span>
+<span id="cb24-43"><a href="linking-patch-metrics-to-personality.html#cb24-43"></a>            <span class="dt">plot.title =</span> <span class="kw">element_text</span>(<span class="dt">face =</span> <span class="st">&quot;bold&quot;</span>))<span class="op">+</span></span>
+<span id="cb24-44"><a href="linking-patch-metrics-to-personality.html#cb24-44"></a><span class="st">      </span><span class="kw">labs</span>(<span class="dt">y =</span> y, <span class="dt">title =</span> title,</span>
+<span id="cb24-45"><a href="linking-patch-metrics-to-personality.html#cb24-45"></a>           <span class="dt">x =</span> <span class="st">&quot;exploration score&quot;</span>)</span>
+<span id="cb24-46"><a href="linking-patch-metrics-to-personality.html#cb24-46"></a>  }),</span>
+<span id="cb24-47"><a href="linking-patch-metrics-to-personality.html#cb24-47"></a>  <span class="dt">plot =</span> <span class="kw">map</span>(plot, cowplot<span class="op">::</span>as_grob))</span>
+<span id="cb24-48"><a href="linking-patch-metrics-to-personality.html#cb24-48"></a></span>
+<span id="cb24-49"><a href="linking-patch-metrics-to-personality.html#cb24-49"></a><span class="co"># arrange plots</span></span>
+<span id="cb24-50"><a href="linking-patch-metrics-to-personality.html#cb24-50"></a></span>
+<span id="cb24-51"><a href="linking-patch-metrics-to-personality.html#cb24-51"></a>plotlist =<span class="st"> </span>plots<span class="op">$</span>plot</span>
+<span id="cb24-52"><a href="linking-patch-metrics-to-personality.html#cb24-52"></a></span>
+<span id="cb24-53"><a href="linking-patch-metrics-to-personality.html#cb24-53"></a>{</span>
+<span id="cb24-54"><a href="linking-patch-metrics-to-personality.html#cb24-54"></a>  <span class="co"># pdf(file = &quot;../figs/fig05patchMetrics.pdf&quot;, width = 8, height = 12)</span></span>
+<span id="cb24-55"><a href="linking-patch-metrics-to-personality.html#cb24-55"></a>  <span class="kw">grid.arrange</span>(<span class="dt">grobs =</span> plotlist, <span class="dt">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb24-56"><a href="linking-patch-metrics-to-personality.html#cb24-56"></a>  <span class="co"># dev.off()</span></span>
+<span id="cb24-57"><a href="linking-patch-metrics-to-personality.html#cb24-57"></a>}</span></code></pre></div>
 
 </div>
 </div>
@@ -377,7 +376,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         </div>
       </div>
 <a href="residence-patch-construction.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="applying-ctmm-to-watlas-data.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="bathymetry-of-the-griend-mudflats.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

@@ -17,7 +17,7 @@ This section is about linking patch metrics to individual personality measures, 
 
 ## Prepare libraries
 
-```{r prep_libs_2, message=FALSE, warning=FALSE}
+```{r prep_libs_2, message=FALSE, warning=FALSE, eval=FALSE}
 # libraries to process data
 library(readr) # using readr here since data is small
 library(purrr)

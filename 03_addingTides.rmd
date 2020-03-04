@@ -16,7 +16,7 @@ This section is about adding tidal cycle data to individual trajectories. This i
 
 ## Prepare libraries
 
-```{r install_vulntoolkit_2, message=FALSE, warning=FALSE}
+```{r install_vulntoolkit_2, message=FALSE, warning=FALSE, eval=FALSE}
 # load VulnToolkit or install if not available
 if("VulnToolkit" %in% installed.packages() == FALSE){
   devtools::install_github("troyhill/VulnToolkit")
@@ -30,13 +30,16 @@ library(glue)
 library(dplyr)
 library(stringr)
 library(fasttime)
+library(lubridate)
+
+library(watlasUtils)
 ```
 
 ## Read water level data
 
 Water level data for [West Terschelling](https://waterinfo.rws.nl/#!/details/publiek/waterhoogte-t-o-v-nap/West-Terschelling(WTER)/Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm), a settlement approx. 10km from the field site are provided by Rijkswaterstaat's [Waterinfo](https://waterinfo.rws.nl/#!/nav/bulkdownload/parameters/Waterhoogten/), in cm above Amsterdam Ordnance Datum. These data are manually downloaded in the range July 1, 2018 -- October 31, 2018 and saved in `data/data2018`.
 
-```{r read_waterlevel_data, message=FALSE, warning=FALSE}
+```{r read_waterlevel_data, message=FALSE, warning=FALSE, eval=FALSE}
 # read in waterlevel data
 waterlevel <- fread("data/data2018/waterlevelWestTerschelling.csv", sep = ";")
 
@@ -84,10 +87,8 @@ fwrite(tides, file = "data/data2018/tidesSummer2018.csv",
 
 ```{r time_to_high_tide, eval=FALSE, message=FALSE, warning=FALSE}
 # read in data and add time since high tide
-data_files <- list.files(path = "data/data2018/", pattern = "whole_season*", full.names = TRUE)
-data_ids <- str_extract(data_files, "(tx_\\d+)") %>% str_sub(-3,-1)
-
-data_files <- data_files[as.integer(data_ids) %in% tag_info$Toa_Tag]
+data_files <- list.files(path = "data/data2018/locs_proc", pattern = "id_", full.names = TRUE)
+data_ids <- str_extract(data_files, "(id_\\d+)") %>% str_sub(-3,-1)
 
 # map read in and tidal time calculation over data
 # merge data to insert high tides within movement data
@@ -99,19 +100,15 @@ map(data_files, function(df){
   temp_data[,ts:=fastPOSIXct(ts, tz = "CET")]
   
   # merge with tides and order on time
-  temp_data <- merge(temp_data, tides, by.x = "ts", by.y = "time", 
-                     all = TRUE)
-  setorder(temp_data, ts)
-  
-  # get tide_number and time since high tide
-  temp_data[, tide_number := nafill(tide_number, "locf")]
-  temp_data[, tidaltime := as.numeric(difftime(ts, ts[1], units = "mins")), 
-             by = tide_number]
-  
-  # remove bad rows and columns
-  temp_data <- temp_data[complete.cases(x),]
-  temp_data[,`:=`(tide = NULL, level = NULL)]
+  temp_data <- wat_add_tide(df = temp_data,
+               tide_data = "data/data2018/tidesSummer2018.csv")
 
+  # add waterlevel
+  temp_data[,temp_time := lubridate::round_date(ts, unit = "10 minute")]
+  temp_data <- merge(temp_data, waterlevel[,.(dateTime, level)], 
+                     by.x = "temp_time", by.y = "dateTime")
+  setnames(temp_data, old = "level", new = "waterlevel")
+  
   # export data, print msg, remove data
   fwrite(temp_data, file = df, dateTimeAs = "ISO")
   message(glue('tag {unique(temp_data$id)} added time since high tide'))
