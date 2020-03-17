@@ -5,11 +5,11 @@ editor_options:
 
 # Residence patch construction
 
-This section is about using the main `watlasUtils` functions to infer residence points when data is missing from a movement track, to classify points into residence or travelling, and to construct low-tide residence patches from the residence points. Summary statistics on these spatial outputs are then exported to file for further use.
+This section is about using the main `watlastools` functions to infer residence points when data is missing from a movement track, to classify points into residence or travelling, and to construct low-tide residence patches from the residence points. Summary statistics on these spatial outputs are then exported to file for further use.
 
 **Workflow**
 
-1. Prepare `watlasUtils` and required libraries,
+1. Prepare `watlastools` and required libraries,
 2. Read data, infer residence, classify points, construct low-tide patches, and get spatial data from patches,
 3. Get patch trajectories,
 4. Export spatial data.
@@ -17,11 +17,11 @@ This section is about using the main `watlasUtils` functions to infer residence 
 ## Prepare libraries
 
 ```{r prep_libs, message=FALSE, warning=FALSE, eval=FALSE}
-# load watlasUtils or install if not available
-if("watlasUtils" %in% installed.packages() == FALSE){
-  devtools::install_github("pratikunterwegs/watlasUtils")
+# load watlastools or install if not available
+if("watlastools" %in% installed.packages() == FALSE){
+  devtools::install_github("pratikunterwegs/watlastools")
 }
-library(watlasUtils)
+library(watlastools)
 
 # libraries to process data
 library(data.table)
@@ -74,7 +74,7 @@ for(i in 1:length(data_files)){
                                    prop_fixes = length(x) / ((max(time) - min(time))/30)),
                                 by = .(id, tide_number)]
       
-      sld <- watlasUtils::wat_simple_dist(temp_data, "x", "y")
+      sld <- watlastools::wat_simple_dist(temp_data, "x", "y")
       timelag <- c(NA, as.numeric(diff(temp_data$time)))
       speed <- sld/timelag
       
@@ -89,17 +89,17 @@ for(i in 1:length(data_files)){
     # wrap process in try catch
     tryCatch(
       {
-        # watlasUtils function to infer residence
+        # watlastools function to infer residence
         temp_data <- wat_infer_residence(df = temp_data,
                                          infResTime = 2,
                                          infPatchTimeDiff = 30,
                                          infPatchSpatDiff = 100)
         
-        # watlasUtils function to classify path
+        # watlastools function to classify path
         temp_data <- wat_classify_points(somedata = temp_data,
                                          resTimeLimit = 2)
         
-        # watlasUtils function to get patches
+        # watlastools function to get patches
         patch_data <- wat_make_res_patch(somedata = temp_data,
                                          bufferSize = 10,
                                          spatIndepLim = 100,
@@ -108,7 +108,7 @@ for(i in 1:length(data_files)){
                                          minFixes = 3,
                                          tideLims = c(0,13))
         
-        # watlasUtils function to get patch data as spatial
+        # watlastools function to get patch data as spatial
         patch_summary <- wat_get_patch_summary(resPatchData = patch_data,
                                                dataColumn = "data",
                                                whichData = "summary")

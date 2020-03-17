@@ -5,7 +5,7 @@ editor_options:
 
 # Getting data
 
-This section focusses on accessing and downloading WATLAS data. This is done using functions in the [WATLAS Utilities package](https://github.com/pratikunterwegs/watlasUtils). 
+This section focusses on accessing and downloading WATLAS data. This is done using functions in the [WATLAS Utilities package](https://github.com/pratikunterwegs/watlastools). 
 
 **Workflow**
 
@@ -13,15 +13,15 @@ This section focusses on accessing and downloading WATLAS data. This is done usi
 2. Reading tag data with deployment start dates from a local file. This file is not yet publicly available.
 3. Connecting to the NIOZ databse and downloading data. This database is also not public-access.
 
-## Prepare `watlasUtils` and other libraries
+## Prepare `watlastools` and other libraries
 
-```{r install_watlasutils, message=FALSE, warning=FALSE}
-# install the package watlasUtils from master branch using the following
+```{r install_watlastools, message=FALSE, warning=FALSE}
+# install the package watlastools from master branch using the following
 # install.packages("devtools")
 library(devtools)
 
-# devtools::install_github("pratikunterwegs/watlasUtils")
-library(watlasUtils)
+# devtools::install_github("pratikunterwegs/watlastools")
+library(watlastools)
 
 # libraries to process data
 library(data.table)
@@ -66,14 +66,14 @@ data_access <- fread("data/access_params.txt")
 
 ```{r get_data, eval=FALSE, message=FALSE, warning=FALSE}
 # create a data storage file if not present
-# use the getData function from watlasUtils on the tag_info data frame
+# use the getData function from watlastools on the tag_info data frame
 # this is placed inside a pmap wrapper to automate access for all birds
 
 if(!dir.exists("data/data2018")) { dir.create("data/data2018") }
 
 pmap(tag_info[,.(Toa_Tag, Release_Date)], function(Toa_Tag, Release_Date){
 
-  prelim_data <- watlasUtils::wat_get_data(tag = Toa_Tag,
+  prelim_data <- watlastools::wat_get_data(tag = Toa_Tag,
                            tracking_time_start = as.character(Release_Date),
                            tracking_time_end = "2018-10-31",
                            username = data_access$username,
