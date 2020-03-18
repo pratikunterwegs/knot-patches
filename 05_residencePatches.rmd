@@ -53,7 +53,7 @@ Process patches. Takes approx. 5 hours for 3 second data.
 ```{r make_patches, eval=FALSE, message=FALSE, warning=FALSE}
 # make a vector of data files to read
 data_files <- list.files(path = "data/data2018/revisitData", 
-                         pattern = "_revisit.csv", full.names = TRUE)[1:10]
+                         pattern = "_revisit.csv", full.names = TRUE)
 
 # get tag ids
 data_id <- str_split(data_files, "/") %>% 
@@ -64,8 +64,6 @@ data_id <- str_split(data_files, "/") %>%
 data <- data_frame(tag = data_id, data_file = data_files)
 data <- split(x = data, f = data$tag) %>% 
   map(function(l) l$data_file)
-
-i=1
 
 # map inferResidence, classifyPath, and getPatches over data
 for(i in 1:length(data)){
@@ -136,7 +134,7 @@ for(i in 1:length(data)){
     # watlastools function to get patch data as spatial
     patch_summary <- wat_get_patch_summary(resPatchData = repaired_data,
                                            whichData = "summary")
-    fwrite(patch_summary, file = "data/data_2018/data_2018_patch_summary.csv",
+    fwrite(patch_summary, file = "data/data2018/data_2018_patch_summary.csv",
            append = TRUE)
   }
 }
