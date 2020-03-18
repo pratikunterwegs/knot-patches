@@ -24,12 +24,12 @@ if("watlastools" %in% installed.packages() == FALSE){
 library(watlastools)
 
 # libraries to process data
+library(dplyr)
 library(data.table)
 library(purrr)
 library(stringr)
 library(glue)
 library(readr)
-library(dplyr)
 library(fasttime)
 
 # functions for this stage alone
@@ -52,7 +52,8 @@ Process patches. Takes approx. 5 hours for 3 second data.
 
 ```{r make_patches, eval=FALSE, message=FALSE, warning=FALSE}
 # make a vector of data files to read
-data_files <- list.files(path = "data/data2018/revisitData", pattern = "_revisit.csv", full.names = TRUE)
+data_files <- list.files(path = "data/data2018/revisitData", 
+                         pattern = "_revisit.csv", full.names = TRUE)[1:10]
 
 # get tag ids
 data_id <- str_split(data_files, "/") %>% 
@@ -64,12 +65,12 @@ data <- data_frame(tag = data_id, data_file = data_files)
 data <- split(x = data, f = data$tag) %>% 
   map(function(l) l$data_file)
 
+i=1
+
 # map inferResidence, classifyPath, and getPatches over data
 for(i in 1:length(data)){
   patch_data <- map(data[[i]], function(l){
   
-    success = FALSE
-
     # read the data file
     temp_data <- fread(l)
     temp_data[,ts:=fastPOSIXct(ts)]
@@ -92,7 +93,7 @@ for(i in 1:length(data)){
                          ci95_speed = ci(speed))]
       
       # write total distance for the tidal cycle
-      fwrite(data_summary, file = "data/data2018/tidal_mean_speed_2018.csv", 
+      fwrite(data_summary, file = "data/data2018/data_2018_tidal_mean_speed.csv", 
              append = TRUE, scipen = 6)
     }
     
@@ -101,7 +102,6 @@ for(i in 1:length(data)){
       {
         # watlastools function to infer residence
         temp_data <- wat_infer_residence(df = temp_data,
-                                         infResTime = 2,
                                          infPatchTimeDiff = 30,
                                          infPatchSpatDiff = 100)
         
@@ -118,8 +118,6 @@ for(i in 1:length(data)){
                                          minFixes = 3)
         # print message
         message(as.character(glue('patches {id}_{tide_number} done')))
-        
-        success = TRUE
         return(patch_dt)
       },
       # null error function, with option to collect data on errors
@@ -131,17 +129,14 @@ for(i in 1:length(data)){
   })
   
   # repair high tide patches across an individual's tidal cycles
-  repaired_data <- wat_repair_ht_patches(patch_data_list = patch_data,
-                                         spatIndepLim = 100,
-                                         tempIndepLim = 30,
-                                         bufferSize = 10)
+  repaired_data <- wat_repair_ht_patches(patch_data_list = patch_data)
   # write patch summary data
+  
   if(all(is.data.frame(repaired_data), nrow(repaired_data) > 0)){
     # watlastools function to get patch data as spatial
     patch_summary <- wat_get_patch_summary(resPatchData = repaired_data,
-                                           dataColumn = "patchdata",
                                            whichData = "summary")
-    fwrite(patch_summary, file = "data/data_2018_patch_summary.csv",
+    fwrite(patch_summary, file = "data/data_2018/data_2018_patch_summary.csv",
            append = TRUE)
   }
 }
