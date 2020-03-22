@@ -10,9 +10,7 @@ This section is about using the main `watlastools` functions to infer residence 
 **Workflow**
 
 1. Prepare `watlastools` and required libraries,
-2. Read data, infer residence, classify points, construct low-tide patches, and get spatial data from patches,
-3. Get patch trajectories,
-4. Export spatial data.
+2. Read data, infer residence, classify points, construct patches, repair patches, and write movement data and patch summary to file.
 
 ## Prepare libraries
 
