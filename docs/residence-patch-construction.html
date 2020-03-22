@@ -24,7 +24,7 @@
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2020-03-04" />
+<meta name="date" content="2020-03-22" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -138,13 +138,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="2" data-path="getting-data.html"><a href="getting-data.html"><i class="fa fa-check"></i><b>2</b> Getting data</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="getting-data.html"><a href="getting-data.html#prepare-watlasutils-and-other-libraries"><i class="fa fa-check"></i><b>2.1</b> Prepare <code>watlasUtils</code> and other libraries</a></li>
+<li class="chapter" data-level="2.1" data-path="getting-data.html"><a href="getting-data.html#prepare-watlastools-and-other-libraries"><i class="fa fa-check"></i><b>2.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
 <li class="chapter" data-level="2.2" data-path="getting-data.html"><a href="getting-data.html#read-in-tag-deployment-data"><i class="fa fa-check"></i><b>2.2</b> Read in tag deployment data</a></li>
 <li class="chapter" data-level="2.3" data-path="getting-data.html"><a href="getting-data.html#get-data-and-save-locally"><i class="fa fa-check"></i><b>2.3</b> Get data and save locally</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning data</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-watlasutils-and-other-libraries-1"><i class="fa fa-check"></i><b>3.1</b> Prepare <code>watlasUtils</code> and other libraries</a></li>
+<li class="chapter" data-level="3.1" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-watlastools-and-other-libraries-1"><i class="fa fa-check"></i><b>3.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
 <li class="chapter" data-level="3.2" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-to-remove-attractor-points"><i class="fa fa-check"></i><b>3.2</b> Prepare to remove attractor points</a></li>
 <li class="chapter" data-level="3.3" data-path="cleaning-data.html"><a href="cleaning-data.html#read-clean-and-write-data"><i class="fa fa-check"></i><b>3.3</b> Read, clean, and write data</a></li>
 </ul></li>
@@ -164,7 +164,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="6.1" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#prepare-libraries-2"><i class="fa fa-check"></i><b>6.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="6.2" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#patch-construction"><i class="fa fa-check"></i><b>6.2</b> Patch construction</a></li>
-<li class="chapter" data-level="6.3" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#get-patch-trajectories"><i class="fa fa-check"></i><b>6.3</b> Get patch trajectories</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html"><i class="fa fa-check"></i><b>7</b> Linking patch metrics to personality</a>
 <ul>
@@ -198,29 +197,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="residence-patch-construction" class="section level1">
 <h1 number="6"><span class="header-section-number">6</span> Residence patch construction</h1>
-<p>This section is about using the main <code>watlasUtils</code> functions to infer residence points when data is missing from a movement track, to classify points into residence or travelling, and to construct low-tide residence patches from the residence points. Summary statistics on these spatial outputs are then exported to file for further use.</p>
+<p>This section is about using the main <code>watlastools</code> functions to infer residence points when data is missing from a movement track, to classify points into residence or travelling, and to construct low-tide residence patches from the residence points. Summary statistics on these spatial outputs are then exported to file for further use.</p>
 <p><strong>Workflow</strong></p>
 <ol style="list-style-type: decimal">
-<li>Prepare <code>watlasUtils</code> and required libraries,</li>
+<li>Prepare <code>watlastools</code> and required libraries,</li>
 <li>Read data, infer residence, classify points, construct low-tide patches, and get spatial data from patches,</li>
 <li>Get patch trajectories,</li>
 <li>Export spatial data.</li>
 </ol>
 <div id="prepare-libraries-2" class="section level2">
 <h2 number="6.1"><span class="header-section-number">6.1</span> Prepare libraries</h2>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="residence-patch-construction.html#cb16-1"></a><span class="co"># load watlasUtils or install if not available</span></span>
-<span id="cb16-2"><a href="residence-patch-construction.html#cb16-2"></a><span class="cf">if</span>(<span class="st">&quot;watlasUtils&quot;</span> <span class="op">%in%</span><span class="st"> </span><span class="kw">installed.packages</span>() <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>){</span>
-<span id="cb16-3"><a href="residence-patch-construction.html#cb16-3"></a>  devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;pratikunterwegs/watlasUtils&quot;</span>)</span>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="residence-patch-construction.html#cb16-1"></a><span class="co"># load watlastools or install if not available</span></span>
+<span id="cb16-2"><a href="residence-patch-construction.html#cb16-2"></a><span class="cf">if</span>(<span class="st">&quot;watlastools&quot;</span> <span class="op">%in%</span><span class="st"> </span><span class="kw">installed.packages</span>() <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>){</span>
+<span id="cb16-3"><a href="residence-patch-construction.html#cb16-3"></a>  devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;pratikunterwegs/watlastools&quot;</span>)</span>
 <span id="cb16-4"><a href="residence-patch-construction.html#cb16-4"></a>}</span>
-<span id="cb16-5"><a href="residence-patch-construction.html#cb16-5"></a><span class="kw">library</span>(watlasUtils)</span>
+<span id="cb16-5"><a href="residence-patch-construction.html#cb16-5"></a><span class="kw">library</span>(watlastools)</span>
 <span id="cb16-6"><a href="residence-patch-construction.html#cb16-6"></a></span>
 <span id="cb16-7"><a href="residence-patch-construction.html#cb16-7"></a><span class="co"># libraries to process data</span></span>
-<span id="cb16-8"><a href="residence-patch-construction.html#cb16-8"></a><span class="kw">library</span>(data.table)</span>
-<span id="cb16-9"><a href="residence-patch-construction.html#cb16-9"></a><span class="kw">library</span>(purrr)</span>
-<span id="cb16-10"><a href="residence-patch-construction.html#cb16-10"></a><span class="kw">library</span>(stringr)</span>
-<span id="cb16-11"><a href="residence-patch-construction.html#cb16-11"></a><span class="kw">library</span>(glue)</span>
-<span id="cb16-12"><a href="residence-patch-construction.html#cb16-12"></a><span class="kw">library</span>(readr)</span>
-<span id="cb16-13"><a href="residence-patch-construction.html#cb16-13"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb16-8"><a href="residence-patch-construction.html#cb16-8"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb16-9"><a href="residence-patch-construction.html#cb16-9"></a><span class="kw">library</span>(data.table)</span>
+<span id="cb16-10"><a href="residence-patch-construction.html#cb16-10"></a><span class="kw">library</span>(purrr)</span>
+<span id="cb16-11"><a href="residence-patch-construction.html#cb16-11"></a><span class="kw">library</span>(stringr)</span>
+<span id="cb16-12"><a href="residence-patch-construction.html#cb16-12"></a><span class="kw">library</span>(glue)</span>
+<span id="cb16-13"><a href="residence-patch-construction.html#cb16-13"></a><span class="kw">library</span>(readr)</span>
 <span id="cb16-14"><a href="residence-patch-construction.html#cb16-14"></a><span class="kw">library</span>(fasttime)</span>
 <span id="cb16-15"><a href="residence-patch-construction.html#cb16-15"></a></span>
 <span id="cb16-16"><a href="residence-patch-construction.html#cb16-16"></a><span class="co"># functions for this stage alone</span></span>
@@ -228,108 +227,101 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="patch-construction" class="section level2">
 <h2 number="6.2"><span class="header-section-number">6.2</span> Patch construction</h2>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="residence-patch-construction.html#cb17-1"></a><span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;data/data2018/tidal_mean_speed_2018.csv&quot;</span>)){</span>
-<span id="cb17-2"><a href="residence-patch-construction.html#cb17-2"></a>  <span class="kw">file.remove</span>(<span class="st">&quot;data/data2018/tidal_mean_speed_2018.csv&quot;</span>)</span>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="residence-patch-construction.html#cb17-1"></a><span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;data/data2018/data_2018_tidal_mean_speed.csv&quot;</span>)){</span>
+<span id="cb17-2"><a href="residence-patch-construction.html#cb17-2"></a>  <span class="kw">file.remove</span>(<span class="st">&quot;data/data2018/data_2018_tidal_mean_speed.csv&quot;</span>)</span>
 <span id="cb17-3"><a href="residence-patch-construction.html#cb17-3"></a>}</span>
 <span id="cb17-4"><a href="residence-patch-construction.html#cb17-4"></a></span>
-<span id="cb17-5"><a href="residence-patch-construction.html#cb17-5"></a><span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;data/data2018/data_patch_summary.csv&quot;</span>)){</span>
-<span id="cb17-6"><a href="residence-patch-construction.html#cb17-6"></a>  <span class="kw">file.remove</span>(<span class="st">&quot;data/data2018/data_patch_summary.csv&quot;</span>)</span>
+<span id="cb17-5"><a href="residence-patch-construction.html#cb17-5"></a><span class="cf">if</span>(<span class="kw">file.exists</span>(<span class="st">&quot;data/data2018/data_2018_patch_summary.csv&quot;</span>)){</span>
+<span id="cb17-6"><a href="residence-patch-construction.html#cb17-6"></a>  <span class="kw">file.remove</span>(<span class="st">&quot;data/data2018/data_2018_patch_summary.csv&quot;</span>)</span>
 <span id="cb17-7"><a href="residence-patch-construction.html#cb17-7"></a>}</span></code></pre></div>
 <p>Process patches. Takes approx. 5 hours for 3 second data.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="residence-patch-construction.html#cb18-1"></a><span class="co"># make a list of data files to read</span></span>
-<span id="cb18-2"><a href="residence-patch-construction.html#cb18-2"></a>data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data/data2018/revisitData&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;_revisit.csv&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb18-3"><a href="residence-patch-construction.html#cb18-3"></a></span>
-<span id="cb18-4"><a href="residence-patch-construction.html#cb18-4"></a><span class="co"># map inferResidence, classifyPath, and getPatches over data</span></span>
-<span id="cb18-5"><a href="residence-patch-construction.html#cb18-5"></a></span>
-<span id="cb18-6"><a href="residence-patch-construction.html#cb18-6"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(data_files)){</span>
-<span id="cb18-7"><a href="residence-patch-construction.html#cb18-7"></a>  df =<span class="st"> </span>data_files[i]</span>
-<span id="cb18-8"><a href="residence-patch-construction.html#cb18-8"></a>  </span>
-<span id="cb18-9"><a href="residence-patch-construction.html#cb18-9"></a>  success =<span class="st"> </span><span class="ot">FALSE</span></span>
-<span id="cb18-10"><a href="residence-patch-construction.html#cb18-10"></a>  {</span>
-<span id="cb18-11"><a href="residence-patch-construction.html#cb18-11"></a>    temp_data &lt;-<span class="st"> </span><span class="kw">fread</span>(df)</span>
-<span id="cb18-12"><a href="residence-patch-construction.html#cb18-12"></a>    temp_data[,ts<span class="op">:</span><span class="er">=</span><span class="kw">fastPOSIXct</span>(ts)]</span>
-<span id="cb18-13"><a href="residence-patch-construction.html#cb18-13"></a>    </span>
-<span id="cb18-14"><a href="residence-patch-construction.html#cb18-14"></a>    id &lt;-<span class="st"> </span><span class="kw">unique</span>(temp_data<span class="op">$</span>id)</span>
-<span id="cb18-15"><a href="residence-patch-construction.html#cb18-15"></a>    tide_number &lt;-<span class="st"> </span><span class="kw">unique</span>(temp_data<span class="op">$</span>tide_number)</span>
-<span id="cb18-16"><a href="residence-patch-construction.html#cb18-16"></a>    </span>
-<span id="cb18-17"><a href="residence-patch-construction.html#cb18-17"></a>    <span class="co"># get data summary</span></span>
-<span id="cb18-18"><a href="residence-patch-construction.html#cb18-18"></a>    {</span>
-<span id="cb18-19"><a href="residence-patch-construction.html#cb18-19"></a>      data_summary &lt;-<span class="st"> </span>temp_data[,.(<span class="dt">duration =</span> (<span class="kw">max</span>(time) <span class="op">-</span><span class="st"> </span><span class="kw">min</span>(time))<span class="op">/</span><span class="dv">60</span>,</span>
-<span id="cb18-20"><a href="residence-patch-construction.html#cb18-20"></a>                                   <span class="dt">n_fixes =</span> <span class="kw">length</span>(x),</span>
-<span id="cb18-21"><a href="residence-patch-construction.html#cb18-21"></a>                                   <span class="dt">prop_fixes =</span> <span class="kw">length</span>(x) <span class="op">/</span><span class="st"> </span>((<span class="kw">max</span>(time) <span class="op">-</span><span class="st"> </span><span class="kw">min</span>(time))<span class="op">/</span><span class="dv">30</span>)),</span>
-<span id="cb18-22"><a href="residence-patch-construction.html#cb18-22"></a>                                by =<span class="st"> </span>.(id, tide_number)]</span>
-<span id="cb18-23"><a href="residence-patch-construction.html#cb18-23"></a>      </span>
-<span id="cb18-24"><a href="residence-patch-construction.html#cb18-24"></a>      sld &lt;-<span class="st"> </span>watlasUtils<span class="op">::</span><span class="kw">wat_simple_dist</span>(temp_data, <span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>)</span>
-<span id="cb18-25"><a href="residence-patch-construction.html#cb18-25"></a>      timelag &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">NA</span>, <span class="kw">as.numeric</span>(<span class="kw">diff</span>(temp_data<span class="op">$</span>time)))</span>
-<span id="cb18-26"><a href="residence-patch-construction.html#cb18-26"></a>      speed &lt;-<span class="st"> </span>sld<span class="op">/</span>timelag</span>
-<span id="cb18-27"><a href="residence-patch-construction.html#cb18-27"></a>      </span>
-<span id="cb18-28"><a href="residence-patch-construction.html#cb18-28"></a>      data_summary[,<span class="st">`</span><span class="dt">:=</span><span class="st">`</span>(<span class="dt">mean_speed =</span> <span class="kw">mean</span>(speed, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),</span>
-<span id="cb18-29"><a href="residence-patch-construction.html#cb18-29"></a>                         <span class="dt">ci95_speed =</span> <span class="kw">ci</span>(speed))]</span>
-<span id="cb18-30"><a href="residence-patch-construction.html#cb18-30"></a>      </span>
-<span id="cb18-31"><a href="residence-patch-construction.html#cb18-31"></a>      <span class="co"># write data</span></span>
-<span id="cb18-32"><a href="residence-patch-construction.html#cb18-32"></a>      <span class="kw">fwrite</span>(data_summary, <span class="dt">file =</span> <span class="st">&quot;data/data2018/tidal_mean_speed_2018.csv&quot;</span>, </span>
-<span id="cb18-33"><a href="residence-patch-construction.html#cb18-33"></a>             <span class="dt">append =</span> <span class="ot">TRUE</span>, <span class="dt">scipen =</span> <span class="dv">6</span>)</span>
-<span id="cb18-34"><a href="residence-patch-construction.html#cb18-34"></a>    }</span>
-<span id="cb18-35"><a href="residence-patch-construction.html#cb18-35"></a>    </span>
-<span id="cb18-36"><a href="residence-patch-construction.html#cb18-36"></a>    <span class="co"># wrap process in try catch</span></span>
-<span id="cb18-37"><a href="residence-patch-construction.html#cb18-37"></a>    <span class="kw">tryCatch</span>(</span>
-<span id="cb18-38"><a href="residence-patch-construction.html#cb18-38"></a>      {</span>
-<span id="cb18-39"><a href="residence-patch-construction.html#cb18-39"></a>        <span class="co"># watlasUtils function to infer residence</span></span>
-<span id="cb18-40"><a href="residence-patch-construction.html#cb18-40"></a>        temp_data &lt;-<span class="st"> </span><span class="kw">wat_infer_residence</span>(<span class="dt">df =</span> temp_data,</span>
-<span id="cb18-41"><a href="residence-patch-construction.html#cb18-41"></a>                                         <span class="dt">infResTime =</span> <span class="dv">2</span>,</span>
-<span id="cb18-42"><a href="residence-patch-construction.html#cb18-42"></a>                                         <span class="dt">infPatchTimeDiff =</span> <span class="dv">30</span>,</span>
-<span id="cb18-43"><a href="residence-patch-construction.html#cb18-43"></a>                                         <span class="dt">infPatchSpatDiff =</span> <span class="dv">100</span>)</span>
-<span id="cb18-44"><a href="residence-patch-construction.html#cb18-44"></a>        </span>
-<span id="cb18-45"><a href="residence-patch-construction.html#cb18-45"></a>        <span class="co"># watlasUtils function to classify path</span></span>
-<span id="cb18-46"><a href="residence-patch-construction.html#cb18-46"></a>        temp_data &lt;-<span class="st"> </span><span class="kw">wat_classify_points</span>(<span class="dt">somedata =</span> temp_data,</span>
-<span id="cb18-47"><a href="residence-patch-construction.html#cb18-47"></a>                                         <span class="dt">resTimeLimit =</span> <span class="dv">2</span>)</span>
-<span id="cb18-48"><a href="residence-patch-construction.html#cb18-48"></a>        </span>
-<span id="cb18-49"><a href="residence-patch-construction.html#cb18-49"></a>        <span class="co"># watlasUtils function to get patches</span></span>
-<span id="cb18-50"><a href="residence-patch-construction.html#cb18-50"></a>        patch_data &lt;-<span class="st"> </span><span class="kw">wat_make_res_patch</span>(<span class="dt">somedata =</span> temp_data,</span>
-<span id="cb18-51"><a href="residence-patch-construction.html#cb18-51"></a>                                         <span class="dt">bufferSize =</span> <span class="dv">10</span>,</span>
-<span id="cb18-52"><a href="residence-patch-construction.html#cb18-52"></a>                                         <span class="dt">spatIndepLim =</span> <span class="dv">100</span>,</span>
-<span id="cb18-53"><a href="residence-patch-construction.html#cb18-53"></a>                                         <span class="dt">tempIndepLim =</span> <span class="dv">30</span>,</span>
-<span id="cb18-54"><a href="residence-patch-construction.html#cb18-54"></a>                                         <span class="dt">restIndepLim =</span> <span class="dv">30</span>,</span>
-<span id="cb18-55"><a href="residence-patch-construction.html#cb18-55"></a>                                         <span class="dt">minFixes =</span> <span class="dv">3</span>,</span>
-<span id="cb18-56"><a href="residence-patch-construction.html#cb18-56"></a>                                         <span class="dt">tideLims =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">13</span>))</span>
-<span id="cb18-57"><a href="residence-patch-construction.html#cb18-57"></a>        </span>
-<span id="cb18-58"><a href="residence-patch-construction.html#cb18-58"></a>        <span class="co"># watlasUtils function to get patch data as spatial</span></span>
-<span id="cb18-59"><a href="residence-patch-construction.html#cb18-59"></a>        patch_summary &lt;-<span class="st"> </span><span class="kw">wat_get_patch_summary</span>(<span class="dt">resPatchData =</span> patch_data,</span>
-<span id="cb18-60"><a href="residence-patch-construction.html#cb18-60"></a>                                               <span class="dt">dataColumn =</span> <span class="st">&quot;data&quot;</span>,</span>
-<span id="cb18-61"><a href="residence-patch-construction.html#cb18-61"></a>                                               <span class="dt">whichData =</span> <span class="st">&quot;summary&quot;</span>)</span>
-<span id="cb18-62"><a href="residence-patch-construction.html#cb18-62"></a>        </span>
-<span id="cb18-63"><a href="residence-patch-construction.html#cb18-63"></a>        <span class="co"># print message</span></span>
-<span id="cb18-64"><a href="residence-patch-construction.html#cb18-64"></a>        <span class="kw">message</span>(<span class="kw">as.character</span>(<span class="kw">glue</span>(<span class="st">&#39;patches {id}_{tide_number} done&#39;</span>)))</span>
-<span id="cb18-65"><a href="residence-patch-construction.html#cb18-65"></a>        </span>
-<span id="cb18-66"><a href="residence-patch-construction.html#cb18-66"></a>        success =<span class="st"> </span><span class="ot">TRUE</span></span>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="residence-patch-construction.html#cb18-1"></a><span class="co"># make a vector of data files to read</span></span>
+<span id="cb18-2"><a href="residence-patch-construction.html#cb18-2"></a>data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data/data2018/revisitData&quot;</span>, </span>
+<span id="cb18-3"><a href="residence-patch-construction.html#cb18-3"></a>                         <span class="dt">pattern =</span> <span class="st">&quot;_revisit.csv&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb18-4"><a href="residence-patch-construction.html#cb18-4"></a></span>
+<span id="cb18-5"><a href="residence-patch-construction.html#cb18-5"></a><span class="co"># get tag ids</span></span>
+<span id="cb18-6"><a href="residence-patch-construction.html#cb18-6"></a>data_id &lt;-<span class="st"> </span><span class="kw">str_split</span>(data_files, <span class="st">&quot;/&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb18-7"><a href="residence-patch-construction.html#cb18-7"></a><span class="st">  </span><span class="kw">map</span>(<span class="cf">function</span>(l)l[[<span class="dv">4</span>]] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_sub</span>(<span class="dv">1</span>,<span class="dv">3</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb18-8"><a href="residence-patch-construction.html#cb18-8"></a><span class="st">  </span><span class="kw">flatten_chr</span>()</span>
+<span id="cb18-9"><a href="residence-patch-construction.html#cb18-9"></a></span>
+<span id="cb18-10"><a href="residence-patch-construction.html#cb18-10"></a><span class="co"># make df of tag ids and files</span></span>
+<span id="cb18-11"><a href="residence-patch-construction.html#cb18-11"></a>data &lt;-<span class="st"> </span><span class="kw">data_frame</span>(<span class="dt">tag =</span> data_id, <span class="dt">data_file =</span> data_files)</span>
+<span id="cb18-12"><a href="residence-patch-construction.html#cb18-12"></a>data &lt;-<span class="st"> </span><span class="kw">split</span>(<span class="dt">x =</span> data, <span class="dt">f =</span> data<span class="op">$</span>tag) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb18-13"><a href="residence-patch-construction.html#cb18-13"></a><span class="st">  </span><span class="kw">map</span>(<span class="cf">function</span>(l) l<span class="op">$</span>data_file)</span>
+<span id="cb18-14"><a href="residence-patch-construction.html#cb18-14"></a></span>
+<span id="cb18-15"><a href="residence-patch-construction.html#cb18-15"></a><span class="co"># map inferResidence, classifyPath, and getPatches over data</span></span>
+<span id="cb18-16"><a href="residence-patch-construction.html#cb18-16"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(data)){</span>
+<span id="cb18-17"><a href="residence-patch-construction.html#cb18-17"></a>  patch_data &lt;-<span class="st"> </span><span class="kw">map</span>(data[[i]], <span class="cf">function</span>(l){</span>
+<span id="cb18-18"><a href="residence-patch-construction.html#cb18-18"></a>  </span>
+<span id="cb18-19"><a href="residence-patch-construction.html#cb18-19"></a>    <span class="co"># read the data file</span></span>
+<span id="cb18-20"><a href="residence-patch-construction.html#cb18-20"></a>    temp_data &lt;-<span class="st"> </span><span class="kw">fread</span>(l)</span>
+<span id="cb18-21"><a href="residence-patch-construction.html#cb18-21"></a>    temp_data[,ts<span class="op">:</span><span class="er">=</span><span class="kw">fastPOSIXct</span>(ts)]</span>
+<span id="cb18-22"><a href="residence-patch-construction.html#cb18-22"></a>    </span>
+<span id="cb18-23"><a href="residence-patch-construction.html#cb18-23"></a>    id &lt;-<span class="st"> </span><span class="kw">unique</span>(temp_data<span class="op">$</span>id)</span>
+<span id="cb18-24"><a href="residence-patch-construction.html#cb18-24"></a>    tide_number &lt;-<span class="st"> </span><span class="kw">unique</span>(temp_data<span class="op">$</span>tide_number)</span>
+<span id="cb18-25"><a href="residence-patch-construction.html#cb18-25"></a>    </span>
+<span id="cb18-26"><a href="residence-patch-construction.html#cb18-26"></a>    <span class="co"># get data summary for the tidal cycle</span></span>
+<span id="cb18-27"><a href="residence-patch-construction.html#cb18-27"></a>    {</span>
+<span id="cb18-28"><a href="residence-patch-construction.html#cb18-28"></a>      data_summary &lt;-<span class="st"> </span>temp_data[,.(<span class="dt">duration =</span> (<span class="kw">max</span>(time) <span class="op">-</span><span class="st"> </span><span class="kw">min</span>(time))<span class="op">/</span><span class="dv">60</span>,</span>
+<span id="cb18-29"><a href="residence-patch-construction.html#cb18-29"></a>                                   <span class="dt">n_fixes =</span> <span class="kw">length</span>(x),</span>
+<span id="cb18-30"><a href="residence-patch-construction.html#cb18-30"></a>                                   <span class="dt">prop_fixes =</span> <span class="kw">length</span>(x) <span class="op">/</span><span class="st"> </span>((<span class="kw">max</span>(time) <span class="op">-</span><span class="st"> </span><span class="kw">min</span>(time))<span class="op">/</span><span class="dv">30</span>)),</span>
+<span id="cb18-31"><a href="residence-patch-construction.html#cb18-31"></a>                                by =<span class="st"> </span>.(id, tide_number)]</span>
+<span id="cb18-32"><a href="residence-patch-construction.html#cb18-32"></a>      </span>
+<span id="cb18-33"><a href="residence-patch-construction.html#cb18-33"></a>      sld &lt;-<span class="st"> </span>watlastools<span class="op">::</span><span class="kw">wat_simple_dist</span>(temp_data, <span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>)</span>
+<span id="cb18-34"><a href="residence-patch-construction.html#cb18-34"></a>      timelag &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="ot">NA</span>, <span class="kw">as.numeric</span>(<span class="kw">diff</span>(temp_data<span class="op">$</span>time)))</span>
+<span id="cb18-35"><a href="residence-patch-construction.html#cb18-35"></a>      speed &lt;-<span class="st"> </span>sld<span class="op">/</span>timelag</span>
+<span id="cb18-36"><a href="residence-patch-construction.html#cb18-36"></a>      </span>
+<span id="cb18-37"><a href="residence-patch-construction.html#cb18-37"></a>      data_summary[,<span class="st">`</span><span class="dt">:=</span><span class="st">`</span>(<span class="dt">mean_speed =</span> <span class="kw">mean</span>(speed, <span class="dt">na.rm=</span><span class="ot">TRUE</span>),</span>
+<span id="cb18-38"><a href="residence-patch-construction.html#cb18-38"></a>                         <span class="dt">ci95_speed =</span> <span class="kw">ci</span>(speed))]</span>
+<span id="cb18-39"><a href="residence-patch-construction.html#cb18-39"></a>      </span>
+<span id="cb18-40"><a href="residence-patch-construction.html#cb18-40"></a>      <span class="co"># write total distance for the tidal cycle</span></span>
+<span id="cb18-41"><a href="residence-patch-construction.html#cb18-41"></a>      <span class="kw">fwrite</span>(data_summary, <span class="dt">file =</span> <span class="st">&quot;data/data2018/data_2018_tidal_mean_speed.csv&quot;</span>, </span>
+<span id="cb18-42"><a href="residence-patch-construction.html#cb18-42"></a>             <span class="dt">append =</span> <span class="ot">TRUE</span>, <span class="dt">scipen =</span> <span class="dv">6</span>)</span>
+<span id="cb18-43"><a href="residence-patch-construction.html#cb18-43"></a>    }</span>
+<span id="cb18-44"><a href="residence-patch-construction.html#cb18-44"></a>    </span>
+<span id="cb18-45"><a href="residence-patch-construction.html#cb18-45"></a>    <span class="co"># wrap process in try catch</span></span>
+<span id="cb18-46"><a href="residence-patch-construction.html#cb18-46"></a>    <span class="kw">tryCatch</span>(</span>
+<span id="cb18-47"><a href="residence-patch-construction.html#cb18-47"></a>      {</span>
+<span id="cb18-48"><a href="residence-patch-construction.html#cb18-48"></a>        <span class="co"># watlastools function to infer residence</span></span>
+<span id="cb18-49"><a href="residence-patch-construction.html#cb18-49"></a>        temp_data &lt;-<span class="st"> </span><span class="kw">wat_infer_residence</span>(<span class="dt">df =</span> temp_data,</span>
+<span id="cb18-50"><a href="residence-patch-construction.html#cb18-50"></a>                                         <span class="dt">infPatchTimeDiff =</span> <span class="dv">30</span>,</span>
+<span id="cb18-51"><a href="residence-patch-construction.html#cb18-51"></a>                                         <span class="dt">infPatchSpatDiff =</span> <span class="dv">100</span>)</span>
+<span id="cb18-52"><a href="residence-patch-construction.html#cb18-52"></a>        </span>
+<span id="cb18-53"><a href="residence-patch-construction.html#cb18-53"></a>        <span class="co"># watlastools function to classify path</span></span>
+<span id="cb18-54"><a href="residence-patch-construction.html#cb18-54"></a>        temp_data &lt;-<span class="st"> </span><span class="kw">wat_classify_points</span>(<span class="dt">somedata =</span> temp_data,</span>
+<span id="cb18-55"><a href="residence-patch-construction.html#cb18-55"></a>                                         <span class="dt">resTimeLimit =</span> <span class="dv">2</span>)</span>
+<span id="cb18-56"><a href="residence-patch-construction.html#cb18-56"></a>        </span>
+<span id="cb18-57"><a href="residence-patch-construction.html#cb18-57"></a>        <span class="co"># watlastools function to get patches</span></span>
+<span id="cb18-58"><a href="residence-patch-construction.html#cb18-58"></a>        patch_dt &lt;-<span class="st"> </span><span class="kw">wat_make_res_patch</span>(<span class="dt">somedata =</span> temp_data,</span>
+<span id="cb18-59"><a href="residence-patch-construction.html#cb18-59"></a>                                         <span class="dt">bufferSize =</span> <span class="dv">10</span>,</span>
+<span id="cb18-60"><a href="residence-patch-construction.html#cb18-60"></a>                                         <span class="dt">spatIndepLim =</span> <span class="dv">100</span>,</span>
+<span id="cb18-61"><a href="residence-patch-construction.html#cb18-61"></a>                                         <span class="dt">tempIndepLim =</span> <span class="dv">30</span>,</span>
+<span id="cb18-62"><a href="residence-patch-construction.html#cb18-62"></a>                                         <span class="dt">restIndepLim =</span> <span class="dv">30</span>,</span>
+<span id="cb18-63"><a href="residence-patch-construction.html#cb18-63"></a>                                         <span class="dt">minFixes =</span> <span class="dv">3</span>)</span>
+<span id="cb18-64"><a href="residence-patch-construction.html#cb18-64"></a>        <span class="co"># print message</span></span>
+<span id="cb18-65"><a href="residence-patch-construction.html#cb18-65"></a>        <span class="kw">message</span>(<span class="kw">as.character</span>(<span class="kw">glue</span>(<span class="st">&#39;patches {id}_{tide_number} done&#39;</span>)))</span>
+<span id="cb18-66"><a href="residence-patch-construction.html#cb18-66"></a>        <span class="kw">return</span>(patch_dt)</span>
 <span id="cb18-67"><a href="residence-patch-construction.html#cb18-67"></a>      },</span>
 <span id="cb18-68"><a href="residence-patch-construction.html#cb18-68"></a>      <span class="co"># null error function, with option to collect data on errors</span></span>
 <span id="cb18-69"><a href="residence-patch-construction.html#cb18-69"></a>      <span class="dt">error=</span> <span class="cf">function</span>(e)</span>
 <span id="cb18-70"><a href="residence-patch-construction.html#cb18-70"></a>      {</span>
 <span id="cb18-71"><a href="residence-patch-construction.html#cb18-71"></a>        <span class="kw">message</span>(glue<span class="op">::</span><span class="kw">glue</span>(<span class="st">&#39;patches {id}_{tide_number} errored&#39;</span>))</span>
 <span id="cb18-72"><a href="residence-patch-construction.html#cb18-72"></a>      }</span>
-<span id="cb18-73"><a href="residence-patch-construction.html#cb18-73"></a>      </span>
-<span id="cb18-74"><a href="residence-patch-construction.html#cb18-74"></a>    )</span>
-<span id="cb18-75"><a href="residence-patch-construction.html#cb18-75"></a>  }</span>
-<span id="cb18-76"><a href="residence-patch-construction.html#cb18-76"></a>  </span>
-<span id="cb18-77"><a href="residence-patch-construction.html#cb18-77"></a>  <span class="co"># write patch summary data</span></span>
-<span id="cb18-78"><a href="residence-patch-construction.html#cb18-78"></a>  <span class="cf">if</span>(success <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>){</span>
-<span id="cb18-79"><a href="residence-patch-construction.html#cb18-79"></a>    <span class="kw">fwrite</span>(patch_summary, <span class="dt">file =</span> <span class="st">&quot;data/data_patch_summary.csv&quot;</span>,</span>
-<span id="cb18-80"><a href="residence-patch-construction.html#cb18-80"></a>           <span class="dt">append =</span> <span class="ot">TRUE</span>)</span>
-<span id="cb18-81"><a href="residence-patch-construction.html#cb18-81"></a>  }</span>
-<span id="cb18-82"><a href="residence-patch-construction.html#cb18-82"></a>  </span>
-<span id="cb18-83"><a href="residence-patch-construction.html#cb18-83"></a>}</span></code></pre></div>
-</div>
-<div id="get-patch-trajectories" class="section level2">
-<h2 number="6.3"><span class="header-section-number">6.3</span> Get patch trajectories</h2>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="residence-patch-construction.html#cb19-1"></a><span class="co"># save as temp data</span></span>
-<span id="cb19-2"><a href="residence-patch-construction.html#cb19-2"></a><span class="kw">save</span>(output_data, <span class="dt">file =</span> <span class="st">&quot;data/data2018/patch_data_2018.rdata&quot;</span>)</span>
-<span id="cb19-3"><a href="residence-patch-construction.html#cb19-3"></a><span class="co"># filter non-sf objects from the list</span></span>
-<span id="cb19-4"><a href="residence-patch-construction.html#cb19-4"></a>output_data &lt;-<span class="st"> </span><span class="kw">keep</span>(output_data, <span class="cf">function</span>(obj){<span class="st">&quot;data.frame&quot;</span> <span class="op">%in%</span><span class="st"> </span><span class="kw">class</span>(obj)})</span>
-<span id="cb19-5"><a href="residence-patch-construction.html#cb19-5"></a>output_data &lt;-<span class="st"> </span><span class="kw">bind_rows</span>(output_data)</span>
-<span id="cb19-6"><a href="residence-patch-construction.html#cb19-6"></a></span>
-<span id="cb19-7"><a href="residence-patch-construction.html#cb19-7"></a><span class="kw">fwrite</span>(output_data, <span class="dt">file =</span> <span class="st">&quot;data/data2018/patch_summary.csv&quot;</span>,</span>
-<span id="cb19-8"><a href="residence-patch-construction.html#cb19-8"></a>       <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</span></code></pre></div>
+<span id="cb18-73"><a href="residence-patch-construction.html#cb18-73"></a>    )</span>
+<span id="cb18-74"><a href="residence-patch-construction.html#cb18-74"></a>  })</span>
+<span id="cb18-75"><a href="residence-patch-construction.html#cb18-75"></a>  </span>
+<span id="cb18-76"><a href="residence-patch-construction.html#cb18-76"></a>  <span class="co"># repair high tide patches across an individual&#39;s tidal cycles</span></span>
+<span id="cb18-77"><a href="residence-patch-construction.html#cb18-77"></a>  repaired_data &lt;-<span class="st"> </span><span class="kw">wat_repair_ht_patches</span>(<span class="dt">patch_data_list =</span> patch_data)</span>
+<span id="cb18-78"><a href="residence-patch-construction.html#cb18-78"></a>  <span class="co"># write patch summary data</span></span>
+<span id="cb18-79"><a href="residence-patch-construction.html#cb18-79"></a>  </span>
+<span id="cb18-80"><a href="residence-patch-construction.html#cb18-80"></a>  <span class="cf">if</span>(<span class="kw">all</span>(<span class="kw">is.data.frame</span>(repaired_data), <span class="kw">nrow</span>(repaired_data) <span class="op">&gt;</span><span class="st"> </span><span class="dv">0</span>)){</span>
+<span id="cb18-81"><a href="residence-patch-construction.html#cb18-81"></a>    <span class="co"># watlastools function to get patch data as spatial</span></span>
+<span id="cb18-82"><a href="residence-patch-construction.html#cb18-82"></a>    patch_summary &lt;-<span class="st"> </span><span class="kw">wat_get_patch_summary</span>(<span class="dt">resPatchData =</span> repaired_data,</span>
+<span id="cb18-83"><a href="residence-patch-construction.html#cb18-83"></a>                                           <span class="dt">whichData =</span> <span class="st">&quot;summary&quot;</span>)</span>
+<span id="cb18-84"><a href="residence-patch-construction.html#cb18-84"></a>    <span class="kw">fwrite</span>(patch_summary, <span class="dt">file =</span> <span class="st">&quot;data/data2018/data_2018_patch_summary.csv&quot;</span>,</span>
+<span id="cb18-85"><a href="residence-patch-construction.html#cb18-85"></a>           <span class="dt">append =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb18-86"><a href="residence-patch-construction.html#cb18-86"></a>  }</span>
+<span id="cb18-87"><a href="residence-patch-construction.html#cb18-87"></a>}</span></code></pre></div>
 
 </div>
 </div>
