@@ -24,7 +24,7 @@
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2020-03-04" />
+<meta name="date" content="2020-03-22" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -138,13 +138,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="2" data-path="getting-data.html"><a href="getting-data.html"><i class="fa fa-check"></i><b>2</b> Getting data</a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="getting-data.html"><a href="getting-data.html#prepare-watlasutils-and-other-libraries"><i class="fa fa-check"></i><b>2.1</b> Prepare <code>watlasUtils</code> and other libraries</a></li>
+<li class="chapter" data-level="2.1" data-path="getting-data.html"><a href="getting-data.html#prepare-watlastools-and-other-libraries"><i class="fa fa-check"></i><b>2.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
 <li class="chapter" data-level="2.2" data-path="getting-data.html"><a href="getting-data.html#read-in-tag-deployment-data"><i class="fa fa-check"></i><b>2.2</b> Read in tag deployment data</a></li>
 <li class="chapter" data-level="2.3" data-path="getting-data.html"><a href="getting-data.html#get-data-and-save-locally"><i class="fa fa-check"></i><b>2.3</b> Get data and save locally</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning data</a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-watlasutils-and-other-libraries-1"><i class="fa fa-check"></i><b>3.1</b> Prepare <code>watlasUtils</code> and other libraries</a></li>
+<li class="chapter" data-level="3.1" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-watlastools-and-other-libraries-1"><i class="fa fa-check"></i><b>3.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
 <li class="chapter" data-level="3.2" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-to-remove-attractor-points"><i class="fa fa-check"></i><b>3.2</b> Prepare to remove attractor points</a></li>
 <li class="chapter" data-level="3.3" data-path="cleaning-data.html"><a href="cleaning-data.html#read-clean-and-write-data"><i class="fa fa-check"></i><b>3.3</b> Read, clean, and write data</a></li>
 </ul></li>
@@ -164,7 +164,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li class="chapter" data-level="6.1" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#prepare-libraries-2"><i class="fa fa-check"></i><b>6.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="6.2" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#patch-construction"><i class="fa fa-check"></i><b>6.2</b> Patch construction</a></li>
-<li class="chapter" data-level="6.3" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#get-patch-trajectories"><i class="fa fa-check"></i><b>6.3</b> Get patch trajectories</a></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="linking-patch-metrics-to-personality.html"><a href="linking-patch-metrics-to-personality.html"><i class="fa fa-check"></i><b>7</b> Linking patch metrics to personality</a>
 <ul>
@@ -198,19 +197,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="cleaning-data" class="section level1">
 <h1 number="3"><span class="header-section-number">3</span> Cleaning data</h1>
-<p>This section is about cleaning downloaded data using the <code>cleanData</code> function in the <a href="https://github.com/pratikunterwegs/watlasUtils">WATLAS Utilities package</a>.</p>
+<p>This section is about cleaning downloaded data using the <code>cleanData</code> function in the <a href="https://github.com/pratikunterwegs/watlastools">WATLAS Utilities package</a>.</p>
 <p><strong>Workflow</strong></p>
 <ol style="list-style-type: decimal">
 <li>Prepare required libraries.</li>
 <li>Read in data, apply the cleaning function, and overwrite local data.</li>
 </ol>
-<div id="prepare-watlasutils-and-other-libraries-1" class="section level2">
-<h2 number="3.1"><span class="header-section-number">3.1</span> Prepare <code>watlasUtils</code> and other libraries</h2>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="cleaning-data.html#cb6-1"></a><span class="co"># watlasUtils assumed installed from the previous step</span></span>
+<div id="prepare-watlastools-and-other-libraries-1" class="section level2">
+<h2 number="3.1"><span class="header-section-number">3.1</span> Prepare <code>watlastools</code> and other libraries</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="cleaning-data.html#cb6-1"></a><span class="co"># watlastools assumed installed from the previous step</span></span>
 <span id="cb6-2"><a href="cleaning-data.html#cb6-2"></a><span class="co"># if not, install from the github repo as shown below</span></span>
 <span id="cb6-3"><a href="cleaning-data.html#cb6-3"></a></span>
-<span id="cb6-4"><a href="cleaning-data.html#cb6-4"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;pratikunterwegs/watlasUtils&quot;</span>)</span>
-<span id="cb6-5"><a href="cleaning-data.html#cb6-5"></a><span class="kw">library</span>(watlasUtils)</span>
+<span id="cb6-4"><a href="cleaning-data.html#cb6-4"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;pratikunterwegs/watlastools&quot;</span>)</span>
+<span id="cb6-5"><a href="cleaning-data.html#cb6-5"></a><span class="kw">library</span>(watlastools)</span>
 <span id="cb6-6"><a href="cleaning-data.html#cb6-6"></a></span>
 <span id="cb6-7"><a href="cleaning-data.html#cb6-7"></a><span class="co"># libraries to process data</span></span>
 <span id="cb6-8"><a href="cleaning-data.html#cb6-8"></a><span class="kw">library</span>(data.table)</span>
