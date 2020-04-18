@@ -7,7 +7,7 @@ editor_options:
 
 ## Load libs
 
-```{r prep_libs, eval=FALSE}
+```{r prep_libs_06, eval=FALSE}
 # for data
 library(tidyverse)
 # python options
