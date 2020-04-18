@@ -275,92 +275,70 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" title="1"><span class="co"># prep data to do stuff</span></a>
 <a class="sourceLine" id="cb38-2" title="2">mods_waterlevel &lt;-<span class="st"> </span>mod_data <span class="op">%&gt;%</span><span class="st"> </span></a>
 <a class="sourceLine" id="cb38-3" title="3"><span class="st">  </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb38-4" title="4"><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="kw">c</span>(<span class="st">&quot;n_patches&quot;</span>, <span class="st">&quot;n_uid&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb38-5" title="5"><span class="st">  </span><span class="kw">group_by</span>(wlc, name) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb38-6" title="6"><span class="st">  </span><span class="kw">summarise_at</span>(<span class="kw">vars</span>(value),</a>
-<a class="sourceLine" id="cb38-7" title="7">               <span class="kw">list</span>(<span class="op">~</span><span class="kw">mean</span>(., <span class="dt">na.rm =</span> T),</a>
-<a class="sourceLine" id="cb38-8" title="8">                    <span class="op">~</span><span class="kw">ci</span>(.)))</a>
-<a class="sourceLine" id="cb38-9" title="9"></a>
-<a class="sourceLine" id="cb38-10" title="10"><span class="co"># svae fig</span></a>
-<a class="sourceLine" id="cb38-11" title="11">fig_mods_waterlevel &lt;-<span class="st"> </span></a>
-<a class="sourceLine" id="cb38-12" title="12"><span class="st">  </span><span class="kw">ggplot</span>(mods_waterlevel,</a>
-<a class="sourceLine" id="cb38-13" title="13">       <span class="kw">aes</span>(wlc, mean, </a>
-<a class="sourceLine" id="cb38-14" title="14">           <span class="dt">ymin=</span>mean<span class="op">-</span>ci, <span class="dt">ymax=</span>mean<span class="op">+</span>ci))<span class="op">+</span></a>
-<a class="sourceLine" id="cb38-15" title="15"><span class="st">  </span><span class="kw">geom_pointrange</span>(<span class="dt">size =</span> <span class="fl">0.2</span>, <span class="dt">col =</span> <span class="st">&quot;steelblue&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb38-16" title="16"><span class="st">  </span><span class="kw">theme_test</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb38-17" title="17"><span class="st">  </span><span class="kw">facet_grid</span>(<span class="op">~</span>name, <span class="dt">as.table =</span> F)<span class="op">+</span></a>
-<a class="sourceLine" id="cb38-18" title="18"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;waterlevel (cm NAP)&quot;</span>,</a>
-<a class="sourceLine" id="cb38-19" title="19">       <span class="dt">y =</span> <span class="st">&quot;value&quot;</span>)</a>
+<a class="sourceLine" id="cb38-4" title="4"><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="kw">c</span>(<span class="st">&quot;n_patches&quot;</span>, <span class="st">&quot;n_uid&quot;</span>))</a>
+<a class="sourceLine" id="cb38-5" title="5"></a>
+<a class="sourceLine" id="cb38-6" title="6"><span class="co"># svae fig</span></a>
+<a class="sourceLine" id="cb38-7" title="7">fig_mods_waterlevel &lt;-</a>
+<a class="sourceLine" id="cb38-8" title="8"><span class="st">  </span><span class="kw">ggplot</span>(mods_waterlevel,</a>
+<a class="sourceLine" id="cb38-9" title="9">       <span class="kw">aes</span>(value))<span class="op">+</span></a>
+<a class="sourceLine" id="cb38-10" title="10"><span class="st">  </span><span class="kw">geom_histogram</span>(<span class="dt">fill =</span> <span class="st">&quot;steelblue&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb38-11" title="11"><span class="st">  </span><span class="co"># geom_pointrange(size = 0.2, col = &quot;steelblue&quot;)+</span></a>
+<a class="sourceLine" id="cb38-12" title="12"><span class="st">  </span><span class="kw">theme_test</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb38-13" title="13"><span class="st">  </span><span class="kw">facet_grid</span>(wlc<span class="op">~</span>name, </a>
+<a class="sourceLine" id="cb38-14" title="14">             <span class="dt">as.table =</span> F,</a>
+<a class="sourceLine" id="cb38-15" title="15">             <span class="dt">switch =</span> <span class="st">&quot;both&quot;</span>,</a>
+<a class="sourceLine" id="cb38-16" title="16">             <span class="dt">labeller =</span> label_both)<span class="op">+</span></a>
+<a class="sourceLine" id="cb38-17" title="17"><span class="st">  </span><span class="kw">xlim</span>(<span class="dv">0</span>, <span class="dv">20</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb38-18" title="18"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="ot">NULL</span>,</a>
+<a class="sourceLine" id="cb38-19" title="19">       <span class="dt">y =</span> <span class="ot">NULL</span>)</a>
 <a class="sourceLine" id="cb38-20" title="20"></a>
 <a class="sourceLine" id="cb38-21" title="21"><span class="kw">ggsave</span>(fig_mods_waterlevel, </a>
 <a class="sourceLine" id="cb38-22" title="22">       <span class="dt">filename =</span> <span class="st">&quot;figs/fig_mods_waterlevel.png&quot;</span>,</a>
-<a class="sourceLine" id="cb38-23" title="23">       <span class="dt">device =</span> <span class="kw">png</span>(), <span class="dt">dpi =</span> <span class="dv">300</span>, <span class="dt">height =</span> <span class="dv">3</span>, <span class="dt">width =</span> <span class="dv">5</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb38-23" title="23">       <span class="dt">device =</span> <span class="kw">png</span>(), <span class="dt">dpi =</span> <span class="dv">300</span>, <span class="dt">height =</span> <span class="dv">5</span>, <span class="dt">width =</span> <span class="dv">3</span>)</a></code></pre></div>
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;figs/fig_mods_waterlevel.png&quot;</span>)</a></code></pre></div>
-<p><img src="figs/fig_mods_waterlevel.png" width="750" /></p>
+<p><img src="figs/fig_mods_waterlevel.png" width="450" /></p>
 </div>
 <div id="patch-size-number-of-patches-in-a-module" class="section level2">
 <h2><span class="header-section-number">9.6</span> Patch size ~ number of patches in a module</h2>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" title="1"><span class="co"># count patches in module, and get mean patch area, duration, circ</span></a>
-<a class="sourceLine" id="cb40-2" title="2"><span class="co"># distance between patches</span></a>
-<a class="sourceLine" id="cb40-3" title="3">patch_per_mod &lt;-<span class="st"> </span>modules <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb40-4" title="4"><span class="st">  </span><span class="kw">group_by</span>(time_scale, spatial_scale, time_chunk, module) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb40-5" title="5"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">n_patches =</span> <span class="kw">length</span>(patch),</a>
-<a class="sourceLine" id="cb40-6" title="6">            <span class="dt">n_uid =</span> <span class="kw">length</span>(<span class="kw">unique</span>(id)))</a>
-<a class="sourceLine" id="cb40-7" title="7"></a>
-<a class="sourceLine" id="cb40-8" title="8"></a>
-<a class="sourceLine" id="cb40-9" title="9"><span class="co"># summarise data</span></a>
-<a class="sourceLine" id="cb40-10" title="10">mod_data &lt;-<span class="st"> </span>mod_data <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb40-11" title="11"><span class="st">  </span><span class="kw">group_by</span>(spatial_scale, time_chunk, module) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb40-12" title="12"><span class="st">  </span><span class="kw">summarise_at</span>(<span class="kw">vars</span>(area, duration, circularity, distBwPatch),</a>
-<a class="sourceLine" id="cb40-13" title="13">               <span class="kw">list</span>(<span class="op">~</span><span class="kw">mean</span>(., <span class="dt">na.rm =</span> T)))</a>
-<a class="sourceLine" id="cb40-14" title="14"></a>
-<a class="sourceLine" id="cb40-15" title="15"><span class="co"># join with patch per mod</span></a>
-<a class="sourceLine" id="cb40-16" title="16">mod_data &lt;-<span class="st"> </span><span class="kw">inner_join</span>(mod_data, patch_per_mod)</a>
-<a class="sourceLine" id="cb40-17" title="17"></a>
-<a class="sourceLine" id="cb40-18" title="18"><span class="co"># remove data above the 95% percentile</span></a>
-<a class="sourceLine" id="cb40-19" title="19"><span class="kw">quantile</span>(mod_data<span class="op">$</span>n_patches, <span class="dt">probs =</span> <span class="kw">c</span>(<span class="fl">0.05</span>, <span class="fl">0.90</span>))</a>
-<a class="sourceLine" id="cb40-20" title="20"></a>
-<a class="sourceLine" id="cb40-21" title="21"><span class="co"># get by n patch</span></a>
-<a class="sourceLine" id="cb40-22" title="22">mod_summary &lt;-<span class="st"> </span>mod_data <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb40-23" title="23"><span class="st">  </span><span class="kw">filter</span>(n_patches <span class="op">&lt;=</span><span class="st"> </span><span class="dv">20</span>)  <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb40-24" title="24"><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="kw">c</span>(<span class="st">&quot;area&quot;</span>, <span class="st">&quot;duration&quot;</span>, </a>
-<a class="sourceLine" id="cb40-25" title="25">                        <span class="st">&quot;circularity&quot;</span>, <span class="st">&quot;distBwPatch&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb40-26" title="26"><span class="st">  </span><span class="kw">drop_na</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb40-27" title="27"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">round_n_patches =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(n_patches, <span class="dv">1</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb40-28" title="28"><span class="st">  </span><span class="kw">group_by</span>(time_scale, spatial_scale, round_n_patches, name) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb40-29" title="29"><span class="st">  </span><span class="kw">summarise_at</span>(<span class="kw">vars</span>(value),</a>
-<a class="sourceLine" id="cb40-30" title="30">               <span class="kw">list</span>(<span class="op">~</span><span class="kw">mean</span>(., <span class="dt">na.rm =</span> T),</a>
-<a class="sourceLine" id="cb40-31" title="31">                    <span class="op">~</span><span class="kw">ci</span>(.)))</a>
-<a class="sourceLine" id="cb40-32" title="32"></a>
-<a class="sourceLine" id="cb40-33" title="33"><span class="co"># make list</span></a>
-<a class="sourceLine" id="cb40-34" title="34">mod_summary &lt;-<span class="st"> </span><span class="kw">split</span>(mod_summary, mod_summary<span class="op">$</span>name)</a></code></pre></div>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" title="1"><span class="co"># do plot over list</span></a>
-<a class="sourceLine" id="cb41-2" title="2"></a>
-<a class="sourceLine" id="cb41-3" title="3">list_plot &lt;-<span class="st"> </span><span class="kw">map2</span>(mod_summary, </a>
-<a class="sourceLine" id="cb41-4" title="4">                  letters[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>],</a>
-<a class="sourceLine" id="cb41-5" title="5">                  <span class="cf">function</span>(df, name){</a>
-<a class="sourceLine" id="cb41-6" title="6">  <span class="kw">ggplot</span>(df)<span class="op">+</span></a>
-<a class="sourceLine" id="cb41-7" title="7"><span class="st">    </span><span class="kw">geom_pointrange</span>(<span class="kw">aes</span>(round_n_patches, mean,</a>
-<a class="sourceLine" id="cb41-8" title="8">                        <span class="dt">ymin =</span> mean <span class="op">-</span><span class="st"> </span>ci, <span class="dt">ymax =</span> mean<span class="op">+</span>ci),</a>
-<a class="sourceLine" id="cb41-9" title="9">                    <span class="dt">col =</span> <span class="st">&quot;steelblue&quot;</span>,</a>
-<a class="sourceLine" id="cb41-10" title="10">                    <span class="dt">size =</span> <span class="fl">0.1</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb41-11" title="11"><span class="st">    </span><span class="kw">theme_test</span>(<span class="dt">base_size =</span> <span class="dv">8</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb41-12" title="12"><span class="st">    </span><span class="kw">facet_grid</span>(spatial_scale<span class="op">~</span>time_scale,</a>
-<a class="sourceLine" id="cb41-13" title="13">               <span class="dt">labeller =</span> label_both,</a>
-<a class="sourceLine" id="cb41-14" title="14">               <span class="co"># scales = &quot;free_y&quot;,</span></a>
-<a class="sourceLine" id="cb41-15" title="15">               <span class="dt">as.table =</span> <span class="ot">FALSE</span>,</a>
-<a class="sourceLine" id="cb41-16" title="16">               <span class="dt">switch =</span> <span class="st">&quot;both&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb41-17" title="17"><span class="st">    </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;# patches&quot;</span>,</a>
-<a class="sourceLine" id="cb41-18" title="18">         <span class="dt">y =</span> glue<span class="op">::</span><span class="kw">glue</span>(<span class="st">&#39;{unique(df$name)}&#39;</span>),</a>
-<a class="sourceLine" id="cb41-19" title="19">         <span class="dt">title =</span> glue<span class="op">::</span><span class="kw">glue</span>(<span class="st">&#39;({name})&#39;</span>))  </a>
-<a class="sourceLine" id="cb41-20" title="20">})</a>
+<p>Reload the data.</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" title="1"><span class="co"># get mean and ci for patches</span></a>
+<a class="sourceLine" id="cb40-2" title="2">mod_data &lt;-<span class="st"> </span>modules <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb40-3" title="3"><span class="st">  </span><span class="kw">inner_join</span>(data)</a>
+<a class="sourceLine" id="cb40-4" title="4"></a>
+<a class="sourceLine" id="cb40-5" title="5"><span class="co"># count unique ids in each mod-time-chunk and filter on 2</span></a>
+<a class="sourceLine" id="cb40-6" title="6">mod_data &lt;-<span class="st"> </span>mod_data <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb40-7" title="7"><span class="st">  </span><span class="kw">group_by</span>(spatial_scale, module, time_chunk) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb40-8" title="8"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">xc =</span> <span class="kw">mean</span>(x_mean, <span class="dt">na.rm =</span> T),</a>
+<a class="sourceLine" id="cb40-9" title="9">         <span class="dt">yc =</span> <span class="kw">mean</span>(y_mean, <span class="dt">na.rm =</span> T),</a>
+<a class="sourceLine" id="cb40-10" title="10">         <span class="dt">wlc =</span> <span class="kw">mean</span>(waterlevel_start),</a>
+<a class="sourceLine" id="cb40-11" title="11">         <span class="dt">wlc =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(wlc, <span class="dv">50</span>),</a>
+<a class="sourceLine" id="cb40-12" title="12">         <span class="dt">n_uid =</span> <span class="kw">length</span>(<span class="kw">unique</span>(id)),</a>
+<a class="sourceLine" id="cb40-13" title="13">         <span class="dt">n_patches =</span> <span class="kw">length</span>(<span class="kw">unique</span>(x_mean)))</a></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" title="1"><span class="co"># count patches in module, and get mean patch area, duration, circ</span></a>
+<a class="sourceLine" id="cb41-2" title="2"><span class="co"># summarise data</span></a>
+<a class="sourceLine" id="cb41-3" title="3">mod_data_summary &lt;-<span class="st"> </span>mod_data <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb41-4" title="4"><span class="st">  </span><span class="kw">group_by</span>(wlc, n_patches) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb41-5" title="5"><span class="st">  </span><span class="co"># summarise_at(vars(area, duration, circularity, distBwPatch),</span></a>
+<a class="sourceLine" id="cb41-6" title="6"><span class="st">  </span><span class="co">#              list(~mean(., na.rm = T))) %&gt;% </span></a>
+<a class="sourceLine" id="cb41-7" title="7"><span class="st">  </span><span class="kw">pivot_longer</span>(<span class="dt">cols =</span> <span class="kw">c</span>(<span class="st">&quot;area&quot;</span>, <span class="st">&quot;duration&quot;</span>, </a>
+<a class="sourceLine" id="cb41-8" title="8">                        <span class="st">&quot;circularity&quot;</span>, <span class="st">&quot;distBwPatch&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb41-9" title="9"><span class="st">  </span><span class="kw">drop_na</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb41-10" title="10"><span class="st">  </span><span class="kw">group_by</span>(wlc, n_patches, name) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb41-11" title="11"><span class="st">  </span><span class="kw">summarise_at</span>(<span class="kw">vars</span>(value),</a>
+<a class="sourceLine" id="cb41-12" title="12">               <span class="kw">list</span>(<span class="op">~</span><span class="kw">mean</span>(., <span class="dt">na.rm =</span> T),</a>
+<a class="sourceLine" id="cb41-13" title="13">                    <span class="op">~</span><span class="kw">ci</span>(.)))</a>
+<a class="sourceLine" id="cb41-14" title="14"></a>
+<a class="sourceLine" id="cb41-15" title="15"><span class="co"># remove data above the 95% percentile</span></a>
+<a class="sourceLine" id="cb41-16" title="16"><span class="kw">quantile</span>(mod_data_summary<span class="op">$</span>n_patches, <span class="dt">probs =</span> <span class="kw">c</span>(<span class="fl">0.05</span>, <span class="fl">0.90</span>))</a>
+<a class="sourceLine" id="cb41-17" title="17"></a>
+<a class="sourceLine" id="cb41-18" title="18"><span class="co"># get by n patch</span></a>
+<a class="sourceLine" id="cb41-19" title="19">mod_data_summary &lt;-<span class="st"> </span>mod_data_summary <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb41-20" title="20"><span class="st">  </span><span class="kw">filter</span>(n_patches <span class="op">&lt;=</span><span class="st"> </span><span class="dv">20</span>)</a>
 <a class="sourceLine" id="cb41-21" title="21"></a>
-<a class="sourceLine" id="cb41-22" title="22">fig_metrics_social &lt;-<span class="st"> </span>patchwork<span class="op">::</span><span class="kw">wrap_plots</span>(list_plot)</a>
-<a class="sourceLine" id="cb41-23" title="23"></a>
-<a class="sourceLine" id="cb41-24" title="24"><span class="kw">ggsave</span>(fig_metrics_social, <span class="dt">filename =</span> <span class="st">&quot;figs/fig_metrics_social.png&quot;</span>,</a>
-<a class="sourceLine" id="cb41-25" title="25">       <span class="dt">dpi =</span> <span class="dv">300</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb41-22" title="22"><span class="co"># make list</span></a>
+<a class="sourceLine" id="cb41-23" title="23">mod_data_summary &lt;-<span class="st"> </span><span class="kw">split</span>(mod_data_summary, mod_data_summary<span class="op">$</span>name)</a></code></pre></div>
 <div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" title="1">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;figs/fig_metrics_social.png&quot;</span>)</a></code></pre></div>
-<p><img src="figs/fig_metrics_social.png" width="1000" /></p>
+<p><img src="figs/fig_metrics_social.png" width="1595" /></p>
 
 </div>
 </div>
