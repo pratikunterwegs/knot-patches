@@ -1,0 +1,122 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+# Basic cluster description
+
+## Prepare libraries
+
+```{r prep_libs_07, eval=FALSE}
+library(tidyverse)
+# for plots
+library(ggplot2)
+library(scico)
+
+# ci function
+ci <- function(x){qnorm(0.975)*sd(x, na.rm = TRUE)/sqrt(length(x))}
+```
+
+## Read in data
+
+```{r read_modules_07, eval=FALSE}
+# read in data
+modules <- read_csv("data/data_2018_patch_modules_small_scale.csv")
+```
+
+## Summarise patches per module
+
+```{r summarise_data, eval=FALSE}
+# count modules at each scale and plot
+module_per_scale <- modules %>% 
+  group_by(time_scale, spatial_scale, time_chunk) %>% 
+  summarise_at(vars(module),
+               list(~length(.))) %>% 
+  group_by(time_scale, spatial_scale) %>% 
+  summarise(mean_n_modules = mean(module))
+
+fig_modules_scale <-
+ggplot(module_per_scale)+
+  geom_tile(aes(factor(time_scale), factor(spatial_scale), 
+                fill = mean_n_modules), col = "grey")+
+  scale_fill_scico(palette = "nuuk",
+                   # limits = c(NA, 1000),
+                   direction = -1,
+                   trans = "log10")+
+  theme_test()+
+  theme(legend.key.width = unit(0.1, "cm"))+
+  labs(x = "time scale (hours)", y = "spatial scale (m)",
+       fill = "spatial\nmodules", title = "(a)")
+```
+
+## Summarise birds per module
+
+How many ids in each scale, on average?
+
+```{r summarise_by_id, eval=FALSE}
+# count unique individuals per time chunk per module per scale
+id_per_scale <- modules %>% 
+  group_by(time_scale, spatial_scale, time_chunk, module) %>% 
+  summarise(unique_id = length(unique(id))) %>% 
+  group_by(time_scale, spatial_scale) %>% 
+  summarise(mean_uid = mean(unique_id))
+
+fig_id_scale <- 
+ggplot(id_per_scale)+
+  geom_tile(aes(factor(time_scale), factor(spatial_scale), 
+                fill = mean_uid), col = "grey")+
+  scale_fill_scico(palette = "broc",
+                   limits = c(2, NA),
+                   na.value = "grey",
+                   direction = 1)+
+  theme_test()+
+  theme(legend.key.width = unit(0.1, "cm"))+
+  labs(x = "time scale (hours)", y = "spatial scale (m)",
+       fill = "birds", title = "(b)")
+```
+
+```{r save_fig_scale, eval=FALSE}
+# make patchwork and export
+fig_scales <- patchwork::wrap_plots(fig_modules_scale, fig_id_scale)
+ggsave(fig_scales, filename = "figs/fig_modules_scale_small.png", 
+       dpi = 300, height = 3, width = 7)
+```
+
+```{r include_fig_scales, eval=TRUE}
+knitr::include_graphics("figs/fig_modules_scale_small.png")
+```
+
+## Does number of patches scale with individuals in module?
+
+```{r patch_size_module_size, eval=FALSE}
+# get module size at each scale
+patch_per_mod <- modules %>% 
+  group_by(time_scale, spatial_scale, time_chunk, module) %>% 
+  summarise(n_patches = length(patch),
+            n_uid = length(unique(id))) 
+
+fig_patches_id <- ggplot(patch_per_mod)+
+  geom_abline(slope = c(1,2,3), 
+              col = c("red"),
+              size = 0.1)+
+  geom_point(aes(n_uid, n_patches), 
+             size = 0.1, alpha = 0.2,
+             col = "steelblue")+
+  theme_test()+
+  facet_grid(time_scale~spatial_scale,
+             labeller = label_both,
+             scales = "free_y",
+             as.table = FALSE,
+             switch = "both")+
+  labs(x = "unique individuals",
+       y = "# patches")
+
+# save figure
+ggsave(fig_patches_id, filename = "figs/fig_patches_id.png",
+       dpi = 300)
+```
+
+```{r}
+knitr::include_graphics("figs/fig_patches_id.png")
+```
+
