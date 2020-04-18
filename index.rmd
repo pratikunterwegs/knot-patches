@@ -21,20 +21,15 @@ This is the `bookdown` version of a project in preparation that links high-resol
 
 Please contact the following before cloning or in case of interest in the project.
 
-- Pratik Gupte (author and maintainer)
-  - [PhD student, GELIFES -- University of Groningen](https://www.rug.nl/staff/p.r.gupte)
-  - Guest researcher, COS -- NIOZ
-  - p.r.gupte@rug.nl
-  - Nijenborgh 7/5172.0583 9747AG Groningen
-
-- Allert Bijleveld (PI): allert.bijleveld@nioz.nl
-  - Project information: https://www.nioz.nl/en/about/cos/coastal-movement-ecology/shorebird-tracking
-
-- Selin Ersoy (collab): selin.ersoy@nioz.nl
+Pratik Gupte (author and maintainer)  
+[PhD student, GELIFES -- University of Groningen](https://www.rug.nl/staff/p.r.gupte)  
+Guest researcher, COS -- NIOZ  
+p.r.gupte@rug.nl  
+Nijenborgh 7/5172.0583 9747AG Groningen
 
 ## Data access
 
-The data used in this work are not publicly available. Contact PI Allert Bijleveld for data access.
+The data used in this work are not publicly available. Contact PI [Allert Bijleveld (COS-NIOZ)](allert.bijleveld@nioz.nl) for data access.
 
 ## Data processing
 
