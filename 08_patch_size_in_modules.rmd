@@ -3,7 +3,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Knots in modules
+# Patch metrics in relation to module size
 
 ## Prepare libraries
 
@@ -20,7 +20,7 @@ library(htmlwidgets)
 ci <- function(x){qnorm(0.975)*sd(x, na.rm = TRUE)/sqrt(length(x))}
 ```
 
-## Read in data for small scale
+## Read in module data
 
 ```{r read_modules, eval=FALSE}
 # read in data
@@ -54,7 +54,7 @@ mod_data <- mod_data %>%
 
 Filter for minimum 2 indiviudals per module, and minimum of 3 patches.
 
-```{r filter_n_id}
+```{r filter_n_id, eval=FALSE}
 mod_data <- filter(mod_data, n_uid > 1, n_patches > 3)
 ```
 
@@ -117,7 +117,7 @@ fig_mods_waterlevel <-
 
 ggsave(fig_mods_waterlevel, 
        filename = "figs/fig_mods_waterlevel.png",
-       device = png(), dpi = 300)
+       device = png(), dpi = 300, height = 3, width = 5)
 ```
 
 ```{r}

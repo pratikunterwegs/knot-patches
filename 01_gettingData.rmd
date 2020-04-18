@@ -59,7 +59,7 @@ ggplot(tag_info)+
 
 ## Get data and save locally
 
-```{r get_acess, warning=FALSE, message=FALSE}
+```{r get_acess, warning=FALSE, message=FALSE, eval=FALSE}
 # read in database access parameters from a local file
 data_access <- fread("data/access_params.txt")
 ```

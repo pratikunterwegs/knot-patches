@@ -3,7 +3,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Finding spatial 
+# Finding spatio-temporal patch clusters
 
 ## Load libs
 
@@ -16,11 +16,11 @@ library(reticulate)
 use_python("/usr/bin/python3")
 ```
 
-## Prepare data
+## Prepare patch data
 
 Load data and filter for quality. Keep tides with at least 10 individuals, and inviduals recorded in at least 10 tides.
 
-```{r get_data, eval=FALSE}
+```{r get_data06, eval=FALSE}
 # get data and filter for individuals represented in 10 tides
 # and tides with 10 or more individuals
 data <- read_csv("data/data_2018_patch_summary.csv")
@@ -41,7 +41,7 @@ data <- filter(data,
 write_csv(data, "data/data_2018_good_patches.csv")
 ```
 
-## Prepare Python libraries.
+## Prepare Python libraries
 
 ```{python prep_py_libs_supp07, eval=FALSE, message=FALSE, warning=FALSE}
 
