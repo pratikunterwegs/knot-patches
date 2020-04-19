@@ -175,7 +175,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.2" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#read-in-module-data"><i class="fa fa-check"></i><b>9.2</b> Read in module data</a></li>
 <li class="chapter" data-level="9.3" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#add-patch-data"><i class="fa fa-check"></i><b>9.3</b> Add patch data</a></li>
 <li class="chapter" data-level="9.4" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#visualise-modules"><i class="fa fa-check"></i><b>9.4</b> Visualise modules</a></li>
-<li class="chapter" data-level="9.5" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#module-size-and-composition-waterlevel"><i class="fa fa-check"></i><b>9.5</b> Module size and composition ~ waterlevel</a></li>
+<li class="chapter" data-level="9.5" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#module-metrics-and-composition-waterlevel"><i class="fa fa-check"></i><b>9.5</b> Module metrics and composition ~ waterlevel</a></li>
 <li class="chapter" data-level="9.6" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#patch-size-number-of-patches-in-a-module"><i class="fa fa-check"></i><b>9.6</b> Patch size ~ number of patches in a module</a></li>
 </ul></li>
 <li class="chapter" data-level="10" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html"><i class="fa fa-check"></i><b>10</b> Bathymetry of the Griend mudflats</a><ul>
@@ -293,7 +293,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb50-4" title="4"><span class="st">  </span><span class="kw">image_join</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># joins image</span></a>
 <a class="sourceLine" id="cb50-5" title="5"><span class="st">  </span><span class="kw">image_animate</span>(<span class="dt">fps=</span><span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># animates, can opt for number of loops</span></a>
 <a class="sourceLine" id="cb50-6" title="6"><span class="st">  </span><span class="kw">image_write</span>(<span class="st">&quot;figs/fig_tide_rise_anim.gif&quot;</span>) <span class="co"># write to current dir</span></a></code></pre></div>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;figs/fig_tide_rise_anim.gif&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1"><span class="cf">if</span> (knitr<span class="op">:::</span><span class="kw">is_latex_output</span>()) {</a>
+<a class="sourceLine" id="cb51-2" title="2">  </a>
+<a class="sourceLine" id="cb51-3" title="3">} <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb51-4" title="4">  knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;figs/fig_tide_rise_anim.gif&quot;</span>)</a>
+<a class="sourceLine" id="cb51-5" title="5">}</a></code></pre></div>
 <div class="figure">
 <img src="figs/fig_tide_rise_anim.gif" alt="Waterlevel at West Terschelling and effect on coverage of mudflats around Griend."  />
 <p class="caption">

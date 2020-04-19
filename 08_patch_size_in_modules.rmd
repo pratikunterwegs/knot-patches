@@ -1,6 +1,7 @@
 ---
-editor_options: 
+editor_options:
   chunk_output_type: console
+output: pdf_document
 ---
 
 # Patch metrics in relation to module size
@@ -95,39 +96,40 @@ figplotly <- ggplotly(a)
 saveWidget(figplotly, file = "fig_modules.html")
 ```
 
-```{r embed_plotly, eval=TRUE}
-knitr::include_app("fig_modules.html", height = "500px")
-```
+## Module metrics and composition ~ waterlevel
 
-
-## Module size and composition ~ waterlevel
-
-How does the number of patches and number of ids change with waterlevel?
+How does the number of patches and number of ids and number of fixes change with waterlevel?
 
 ```{r module_size_waterlevel, eval=FALSE}
 # prep data to do stuff
 mods_waterlevel <- mod_data %>% 
   ungroup() %>% 
-  pivot_longer(cols = c("n_patches", "n_uid"))
+  pivot_longer(cols = c("n_patches", "n_uid", "nfixes")) %>% 
+  split(.$name)
 
 # svae fig
-fig_mods_waterlevel <-
-  ggplot(mods_waterlevel,
+list_plot <- map2(mods_waterlevel, letters[1:3], 
+                  function(df, title){
+  ggplot(df,
          aes(value))+
-  geom_histogram(fill = "steelblue")+
+  geom_histogram(fill = "grey")+
   # geom_pointrange(size = 0.2, col = "steelblue")+
-  theme_test()+
-  facet_grid(wlc~name, 
+  theme_test(base_size = 8)+
+  facet_grid(~wlc,
+             scales = "free_y",
              as.table = F,
              switch = "both",
              labeller = label_both)+
-  xlim(0, 20)+
-  labs(x = NULL,
-       y = NULL)
+  # xlim(0, 20)+
+  labs(x = glue::glue('{unique(df$name)}'),
+       y = NULL,
+       title = glue::glue('({title})'))})
+
+fig_mods_waterlevel <- patchwork::wrap_plots(list_plot, ncol = 1)
 
 ggsave(fig_mods_waterlevel, 
        filename = "figs/fig_mods_waterlevel.png",
-       device = png(), dpi = 300, height = 5, width = 3)
+       device = png(), dpi = 300, height = 5, width = 5)
 ```
 
 ```{r}
@@ -142,14 +144,13 @@ Reload the data.
 ```{r, eval=FALSE}
 # get mean and ci for patches
 mod_data <- modules %>% 
+  filter(spatial_scale <= 100, time_scale == 1) %>% 
   inner_join(data)
 
 # count unique ids in each mod-time-chunk and filter on 2
 mod_data <- mod_data %>% 
   group_by(spatial_scale, module, time_chunk) %>% 
-  mutate(xc = mean(x_mean, na.rm = T),
-         yc = mean(y_mean, na.rm = T),
-         wlc = mean(waterlevel_start),
+  mutate(wlc = mean(waterlevel_start),
          wlc = plyr::round_any(wlc, 50),
          n_uid = length(unique(id)),
          n_patches = length(unique(x_mean)))
@@ -160,13 +161,14 @@ mod_data <- mod_data %>%
 # count patches in module, and get mean patch area, duration, circ
 # summarise data
 mod_data_summary <- mod_data %>% 
-  group_by(wlc, n_patches) %>% 
+  group_by(spatial_scale, wlc, n_patches) %>% 
   # summarise_at(vars(area, duration, circularity, distBwPatch),
   #              list(~mean(., na.rm = T))) %>% 
   pivot_longer(cols = c("area", "duration", 
-                        "circularity", "distBwPatch")) %>% 
+                        "circularity", "distBwPatch",
+                        "distInPatch", "dispInPatch")) %>% 
   drop_na() %>% 
-  group_by(wlc, n_patches, name) %>% 
+  group_by(spatial_scale, wlc, n_patches, name) %>% 
   summarise_at(vars(value),
                list(~mean(., na.rm = T),
                     ~ci(.)))
@@ -182,6 +184,35 @@ mod_data_summary <- mod_data_summary %>%
 mod_data_summary <- split(mod_data_summary, mod_data_summary$name)
 ```
 
+```{r plot_metrics_size, eval=FALSE}
+# do plot over list
+
+list_plot <- map2(mod_data_summary, 
+                  letters[1:6],
+                  function(df, name){
+  ggplot(df, aes(n_patches, mean))+
+    geom_pointrange(aes(ymin = mean - ci, ymax = mean+ci,
+                        col = factor(spatial_scale)),
+                    size = 0.1,
+                    show.legend = F)+
+    geom_smooth(method = "glm", se = F, lwd = 0.2)+
+    scale_colour_brewer(palette = "Set1")+
+    theme_test(base_size = 8)+
+    facet_grid(spatial_scale~wlc,
+               labeller = label_both,
+               # scales = "free_y",
+               as.table = FALSE,
+               switch = "both")+
+    labs(x = "# patches",
+         y = glue::glue('{unique(df$name)}'),
+         title = glue::glue('({name})'))  
+})
+
+fig_metrics_social <- patchwork::wrap_plots(list_plot)
+
+ggsave(fig_metrics_social, filename = "figs/fig_metrics_social.png",
+       dpi = 300, height = 8)
+```
 
 ```{r}
 knitr::include_graphics("figs/fig_metrics_social.png")
