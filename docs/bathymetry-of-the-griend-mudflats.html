@@ -24,7 +24,7 @@
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2020-04-18" />
+<meta name="date" content="2020-04-19" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -203,97 +203,97 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h1><span class="header-section-number">Section 10</span> Bathymetry of the Griend mudflats</h1>
 <div id="get-data-and-plot-basic-trend" class="section level2">
 <h2><span class="header-section-number">10.1</span> Get data and plot basic trend</h2>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1"><span class="co"># load libs to read bathymetry</span></a>
-<a class="sourceLine" id="cb43-2" title="2"><span class="kw">library</span>(raster)</a>
-<a class="sourceLine" id="cb43-3" title="3"><span class="kw">library</span>(rayshader)</a>
-<a class="sourceLine" id="cb43-4" title="4"><span class="kw">library</span>(sf)</a>
-<a class="sourceLine" id="cb43-5" title="5"></a>
-<a class="sourceLine" id="cb43-6" title="6"><span class="co"># data libs</span></a>
-<a class="sourceLine" id="cb43-7" title="7"><span class="kw">library</span>(data.table)</a>
-<a class="sourceLine" id="cb43-8" title="8"><span class="kw">library</span>(purrr)</a>
-<a class="sourceLine" id="cb43-9" title="9"><span class="kw">library</span>(stringr)</a>
-<a class="sourceLine" id="cb43-10" title="10"></a>
-<a class="sourceLine" id="cb43-11" title="11"><span class="co"># plot libs</span></a>
-<a class="sourceLine" id="cb43-12" title="12"><span class="kw">library</span>(ggplot2)</a>
-<a class="sourceLine" id="cb43-13" title="13"><span class="kw">library</span>(ggthemes)</a></code></pre></div>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" title="1"><span class="co"># load bathymetry and subset</span></a>
-<a class="sourceLine" id="cb44-2" title="2">data &lt;-<span class="st"> </span><span class="kw">raster</span>(<span class="st">&quot;data/bathymetry_waddenSea_2015.tif&quot;</span>)</a>
-<a class="sourceLine" id="cb44-3" title="3">griend &lt;-<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;griend_polygon/griend_polygon.shp&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb44-4" title="4"><span class="st">  </span><span class="kw">st_buffer</span>(<span class="fl">10.5e3</span>)</a>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" title="1"><span class="co"># load libs to read bathymetry</span></a>
+<a class="sourceLine" id="cb44-2" title="2"><span class="kw">library</span>(raster)</a>
+<a class="sourceLine" id="cb44-3" title="3"><span class="kw">library</span>(rayshader)</a>
+<a class="sourceLine" id="cb44-4" title="4"><span class="kw">library</span>(sf)</a>
 <a class="sourceLine" id="cb44-5" title="5"></a>
-<a class="sourceLine" id="cb44-6" title="6"><span class="co"># assign utm 31 crs and subset</span></a>
-<a class="sourceLine" id="cb44-7" title="7"><span class="kw">crs</span>(data) &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">st_crs</span>(griend)[<span class="dv">2</span>])</a>
-<a class="sourceLine" id="cb44-8" title="8">data &lt;-<span class="st"> </span><span class="kw">crop</span>(data, <span class="kw">as</span>(griend, <span class="st">&quot;Spatial&quot;</span>))</a>
-<a class="sourceLine" id="cb44-9" title="9">data &lt;-<span class="st"> </span><span class="kw">aggregate</span>(data, <span class="dt">fact =</span> <span class="dv">2</span>)</a>
-<a class="sourceLine" id="cb44-10" title="10"><span class="co"># remove 20m outliers</span></a>
-<a class="sourceLine" id="cb44-11" title="11"><span class="co">#data[data &gt; 500] &lt;- NA</span></a>
-<a class="sourceLine" id="cb44-12" title="12">data_m &lt;-<span class="st"> </span><span class="kw">raster_to_matrix</span>(data)</a>
-<a class="sourceLine" id="cb44-13" title="13"></a>
-<a class="sourceLine" id="cb44-14" title="14"><span class="co"># get quantiles of the matrix</span></a>
-<a class="sourceLine" id="cb44-15" title="15">data_q &lt;-<span class="st"> </span><span class="kw">quantile</span>(data_m, <span class="dt">na.rm =</span> T, <span class="dt">probs =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">1000</span><span class="op">/</span><span class="dv">1000</span>)</a></code></pre></div>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1"><span class="co"># read in waterlevel data</span></a>
-<a class="sourceLine" id="cb45-2" title="2">waterlevel &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data2018/waterlevelWestTerschelling.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>)</a>
-<a class="sourceLine" id="cb45-3" title="3"></a>
-<a class="sourceLine" id="cb45-4" title="4"><span class="co"># select useful columns and rename</span></a>
-<a class="sourceLine" id="cb45-5" title="5">waterlevel &lt;-<span class="st"> </span>waterlevel[,.(WAARNEMINGDATUM, WAARNEMINGTIJD, NUMERIEKEWAARDE)]</a>
-<a class="sourceLine" id="cb45-6" title="6"></a>
-<a class="sourceLine" id="cb45-7" title="7"><span class="kw">setnames</span>(waterlevel, <span class="kw">c</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;time&quot;</span>, <span class="st">&quot;level&quot;</span>))</a>
-<a class="sourceLine" id="cb45-8" title="8"></a>
-<a class="sourceLine" id="cb45-9" title="9"><span class="co"># make a single POSIXct column of datetime</span></a>
-<a class="sourceLine" id="cb45-10" title="10">waterlevel[,dateTime <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(date, time, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>), </a>
-<a class="sourceLine" id="cb45-11" title="11">                                   <span class="dt">format =</span> <span class="st">&quot;%d-%m-%Y %H:%M:%S&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span>)]</a>
-<a class="sourceLine" id="cb45-12" title="12"></a>
-<a class="sourceLine" id="cb45-13" title="13">waterlevel &lt;-<span class="st"> </span><span class="kw">setDT</span>(<span class="kw">distinct</span>(<span class="kw">setDF</span>(waterlevel), dateTime, <span class="dt">.keep_all =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" title="1"><span class="co"># plot waterlevel quantiles with data from west terschelling</span></a>
-<a class="sourceLine" id="cb46-2" title="2">waterlimits &lt;-<span class="st"> </span><span class="kw">range</span>(waterlevel<span class="op">$</span>level)</a>
+<a class="sourceLine" id="cb44-6" title="6"><span class="co"># data libs</span></a>
+<a class="sourceLine" id="cb44-7" title="7"><span class="kw">library</span>(data.table)</a>
+<a class="sourceLine" id="cb44-8" title="8"><span class="kw">library</span>(purrr)</a>
+<a class="sourceLine" id="cb44-9" title="9"><span class="kw">library</span>(stringr)</a>
+<a class="sourceLine" id="cb44-10" title="10"></a>
+<a class="sourceLine" id="cb44-11" title="11"><span class="co"># plot libs</span></a>
+<a class="sourceLine" id="cb44-12" title="12"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb44-13" title="13"><span class="kw">library</span>(ggthemes)</a></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1"><span class="co"># load bathymetry and subset</span></a>
+<a class="sourceLine" id="cb45-2" title="2">data &lt;-<span class="st"> </span><span class="kw">raster</span>(<span class="st">&quot;data/bathymetry_waddenSea_2015.tif&quot;</span>)</a>
+<a class="sourceLine" id="cb45-3" title="3">griend &lt;-<span class="st"> </span><span class="kw">st_read</span>(<span class="st">&quot;griend_polygon/griend_polygon.shp&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb45-4" title="4"><span class="st">  </span><span class="kw">st_buffer</span>(<span class="fl">10.5e3</span>)</a>
+<a class="sourceLine" id="cb45-5" title="5"></a>
+<a class="sourceLine" id="cb45-6" title="6"><span class="co"># assign utm 31 crs and subset</span></a>
+<a class="sourceLine" id="cb45-7" title="7"><span class="kw">crs</span>(data) &lt;-<span class="st"> </span><span class="kw">unlist</span>(<span class="kw">st_crs</span>(griend)[<span class="dv">2</span>])</a>
+<a class="sourceLine" id="cb45-8" title="8">data &lt;-<span class="st"> </span><span class="kw">crop</span>(data, <span class="kw">as</span>(griend, <span class="st">&quot;Spatial&quot;</span>))</a>
+<a class="sourceLine" id="cb45-9" title="9">data &lt;-<span class="st"> </span><span class="kw">aggregate</span>(data, <span class="dt">fact =</span> <span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb45-10" title="10"><span class="co"># remove 20m outliers</span></a>
+<a class="sourceLine" id="cb45-11" title="11"><span class="co">#data[data &gt; 500] &lt;- NA</span></a>
+<a class="sourceLine" id="cb45-12" title="12">data_m &lt;-<span class="st"> </span><span class="kw">raster_to_matrix</span>(data)</a>
+<a class="sourceLine" id="cb45-13" title="13"></a>
+<a class="sourceLine" id="cb45-14" title="14"><span class="co"># get quantiles of the matrix</span></a>
+<a class="sourceLine" id="cb45-15" title="15">data_q &lt;-<span class="st"> </span><span class="kw">quantile</span>(data_m, <span class="dt">na.rm =</span> T, <span class="dt">probs =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">1000</span><span class="op">/</span><span class="dv">1000</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" title="1"><span class="co"># read in waterlevel data</span></a>
+<a class="sourceLine" id="cb46-2" title="2">waterlevel &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data2018/waterlevelWestTerschelling.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>)</a>
 <a class="sourceLine" id="cb46-3" title="3"></a>
-<a class="sourceLine" id="cb46-4" title="4">fig_waterlevel_area &lt;-<span class="st"> </span><span class="kw">ggplot</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb46-5" title="5"><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">1000</span><span class="op">/</span><span class="dv">1000</span>, <span class="dt">y =</span> data_q))<span class="op">+</span></a>
-<a class="sourceLine" id="cb46-6" title="6"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> waterlimits, <span class="dt">col =</span> <span class="st">&quot;blue&quot;</span>, <span class="dt">lty =</span> <span class="dv">2</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb46-7" title="7"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">lty =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)<span class="op">+</span></a>
-<a class="sourceLine" id="cb46-8" title="8"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">labels =</span> scales<span class="op">::</span>percent)<span class="op">+</span></a>
-<a class="sourceLine" id="cb46-9" title="9"><span class="st">  </span><span class="kw">theme_bw</span>()<span class="op">+</span></a>
-<a class="sourceLine" id="cb46-10" title="10"><span class="st">  </span><span class="kw">coord_flip</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="fl">0.25</span>, <span class="fl">1.01</span>), <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">250</span>, <span class="dv">250</span>))<span class="op">+</span></a>
-<a class="sourceLine" id="cb46-11" title="11"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;% area covered&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;waterlevel (cm over NAP)&quot;</span>)</a>
+<a class="sourceLine" id="cb46-4" title="4"><span class="co"># select useful columns and rename</span></a>
+<a class="sourceLine" id="cb46-5" title="5">waterlevel &lt;-<span class="st"> </span>waterlevel[,.(WAARNEMINGDATUM, WAARNEMINGTIJD, NUMERIEKEWAARDE)]</a>
+<a class="sourceLine" id="cb46-6" title="6"></a>
+<a class="sourceLine" id="cb46-7" title="7"><span class="kw">setnames</span>(waterlevel, <span class="kw">c</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;time&quot;</span>, <span class="st">&quot;level&quot;</span>))</a>
+<a class="sourceLine" id="cb46-8" title="8"></a>
+<a class="sourceLine" id="cb46-9" title="9"><span class="co"># make a single POSIXct column of datetime</span></a>
+<a class="sourceLine" id="cb46-10" title="10">waterlevel[,dateTime <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(date, time, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>), </a>
+<a class="sourceLine" id="cb46-11" title="11">                                   <span class="dt">format =</span> <span class="st">&quot;%d-%m-%Y %H:%M:%S&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span>)]</a>
 <a class="sourceLine" id="cb46-12" title="12"></a>
-<a class="sourceLine" id="cb46-13" title="13"><span class="kw">ggsave</span>(fig_waterlevel_area, <span class="dt">filename =</span> <span class="st">&quot;figs/fig_waterlevel_area.png&quot;</span>,</a>
-<a class="sourceLine" id="cb46-14" title="14">       <span class="dt">dpi =</span> <span class="dv">300</span>, <span class="dt">height =</span> <span class="dv">4</span>, <span class="dt">width =</span> <span class="dv">6</span>); <span class="kw">dev.off</span>()</a></code></pre></div>
+<a class="sourceLine" id="cb46-13" title="13">waterlevel &lt;-<span class="st"> </span><span class="kw">setDT</span>(<span class="kw">distinct</span>(<span class="kw">setDF</span>(waterlevel), dateTime, <span class="dt">.keep_all =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1"><span class="co"># plot waterlevel quantiles with data from west terschelling</span></a>
+<a class="sourceLine" id="cb47-2" title="2">waterlimits &lt;-<span class="st"> </span><span class="kw">range</span>(waterlevel<span class="op">$</span>level)</a>
+<a class="sourceLine" id="cb47-3" title="3"></a>
+<a class="sourceLine" id="cb47-4" title="4">fig_waterlevel_area &lt;-<span class="st"> </span><span class="kw">ggplot</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb47-5" title="5"><span class="st">  </span><span class="kw">geom_line</span>(<span class="kw">aes</span>(<span class="dt">x =</span> <span class="dv">1</span><span class="op">:</span><span class="dv">1000</span><span class="op">/</span><span class="dv">1000</span>, <span class="dt">y =</span> data_q))<span class="op">+</span></a>
+<a class="sourceLine" id="cb47-6" title="6"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> waterlimits, <span class="dt">col =</span> <span class="st">&quot;blue&quot;</span>, <span class="dt">lty =</span> <span class="dv">2</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb47-7" title="7"><span class="st">  </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="dv">0</span>, <span class="dt">lty =</span> <span class="dv">2</span>, <span class="dt">col =</span> <span class="st">&quot;red&quot;</span>)<span class="op">+</span></a>
+<a class="sourceLine" id="cb47-8" title="8"><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">labels =</span> scales<span class="op">::</span>percent)<span class="op">+</span></a>
+<a class="sourceLine" id="cb47-9" title="9"><span class="st">  </span><span class="kw">theme_bw</span>()<span class="op">+</span></a>
+<a class="sourceLine" id="cb47-10" title="10"><span class="st">  </span><span class="kw">coord_flip</span>(<span class="dt">xlim =</span> <span class="kw">c</span>(<span class="fl">0.25</span>, <span class="fl">1.01</span>), <span class="dt">ylim =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">250</span>, <span class="dv">250</span>))<span class="op">+</span></a>
+<a class="sourceLine" id="cb47-11" title="11"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;% area covered&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;waterlevel (cm over NAP)&quot;</span>)</a>
+<a class="sourceLine" id="cb47-12" title="12"></a>
+<a class="sourceLine" id="cb47-13" title="13"><span class="kw">ggsave</span>(fig_waterlevel_area, <span class="dt">filename =</span> <span class="st">&quot;figs/fig_waterlevel_area.png&quot;</span>,</a>
+<a class="sourceLine" id="cb47-14" title="14">       <span class="dt">dpi =</span> <span class="dv">300</span>, <span class="dt">height =</span> <span class="dv">4</span>, <span class="dt">width =</span> <span class="dv">6</span>); <span class="kw">dev.off</span>()</a></code></pre></div>
 </div>
 <div id="plot-as-3d-maps" class="section level2">
 <h2><span class="header-section-number">10.2</span> Plot as 3D maps</h2>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" title="1"><span class="co"># make sequence</span></a>
-<a class="sourceLine" id="cb47-2" title="2">waterdepth &lt;-<span class="st"> </span><span class="kw">seq</span>(waterlimits[<span class="dv">1</span>], waterlimits[<span class="dv">2</span>], <span class="dt">length.out =</span> <span class="dv">30</span>)</a>
-<a class="sourceLine" id="cb47-3" title="3">waterdepth &lt;-<span class="st"> </span><span class="kw">c</span>(waterdepth, <span class="kw">rev</span>(waterdepth))</a></code></pre></div>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" title="1"><span class="co"># make visualisation</span></a>
-<a class="sourceLine" id="cb48-2" title="2"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(waterdepth)) {</a>
-<a class="sourceLine" id="cb48-3" title="3">  data_m <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb48-4" title="4"><span class="st">    </span><span class="kw">sphere_shade</span>(<span class="dt">texture =</span> <span class="st">&quot;imhof1&quot;</span>, <span class="dt">zscale =</span> <span class="dv">50</span>) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb48-5" title="5"><span class="st">    </span><span class="co"># add_water(detect_water(data_m, zscale = 100, </span></a>
-<a class="sourceLine" id="cb48-6" title="6"><span class="st">    </span><span class="co">#                        max_height = waterdepth[i],cutoff = 0.1), </span></a>
-<a class="sourceLine" id="cb48-7" title="7"><span class="st">    </span><span class="co">#           color = &quot;desert&quot;) %&gt;%</span></a>
-<a class="sourceLine" id="cb48-8" title="8"><span class="st">    </span><span class="kw">add_shadow</span>(<span class="dt">hillshade =</span> data_m) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb48-9" title="9"><span class="st">    </span><span class="kw">plot_3d</span>(data_m, <span class="dt">zscale =</span> <span class="dv">75</span>, <span class="dt">wateralpha =</span> <span class="fl">0.6</span>,</a>
-<a class="sourceLine" id="cb48-10" title="10">            <span class="dt">solid =</span>F, <span class="dt">shadow=</span>F,</a>
-<a class="sourceLine" id="cb48-11" title="11">            <span class="dt">water =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb48-12" title="12">            <span class="dt">waterdepth =</span> waterdepth[i],</a>
-<a class="sourceLine" id="cb48-13" title="13">            <span class="dt">watercolor =</span> <span class="st">&quot;dodgerblue1&quot;</span>,</a>
-<a class="sourceLine" id="cb48-14" title="14">            <span class="dt">phi =</span> <span class="dv">90</span>,</a>
-<a class="sourceLine" id="cb48-15" title="15">            <span class="dt">theta =</span> <span class="dv">0</span>, <span class="dt">zoom =</span> <span class="fl">0.75</span>, <span class="dt">windowsize =</span> <span class="kw">c</span>(<span class="dv">1000</span>, <span class="dv">800</span>),</a>
-<a class="sourceLine" id="cb48-16" title="16">            <span class="dt">background =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">calculate_normals =</span> F)</a>
-<a class="sourceLine" id="cb48-17" title="17">  <span class="kw">render_label</span>(data_m, <span class="dt">x =</span> <span class="dv">500</span>, <span class="dt">y =</span> <span class="dv">500</span>, <span class="dt">z =</span> <span class="dv">500</span>,</a>
-<a class="sourceLine" id="cb48-18" title="18">               <span class="dt">text =</span> glue<span class="op">::</span><span class="kw">glue</span>(<span class="st">&#39;waterdepth = {round(waterdepth[i])} cm&#39;</span>), </a>
-<a class="sourceLine" id="cb48-19" title="19">               <span class="dt">freetype =</span> F, <span class="dt">textcolor =</span> <span class="st">&quot;black&quot;</span>)</a>
-<a class="sourceLine" id="cb48-20" title="20">    </a>
-<a class="sourceLine" id="cb48-21" title="21">  rgl<span class="op">::</span><span class="kw">snapshot3d</span>(<span class="kw">paste0</span>(<span class="st">&quot;figs/tide_rise/fig&quot;</span>,<span class="kw">str_pad</span>(i, <span class="dv">2</span>, <span class="dt">pad =</span> <span class="st">&quot;0&quot;</span>),<span class="st">&quot;.png&quot;</span>))</a>
-<a class="sourceLine" id="cb48-22" title="22">  rgl<span class="op">::</span><span class="kw">rgl.close</span>()</a>
-<a class="sourceLine" id="cb48-23" title="23">}</a></code></pre></div>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" title="1"><span class="kw">library</span>(magick)</a>
-<a class="sourceLine" id="cb49-2" title="2"><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;figs/tide_rise/&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;*.png&quot;</span>, <span class="dt">full.names =</span> T) <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb49-3" title="3"><span class="st">  </span><span class="kw">map</span>(image_read) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># reads each path file</span></a>
-<a class="sourceLine" id="cb49-4" title="4"><span class="st">  </span><span class="kw">image_join</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># joins image</span></a>
-<a class="sourceLine" id="cb49-5" title="5"><span class="st">  </span><span class="kw">image_animate</span>(<span class="dt">fps=</span><span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># animates, can opt for number of loops</span></a>
-<a class="sourceLine" id="cb49-6" title="6"><span class="st">  </span><span class="kw">image_write</span>(<span class="st">&quot;figs/fig_tide_rise_anim.gif&quot;</span>) <span class="co"># write to current dir</span></a></code></pre></div>
-<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;figs/fig_tide_rise_anim.gif&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" title="1"><span class="co"># make sequence</span></a>
+<a class="sourceLine" id="cb48-2" title="2">waterdepth &lt;-<span class="st"> </span><span class="kw">seq</span>(waterlimits[<span class="dv">1</span>], waterlimits[<span class="dv">2</span>], <span class="dt">length.out =</span> <span class="dv">30</span>)</a>
+<a class="sourceLine" id="cb48-3" title="3">waterdepth &lt;-<span class="st"> </span><span class="kw">c</span>(waterdepth, <span class="kw">rev</span>(waterdepth))</a></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" title="1"><span class="co"># make visualisation</span></a>
+<a class="sourceLine" id="cb49-2" title="2"><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="kw">length</span>(waterdepth)) {</a>
+<a class="sourceLine" id="cb49-3" title="3">  data_m <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb49-4" title="4"><span class="st">    </span><span class="kw">sphere_shade</span>(<span class="dt">texture =</span> <span class="st">&quot;imhof1&quot;</span>, <span class="dt">zscale =</span> <span class="dv">50</span>) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb49-5" title="5"><span class="st">    </span><span class="co"># add_water(detect_water(data_m, zscale = 100, </span></a>
+<a class="sourceLine" id="cb49-6" title="6"><span class="st">    </span><span class="co">#                        max_height = waterdepth[i],cutoff = 0.1), </span></a>
+<a class="sourceLine" id="cb49-7" title="7"><span class="st">    </span><span class="co">#           color = &quot;desert&quot;) %&gt;%</span></a>
+<a class="sourceLine" id="cb49-8" title="8"><span class="st">    </span><span class="kw">add_shadow</span>(<span class="dt">hillshade =</span> data_m) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb49-9" title="9"><span class="st">    </span><span class="kw">plot_3d</span>(data_m, <span class="dt">zscale =</span> <span class="dv">75</span>, <span class="dt">wateralpha =</span> <span class="fl">0.6</span>,</a>
+<a class="sourceLine" id="cb49-10" title="10">            <span class="dt">solid =</span>F, <span class="dt">shadow=</span>F,</a>
+<a class="sourceLine" id="cb49-11" title="11">            <span class="dt">water =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb49-12" title="12">            <span class="dt">waterdepth =</span> waterdepth[i],</a>
+<a class="sourceLine" id="cb49-13" title="13">            <span class="dt">watercolor =</span> <span class="st">&quot;dodgerblue1&quot;</span>,</a>
+<a class="sourceLine" id="cb49-14" title="14">            <span class="dt">phi =</span> <span class="dv">90</span>,</a>
+<a class="sourceLine" id="cb49-15" title="15">            <span class="dt">theta =</span> <span class="dv">0</span>, <span class="dt">zoom =</span> <span class="fl">0.75</span>, <span class="dt">windowsize =</span> <span class="kw">c</span>(<span class="dv">1000</span>, <span class="dv">800</span>),</a>
+<a class="sourceLine" id="cb49-16" title="16">            <span class="dt">background =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">calculate_normals =</span> F)</a>
+<a class="sourceLine" id="cb49-17" title="17">  <span class="kw">render_label</span>(data_m, <span class="dt">x =</span> <span class="dv">500</span>, <span class="dt">y =</span> <span class="dv">500</span>, <span class="dt">z =</span> <span class="dv">500</span>,</a>
+<a class="sourceLine" id="cb49-18" title="18">               <span class="dt">text =</span> glue<span class="op">::</span><span class="kw">glue</span>(<span class="st">&#39;waterdepth = {round(waterdepth[i])} cm&#39;</span>), </a>
+<a class="sourceLine" id="cb49-19" title="19">               <span class="dt">freetype =</span> F, <span class="dt">textcolor =</span> <span class="st">&quot;black&quot;</span>)</a>
+<a class="sourceLine" id="cb49-20" title="20">    </a>
+<a class="sourceLine" id="cb49-21" title="21">  rgl<span class="op">::</span><span class="kw">snapshot3d</span>(<span class="kw">paste0</span>(<span class="st">&quot;figs/tide_rise/fig&quot;</span>,<span class="kw">str_pad</span>(i, <span class="dv">2</span>, <span class="dt">pad =</span> <span class="st">&quot;0&quot;</span>),<span class="st">&quot;.png&quot;</span>))</a>
+<a class="sourceLine" id="cb49-22" title="22">  rgl<span class="op">::</span><span class="kw">rgl.close</span>()</a>
+<a class="sourceLine" id="cb49-23" title="23">}</a></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" title="1"><span class="kw">library</span>(magick)</a>
+<a class="sourceLine" id="cb50-2" title="2"><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;figs/tide_rise/&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;*.png&quot;</span>, <span class="dt">full.names =</span> T) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb50-3" title="3"><span class="st">  </span><span class="kw">map</span>(image_read) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># reads each path file</span></a>
+<a class="sourceLine" id="cb50-4" title="4"><span class="st">  </span><span class="kw">image_join</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># joins image</span></a>
+<a class="sourceLine" id="cb50-5" title="5"><span class="st">  </span><span class="kw">image_animate</span>(<span class="dt">fps=</span><span class="dv">2</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># animates, can opt for number of loops</span></a>
+<a class="sourceLine" id="cb50-6" title="6"><span class="st">  </span><span class="kw">image_write</span>(<span class="st">&quot;figs/fig_tide_rise_anim.gif&quot;</span>) <span class="co"># write to current dir</span></a></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" title="1">knitr<span class="op">::</span><span class="kw">include_graphics</span>(<span class="st">&quot;figs/fig_tide_rise_anim.gif&quot;</span>)</a></code></pre></div>
 <div class="figure">
 <img src="figs/fig_tide_rise_anim.gif" alt="Waterlevel at West Terschelling and effect on coverage of mudflats around Griend."  />
 <p class="caption">
