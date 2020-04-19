@@ -120,6 +120,10 @@ list.files(path = "figs/tide_rise/", pattern = "*.png", full.names = T) %>%
 
 
 ```{r include_gif, eval=TRUE, fig.cap="Waterlevel at West Terschelling and effect on coverage of mudflats around Griend."}
-knitr::include_graphics("figs/fig_tide_rise_anim.gif")
+if (knitr:::is_latex_output()) {
+  
+} else {
+  knitr::include_graphics("figs/fig_tide_rise_anim.gif")
+}
 ```
 
