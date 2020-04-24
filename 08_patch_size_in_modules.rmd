@@ -1,7 +1,6 @@
 ---
 editor_options:
   chunk_output_type: console
-output: pdf_document
 ---
 
 # Patch metrics in relation to module size
