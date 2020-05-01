@@ -3,7 +3,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Patch metrics in relation to module size
+# Individual traits and presence in modules
 
 ## Prepare libraries
 
@@ -27,13 +27,13 @@ data <- read_csv("data/data_2018_good_patches.csv")
 
 Choose three spatial scales.
 
-```{r choose_scale, eval=FALSE}
+```{r choose_scale_2, eval=FALSE}
 modules <- filter(modules, time_scale == 1, spatial_scale <= 250)
 ```
 
 ## Count unique modules per individual
 
-```{r}
+```{r, eval=FALSE}
 # get modules per id over the tidal cycle
 modules_per_id <- inner_join(modules, data)
 
@@ -58,7 +58,7 @@ modules_per_id <- modules_per_id %>%
 
 ## Link modules to individual data
 
-```{r}
+```{r, eval=FALSE}
 # load physio data
 tag_data <- read_csv("data/data_2018_behav.csv")
 modules_per_id <- left_join(modules_per_id, tag_data, by = "id")
@@ -71,7 +71,8 @@ modules_per_id <- filter(modules_per_id, between(exploreScore, -0.18, 0.74))
 ```
 
 Select some possible predictors
-```{r}
+
+```{r, eval=FALSE}
 modules_per_id <- modules_per_id %>% 
   select(spatial_scale, wlc, mean, ci, WING, MASS, gizzard_mass, exploreScore) %>%
   pivot_longer(cols = c("WING", "MASS", "gizzard_mass", "exploreScore"))
@@ -79,7 +80,6 @@ modules_per_id <- modules_per_id %>%
 modules_per_id <- group_by(modules_per_id, name) %>% 
   mutate(value = scales::rescale(value))
 ```
-
 
 ```{r fig_mods_per_trait, eval=FALSE}
 # plot figure
@@ -91,8 +91,8 @@ fig_mods_per_trait <-
   facet_grid(wlc~name, #xscales = "free_x",
              switch = "both", as.table = F, 
              labeller = label_both)+
-  geom_pointrange(size = 0.1, position = position_dodge(width = 0.2))+
-  geom_smooth(method = "glm", size = 0.3)+
+  geom_pointrange(size = 0.05, position = position_dodge(width = 0.2))+
+  geom_smooth(method = "glm", size = 0.1)+
   scale_colour_brewer(palette = "Set1")+
   coord_equal(ratio = 0.5, xlim = c(0,1))+
   labs(x = "trait value (scaled 0 - 1)",
@@ -107,9 +107,13 @@ fig_mods_per_trait <-
 ggsave(fig_mods_per_trait, filename = "figs/fig_mods_per_trait.png")
 ```
 
+```{r}
+knitr::include_graphics("figs/fig_mods_per_trait.png")
+```
+
 ## Add patch data
 
-```{r add_patch_data, eval=FALSE}
+```{r add_patch_data2, eval=FALSE}
 # split data by spatial scale
 mod_data <- split(modules, modules$spatial_scale)
 
@@ -138,7 +142,7 @@ mod_data_indep <- imap(mod_data_indep, ~ mutate(.x, spatial_scale = .y)) %>%
 
 ## Link independent patches to traits
 
-```{r indep_patches_per_trait}
+```{r indep_patches_per_trait, eval=FALSE}
 mod_data_indep <- left_join(mod_data_indep, tag_data, by = "id")
 mod_data_indep <- filter(mod_data_indep, !is.na(exploreScore))
 
@@ -153,7 +157,7 @@ mod_data_indep <- select(mod_data_indep, spatial_scale, wlc,
   pivot_longer(cols = c("WING", "MASS", "gizzard_mass", "exploreScore"))
 ```
 
-```{r}
+```{r, eval=FALSE}
 # make factor of spatial scale
 mod_data_indep$spatial_scale <- as_factor(mod_data_indep$spatial_scale)
 
@@ -165,14 +169,14 @@ fig_indep_patches <- ggplot(mod_data_indep,
            ymin = mean_indep-ci, ymax = mean_indep+ci,
            col = factor(spatial_scale)))+
   geom_abline(slope = 1, col = "black", 
-              alpha = 0.5, size = 0.2)+
+              alpha = 0.5, size = 0.1)+
   # geom_hline(yintercept = 0.5, col = "black", 
   #             alpha = 0.5, size = 0.2)+
   facet_grid(wlc~name,# scales = "free_x",
              as.table = F, switch = "both",
              labeller = label_both)+
-  geom_pointrange(size = 0.1, position = position_dodge(width = 0.2))+
-  geom_smooth(method = "glm", size = 0.3)+
+  geom_pointrange(size = 0.05, position = position_dodge(width = 0.2))+
+  geom_smooth(method = "glm", size = 0.1)+
 
   scale_y_continuous(labels = scales::percent)+
   scale_colour_brewer(palette = "Set1")+
@@ -189,3 +193,6 @@ fig_indep_patches <- ggplot(mod_data_indep,
 ggsave(fig_indep_patches, filename = "figs/fig_indep_patches.png")
 ```
 
+```{r eval=FALSE}
+knitr::include_graphics("figs/fig_indep_patches.png")
+```
