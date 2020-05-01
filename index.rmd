@@ -1,6 +1,6 @@
 --- 
 knit: "bookdown::render_book"
-title: "Individual consistency in space-use across scales"
+title: "Individual space-use in relation to the social environment and resource landscape"
 author: "Pratik R Gupte"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -10,12 +10,12 @@ bibliography: [refs.bib]
 biblio-style: apalike
 link-citations: yes
 github-repo: pratikunterwegs/knotPatches
-description: "Individual consistency in space-use across scales"
+description: "Individual space-use in relation to the social environment and resource landscape"
 ---
 
 # Introduction
 
-This is the `bookdown` version of a project in preparation that links high-resolution tracking data from individual red knots _Calidris canutus islandica_ to fine-scale experimental behaviour measurements in captivity, and examines whether individuals are consistent across scales in their space-use.
+This is the `bookdown` version of a project in preparation that identifies residence patches from high-resolution tracking data from individual red knots _Calidris canutus_ and examines the modulation of individual behaviour by the social environment and the resource landscape.
 
 ## Attribution
 
