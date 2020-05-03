@@ -120,3 +120,80 @@ ggsave(fig_patches_id, filename = "figs/fig_patches_id.png",
 knitr::include_graphics("figs/fig_patches_id.png")
 ```
 
+## THIS NEEDS WORK TO BE INTEGRATED
+
+## Module metrics and composition ~ waterlevel
+
+How does the number of patches and number of ids and number of fixes change with waterlevel?
+
+```{r module_size_waterlevel, eval=FALSE}
+# prep data to do stuff
+mods_waterlevel <- mod_data %>% 
+  ungroup() %>% 
+  pivot_longer(cols = c("n_patches", "n_uid", "nfixes")) %>% 
+  split(.$name)
+
+# svae fig
+list_plot <- map2(mods_waterlevel, letters[1:3], 
+                  function(df, title){
+  ggplot(df,
+         aes(value))+
+  geom_histogram(fill = "grey")+
+  # geom_pointrange(size = 0.2, col = "steelblue")+
+  theme_test(base_size = 8)+
+  facet_grid(~wlc,
+             scales = "free_y",
+             as.table = F,
+             switch = "both",
+             labeller = label_both)+
+  # xlim(0, 20)+
+  labs(x = glue::glue('{unique(df$name)}'),
+       y = NULL,
+       title = glue::glue('({title})'))})
+
+fig_mods_waterlevel <- patchwork::wrap_plots(list_plot, ncol = 1)
+
+ggsave(fig_mods_waterlevel, 
+       filename = "figs/fig_mods_waterlevel.png",
+       device = png(), dpi = 300, height = 5, width = 5)
+```
+
+```{r}
+knitr::include_graphics("figs/fig_mods_waterlevel.png")
+```
+
+## Visualise modules
+
+```{r vis_modules, eval=FALSE}
+# select single time chunk
+a = ggplot()+
+  geom_point(data = mod_data %>%
+               filter(between(time_chunk, 700, 750)) %>%
+               distinct(x_mean, y_mean, .keep_all = T),
+             aes(x_mean, y_mean,
+                 # fill = duration,
+                 # col = factor(spatial_scale),
+                 size = area),
+             shape = 1,
+             col = "grey20",
+             alpha = 0.5,
+             stroke = 0.15)+
+  geom_segment(data = mod_data %>% 
+                 filter(between(time_chunk, 700, 750)),
+               aes(x_mean, y_mean,
+                   xend = xc, yend = yc,
+                   col = factor(spatial_scale)),
+               size = 0.2,
+               alpha = 0.8,
+               show.legend = FALSE)+
+  # scale_fill_distiller(palette = "Reds")+
+  scale_colour_brewer(palette = "Set1")+
+  coord_sf(crs = 32631)+
+  # facet_wrap(~time_chunk)+
+  theme(axis.text = element_blank())
+
+
+figplotly <- ggplotly(a)
+
+saveWidget(figplotly, file = "fig_modules.html")
+```

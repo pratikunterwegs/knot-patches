@@ -24,7 +24,7 @@
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2020-04-19" />
+<meta name="date" content="2020-04-27" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -178,9 +178,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="9.5" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#module-metrics-and-composition-waterlevel"><i class="fa fa-check"></i><b>9.5</b> Module metrics and composition ~ waterlevel</a></li>
 <li class="chapter" data-level="9.6" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#patch-size-number-of-patches-in-a-module"><i class="fa fa-check"></i><b>9.6</b> Patch size ~ number of patches in a module</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html"><i class="fa fa-check"></i><b>10</b> Bathymetry of the Griend mudflats</a><ul>
-<li class="chapter" data-level="10.1" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#get-data-and-plot-basic-trend"><i class="fa fa-check"></i><b>10.1</b> Get data and plot basic trend</a></li>
-<li class="chapter" data-level="10.2" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#plot-as-3d-maps"><i class="fa fa-check"></i><b>10.2</b> Plot as 3D maps</a></li>
+<li class="chapter" data-level="10" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html"><i class="fa fa-check"></i><b>10</b> Modules and individual traits</a><ul>
+<li class="chapter" data-level="10.1" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#prepare-libraries-5"><i class="fa fa-check"></i><b>10.1</b> Prepare libraries</a></li>
+<li class="chapter" data-level="10.2" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#read-in-module-data-1"><i class="fa fa-check"></i><b>10.2</b> Read in module data</a></li>
+<li class="chapter" data-level="10.3" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#count-unique-modules-per-individual"><i class="fa fa-check"></i><b>10.3</b> Count unique modules per individual</a></li>
+<li class="chapter" data-level="10.4" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#link-modules-to-individual-data"><i class="fa fa-check"></i><b>10.4</b> Link modules to individual data</a></li>
+<li class="chapter" data-level="10.5" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#add-patch-data-1"><i class="fa fa-check"></i><b>10.5</b> Add patch data</a></li>
+<li class="chapter" data-level="10.6" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#link-independent-patches-to-traits"><i class="fa fa-check"></i><b>10.6</b> Link independent patches to traits</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html"><i class="fa fa-check"></i><b>11</b> Bathymetry of the Griend mudflats</a><ul>
+<li class="chapter" data-level="11.1" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#get-data-and-plot-basic-trend"><i class="fa fa-check"></i><b>11.1</b> Get data and plot basic trend</a></li>
+<li class="chapter" data-level="11.2" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#plot-as-3d-maps"><i class="fa fa-check"></i><b>11.2</b> Plot as 3D maps</a></li>
 </ul></li>
 </ul>
 
@@ -237,8 +245,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb2-9" title="9"></a>
 <a class="sourceLine" id="cb2-10" title="10"><span class="co"># check new release date column</span></a>
 <a class="sourceLine" id="cb2-11" title="11"><span class="kw">head</span>(tag_info<span class="op">$</span>Release_Date)</a></code></pre></div>
-<pre><code>## [1] &quot;2018-09-14 20:00:00 CEST&quot; &quot;2018-09-13 15:30:00 CEST&quot; &quot;2018-09-14 20:00:00 CEST&quot;
-## [4] &quot;2018-09-13 18:30:00 CEST&quot; &quot;2018-08-11 15:00:00 CEST&quot; &quot;2018-08-16 18:04:00 CEST&quot;</code></pre>
+<pre><code>## [1] &quot;2018-09-14 20:00:00 CEST&quot; &quot;2018-09-13 15:30:00 CEST&quot;
+## [3] &quot;2018-09-14 20:00:00 CEST&quot; &quot;2018-09-13 18:30:00 CEST&quot;
+## [5] &quot;2018-08-11 15:00:00 CEST&quot; &quot;2018-08-16 18:04:00 CEST&quot;</code></pre>
 <div class="figure">
 <img src="knots_paper_patches_2019_files/figure-html/plot_release_schedule-1.png" alt="Knots released per week of 2018." width="672" />
 <p class="caption">
