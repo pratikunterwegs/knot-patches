@@ -51,7 +51,7 @@ head(tag_info$Release_Date)
 # check release cohort
 ggplot(tag_info)+
   geom_bar(aes(x = week(Release_Date)), col = 1, fill = "grey")+
-  ggthemes::theme_few()+
+  theme_test()+
   labs(x = "release week (2018)", y = "# knots released",
        caption = Sys.time())
 ```
