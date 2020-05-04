@@ -88,8 +88,7 @@ mod_data_summary <- mod_data_summary %>%
 
 ## Get patches not in modules
 
-```{r}
-
+```{r eval=FALSE}
 # split modules by spatial scale
 tmp_modules <- filter(modules, spatial_scale <= 100)
 tmp_modules <- split(tmp_modules, tmp_modules$spatial_scale)
@@ -118,7 +117,7 @@ indep_patches <- bind_rows(indep_patches)
 ```
 
 
-```{r}
+```{r eval=FALSE}
 # add indep patches
 mod_data_summary <- bind_rows(mod_data_summary, indep_patches)
 # make list

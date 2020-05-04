@@ -25,7 +25,7 @@ modules <- read_csv("data/data_2018_patch_modules_small_scale.csv")
 data <- read_csv("data/data_2018_good_patches.csv")
 ```
 
-Choose three spatial scales.
+Choose three spatial scales and one temporal scale.
 
 ```{r choose_scale_2, eval=FALSE}
 modules <- filter(modules, time_scale == 1, spatial_scale <= 250)
