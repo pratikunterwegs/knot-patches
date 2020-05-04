@@ -120,8 +120,6 @@ ggsave(fig_patches_id, filename = "figs/fig_patches_id.png",
 knitr::include_graphics("figs/fig_patches_id.png")
 ```
 
-## THIS NEEDS WORK TO BE INTEGRATED
-
 ## Module metrics and composition ~ waterlevel
 
 How does the number of patches and number of ids and number of fixes change with waterlevel?
