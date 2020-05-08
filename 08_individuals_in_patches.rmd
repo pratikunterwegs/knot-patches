@@ -12,6 +12,8 @@ library(tidyverse)
 
 # for plots
 library(ggplot2)
+library(plotly)
+library(htmlwidgets)
 
 # ci function
 ci <- function(x){qnorm(0.975)*sd(x, na.rm = TRUE)/sqrt(length(x))}
@@ -28,7 +30,57 @@ data <- read_csv("data/data_2018_good_patches.csv")
 Choose three spatial scales and one temporal scale.
 
 ```{r choose_scale_2, eval=FALSE}
-modules <- filter(modules, time_scale == 1, spatial_scale <= 250)
+modules <- filter(modules, time_scale %in% c(1), spatial_scale <= 250)
+```
+
+## Visualise modules
+
+```{r vis_modules, eval=FALSE}
+# get mean and ci for patches
+mod_data <- modules %>% 
+  inner_join(data)
+
+# count unique ids in each mod-time-chunk and filter on 2
+mod_data <- mod_data %>% 
+  group_by(spatial_scale, module, time_chunk) %>% 
+  mutate(xc = mean(x_mean, na.rm = T),
+         yc = mean(y_mean, na.rm = T),
+         wlc = mean(waterlevel_start),
+         wlc = plyr::round_any(wlc, 50),
+         n_uid = length(unique(id)),
+         n_patches = length(unique(x_mean)))
+
+# select single time chunk
+a = ggplot()+
+  geom_point(data = mod_data %>%
+               filter(between(time_chunk, 700, 750)) %>%
+               distinct(x_mean, y_mean, .keep_all = T),
+             aes(x_mean, y_mean,
+                 # fill = duration,
+                 # col = factor(spatial_scale),
+                 size = area),
+             shape = 1,
+             col = "grey20",
+             alpha = 0.5,
+             stroke = 0.15)+
+  geom_segment(data = mod_data %>% 
+                 filter(between(time_chunk, 700, 750)),
+               aes(x_mean, y_mean,
+                   xend = xc, yend = yc,
+                   col = factor(spatial_scale)),
+               size = 0.2,
+               alpha = 0.8,
+               show.legend = FALSE)+
+  # scale_fill_distiller(palette = "Reds")+
+  scale_colour_brewer(palette = "Set1")+
+  coord_sf(crs = 32631)+
+  # facet_wrap(~time_chunk)+
+  theme(axis.text = element_blank())
+
+
+figplotly <- ggplotly(a)
+
+saveWidget(figplotly, file = "fig_modules.html")
 ```
 
 ## Count unique modules per individual

@@ -172,39 +172,3 @@ ggsave(fig_mods_waterlevel,
 ```{r}
 knitr::include_graphics("figs/fig_mods_waterlevel.png")
 ```
-
-## Visualise modules
-
-```{r vis_modules, eval=FALSE}
-# select single time chunk
-a = ggplot()+
-  geom_point(data = mod_data %>%
-               filter(between(time_chunk, 700, 750)) %>%
-               distinct(x_mean, y_mean, .keep_all = T),
-             aes(x_mean, y_mean,
-                 # fill = duration,
-                 # col = factor(spatial_scale),
-                 size = area),
-             shape = 1,
-             col = "grey20",
-             alpha = 0.5,
-             stroke = 0.15)+
-  geom_segment(data = mod_data %>% 
-                 filter(between(time_chunk, 700, 750)),
-               aes(x_mean, y_mean,
-                   xend = xc, yend = yc,
-                   col = factor(spatial_scale)),
-               size = 0.2,
-               alpha = 0.8,
-               show.legend = FALSE)+
-  # scale_fill_distiller(palette = "Reds")+
-  scale_colour_brewer(palette = "Set1")+
-  coord_sf(crs = 32631)+
-  # facet_wrap(~time_chunk)+
-  theme(axis.text = element_blank())
-
-
-figplotly <- ggplotly(a)
-
-saveWidget(figplotly, file = "fig_modules.html")
-```
