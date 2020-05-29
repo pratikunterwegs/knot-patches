@@ -74,25 +74,6 @@ for(i in 1:length(data)){
     id <- unique(temp_data$id)
     tide_number <- unique(temp_data$tide_number)
     
-    # get data summary for the tidal cycle
-    {
-      data_summary <- temp_data[,.(duration = (max(time) - min(time))/60,
-                                   n_fixes = length(x),
-                                   prop_fixes = length(x) / ((max(time) - min(time))/30)),
-                                by = .(id, tide_number)]
-      
-      sld <- watlastools::wat_simple_dist(temp_data, "x", "y")
-      timelag <- c(NA, as.numeric(diff(temp_data$time)))
-      speed <- sld/timelag
-      
-      data_summary[,`:=`(mean_speed = mean(speed, na.rm=TRUE),
-                         ci95_speed = ci(speed))]
-      
-      # write total distance for the tidal cycle
-      fwrite(data_summary, file = "data/data2018/data_2018_tidal_mean_speed.csv", 
-             append = TRUE, scipen = 6)
-    }
-    
     # wrap process in try catch
     tryCatch(
       {
