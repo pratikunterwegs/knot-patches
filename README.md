@@ -1,8 +1,8 @@
-# Identifying residence patches from ATLAS data
+# Assortative association in red knot residence patches
 
-This repository is the source for a project to idenify residence patches from high-resolution tracking data from individual red knots _Calidris canutus islandica_.
+This repository is the source for a project to idenify residence patches from high-resolution tracking data from individual red knots _Calidris canutus islandica_, and study whether associations are assortative on individual traits.
 
-## [Readable version](https://pratikunterwegs.github.io/knotPatches/)
+## [Readable version](https://pratikunterwegs.github.io/knot-association/)
 
 A human-readable version of this code is available in bookdown format by clicking on the heading.
 
