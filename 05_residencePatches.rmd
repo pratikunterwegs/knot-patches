@@ -37,10 +37,6 @@ ci <- function(x){qnorm(0.975)*sd(x, na.rm = T)/sqrt((length(x)))}
 ## Patch construction
 
 ```{r remove_old_data, eval=FALSE}
-if(file.exists("data/data2018/data_2018_tidal_mean_speed.csv")){
-  file.remove("data/data2018/data_2018_tidal_mean_speed.csv")
-}
-
 if(file.exists("data/data2018/data_2018_patch_summary.csv")){
   file.remove("data/data2018/data_2018_patch_summary.csv")
 }
@@ -64,9 +60,9 @@ data <- split(x = data, f = data$tag) %>%
   map(function(l) l$data_file)
 
 # map inferResidence, classifyPath, and getPatches over data
-for(i in 1:length(data)){
-  patch_data <- map(data[[i]], function(l){
-  
+sp_data <- map(data[1], function(df_list){
+  patch_data <- map(df_list, function(l){
+    
     # read the data file
     temp_data <- fread(l)
     temp_data[,ts:=fastPOSIXct(ts)]
@@ -88,11 +84,11 @@ for(i in 1:length(data)){
         
         # watlastools function to get patches
         patch_dt <- wat_make_res_patch(somedata = temp_data,
-                                         bufferSize = 10,
-                                         spatIndepLim = 100,
-                                         tempIndepLim = 30,
-                                         restIndepLim = 30,
-                                         minFixes = 3)
+                                       bufferSize = 10,
+                                       spatIndepLim = 100,
+                                       tempIndepLim = 30,
+                                       restIndepLim = 30,
+                                       minFixes = 3)
         # print message
         message(as.character(glue('patches {id}_{tide_number} done')))
         return(patch_dt)
@@ -110,12 +106,17 @@ for(i in 1:length(data)){
   # write patch summary data
   
   if(all(is.data.frame(repaired_data), nrow(repaired_data) > 0)){
-    # watlastools function to get patch data as spatial
-    patch_summary <- wat_get_patch_summary(resPatchData = repaired_data,
+    # watlastools function to get patch data as summary
+    patch_summary <- wat_get_patch_summary(res_patch_data = repaired_data,
                                            whichData = "summary")
     fwrite(patch_summary, file = "data/data2018/data_2018_patch_summary.csv",
            append = TRUE)
+    
+    # we also want the spatial object
+    patch_spatial <- wat_get_patch_summary(res_patch_data = repaired_data,
+                                           whichData = "spatial")
   }
-}
+  return(patch_spatial)
+})
 
 ```
