@@ -3,7 +3,6 @@
 import os
 import pandas as pd
 import numpy as np
-import itertools
 from ncls import NCLS
 import collections
 
@@ -61,4 +60,5 @@ data_overlap = pd.DataFrame(data_list,
 
 # save data
 data_overlap.to_csv("data/data2018/data_time_overlaps_patches_2018.csv", index=False)
+
 # wip
