@@ -6,6 +6,9 @@ import numpy as np
 import itertools
 from ncls import NCLS
 import collections
+
+print(os.getcwd())
+
 # read in the data
 data = pd.read_csv("data/data2018/data_2018_patch_summary.csv")  # use good_patches for quality control
 data.head()
@@ -17,10 +20,14 @@ data['uid'] = np.arange(0, data.shape[0])
 data.to_csv("data/data2018/data_2018_patch_summary.csv",
             index=False)
 
-# make the ncls
-ncls = NCLS(np.asarray(data.time_start),
-            np.asarray(data.time_end),
-            np.asarray(data.uid))
+# convert data to int
+data['time_start'] = data['time_start'].astype(np.int64)
+data['time_end'] = data['time_end'].astype(np.int64)
+
+# trial ncls
+ncls = NCLS(np.asarray(data[0:].time_start),
+                np.asarray(data[0:].time_end),
+                np.asarray(data[0:].uid))
 
 # look at all the overlaps in time
 # get a dataframe of the overlapping pairs and the extent of overlap
