@@ -2,6 +2,7 @@
 
 import os
 import pandas as pd
+import geopansas as gpd
 import numpy as np
 from ncls import NCLS
 import collections
@@ -12,11 +13,17 @@ print(os.getcwd())
 data = pd.read_csv("data/data2018/data_2018_patch_summary.csv")  # use good_patches for quality control
 data.head()
 
+# check which patches have spatials
+# actually the problem is at the level of one full bird, remove it
+patches = gpd.read_file("data/data2018/spatials/patches_2018.gpkg")
+
+data = data[data.id.isin([i for i in data.id.unique() if i in patches.id.unique()])]
+
 # assign unique patch id
 data['uid'] = np.arange(0, data.shape[0])
 
 # overwrite data with uid
-data.to_csv("data/data2018/data_2018_patch_summary.csv",
+data.to_csv("data/data2018/data_2018_patch_summary_has_patches.csv",
             index=False)
 
 # convert data to int
