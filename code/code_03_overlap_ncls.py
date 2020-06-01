@@ -2,22 +2,18 @@
 
 import os
 import pandas as pd
-import geopansas as gpd
+import geopandas as gpd
 import numpy as np
 from ncls import NCLS
-import collections
 
 print(os.getcwd())
 
-# read in the data
-data = pd.read_csv("data/data2018/data_2018_patch_summary.csv")  # use good_patches for quality control
-data.head()
-
-# check which patches have spatials
-# actually the problem is at the level of one full bird, remove it
+# read in the SPATIAL data
+# because the patch data has some spatials missing
+# ie patches are described but not made
 patches = gpd.read_file("data/data2018/spatials/patches_2018.gpkg")
 
-data = data[data.id.isin([i for i in data.id.unique() if i in patches.id.unique()])]
+data = pd.DataFrame(patches.drop(columns='geometry'))
 
 # assign unique patch id
 data['uid'] = np.arange(0, data.shape[0])
@@ -26,31 +22,35 @@ data['uid'] = np.arange(0, data.shape[0])
 data.to_csv("data/data2018/data_2018_patch_summary_has_patches.csv",
             index=False)
 
-# convert data to int
-data['time_start'] = data['time_start'].astype(np.int64)
-data['time_end'] = data['time_end'].astype(np.int64)
+# remove from memory
+del patches
+
+# re-read data
+data = pd.read_csv("data/data2018/data_2018_patch_summary_has_patches.csv")
+# get integer series of start and end times of patches
+t_start = data['time_start'].astype(np.int64)
+t_end = data['time_end'].astype(np.int64)
+t_id = data['uid']
 
 # trial ncls
-ncls = NCLS(np.asarray(data[0:].time_start),
-                np.asarray(data[0:].time_end),
-                np.asarray(data[0:].uid))
+# only works on pandas and not geopandas else throws error!
+# this is very weird behaviour, pd and gpd must differ in int implementation
+ncls = NCLS(t_start.values, t_end.values, t_id.values)
 
 # look at all the overlaps in time
 # get a dataframe of the overlapping pairs and the extent of overlap
 data_list = []
-for i in np.arange(len(data)):
-    ncls = NCLS(np.asarray(data[i:].time_start),
-                np.asarray(data[i:].time_end),
-                np.asarray(data[i:].uid))
-    it = ncls.find_overlap(data.iloc[i].time_start,
-                           data.iloc[i].time_end)
+for i in np.arange(len(t_id)):
+    ncls = NCLS(t_start[i:].values, t_end[i:].values, t_id[i:].values)
+    it = ncls.find_overlap(t_start[i],
+                           t_end[i])
     # get the unique patch ids overlapping
     overlap_id = []
     overlap_extent = []
     # get the extent of overlap
     for x in it:
         overlap_id.append(x[2])
-        overlap_extent.append(min(x[1], data.iloc[i].time_end) - max(x[0], data.iloc[i].time_start))
+        overlap_extent.append(min(x[1], t_end[i]) - max(x[0], t_start[i]))
     # add the overlap id for each obs
     uid = [i] * len(overlap_id)
     # zip the tuples together
@@ -66,6 +66,6 @@ data_overlap = pd.DataFrame(data_list,
                          columns=['uid', 'overlap_id', 'overlap_extent'])
 
 # save data
-data_overlap.to_csv("data/data2018/data_time_overlaps_patches_2018.csv", index=False)
+data_overlap.to_csv("../data/data2018/data_time_overlaps_patches_2018.csv", index=False)
 
 # wip
