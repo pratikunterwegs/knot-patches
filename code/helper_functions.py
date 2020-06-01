@@ -1,17 +1,8 @@
 # import classic python libs
-import itertools
-from operator import itemgetter
 import numpy as np
-import matplotlib.pyplot as plt
-import math
 
 # libs for dataframes
 import pandas as pd
-
-# import libs for geodata
-from shapely.ops import nearest_points
-import geopandas as gpd
-import rasterio
 
 # import ckdtree
 from scipy.spatial import cKDTree
