@@ -13,6 +13,14 @@ print(os.getcwd())
 # ie patches are described but not made
 patches = gpd.read_file("data/data2018/spatials/patches_2018.gpkg")
 
+# plot patches for a sanity check
+# subset = patches.iloc[0:1000]
+# subset.plot(linewidth=0.5,
+#             column='id',
+#             alpha=0.2,
+#             cmap='tab20b', edgecolor='black')
+
+# convert to dataframe, export, and read in again
 data = pd.DataFrame(patches.drop(columns='geometry'))
 
 # assign unique patch id
@@ -25,7 +33,7 @@ data.to_csv("data/data2018/data_2018_patch_summary_has_patches.csv",
 # remove from memory
 del patches
 
-# re-read data
+# re-read csv data because of integer handling differences
 data = pd.read_csv("data/data2018/data_2018_patch_summary_has_patches.csv")
 # get integer series of start and end times of patches
 t_start = data['time_start'].astype(np.int64)
@@ -66,6 +74,6 @@ data_overlap = pd.DataFrame(data_list,
                          columns=['uid', 'overlap_id', 'overlap_extent'])
 
 # save data
-data_overlap.to_csv("../data/data2018/data_time_overlaps_patches_2018.csv", index=False)
+data_overlap.to_csv("data/data2018/data_time_overlaps_patches_2018.csv", index=False)
 
 # wip
