@@ -1,0 +1,72 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+# Patch overlap in relation to traits
+
+Here we relate the extent of temporal and spatial overlap to pairwise differences in traits.
+
+## Read in patch data and overlaps
+
+```{r}
+library(data.table)
+library(ggplot2)
+```
+
+```{r}
+data_patches <- fread("data/data2018/data_2018_patch_summary_has_patches.csv")
+
+data_overlap <- fread("data/data2018/data_spatio_temporal_overlap_2018.csv")
+```
+
+## Link overlap with id data
+
+First identify unique patches in the patch data.
+
+```{r}
+# add a uid, this corresponds to the uid in the overlap data
+data_patches[,uid:=1:nrow(data_patches)]
+```
+
+Now link the individual identity and other environmental covariates to the overlap data. Begin by subsetting the data to get some idea of how many patches (of the original 90000) overlap with others.
+
+```{r}
+# subset the data to keeep only overlapping patches
+data_patches <- data_patches[uid %in% c(data_overlap$patch_i_unique_id,
+                        data_overlap$patch_j_unique_id),]
+
+# there are approx 54500 unique patches.
+```
+
+What is the distribution of patch overlaps in space and time?
+
+```{r}
+# melt the data for time and space
+tmp_data <- melt.data.table(data_overlap, 
+                            measure.vars = c("temporal_overlap_seconds",
+                                             "spatial_overlap_area"))
+
+# now plot
+fig_variable_overlap <- ggplot(tmp_data[value < 10000,])+
+  stat_density(aes(x = value,
+                   y = ..count.., 
+                   col = variable),
+               geom = "line",
+               size = 1)+
+  facet_wrap(~variable, scales = "free_x",
+             switch = "x")+
+  scale_color_brewer(palette = "Dark2")+
+  theme_test()+
+  theme(legend.position = "top")+
+  labs(title = "Distribution of overlap variables",
+       subtitle = "Using 2018 data",
+       caption = as.character(Sys.time()))
+
+ggsave(fig_variable_overlap,
+       filename = "figs/fig_variables_dist_overlap.png",
+       dpi = 300)
+```
+
+
+
