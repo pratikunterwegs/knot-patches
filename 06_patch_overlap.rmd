@@ -12,6 +12,13 @@ Here we relate the extent of temporal and spatial overlap to pairwise difference
 ```{r}
 library(data.table)
 library(ggplot2)
+library(scales)
+
+# stats
+library(lmerTest)
+
+# ci fun
+ci <- function(x){qnorm(0.975)*sd(x, na.rm = T)/sqrt((length(x)))}
 ```
 
 ```{r}
@@ -68,5 +75,68 @@ ggsave(fig_variable_overlap,
        dpi = 300)
 ```
 
+Finally, merge patches.
+
+```{r}
+# merge on i
+data_overlap <- merge(data_overlap, data_patches,
+                      by.x = "patch_i_unique_id",
+                      by.y = "uid")
+
+# merge on j
+data_overlap <- merge(data_overlap, data_patches,
+                      by.x = "patch_j_unique_id",
+                      by.y = "uid")
+```
+
+## Relating patch overlap to patch metrics
+
+Here we test some simple hypotheses about spatial and temporal overlap in relation to patch geometry. First, that temporal overlap is higher for longer-duration patches, and that spatial overlap is higher for patches with individually larger area.
+
+```{r}
+# get some basic data
+tmp_data <- data_overlap[,.(temporal_overlap_seconds,
+                            spatial_overlap_area,
+                            duration.x,
+                            area.x,
+                            waterlevel_mean.x,
+                            id.x, id.y, patch_i_unique_id)]
+
+# count the total overlap in time with other patches
+tmp_data <- tmp_data[,.(total_time_overlap = sum(temporal_overlap_seconds)),
+         by = .(id.x, patch_i_unique_id, duration.x, waterlevel_mean.x)]
+```
+
+```{r}
+# runs stats on 
+model_overlap_null <- lmer(total_time_overlap ~ duration.x + waterlevel_mean.x+
+                             (1|id.x),
+                           data = tmp_data)
+
+# get summary data
+tmp_data_summary <- tmp_data[,`:=`(duration = plyr::round_any(duration.x, 300),
+                                   waterlevel = plyr::round_any(waterlevel_mean.x, 25))
+                             ][,.(mean = mean(total_time_overlap),
+                                  ci = ci(total_time_overlap)),
+                               by = .(duration, waterlevel)]
+
+# get model data
+model_data <- sjPlot::get_model_data(model_overlap_null, type = "pred", 
+                                     terms = c("duration.x", "waterlevel_mean.x"))
+
+# plot model fit and pointrange
+to_mins_trans <- function() {scales::trans_new("to_mins", function(x){x/60}, function(x){x*60},
+                                               breaks = c(1,10,100))}
+ggplot()+
+  geom_line(data = model_data,
+            aes(x/60, predicted/60))+
+  geom_pointrange(data = tmp_data_summary,
+                  aes(duration/60, mean/60, 
+                      ymin = (mean+ci)/60, 
+                      ymax = (mean-ci)/60))+
+  xlim(0,300)+
+  facet_wrap(~waterlevel)+
+  theme_bw()
+````
 
 
