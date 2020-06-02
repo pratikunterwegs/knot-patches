@@ -7,7 +7,7 @@ editor_options:
 
 ## Get data and plot basic trend
 
-```{r load_libs_s01, eval=FALSE}
+```{r load_libs_s01}
 # load libs to read bathymetry
 library(raster)
 library(rayshader)
@@ -23,7 +23,7 @@ library(ggplot2)
 library(ggthemes)
 ```
 
-```{r load_data_s01, eval=FALSE}
+```{r load_data_s01}
 # load bathymetry and subset
 data <- raster("data/bathymetry_waddenSea_2015.tif")
 griend <- st_read("griend_polygon/griend_polygon.shp") %>% 
@@ -41,7 +41,7 @@ data_m <- raster_to_matrix(data)
 data_q <- quantile(data_m, na.rm = T, probs = 1:1000/1000)
 ```
 
-```{r load_waterlevel_s01, eval=FALSE}
+```{r load_waterlevel_s01}
 # read in waterlevel data
 waterlevel <- fread("data/data2018/waterlevelWestTerschelling.csv", sep = ";")
 
@@ -57,7 +57,7 @@ waterlevel[,dateTime := as.POSIXct(paste(date, time, sep = " "),
 waterlevel <- setDT(distinct(setDF(waterlevel), dateTime, .keep_all = TRUE))
 ```
 
-```{r plot_bathymetry_quantiles, eval=FALSE}
+```{r plot_bathymetry_quantiles}
 # plot waterlevel quantiles with data from west terschelling
 waterlimits <- range(waterlevel$level)
 
@@ -76,14 +76,14 @@ ggsave(fig_waterlevel_area, filename = "figs/fig_waterlevel_area.png",
 
 ## Plot as 3D maps
 
-```{r make_water_seq, eval=FALSE}
+```{r make_water_seq}
 # make sequence
 waterdepth <- seq(waterlimits[1], waterlimits[2], length.out = 30)
 waterdepth <- c(waterdepth, rev(waterdepth))
 ```
 
 
-```{r vis_data, eval=FALSE}
+```{r vis_data}
 # make visualisation
 for(i in 1:length(waterdepth)) {
   data_m %>%
@@ -109,7 +109,7 @@ for(i in 1:length(waterdepth)) {
 }
 ```
 
-```{r make_tide_gif, eval=FALSE}
+```{r make_tide_gif}
 library(magick)
 list.files(path = "figs/tide_rise/", pattern = "*.png", full.names = T) %>% 
   map(image_read) %>% # reads each path file

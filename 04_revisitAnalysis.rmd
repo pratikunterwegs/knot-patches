@@ -19,7 +19,7 @@ This section is about splitting the data by tidal cycle, and passing the individ
 
 This section uses the recurse package [@bracis2018].
 
-```{r install_recurse, message=FALSE, warning=FALSE, eval=FALSE}
+```{r install_recurse, message=FALSE, warning=FALSE}
 # load recurse or install if not available
 if("recurse" %in% installed.packages() == FALSE){
   install.packages("recurse")
@@ -37,7 +37,7 @@ library(stringr)
 
 ## Read data, split, recurse, write
 
-```{r recurse_analysis, eval=FALSE, message=FALSE, warning=FALSE}
+```{r recurse_analysis, message=FALSE, warning=FALSE}
 # read in data
 data_files <- list.files(path = "data/data2018/", pattern = "id_", full.names = TRUE)
 

@@ -16,7 +16,7 @@ This section is about adding tidal cycle data to individual trajectories. This i
 
 ## Prepare libraries
 
-```{r install_vulntoolkit_2, message=FALSE, warning=FALSE, eval=FALSE}
+```{r install_vulntoolkit_2, message=FALSE, warning=FALSE}
 # load VulnToolkit or install if not available
 if("VulnToolkit" %in% installed.packages() == FALSE){
   devtools::install_github("troyhill/VulnToolkit")
@@ -39,7 +39,7 @@ library(watlastools)
 
 Water level data for [West Terschelling](https://waterinfo.rws.nl/#!/details/publiek/waterhoogte-t-o-v-nap/West-Terschelling(WTER)/Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm), a settlement approx. 10km from the field site are provided by Rijkswaterstaat's [Waterinfo](https://waterinfo.rws.nl/#!/nav/bulkdownload/parameters/Waterhoogten/), in cm above Amsterdam Ordnance Datum. These data are manually downloaded in the range July 1, 2018 -- October 31, 2018 and saved in `data/data2018`.
 
-```{r read_waterlevel_data, message=FALSE, warning=FALSE, eval=FALSE}
+```{r read_waterlevel_data, message=FALSE, warning=FALSE}
 # read in waterlevel data
 waterlevel <- fread("data/data2018/waterlevelWestTerschelling.csv", sep = ";")
 
@@ -59,7 +59,7 @@ waterlevel <- setDT(distinct(setDF(waterlevel), dateTime, .keep_all = TRUE))
 
 A tidal period of 12 hours 25 minutes is taken from [Rijkswaterstaat](https://www.rijkswaterstaat.nl/water/waterdata-en-waterberichtgeving/waterdata/getij/index.aspx).
 
-```{r get_high_tide, eval=FALSE, message=FALSE, warning=FALSE}
+```{r get_high_tide, message=FALSE, warning=FALSE}
 # use the HL function from vulnToolkit to get high tides
 tides <- VulnToolkit::HL(waterlevel$level,
                          waterlevel$dateTime, period = 12.41, 
@@ -77,7 +77,7 @@ tides <- setDT(tides)[time > first_release, ][,tide2:=NULL]
 tides[,tide_number:=1:nrow(tides)]
 ```
 
-```{r write_tide_data, eval=FALSE, message=FALSE, warning=FALSE}
+```{r write_tide_data, message=FALSE, warning=FALSE}
 # write to local file
 fwrite(tides, file = "data/data2018/tidesSummer2018.csv", 
        dateTimeAs = "ISO")
@@ -85,7 +85,7 @@ fwrite(tides, file = "data/data2018/tidesSummer2018.csv",
 
 ## Add time since high tide
 
-```{r time_to_high_tide, eval=FALSE, message=FALSE, warning=FALSE}
+```{r time_to_high_tide, message=FALSE, warning=FALSE}
 # read in data and add time since high tide
 data_files <- list.files(path = "data/data2018/locs_proc", pattern = "id_", full.names = TRUE)
 data_ids <- str_extract(data_files, "(id_\\d+)") %>% str_sub(-3,-1)

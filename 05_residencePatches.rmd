@@ -14,7 +14,7 @@ This section is about using the main `watlastools` functions to infer residence 
 
 ## Prepare libraries
 
-```{r prep_libs, message=FALSE, warning=FALSE, eval=FALSE}
+```{r prep_libs, message=FALSE, warning=FALSE}
 # load watlastools or install if not available
 if("watlastools" %in% installed.packages() == FALSE){
   devtools::install_github("pratikunterwegs/watlastools")
@@ -36,7 +36,7 @@ ci <- function(x){qnorm(0.975)*sd(x, na.rm = T)/sqrt((length(x)))}
 
 ## Patch construction
 
-```{r remove_old_data, eval=FALSE}
+```{r remove_old_data}
 if(file.exists("data/data2018/data_2018_patch_summary.csv")){
   file.remove("data/data2018/data_2018_patch_summary.csv")
 }
@@ -44,7 +44,7 @@ if(file.exists("data/data2018/data_2018_patch_summary.csv")){
 
 Process patches. Takes approx. 5 hours for 3 second data.
 
-```{r make_patches, eval=FALSE, message=FALSE, warning=FALSE}
+```{r make_patches, message=FALSE, warning=FALSE}
 # make a vector of data files to read
 data_files <- list.files(path = "data/data2018/revisitData", 
                          pattern = "_revisit.csv", full.names = TRUE)
