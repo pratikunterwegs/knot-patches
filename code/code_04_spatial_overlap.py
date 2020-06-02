@@ -58,3 +58,15 @@ for i in np.arange(len(data_overlap)):
 # add to data
 data_overlap['spatial_overlap_area'] = pd.Series(overlap_extent)
 data_overlap['geometry'] = overlap_obj
+
+# remove spatial overlap col
+data_overlap = data_overlap.drop(columns='spatial_overlap')
+
+# make geodataframe
+overlap_spatials = gpd.GeoDataFrame(data_overlap, geometry=data_overlap['geometry'])
+
+# save into spatails
+overlap_spatials.to_file("data/data2018/spatials/patch_overlap_2018.gpkg", layer='overlaps',
+                         driver="GPKG")
+
+# ends here
