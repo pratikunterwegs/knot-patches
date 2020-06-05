@@ -13,6 +13,8 @@ Here we relate the extent of temporal and spatial overlap to pairwise difference
 library(data.table)
 library(ggplot2)
 library(scales)
+library(tidyr); library(tibble)
+library(magrittr)
 
 # stats
 library(lmerTest)
@@ -89,6 +91,50 @@ data_overlap <- merge(data_overlap, data_patches,
                       by.y = "uid")
 ```
 
+## Total overlap between individuals
+
+How much to pairs of individuals overlap?
+
+```{r}
+# get id wise overlap and plot
+data_id_overlap <- data_overlap[,.(total_time_overlap = sum(temporal_overlap_seconds),
+                           total_area_overlap = sum(spatial_overlap_area)),
+                        by = c("id.x", "id.y")]
+
+# export
+fwrite(data_id_overlap, file = "data/data2018/data_id_overlap_2018.csv")
+
+# prepare to plot
+data_id_overlap <-  
+  setDF(data_id_overlap) %>% 
+  as_tibble()
+
+# nest data
+data_id_overlap %<>%
+  pivot_longer(cols = c("total_time_overlap",
+                        "total_area_overlap")) %>% 
+  group_by(name) %>% 
+  nest()
+
+# plot as heatmap with decent units
+fig_list <- pmap(data_id_overlap, function(name, data){
+  ggplot(data)+
+  geom_tile(aes(factor(id.x), factor(id.y), 
+                fill = value))+
+  scale_fill_viridis_c()+
+  theme_dark(base_size = 6)+
+    scale_x_discrete(drop=T)+
+    scale_y_discrete()+
+    labs(x = "Focal individual",
+         y = "Paired individual",
+         title = name)+
+    theme(plot.background = element_rect(fill="darkgrey"),
+          axis.t)
+})
+
+```
+
+
 ## Relating patch overlap to patch metrics
 
 Here we test some simple hypotheses about spatial and temporal overlap in relation to patch geometry. First, that temporal overlap is higher for longer-duration patches, and that spatial overlap is higher for patches with individually larger area.
@@ -129,13 +175,14 @@ to_mins_trans <- function() {scales::trans_new("to_mins", function(x){x/60}, fun
                                                breaks = c(1,10,100))}
 ggplot()+
   geom_line(data = model_data,
-            aes(x/60, predicted/60))+
-  geom_pointrange(data = tmp_data_summary,
-                  aes(duration/60, mean/60, 
-                      ymin = (mean+ci)/60, 
-                      ymax = (mean-ci)/60))+
-  xlim(0,300)+
-  facet_wrap(~waterlevel)+
+            aes(x/60, predicted/60,
+                col = group))+
+  # geom_pointrange(data = tmp_data_summary,
+  #                 aes(duration/60, mean/60, 
+  #                     ymin = (mean+ci)/60, 
+  #                     ymax = (mean-ci)/60))+
+  # xlim(0,300)+
+  # facet_wrap(~waterlevel)+
   theme_bw()
 ````
 
