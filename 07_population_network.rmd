@@ -1,0 +1,26 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+# Population level communities
+
+```{r}
+# load libs
+library(readr)
+
+# load igraph
+library(igraph)
+```
+
+```{r}
+# read data
+data = read_csv("data/data2018/data_id_overlap_2018.csv")
+```
+
+
+## Make network
+
+```{r}
+```
+
