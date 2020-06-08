@@ -3,7 +3,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Patch overlap in relation to traits
+# Within and between patch variance in traits
 
 Here we relate the extent of temporal and spatial overlap to pairwise differences in traits.
 
@@ -24,9 +24,11 @@ ci <- function(x){qnorm(0.975)*sd(x, na.rm = T)/sqrt((length(x)))}
 ```
 
 ```{r}
+# read in patch data
 data_patches <- fread("data/data2018/data_2018_patch_summary_has_patches.csv")
-
-data_overlap <- fread("data/data2018/data_spatio_temporal_overlap_2018.csv")
+# read in flock data
+data <- fread("data/data2018/data_patch_flocks_2018.csv")
+data[,V1:=NULL]
 ```
 
 ## Link overlap with id data
@@ -39,151 +41,3 @@ data_patches[,uid:=1:nrow(data_patches)]
 ```
 
 Now link the individual identity and other environmental covariates to the overlap data. Begin by subsetting the data to get some idea of how many patches (of the original 90000) overlap with others.
-
-```{r}
-# subset the data to keeep only overlapping patches
-data_patches <- data_patches[uid %in% c(data_overlap$patch_i_unique_id,
-                        data_overlap$patch_j_unique_id),]
-
-# there are approx 54500 unique patches.
-```
-
-What is the distribution of patch overlaps in space and time?
-
-```{r}
-# melt the data for time and space
-tmp_data <- melt.data.table(data_overlap, 
-                            measure.vars = c("temporal_overlap_seconds",
-                                             "spatial_overlap_area"))
-
-# now plot
-fig_variable_overlap <- ggplot(tmp_data[value < 10000,])+
-  stat_density(aes(x = value,
-                   y = ..count.., 
-                   col = variable),
-               geom = "line",
-               size = 1)+
-  facet_wrap(~variable, scales = "free_x",
-             switch = "x")+
-  scale_color_brewer(palette = "Dark2")+
-  theme_test()+
-  theme(legend.position = "top")+
-  labs(title = "Distribution of overlap variables",
-       subtitle = "Using 2018 data",
-       caption = as.character(Sys.time()))
-
-ggsave(fig_variable_overlap,
-       filename = "figs/fig_variables_dist_overlap.png",
-       dpi = 300)
-```
-
-Finally, merge patches.
-
-```{r}
-# merge on i
-data_overlap <- merge(data_overlap, data_patches,
-                      by.x = "patch_i_unique_id",
-                      by.y = "uid")
-
-# merge on j
-data_overlap <- merge(data_overlap, data_patches,
-                      by.x = "patch_j_unique_id",
-                      by.y = "uid")
-```
-
-## Total overlap between individuals
-
-How much to pairs of individuals overlap?
-
-```{r}
-# get id wise overlap and plot
-data_id_overlap <- data_overlap[,.(total_time_overlap = sum(temporal_overlap_seconds),
-                           total_area_overlap = sum(spatial_overlap_area)),
-                        by = c("id.x", "id.y")]
-
-# export
-fwrite(data_id_overlap, file = "data/data2018/data_id_overlap_2018.csv")
-
-# prepare to plot
-data_id_overlap <-  
-  setDF(data_id_overlap) %>% 
-  as_tibble()
-
-# nest data
-data_id_overlap %<>%
-  pivot_longer(cols = c("total_time_overlap",
-                        "total_area_overlap")) %>% 
-  group_by(name) %>% 
-  nest()
-
-# plot as heatmap with decent units
-fig_list <- pmap(data_id_overlap, function(name, data){
-  ggplot(data)+
-  geom_tile(aes(factor(id.x), factor(id.y), 
-                fill = value))+
-  scale_fill_viridis_c()+
-  theme_dark(base_size = 6)+
-    scale_x_discrete(drop=T)+
-    scale_y_discrete()+
-    labs(x = "Focal individual",
-         y = "Paired individual",
-         title = name)+
-    theme(plot.background = element_rect(fill="darkgrey"),
-          axis.t)
-})
-
-```
-
-
-## Relating patch overlap to patch metrics
-
-Here we test some simple hypotheses about spatial and temporal overlap in relation to patch geometry. First, that temporal overlap is higher for longer-duration patches, and that spatial overlap is higher for patches with individually larger area.
-
-```{r}
-# get some basic data
-tmp_data <- data_overlap[,.(temporal_overlap_seconds,
-                            spatial_overlap_area,
-                            duration.x,
-                            area.x,
-                            waterlevel_mean.x,
-                            id.x, id.y, patch_i_unique_id)]
-
-# count the total overlap in time with other patches
-tmp_data <- tmp_data[,.(total_time_overlap = sum(temporal_overlap_seconds)),
-         by = .(id.x, patch_i_unique_id, duration.x, waterlevel_mean.x)]
-```
-
-```{r}
-# runs stats on 
-model_overlap_null <- lmer(total_time_overlap ~ duration.x + waterlevel_mean.x+
-                             (1|id.x),
-                           data = tmp_data)
-
-# get summary data
-tmp_data_summary <- tmp_data[,`:=`(duration = plyr::round_any(duration.x, 300),
-                                   waterlevel = plyr::round_any(waterlevel_mean.x, 25))
-                             ][,.(mean = mean(total_time_overlap),
-                                  ci = ci(total_time_overlap)),
-                               by = .(duration, waterlevel)]
-
-# get model data
-model_data <- sjPlot::get_model_data(model_overlap_null, type = "pred", 
-                                     terms = c("duration.x", "waterlevel_mean.x"))
-
-# plot model fit and pointrange
-to_mins_trans <- function() {scales::trans_new("to_mins", function(x){x/60}, function(x){x*60},
-                                               breaks = c(1,10,100))}
-ggplot()+
-  geom_line(data = model_data,
-            aes(x/60, predicted/60,
-                col = group))+
-  # geom_pointrange(data = tmp_data_summary,
-  #                 aes(duration/60, mean/60, 
-  #                     ymin = (mean+ci)/60, 
-  #                     ymax = (mean-ci)/60))+
-  # xlim(0,300)+
-  # facet_wrap(~waterlevel)+
-  theme_bw()
-````
-
-
