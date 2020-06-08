@@ -100,3 +100,25 @@ map(data_files, function(df){
 
 ```
 
+## Tracking period for each id
+
+```{r}
+data_files <- list.files("data/data2018/locs_proc",
+                         full.names = TRUE)
+
+total_tracking <- map_df(data_files, function(x){
+  a <- fread(x)
+  a <- a[c(1, nrow(a)),.(id, time)]
+  a[,event:=c("start", "end")]
+})
+
+# get tracking interval for each
+total_tracking <- tidyr::pivot_wider(total_tracking, 
+                   id_cols = "id",
+                   values_from = "time",
+                   names_from = "event")
+
+# write to file
+
+```
+
