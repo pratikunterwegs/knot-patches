@@ -109,7 +109,7 @@ data_files <- list.files("data/data2018/locs_proc",
 total_tracking <- map_df(data_files, function(x){
   a <- fread(x)
   a <- a[c(1, nrow(a)),.(id, time)]
-  a[,event:=c("start", "end")]
+  a[,event:=c("time_start", "time_end")]
 })
 
 # get tracking interval for each
@@ -119,6 +119,6 @@ total_tracking <- tidyr::pivot_wider(total_tracking,
                    names_from = "event")
 
 # write to file
-
+fwrite(total_tracking, file = "data/data2018/data_2018_id_tracking_interval.csv")
 ```
 
