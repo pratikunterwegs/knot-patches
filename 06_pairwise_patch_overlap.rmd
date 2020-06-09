@@ -15,6 +15,8 @@ library(ggplot2)
 library(scales)
 library(tidyr); library(tibble)
 library(magrittr)
+library(dplyr)
+library(purrr)
 
 # stats
 library(lmerTest)
@@ -62,12 +64,73 @@ data <- left_join(data, data_patches,
 
 ## Get flock level metrics
 
+### Identify unique individuals in flocks
+
 ```{r}
 # get the ids of individuals and patches in a flock
 data_flock <- group_by(data, flock) %>% 
   nest() %>% 
-  transmute(flock_id = map(data, function(df) unique(c(df$id.x, df$id.y))),
-         flock_patch = map(data, function(df) unique(c(df$patch_i_unique_id, 
+  transmute(id = map(data, function(df) unique(c(df$id.x, df$id.y))),
+            uid = map(data, function(df) unique(c(df$patch_i_unique_id, 
                                                        df$patch_j_unique_id))))
+
+# get data flock ids
+data_flock_id <- data_flock %>% 
+  unnest(cols = "id")
+```
+
+### Get individual traits in each flock
+
+```{r}
+# add id traits to flock data
+data_flock_id <- left_join(data_flock_id, data_id,
+                           by = c("id" = "Toa_Tag"))
+
+# add flock size and n_patches
+data_flock_id <- mutate(data_flock_id,
+                        flock_size = length(id),
+                        n_patches = map_int(uid, length))
+
+# get flock level means and variances
+data_flock_id <- pivot_longer(data_flock_id,
+                              cols = c("wing", "mass", "gizzard_mass"),
+                              names_to = "trait")
+
+# summarise on value by trait
+data_flock_id <- group_by(data_flock_id, 
+                          flock, trait, flock_size, n_patches) %>% 
+  drop_na(value) %>% 
+  summarise_at(.vars = "value",
+               .funs = list(mean=mean, 
+                            variance = var,
+                            ci = ci))
+```
+
+### Explore flock level traits
+
+```{r}
+# plot distributions
+ggplot(data_flock_id)+
+  geom_histogram(aes(variance))+
+  facet_grid(~trait, 
+             scales = "free_x",
+             labeller = label_both)+
+  labs(x = "within flock variance")
+
+# traits in relation to flock size
+ggplot(data_flock_id)+
+  geom_jitter(aes(flock_size, mean),
+             size = 0.1,
+             alpha = 0.3)+
+  geom_smooth(aes(flock_size, mean),
+             size = 0.4,
+             alpha = 0.3)+
+  scale_x_sqrt(breaks = c(seq(2,8,2), c(1:10*10)))+
+  scale_y_sqrt()+
+  # coord_cartesian(expand = F)+
+  facet_wrap(~trait, 
+             scales = "free",
+             labeller = label_both)+
+  labs(x = "unique individuals in flock")
 ```
 
