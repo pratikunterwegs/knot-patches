@@ -28,19 +28,56 @@ ci <- function(x){qnorm(0.975)*sd(x, na.rm = T)/sqrt((length(x)))}
 ```{r}
 # read in patch data
 data_patches <- read_csv("data/data2018/data_2018_patch_summary_has_patches.csv")
-# read in flock data
-data <- read_csv("data/data2018/data_patch_flocks_2018.csv")
-data <- select(data, -X1)
+# read in overlap data
+data <- read_csv("data/data2018/data_spatio_temporal_overlap_2018.csv")
 ```
+
+## Determine tidal cycle and tidal stage
+
+### Link overlaps with patch data
+
+```{r}
+# add a uid
+data_patches <- mutate(data_patches, uid = 1:nrow(data_patches))
+
+# select columns
+data_patches <- select(data_patches,
+                       id, uid, tide_number, waterlevel_mean)
+
+# link overlaps with patches
+data <- left_join(data, data_patches,
+                  by = c("patch_i_unique_id" = "uid")) %>% 
+  left_join(data_patches,
+            by = c("patch_j_unique_id" = "uid"))
+```
+
+### Get consensus tide number waterlevel
+
+The tide number and tidal stage will be used to divide the overlaps into classes, so that we can examine community structure in a particular tide and at a certain tidal stage.
+
+```{r}
+# get the consensus tide as first and the mean waterlevel
+data <- data %>% 
+  mutate(tide_number_consensus = first(tide_number.x, tide_number.y),
+         waterlevel_consensus = mean(c(waterlevel_mean.x, waterlevel_mean.y)))
+
+# remove bad cols and classify as high or low tide
+data <- data %>% 
+  rename(id_x = id.x, id_y = id.y) %>% 
+  select(-contains(c(".x", ".y")))
+data <- data %>% 
+  mutate(tide_stage = if_else(waterlevel_consensus < 55, "low", "high")) %>% 
+  select(-waterlevel_consensus)
+```
+
+
+This data needs to be exported and passed to `igraph`, where for each tide--tide-stage, we cosntruct a separate network, and get the assortativity of the nodes (individuals!) on different traits. These traits will be added below.
 
 ## Link overlap with id data
 
-First identify unique patches in the patch data.
+### Add some biometric data
 
 ```{r}
-# add a uid, this corresponds to the uid in the overlap data
-data_patches <- mutate(data_patches, uid = 1:nrow(data_patches))
-
 # add individual data to patch data
 data_id <- read_csv("data/data2018/SelinDB.csv") %>% 
   filter(!is.na(Toa_Tag)) %>% 
@@ -49,88 +86,15 @@ data_id <- read_csv("data/data2018/SelinDB.csv") %>%
          gizzard_mass) %>% 
   drop_na()
 
-# join
-data_patches <- data_patches %>% 
-  left_join(data_id, by = c("id" = "Toa_Tag"))
-
 # merge the patches with id data on i
-data <- left_join(data, data_patches,
-                  by = c("patch_i_unique_id" = "uid"))
-
-# now merge on j
-data <- left_join(data, data_patches,
-                  by = c("patch_j_unique_id" = "uid"))
+data <- left_join(data, data_id,
+                  by = c("id_x" = "Toa_Tag")) %>% 
+  left_join(data_id, by = c("id_y" = "Toa_Tag"))
 ```
 
-## Get flock level metrics
-
-### Identify unique individuals in flocks
+### Export for igraph
 
 ```{r}
-# get the ids of individuals and patches in a flock
-data_flock <- group_by(data, flock) %>% 
-  nest() %>% 
-  transmute(id = map(data, function(df) unique(c(df$id.x, df$id.y))),
-            uid = map(data, function(df) unique(c(df$patch_i_unique_id, 
-                                                       df$patch_j_unique_id))))
-
-# get data flock ids
-data_flock_id <- data_flock %>% 
-  unnest(cols = "id")
-```
-
-### Get individual traits in each flock
-
-```{r}
-# add id traits to flock data
-data_flock_id <- left_join(data_flock_id, data_id,
-                           by = c("id" = "Toa_Tag"))
-
-# add flock size and n_patches
-data_flock_id <- mutate(data_flock_id,
-                        flock_size = length(id),
-                        n_patches = map_int(uid, length))
-
-# get flock level means and variances
-data_flock_id <- pivot_longer(data_flock_id,
-                              cols = c("wing", "mass", "gizzard_mass"),
-                              names_to = "trait")
-
-# summarise on value by trait
-data_flock_id <- group_by(data_flock_id, 
-                          flock, trait, flock_size, n_patches) %>% 
-  drop_na(value) %>% 
-  summarise_at(.vars = "value",
-               .funs = list(mean=mean, 
-                            variance = var,
-                            ci = ci))
-```
-
-### Explore flock level traits
-
-```{r}
-# plot distributions
-ggplot(data_flock_id)+
-  geom_histogram(aes(variance))+
-  facet_grid(~trait, 
-             scales = "free_x",
-             labeller = label_both)+
-  labs(x = "within flock variance")
-
-# traits in relation to flock size
-ggplot(data_flock_id)+
-  geom_jitter(aes(flock_size, mean),
-             size = 0.1,
-             alpha = 0.3)+
-  geom_smooth(aes(flock_size, mean),
-             size = 0.4,
-             alpha = 0.3)+
-  scale_x_sqrt(breaks = c(seq(2,8,2), c(1:10*10)))+
-  scale_y_sqrt()+
-  # coord_cartesian(expand = F)+
-  facet_wrap(~trait, 
-             scales = "free",
-             labeller = label_both)+
-  labs(x = "unique individuals in flock")
+write_csv(data, "data/data2018/data_trait_and_id_overlap_by_group.csv")
 ```
 
