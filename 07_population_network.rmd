@@ -3,24 +3,135 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Population level communities
+# Finding networks in tidal cycles
+
+## Read in patch data and overlaps
 
 ```{r}
-# load libs
+# to handle data
 library(readr)
+library(scales)
+library(tidyr); library(tibble)
+library(magrittr)
+library(dplyr)
+library(purrr)
 
-# load igraph
+# to work with networks
 library(igraph)
 ```
 
 ```{r}
-# read data
-data = read_csv("data/data2018/data_id_overlap_2018.csv")
+# read in patch data
+data_patches <- read_csv("data/data2018/data_2018_patch_summary_has_patches.csv")
+# read in overlap data
+data <- read_csv("data/data2018/data_spatio_temporal_overlap_2018.csv")
 ```
 
+## Determine tidal cycle and tidal stage
 
-## Make network
+### Link overlaps with patch data
 
 ```{r}
+# add a uid
+data_patches <- mutate(data_patches, uid = 1:nrow(data_patches))
+
+# select columns
+data_patches <- select(data_patches,
+                       id, uid, tide_number, waterlevel_mean)
+
+# link overlaps with patches
+data <- left_join(data, data_patches,
+                  by = c("patch_i_unique_id" = "uid")) %>% 
+  left_join(data_patches,
+            by = c("patch_j_unique_id" = "uid"))
 ```
 
+### Get consensus tide number waterlevel
+
+The tide number and tidal stage will be used to divide the overlaps into classes, so that we can examine community structure in a particular tide and at a certain tidal stage.
+
+```{r}
+# get the consensus tide as first and the mean waterlevel
+data <- data %>% 
+  mutate(grp_id = 1:nrow(.)) %>% 
+  group_by(grp_id) %>% 
+  mutate(tide_number = tide_number.x,
+         waterlevel = mean(c(waterlevel_mean.x, waterlevel_mean.y))) %>% 
+  ungroup()
+
+# remove bad cols and classify as high or low tide
+data <- data %>% 
+  ungroup() %>% 
+  select(-grp_id) %>% 
+  rename(id_x = id.x, id_y = id.y) %>% 
+  select(-contains(c(".x", ".y")))
+
+# classify as high or low
+data <- data %>% 
+  mutate(tide_stage = if_else(waterlevel < 55, "low", "high")) %>% 
+  select(-waterlevel)
+```
+
+## Prepare network data
+
+### Prepare subset-wise edgelist
+
+Here, the subsets are the tide number and tidal stage. The edge-list indicates pairwise overlap.
+
+```{r}
+# get the total overlap between pairs as the edges df
+edges_df <- data %>% 
+  group_by(id_x, id_y, tide_number, tide_stage) %>% 
+  summarise_at(vars(temporal_overlap_seconds, spatial_overlap_area),
+               .funs = sum) %>% 
+  filter(id_x != id_y)
+
+# group and nest
+edges_df <- group_by(edges_df, tide_number, tide_stage) %>% 
+  nest()
+```
+
+### Prepare subset-wise node list
+
+```{r}
+# make nodes data -- this the individual identities
+# add individual data to patch data
+data_id <- read_csv("data/data2018/SelinDB.csv") %>% 
+  filter(!is.na(Toa_Tag)) %>% 
+  select(Toa_Tag, 
+         wing = WING, mass = MASS, 
+         gizzard_mass) %>% 
+  distinct(Toa_Tag, .keep_all = TRUE) %>%  
+  rename(id = Toa_Tag)
+
+# expand nodes df to match edges data
+nodes_df <-  
+  summarise(edges_df, 
+            id = map(data, function(df) {union(df$id_x, df$id_y)})) %>%
+  mutate(id = map(id, function(df){
+    
+    df <- tibble(id = df) %>% 
+      left_join(data_id, by = "id")
+  }))
+```
+
+This data needs to be converted to `igraph` networks.
+
+## Network metrics with igraph
+
+### Convert to igraph
+
+```{r}
+# prepare a uniform network dataframe
+network_df <- left_join(edges_df, nodes_df)
+
+# prepare network objects
+network_df <- mutate(network_df,
+                     net = map2(data, id, function(e, n){
+                       tmp_net <- igraph::graph_from_data_frame(d = e,
+                                                                directed = FALSE,
+                                                                vertices = n)
+                     }))
+```
+
+### WIP
