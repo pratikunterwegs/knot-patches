@@ -26,61 +26,63 @@ library(scico)
 
 ```{r}
 # read in patch data
-data_patches <- read_csv("data/data2018/data_2018_patch_summary_has_patches.csv")
+data_patches <- read_csv("data/data2018/data_2018_patch_summary_has_patches.csv") %>% 
+  mutate(uid = as.character(1:nrow(data_patches)))
 # read in overlap data
 data <- read_csv("data/data2018/data_spatio_temporal_overlap_2018.csv")
 ```
 
-## Determine tidal cycle and tidal stage
+## Identify communities of residence patches
 
-### Link overlaps with patch data
+### Make unweighted network from overlaps
 
 ```{r}
-# add a uid
-data_patches <- mutate(data_patches, uid = 1:nrow(data_patches))
+# prepare edgelist
+data_edges <- select(data, contains("patch"))
 
-# select columns
-data_patches <- select(data_patches,
-                       id, uid, waterlevel_mean,
-                       x_mean, y_mean)
-
-# link overlaps with patches
-data <- left_join(data, data_patches,
-                  by = c("patch_i_unique_id" = "uid")) %>% 
-  left_join(data_patches,
-            by = c("patch_j_unique_id" = "uid"))
+# prepare network from edgelist
+network_overlap <- igraph::graph_from_data_frame(d = data_edges, directed = F)
 ```
 
-### Get consensus tide number waterlevel
-
-The tide number and tidal stage will be used to divide the overlaps into classes, so that we can examine community structure in a particular tide and at a certain tidal stage.
+### Find communities
 
 ```{r}
-# get the consensus tide as first and the mean waterlevel
-data <- data %>% 
-  mutate(grp_id = 1:nrow(.)) %>% 
-  group_by(grp_id) %>% 
-  mutate(#tide_number = tide_number.x,
-         waterlevel = mean(c(waterlevel_mean.x, waterlevel_mean.y)),
-         
-         # also add the 500m grid cell
-         x = mean(c(x_mean.x, x_mean.y)),
-         y = mean(c(y_mean.x, y_mean.y))) %>% 
-  ungroup()
+# get communities using fastgreedy
+# the network is unweighted
+data_communities <- igraph::fastgreedy.community(network_overlap)
+d <- communities(data_communities) %>% 
+  imap(function(.x, .id){
+    tibble(flock = .id,
+           patch = .x)
+  })
 
-# remove bad cols and classify as high or low tide
-data <- data %>% 
-  ungroup() %>% 
-  select(-grp_id) %>% 
-  rename(id_x = id.x, id_y = id.y) %>% 
-  select(-contains(c(".x", ".y")))
+# get data as a tibble
+flock_id <- bind_rows(d)
+```
 
-# classify as high or low and round x and y to 500m
+### Join flock data to edgelist
+
+```{r}
+# join flock and patch by uid on the first patch
 data <- data %>% 
-  mutate(tide_stage = if_else(waterlevel < 55, "low", "high"),
-         x = plyr::round_any(x, 200),
-         y = plyr::round_any(y, 200)) %>% 
-  select(-waterlevel)
+  mutate_at(vars(matches("patch")),
+            as.character) %>% 
+  left_join(flock_id,
+            by = c("patch_i_unique_id" = "patch"))
+
+# join patch data, basically id data, to flock data
+tmp_patches <- filter(data_patches,
+                      uid %in% flock_id$patch) %>% 
+  select(id, uid)
+data <- left_join(data, tmp_patches,
+                  by = c("patch_i_unique_id" = "uid")) %>% 
+  left_join(tmp_patches,
+            by = c("patch_j_unique_id" = "uid"))
+
+# get id and weights
+edges_df <- select(data,
+               matches("(id.)|overlap|flock")) %>% 
+  rename(id_x = id.x, id_y = id.y)
 ```
 
 ## Prepare network data
@@ -91,21 +93,22 @@ Here, the subsets are the tide number and tidal stage. The edge-list indicates p
 
 ```{r}
 # get the total overlap between pairs as the edges df
-edges_df <- data %>% 
-  group_by(id_x, id_y, 
-           #tide_number, 
-           tide_stage,
-           x, y) %>% 
+edges_df <- edges_df %>% 
+  group_by(flock, id_x, id_y) %>% 
   summarise_at(vars(temporal_overlap_seconds, spatial_overlap_area),
                .funs = sum) %>% 
   filter(id_x != id_y)
 
 # group and nest
 edges_df <- group_by(edges_df, 
-                     #tide_number, 
-                     tide_stage,
-                     x, y) %>% 
+                     flock) %>% 
   nest()
+
+# count flock edges and remove small flocks
+# ie, with fewer than 3 edges
+edges_df <- mutate(edges_df,
+                   n_edges = map_int(data, nrow)) %>% 
+  filter(n_edges > 3)
 ```
 
 ### Get individual data
@@ -155,7 +158,8 @@ data_id <- mutate(data_id,
 # expand nodes df to match edges data
 nodes_df <-  
   summarise(edges_df, 
-            id = map(data, function(df) {union(df$id_x, df$id_y)})) %>%
+            id = map(data, 
+                     function(df) {union(df$id_x, df$id_y)})) %>%
   mutate(id = map(id, function(df){
     
     df <- tibble(id = as.character(df)) %>% 
@@ -197,7 +201,7 @@ network_df <- mutate(network_df,
 
 ### Get assortativity
 
-Remove networks with no edges. *THIS IS UNRELIABLE.*
+Remove networks with few (< 3) edges.
 
 ```{r}
 # check which graphs are okay
@@ -207,8 +211,10 @@ network_df <- mutate(network_df,
                      })) %>% 
   ungroup()
 
-# remove bad graphs
-network_df <- filter(network_df, valid_graph > 0)
+# remove bad graphs, ie, with fewer than 3 edges
+# this is both for quality and practical reasons
+min_edges <- 3
+network_df <- filter(network_df, valid_graph > min_edges)
 ```
 
 
@@ -238,35 +244,80 @@ network_df <- mutate(network_df,
                      })))
 ```
 
-
-## Plot assortativity
+### Plot histogram of assortativity
 
 ```{r}
 # prepare the data
-plot_df <- select(network_df, tide_stage,
-                  x,y,
-                  valid_graph,
+plot_df <- select(network_df, 
+                  flock, valid_graph,
                   contains("assort")) %>% 
   filter(valid_graph >= 3) %>% 
   pivot_longer(cols = contains("assort"))
 ```
 
+```{r eval=FALSE}
+ggplot(plot_df)+
+  geom_histogram(aes(x = value),
+                 col = "black", size =0.3,
+                 fill = "grey", 
+                 binwidth = 0.2)+
+  geom_vline(xintercept = 0, lty = 2, colour = "red")+
+  facet_grid(~name)
+```
+
+## Visualise assortativity over space
+
+### Link flock assortativity and patch data
+
+```{r}
+# subset network data
+data_sp_assort <- select(network_df,
+                         flock, valid_graph,
+                         contains("assort"))
+
+# add flock data to patch data
+data_patches <- left_join(data_patches,
+                          flock_id,
+                          by = c("uid" = "patch"))
+
+# get mean x, y and waterlevel for flocks
+data_flock_attrs <- select(data_patches,
+                           uid,
+                           matches("(x|y|waterlevel)(_mean)"),
+                           flock) %>% 
+  filter(uid %in% flock_id$patch) %>% 
+  group_by(flock) %>% 
+  summarise_at(vars(contains("mean")),
+               .funs = mean)
+
+# join flock attributes to assort data and classify tide
+data_sp_assort <- left_join(data_sp_assort,
+                            data_flock_attrs) %>% 
+  mutate(tide_stage = if_else(waterlevel_mean < 55, "low", "high"))
+
+# melt data
+data_sp_assort <- select(data_sp_assort,
+                         -waterlevel_mean) %>% 
+  pivot_longer(cols = contains("assort"))
+```
+
+### Plot assort in space
 
 ```{r}
 # get griend
 griend <- sf::st_read("griend_polygon/")
 
 # examine differences high and low tide
-ggplot(plot_df)+
-  geom_tile(aes(x,y, fill = value),
-            alpha = 1)+
+ggplot(data_sp_assort)+
+  geom_jitter(aes(x_mean,y_mean, col = value),
+            alpha = 0.5, size = 2)+
   geom_sf(data = griend, fill = NA, size = 0.5)+
   # geom_histogram(aes(assort_g_mass,
   #                fill = tide_stage),
   #              position = "identity",
   #              alpha = 0.5)+
   # coord_cartesian(ylim = c(-0.5, 0.5))+
-  scale_fill_gradient2(low = "indianred",
+  scale_colour_gradient2(low = "indianred",
                        mid = "white",
                        high = "blue")+
   # coord_sf(crs = 32631)+
