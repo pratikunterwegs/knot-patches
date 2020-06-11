@@ -41,7 +41,8 @@ data_patches <- mutate(data_patches, uid = 1:nrow(data_patches))
 
 # select columns
 data_patches <- select(data_patches,
-                       id, uid, tide_number, waterlevel_mean)
+                       id, uid, waterlevel_mean,
+                       x_mean, y_mean)
 
 # link overlaps with patches
 data <- left_join(data, data_patches,
@@ -59,8 +60,12 @@ The tide number and tidal stage will be used to divide the overlaps into classes
 data <- data %>% 
   mutate(grp_id = 1:nrow(.)) %>% 
   group_by(grp_id) %>% 
-  mutate(tide_number = tide_number.x,
-         waterlevel = mean(c(waterlevel_mean.x, waterlevel_mean.y))) %>% 
+  mutate(#tide_number = tide_number.x,
+         waterlevel = mean(c(waterlevel_mean.x, waterlevel_mean.y)),
+         
+         # also add the 500m grid cell
+         x = mean(c(x_mean.x, x_mean.y)),
+         y = mean(c(y_mean.x, y_mean.y))) %>% 
   ungroup()
 
 # remove bad cols and classify as high or low tide
@@ -70,9 +75,11 @@ data <- data %>%
   rename(id_x = id.x, id_y = id.y) %>% 
   select(-contains(c(".x", ".y")))
 
-# classify as high or low
+# classify as high or low and round x and y to 500m
 data <- data %>% 
-  mutate(tide_stage = if_else(waterlevel < 55, "low", "high")) %>% 
+  mutate(tide_stage = if_else(waterlevel < 55, "low", "high"),
+         x = plyr::round_any(x, 200),
+         y = plyr::round_any(y, 200)) %>% 
   select(-waterlevel)
 ```
 
@@ -80,18 +87,24 @@ data <- data %>%
 
 ### Prepare subset-wise edgelist
 
-Here, the subsets are the tide number and tidal stage. The edge-list indicates pairwise overlap.
+Here, the subsets are the tide number and tidal stage. The edge-list indicates pairwise overlap. We now add subsets for 500m grid cells on the landscape.
 
 ```{r}
 # get the total overlap between pairs as the edges df
 edges_df <- data %>% 
-  group_by(id_x, id_y, tide_number, tide_stage) %>% 
+  group_by(id_x, id_y, 
+           #tide_number, 
+           tide_stage,
+           x, y) %>% 
   summarise_at(vars(temporal_overlap_seconds, spatial_overlap_area),
                .funs = sum) %>% 
   filter(id_x != id_y)
 
 # group and nest
-edges_df <- group_by(edges_df, tide_number, tide_stage) %>% 
+edges_df <- group_by(edges_df, 
+                     #tide_number, 
+                     tide_stage,
+                     x, y) %>% 
   nest()
 ```
 
@@ -182,40 +195,91 @@ network_df <- mutate(network_df,
                      }))
 ```
 
-### Get degree assortativity
+### Get assortativity
+
+Remove networks with no edges. *THIS IS UNRELIABLE.*
 
 ```{r}
-# get simple degree assortativity
+# check which graphs are okay
+network_df <- mutate(network_df, 
+                     valid_graph = map_int(net, function(n){
+                       E(n) %>% length()
+                     })) %>% 
+  ungroup()
+
+# remove bad graphs
+network_df <- filter(network_df, valid_graph > 0)
+```
+
+
+```{r}
+# get weighred assortativity by gizzard mass
 network_df <- mutate(network_df,
-                     assort_g_mass = map(net, function(n){
+                     assort_g_mass = unlist(purrr::map(net, function(n){
                        
                        adj <- igraph::as_adjacency_matrix(n,
                                                           sparse = FALSE,
                                                           attr = "spatial_overlap_area")
                        
                        assortnet::assortment.continuous(adj, V(n)$gizzard_mass)
-                     }))
+                     })))
+```
 
-# get assort as numeric
-network_df <- unnest(network_df, cols = "assort_g_mass")
+```{r}
+# get weighred assortativity by gizzard mass
+network_df <- mutate(network_df,
+                     assort_behav = unlist(purrr::map(net, function(n){
+                       
+                       adj <- igraph::as_adjacency_matrix(n,
+                                                          sparse = FALSE,
+                                                          attr = "spatial_overlap_area")
+                       
+                       assortnet::assortment.continuous(adj, V(n)$behav)
+                     })))
+```
+
+
+## Plot assortativity
+
+```{r}
+# prepare the data
+plot_df <- select(network_df, tide_stage,
+                  x,y,
+                  valid_graph,
+                  contains("assort")) %>% 
+  filter(valid_graph >= 3) %>% 
+  pivot_longer(cols = contains("assort"))
+```
+
+
+```{r}
+# get griend
+griend <- sf::st_read("griend_polygon/")
 
 # examine differences high and low tide
-ggplot(network_df)+
-  geom_vline(xintercept = 0)+
-  geom_histogram(aes(assort_gizzard,
-                 fill = tide_stage),
-               position = "identity",
-               alpha = 0.5)+
+ggplot(plot_df)+
+  geom_tile(aes(x,y, fill = value),
+            alpha = 1)+
+  geom_sf(data = griend, fill = NA, size = 0.5)+
+  # geom_histogram(aes(assort_g_mass,
+  #                fill = tide_stage),
+  #              position = "identity",
+  #              alpha = 0.5)+
   # coord_cartesian(ylim = c(-0.5, 0.5))+
-  scale_fill_scico_d(palette = "broc",
-                     begin = 0.2, end = 0.8)+
-  coord_cartesian(xlim = c(-1,1))+
-  scale_x_continuous(breaks = c(-1,0,1),
-                     labels = c("dissimilar together",
-                                "randomly mixed",
-                                "similar together"))+
-  theme(panel.border = element_rect(color = "black",
-                                    fill=NA))+
-  facet_wrap(~tide_stage, scales = "fixed")
+  scale_fill_gradient2(low = "indianred",
+                       mid = "white",
+                       high = "blue")+
+  # coord_sf(crs = 32631)+
+  facet_grid(name~tide_stage, scales = "fixed")+
+  theme_grey()+
+  theme(legend.position = "top",
+        legend.key.height = unit(0.2, "cm"),
+        panel.border = element_rect(fill=NA,
+                                        colour = "black"),
+        axis.text = element_blank(),
+        axis.title = element_blank())+
+  coord_sf(expand = F)
+
+ggsave("figs/fig_assort_gizzard.png", dpi = 600)
 ```
 
