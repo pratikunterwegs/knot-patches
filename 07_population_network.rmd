@@ -167,7 +167,7 @@ network_df <- left_join(edges_df, nodes_df)
 network_df <- filter(network_df,
                      map_lgl(id, function(df){nrow(df)>1}))
 
-# prepare network objects
+# prepare network objects for assortnet via igraph
 network_df <- mutate(network_df,
                      net = map2(data, id, function(e, n){
                        
@@ -187,14 +187,22 @@ network_df <- mutate(network_df,
 ```{r}
 # get simple degree assortativity
 network_df <- mutate(network_df,
-                     assort = map_dbl(net, function(n){
-                       assortativity(n, 
-                                     types1 = graph.strength(n)*V(n)$gizzard_mass)
+                     assort_g_mass = map(net, function(n){
+                       
+                       adj <- igraph::as_adjacency_matrix(n,
+                                                          sparse = FALSE,
+                                                          attr = "spatial_overlap_area")
+                       
+                       assortnet::assortment.continuous(adj, V(n)$gizzard_mass)
                      }))
+
+# get assort as numeric
+network_df <- unnest(network_df, cols = "assort_g_mass")
 
 # examine differences high and low tide
 ggplot(network_df)+
-  geom_density(aes(assort,
+  geom_vline(xintercept = 0)+
+  geom_histogram(aes(assort_gizzard,
                  fill = tide_stage),
                position = "identity",
                alpha = 0.5)+
@@ -205,9 +213,9 @@ ggplot(network_df)+
   scale_x_continuous(breaks = c(-1,0,1),
                      labels = c("dissimilar together",
                                 "randomly mixed",
-                                "similar together"))
+                                "similar together"))+
   theme(panel.border = element_rect(color = "black",
-                                    fill=NA))
-  # facet_wrap(~tide_number, scales = "free")
+                                    fill=NA))+
+  facet_wrap(~tide_stage, scales = "fixed")
 ```
 
