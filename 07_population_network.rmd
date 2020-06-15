@@ -214,7 +214,8 @@ network_df <- mutate(network_df,
 
 # remove bad graphs, ie, with fewer than 3 edges
 # this is both for quality and practical reasons
-min_edges <- 3
+min_edges <- 1
+min_id <- 2
 network_df <- filter(network_df, valid_graph > min_edges)
 ```
 
@@ -254,7 +255,7 @@ Unnest the data.
 plot_df <- select(network_df, 
                   flock, id, valid_graph,
                   contains("assort")) %>% 
-  filter(valid_graph >= 3) %>% 
+  filter(valid_graph > 1) %>% 
   
   # count flock size
   mutate(flock_size = map_int(id, nrow)) %>% 
@@ -368,7 +369,7 @@ fig_assortativity_flock_size <-
   scale_colour_scico_d(palette = "broc",
                      begin = 0.1, end = 0.9)+
   facet_grid(tide_stage~trait, labeller = label_both)+
-  scale_x_log10(breaks = c(seq(4,8,2), seq(10,30,10)))+
+  scale_x_log10(breaks = c(seq(3,8,1), seq(10,30,10)))+
   theme_bw()+
   theme(panel.grid.minor = element_blank(),
         axis.text.y = element_text(angle = 90, hjust = "0.5"))+
@@ -388,22 +389,33 @@ griend <- sf::st_read("griend_polygon/griend_polygon.shp")
 
 bbox <- sf::st_bbox(griend %>% sf::st_buffer(4000))
 
+# make tile data
+# data_tile <- data_sp_assort %>% 
+#   mutate(x_round = plyr::round_any(x_mean, 100),
+#          y_round = plyr::round_any(y_mean, 100)) %>% 
+#   group_by(x_round, y_round, tide_stage, trait) %>% 
+#   summarise_at(vars(r), median)
+
 # examine differences high and low tide
 ggplot(data_sp_assort)+
-  geom_jitter(aes(x_mean, y_mean, 
-                  col = r),
-            alpha = 0.5, size = 2)+
+  geom_point(aes(x_mean, y_mean,
+                 col = r, size = flock_size),
+            alpha = 0.5)+
+  # geom_tile(aes(x_round, y_round,
+  #               fill = r))+
   geom_sf(data = griend, fill = NA, size = 0.5)+
   # geom_histogram(aes(assort_g_mass,
   #                fill = tide_stage),
   #              position = "identity",
   #              alpha = 0.5)+
   # coord_cartesian(ylim = c(-0.5, 0.5))+
-  scale_colour_gradient2(low = "red",
-                       mid = "grey",
-                       high = "blue")+
+  # scale_fill_gradient2(low = "red",
+  #                      mid = "white",
+  #                      high = "blue")+
+  scale_colour_distiller(palette = "RdBu",
+                       direction = 1)+
   # coord_sf(crs = 32631)+
-  facet_grid(trait~tide_stage, scales = "fixed")+
+  facet_grid(tide_stage~trait, scales = "fixed")+
   theme_grey()+
   theme(legend.position = "top",
         legend.key.height = unit(0.2, "cm"),
@@ -417,5 +429,32 @@ ggplot(data_sp_assort)+
 
 ggsave("figs/fig_assort_traits.png", dpi = 600,
        height = 8, width = 6)
+```
+
+## Flock assortativity in 3D space
+
+Are there distinct clusters in assortativity, i.e, do flocks assort similarly by different traits?
+
+```{r}
+# prepare data
+data_plotly <- data_sp_assort %>% 
+  pivot_wider(names_from = "trait", 
+              values_from = c("r", "se"))
+
+# load libs
+library(plotly)
+
+fig_assort_clust <- plot_ly(data_plotly,
+                            x = ~r_mass,
+                            y = ~r_gizzard,
+                            z = ~r_behav,
+                            size = ~flock_size) %>% 
+  add_markers() %>% 
+  layout(scene = list(xaxis = list(title = 'r body mass'),
+                      yaxis = list(title = 'r gizzard mass'),
+                      zaxis = list(title = 'r exploration')))
+
+plotly::orca(fig_assort_clust, file = "figs/fig_assort_correlation.png",
+             format = "png")
 ```
 
