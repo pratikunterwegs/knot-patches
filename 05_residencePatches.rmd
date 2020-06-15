@@ -60,7 +60,7 @@ data <- split(x = data, f = data$tag) %>%
   map(function(l) l$data_file)
 
 # map inferResidence, classifyPath, and getPatches over data
-walk(data[119:134], function(df_list){
+walk(data, function(df_list){
   patch_data <- map(df_list, function(l){
     
     # read the data file

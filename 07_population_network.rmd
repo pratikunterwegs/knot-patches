@@ -15,6 +15,7 @@ library(tidyr); library(tibble)
 library(magrittr)
 library(dplyr)
 library(purrr)
+library(stringr)
 
 # to work with networks
 library(igraph)
@@ -27,7 +28,7 @@ library(scico)
 ```{r}
 # read in patch data
 data_patches <- read_csv("data/data2018/data_2018_patch_summary_has_patches.csv") %>% 
-  mutate(uid = as.character(1:nrow(data_patches)))
+  mutate(uid = as.character(1:nrow(.)))
 # read in overlap data
 data <- read_csv("data/data2018/data_spatio_temporal_overlap_2018.csv")
 ```
@@ -217,52 +218,51 @@ min_edges <- 3
 network_df <- filter(network_df, valid_graph > min_edges)
 ```
 
+### Get assortativity
 
 ```{r}
 # get weighred assortativity by gizzard mass
 network_df <- mutate(network_df,
-                     assort_g_mass = unlist(purrr::map(net, function(n){
+                     assort_metrics = purrr::map(net, function(n){
                        
-                       adj <- igraph::as_adjacency_matrix(n,
-                                                          sparse = FALSE,
-                                                          attr = "spatial_overlap_area")
+  adj <- igraph::as_adjacency_matrix(n,
+                                     sparse = FALSE,
+                                     attr = "spatial_overlap_area")
                        
-                       assortnet::assortment.continuous(adj, V(n)$gizzard_mass)
-                     })))
+  assort_gizzard <- assortnet::assortment.continuous(adj, 
+                                                     V(n)$gizzard_mass,
+                                                     SE = TRUE)
+                         
+  assort_behav <- assortnet::assortment.continuous(adj, 
+                                                     V(n)$behav,
+                                                     SE = TRUE)
+                         
+  assort_mass <- assortnet::assortment.continuous(adj, 
+                                                     V(n)$mass,
+                                                     SE = TRUE)
+  
+  assortment <- map_df(list(assort_gizzard, assort_behav, assort_mass),
+                       as_tibble) %>% 
+    mutate(trait = c("gizzard", "behav", "mass"))
+                     }))
 ```
 
-```{r}
-# get weighred assortativity by gizzard mass
-network_df <- mutate(network_df,
-                     assort_behav = unlist(purrr::map(net, function(n){
-                       
-                       adj <- igraph::as_adjacency_matrix(n,
-                                                          sparse = FALSE,
-                                                          attr = "spatial_overlap_area")
-                       
-                       assortnet::assortment.continuous(adj, V(n)$behav)
-                     })))
-```
-
-### Plot histogram of assortativity
+Unnest the data.
 
 ```{r}
 # prepare the data
 plot_df <- select(network_df, 
-                  flock, valid_graph,
+                  flock, id, valid_graph,
                   contains("assort")) %>% 
   filter(valid_graph >= 3) %>% 
+  
+  # count flock size
+  mutate(flock_size = map_int(id, nrow)) %>% 
+  select(-id) %>% 
   pivot_longer(cols = contains("assort"))
-```
 
-```{r eval=FALSE}
-ggplot(plot_df)+
-  geom_histogram(aes(x = value),
-                 col = "black", size =0.3,
-                 fill = "grey", 
-                 binwidth = 0.2)+
-  geom_vline(xintercept = 0, lty = 2, colour = "red")+
-  facet_grid(~name)
+# unnest
+plot_df <- unnest(plot_df, "value")
 ```
 
 ## Visualise assortativity over space
@@ -273,6 +273,7 @@ ggplot(plot_df)+
 # subset network data
 data_sp_assort <- select(network_df,
                          flock, valid_graph,
+                         id,
                          contains("assort"))
 
 # add flock data to patch data
@@ -290,6 +291,10 @@ data_flock_attrs <- select(data_patches,
   summarise_at(vars(contains("mean")),
                .funs = mean)
 
+# add flock size
+data_sp_assort <- data_sp_assort %>% 
+  mutate(flock_size = map_int(id, nrow))
+
 # join flock attributes to assort data and classify tide
 data_sp_assort <- left_join(data_sp_assort,
                             data_flock_attrs) %>% 
@@ -299,17 +304,94 @@ data_sp_assort <- left_join(data_sp_assort,
 data_sp_assort <- select(data_sp_assort,
                          -waterlevel_mean) %>% 
   pivot_longer(cols = contains("assort"))
+
+# unnest data
+data_sp_assort <- select(data_sp_assort, -name) %>% 
+  unnest(cols = "value")
+```
+
+### Histogram of assortativity
+
+```{r}
+fig_assort_hist <-
+ggplot(data_sp_assort)+
+  geom_histogram(aes(r, fill = tide_stage),
+                 col = "black", lwd = 0.1,
+                 binwidth = 0.1,
+                 show.legend = F)+
+  geom_text(data = tibble(pos = c(-1,0,1),
+                          label = c(c("dissimilar\ntogether",
+                                "random\nmixing",
+                                "similar\ntogether"))),
+            aes(pos, 150, label=label),
+            size = 3,
+            hjust = "inward",
+            vjust = "inward")+
+  scale_x_continuous(breaks = c(-1,0,1))+
+  scale_fill_scico_d(palette = "broc",
+                     begin = 0.2, end = 0.7)+
+  theme_bw()+
+  geom_vline(xintercept = 0, lty = 2)+
+  facet_grid(tide_stage~trait, labeller = label_both)+
+  labs(x = "assortativity",
+       y = "% flocks")
+
+ggsave(fig_assort_hist, filename = "figs/fig_assort_hist.png",
+       dpi = 300, height = 4, width = 8)
+```
+
+
+### Plot assortativity vs flock size
+
+```{r}
+fig_assortativity_flock_size <-
+  ggplot(data_sp_assort)+
+  geom_text(data = tibble(pos = c(-1,0,1),
+                          label = c(c("dissimilar\ntogether",
+                                "random\nmixing",
+                                "similar\ntogether"))),
+            aes(4, pos, label=label),
+            size = 3,
+            hjust = "inward",
+            vjust = "inward")+
+  geom_jitter(aes(flock_size, 
+                 r,
+                 alpha = se,
+                 col = tide_stage),
+             shape = 16,
+             show.legend = F, width = 0.02)+
+  geom_smooth(aes(flock_size, r),
+              method = "glm",
+              size = 0.5,
+              col = "black")+
+  geom_hline(yintercept = 0, lty = 2)+
+  scale_colour_scico_d(palette = "broc",
+                     begin = 0.1, end = 0.9)+
+  facet_grid(tide_stage~trait, labeller = label_both)+
+  scale_x_log10(breaks = c(seq(4,8,2), seq(10,30,10)))+
+  theme_bw()+
+  theme(panel.grid.minor = element_blank(),
+        axis.text.y = element_text(angle = 90, hjust = "0.5"))+
+  labs(x = "# unique individuals in flock",
+       y = "assortativity")
+
+ggsave(fig_assortativity_flock_size,
+       filename = "figs/fig_assort_flock_size.png",
+       dpi = 300)
 ```
 
 ### Plot assort in space
 
 ```{r}
 # get griend
-griend <- sf::st_read("griend_polygon/")
+griend <- sf::st_read("griend_polygon/griend_polygon.shp")
+
+bbox <- sf::st_bbox(griend %>% sf::st_buffer(4000))
 
 # examine differences high and low tide
 ggplot(data_sp_assort)+
-  geom_jitter(aes(x_mean,y_mean, col = value < 0),
+  geom_jitter(aes(x_mean, y_mean, 
+                  col = r),
             alpha = 0.5, size = 2)+
   geom_sf(data = griend, fill = NA, size = 0.5)+
   # geom_histogram(aes(assort_g_mass,
@@ -321,7 +403,7 @@ ggplot(data_sp_assort)+
                        mid = "grey",
                        high = "blue")+
   # coord_sf(crs = 32631)+
-  facet_grid(name~tide_stage, scales = "fixed")+
+  facet_grid(trait~tide_stage, scales = "fixed")+
   theme_grey()+
   theme(legend.position = "top",
         legend.key.height = unit(0.2, "cm"),
@@ -329,8 +411,11 @@ ggplot(data_sp_assort)+
                                         colour = "black"),
         axis.text = element_blank(),
         axis.title = element_blank())+
-  coord_sf(expand = F)
+  coord_sf(expand = F,
+           xlim = c(bbox['xmin'], bbox['xmax']),
+           ylim = c(bbox['ymin'], bbox['ymax']))
 
-ggsave("figs/fig_assort_gizzard.png", dpi = 600)
+ggsave("figs/fig_assort_traits.png", dpi = 600,
+       height = 8, width = 6)
 ```
 
