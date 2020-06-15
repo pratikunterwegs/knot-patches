@@ -309,7 +309,7 @@ griend <- sf::st_read("griend_polygon/")
 
 # examine differences high and low tide
 ggplot(data_sp_assort)+
-  geom_jitter(aes(x_mean,y_mean, col = value),
+  geom_jitter(aes(x_mean,y_mean, col = value < 0),
             alpha = 0.5, size = 2)+
   geom_sf(data = griend, fill = NA, size = 0.5)+
   # geom_histogram(aes(assort_g_mass,
@@ -317,8 +317,8 @@ ggplot(data_sp_assort)+
   #              position = "identity",
   #              alpha = 0.5)+
   # coord_cartesian(ylim = c(-0.5, 0.5))+
-  scale_colour_gradient2(low = "indianred",
-                       mid = "white",
+  scale_colour_gradient2(low = "red",
+                       mid = "grey",
                        high = "blue")+
   # coord_sf(crs = 32631)+
   facet_grid(name~tide_stage, scales = "fixed")+
