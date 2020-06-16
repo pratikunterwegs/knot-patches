@@ -133,7 +133,7 @@ data_id <- data_id %>%
          wing = WING, mass = MASS, 
          gizzard_mass) %>% 
   distinct(id, .keep_all = TRUE) %>% 
-  drop_na(mass, gizzard_mass)
+  drop_na(gizzard_mass)
 
 # add some exploration scores and tag info
 data_behav <- read_csv("data/data2018/2018-19-all_exploration_scores.csv") %>% 
@@ -167,7 +167,7 @@ nodes_df <-
       left_join(data_id, by = "id")
     
     # remove nodes with no attributes
-    df <- drop_na(df, mass, gizzard_mass, behav)
+    df <- drop_na(df, gizzard_mass)
   }))
 ```
 
@@ -207,7 +207,7 @@ Remove networks with few (< 3) edges.
 ```{r}
 # check which graphs are okay
 network_df <- mutate(network_df, 
-                     valid_graph = map_int(net, function(n){
+                     n_edges = map_int(net, function(n){
                        E(n) %>% length()
                      })) %>% 
   ungroup()
@@ -234,17 +234,21 @@ network_df <- mutate(network_df,
                                                      V(n)$gizzard_mass,
                                                      SE = TRUE)
                          
-  assort_behav <- assortnet::assortment.continuous(adj, 
-                                                     V(n)$behav,
-                                                     SE = TRUE)
-                         
-  assort_mass <- assortnet::assortment.continuous(adj, 
-                                                     V(n)$mass,
-                                                     SE = TRUE)
+  # assort_behav <- assortnet::assortment.continuous(adj, 
+  #                                                    V(n)$behav,
+  #                                                    SE = TRUE)
+  #                        
+  # assort_mass <- assortnet::assortment.continuous(adj, 
+  #                                                    V(n)$mass,
+  #                                                    SE = TRUE)
   
-  assortment <- map_df(list(assort_gizzard, assort_behav, assort_mass),
+  assortment <- map_df(list(assort_gizzard
+                            # , assort_behav, assort_mass
+                            ),
                        as_tibble) %>% 
-    mutate(trait = c("gizzard", "behav", "mass"))
+    mutate(trait = c("gizzard"
+                     # , "behav", "mass"
+                     ))
                      }))
 ```
 
@@ -273,7 +277,7 @@ plot_df <- unnest(plot_df, "value")
 ```{r}
 # subset network data
 data_sp_assort <- select(network_df,
-                         flock, valid_graph,
+                         flock, n_edges,
                          id,
                          contains("assort"))
 
@@ -314,7 +318,7 @@ data_sp_assort <- select(data_sp_assort, -name) %>%
 ### Histogram of assortativity
 
 ```{r}
-fig_assort_hist <-
+#fig_assort_hist <-
 ggplot(data_sp_assort)+
   geom_histogram(aes(r, fill = tide_stage),
                  col = "black", lwd = 0.1,
@@ -345,7 +349,7 @@ ggsave(fig_assort_hist, filename = "figs/fig_assort_hist.png",
 ### Plot assortativity vs flock size
 
 ```{r}
-fig_assortativity_flock_size <-
+#fig_assortativity_flock_size <-
   ggplot(data_sp_assort)+
   geom_text(data = tibble(pos = c(-1,0,1),
                           label = c(c("dissimilar\ntogether",
@@ -409,11 +413,10 @@ ggplot(data_sp_assort)+
   #              position = "identity",
   #              alpha = 0.5)+
   # coord_cartesian(ylim = c(-0.5, 0.5))+
-  # scale_fill_gradient2(low = "red",
-  #                      mid = "white",
-  #                      high = "blue")+
-  scale_colour_distiller(palette = "RdBu",
-                       direction = 1)+
+  scale_colour_gradient2(low = "red",
+                       mid = "white",
+                       high = "blue")+
+  
   # coord_sf(crs = 32631)+
   facet_grid(tide_stage~trait, scales = "fixed")+
   theme_grey()+
@@ -431,7 +434,7 @@ ggsave("figs/fig_assort_traits.png", dpi = 600,
        height = 8, width = 6)
 ```
 
-## Flock assortativity in 3D space
+### Flock assortativity in 3D space
 
 Are there distinct clusters in assortativity, i.e, do flocks assort similarly by different traits?
 
@@ -457,4 +460,120 @@ fig_assort_clust <- plot_ly(data_plotly,
 plotly::orca(fig_assort_clust, file = "figs/fig_assort_correlation.png",
              format = "png")
 ```
+
+## What drives disassortativity?
+
+### Assortativity and light levels
+
+How does assortativity change over light levels?
+
+```{r}
+# get the mean time for all patches in the flock
+flock_times <- select(data_patches,
+                      uid, time_mean,
+                      flock) %>% 
+  filter(uid %in% flock_id$patch) %>% 
+  group_by(flock) %>% 
+  summarise_at(vars(contains("mean")),
+               .funs = median)
+
+# get light levels on unique dates
+# get sunrise and sunset per unique date
+{
+  unique_dates = flock_times$time_mean %>% 
+    as.POSIXct(origin = "1970-01-01") %>% 
+    as.Date() %>% 
+    unique()
+  
+  # get some extra dates
+  unique_dates = c(min(unique_dates-1), unique_dates, unique_dates+1)
+  sun_event_times = suncalc::getSunlightTimes(date = unique_dates,
+                                              lat = 53.25, lon = 5.3,
+                                              keep = c("sunrise", "sunset"),
+                                              tz = "CET")
+  
+  }
+
+# classify flock as light or dark
+flock_times <- mutate(flock_times,
+                      date = as.POSIXct(time_mean,
+                                        origin = "1970-01-01"),
+                      date = as.Date(date)) %>% 
+  left_join(sun_event_times, by = "date")
+
+flock_times <- mutate_at(flock_times,
+                         vars(matches("sun")),
+                         as.numeric)
+
+flock_times <- mutate(flock_times,
+                      lightlevel = if_else(between(time_mean, sunrise, sunset),
+                                           "light", "dark"))
+
+# merge light level with assort data
+data_assort_light <- data_sp_assort %>% 
+  left_join(flock_times, by = "flock")
+```
+
+Plot assortativty distribution by tide stage and light levels.
+
+```{r}
+ggplot(data_assort_light)+
+  geom_histogram(aes(r, fill = tide_stage),
+                 col = "black", lwd = 0.1,
+                 binwidth = 0.1,
+                 show.legend = F)+
+  geom_text(data = tibble(pos = c(-1,0,1),
+                          label = c(c("dissimilar\ntogether",
+                                "random\nmixing",
+                                "similar\ntogether"))),
+            aes(pos, 300, label=label),
+            size = 3,
+            hjust = "inward",
+            vjust = "inward")+
+  scale_x_continuous(breaks = c(-1,0,1))+
+  scale_fill_scico_d(palette = "broc",
+                     begin = 0.2, end = 0.7)+
+  theme_bw()+
+  geom_vline(xintercept = 0, lty = 2)+
+  facet_grid(tide_stage~lightlevel, labeller = label_both)+
+  labs(x = "assortativity",
+       y = "# flocks")
+```
+
+
+### Assortativity in moving and stationary flocks
+
+Are flocks with a lower median circularity score more or less assortative?
+
+```{r}
+# get median circularity of flocks
+flock_circularity <- select(data_patches,
+                            uid, circularity,
+                            flock) %>% 
+  filter(uid %in% flock_id$patch) %>% 
+  group_by(flock) %>% 
+  summarise_at(vars(contains("circularity")),
+               .funs = min)
+
+# join with data
+data_assort_circle <- data_sp_assort %>% 
+  left_join(flock_circularity, by = "flock")
+
+```
+
+
+```{r}
+data_assort_circle <- data_assort_circle %>% 
+  mutate(circularity_round = plyr::round_any(circularity, 0.1))
+
+ggplot(data_assort_circle,
+       aes(circularity_round, r))+
+  geom_hline(yintercept = 0)+
+  geom_jitter(size = 0.2, alpha = 0.2,
+              width = 0.01)+
+  stat_summary(fun.data = "mean_cl_boot",
+               colour = "red")
+```
+
+
 
