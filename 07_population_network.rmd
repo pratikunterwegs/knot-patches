@@ -19,6 +19,7 @@ library(stringr)
 
 # to work with networks
 library(igraph)
+library(rptR)
 
 # to plot
 library(ggplot2)
@@ -179,12 +180,36 @@ nodes_df <- filter(nodes_df,
 # unnest flock id
 flock_data <- unnest(nodes_df,
                      cols = "id")
+
+# add flock data to patch data
+data_patches <- left_join(data_patches,
+                          flock_id,
+                          by = c("uid" = "patch"))
+
+# separate by tidal stage, where waterlevel < 55 is low tide
+data_flock_attrs <- select(data_patches,
+                           uid,
+                           matches("(x|y|waterlevel)(_mean)"),
+                           flock) %>% 
+  filter(uid %in% flock_id$patch) %>% 
+  group_by(flock) %>% 
+  summarise_at(vars(contains("mean")),
+               .funs = mean)
+
+# add waterlevel to flock
+flock_data <- left_join(flock_data,
+                        data_flock_attrs,
+                        by = "flock")
+flock_data <- mutate(flock_data,
+                     tide_stage = if_else(waterlevel_mean < 55, "low", "high"))
 ```
 
 ### Run `rptr` model
 
 ```{r}
-# load libs
-library(rp)
+# run repeat-r model
+model_flock <- rptGaussian(behav ~ tide_stage + (1|flock) + (1|id), 
+                           grname = c("flock", "Fixed"),
+                           data = flock_data)
 ```
 
