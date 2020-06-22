@@ -1,0 +1,17 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+# A repeatability approach to assortment
+
+
+### Run `rptr` model
+
+```{r}
+# run repeat-r model
+model_flock <- rptGaussian(behav ~ tide_stage + (1|flock) + (1|id), 
+                           grname = c("flock", "Fixed"),
+                           data = flock_data)
+```
+
