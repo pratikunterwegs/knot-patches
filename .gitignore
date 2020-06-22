@@ -32,6 +32,7 @@ figs/*.html
 
 # any zip files
 *.zip
+*.osm
 
 # anything to do with visual studio
 .vscode/
