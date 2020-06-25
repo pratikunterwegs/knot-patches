@@ -103,7 +103,7 @@ data <- data %>%
 
 ### When do overlaps happen?
 
-When, in terms of waterlevel, do most overlaps occur?
+When, in terms of waterlevel and season, do most overlaps occur?
 
 ```{r}
 # convert to character
@@ -114,30 +114,56 @@ data <- left_join(data, data_patches,
             by = c("patch_j_unique_id" = "uid"))
 ```
 
-Count at rounded waterlevel.
+Count at rounded waterlevel, and tide number.
 
 ```{r}
 # round waterlevel start
 data_overlap_waterlevel <- data %>% 
-  mutate(waterlevel_round = plyr::round_any(waterlevel_start.x, 20)) %>% 
-  count(waterlevel_round)
+  mutate(waterlevel_round = plyr::round_any(waterlevel_start.x, 20),
+         tide_n_round = plyr::round_any(tide_number.x, 15)) %>% 
+  count(waterlevel_round, tide_n_round)
 
 # plot
 ggplot(data_overlap_waterlevel)+
   geom_col(aes(x = waterlevel_round, y = n),
-           fill = "grey", col = "black")+
+           fill = "grey", col = "black", size = 0.2)+
   theme_bw()+
+  facet_grid(~tide_n_round,
+             labeller = label_both)+
   labs(x = "waterlevel (cm NAP)",
        y = "# overlaps",
-       caption = "Waterlevel is waterlevel_start.x rounded to 20 cm.",
+       caption = "Waterlevel is waterlevel_start.x rounded to 20 cm.
+       15 tidal cycles is approx. 1 week.",
        title = "# patch overlaps ~ waterlevel")
 
-ggsave(filename = "figs/fig_overlaps_waterlevel.png",
+ggsave(filename = "figs/fig_overlaps_waterlevel_tide.png",
        dpi = 300)
 ```
 
 
 ### Where do overlaps happen?
+
+Load the overlaps spatial object.
+
+```{r}
+overlaps <- sf::st_read("data/data2018/spatials/patch_overlap_2018.gpkg")
+overlaps <- filter(overlaps, uid %in% data_patches$uid)
+
+# get centroid of overlap
+overlaps <- mutate(overlaps,
+                   centroid = sf::st_centroid(geom))
+
+# get only uid - overlap id, and centroid
+overlaps <- select(overlaps,
+                   uid, overlap_id, centroid) %>% 
+  sf::st_drop_geometry()
+
+# get centroid as coords
+overlaps <- bind_cols(overlaps, 
+                      as_tibble(sf::st_coordinates(overlaps$centroid))) %>% 
+  select(-centroid)
+```
+
 
 Where on the mudflats do overlaps happen?
 
@@ -149,8 +175,12 @@ griend <- sf::st_read("map.osm", layer = "multipolygons") %>%
 
 # count at x and y
 data_overlap_space <- data %>% 
-  mutate(x_round = plyr::round_any(x_start.x, 200),
-         y_round = plyr::round_any(y_start.x, 200)) %>% 
+  left_join(overlaps, 
+            by = c("patch_i_unique_id" = "uid",
+                   "patch_j_unique_id" = "overlap_id")) %>% 
+  mutate(x_round = plyr::round_any(X, 100),
+         y_round = plyr::round_any(Y, 100),
+         tide_n_round = plyr::round_any(tide_number.x, 15)) %>% 
   count(x_round, y_round)
 
 # plot
@@ -178,10 +208,16 @@ ggsave(filename = "figs/fig_overlaps_space.png",
 
 ```{r}
 # get data
+overlaps <- mutate_at(overlaps,
+                      vars(contains("id")),
+                      as.character)
 # count at x and y
 data_overlap_spacetime <- data %>% 
-  mutate(x_round = plyr::round_any(x_start.x, 200),
-         y_round = plyr::round_any(y_start.x, 200),
+  left_join(overlaps, 
+            by = c("patch_i_unique_id" = "uid",
+                   "patch_j_unique_id" = "overlap_id")) %>% 
+  mutate(x_round = plyr::round_any(X, 200),
+         y_round = plyr::round_any(Y, 200),
          waterlevel_round = plyr::round_any(waterlevel_start.x, 30)) %>% 
   count(x_round, y_round, waterlevel_round)
 
@@ -203,19 +239,24 @@ ggplot(data_overlap_spacetime)+
   labs(caption = "X and Y are coords_start.x rounded to 200m.",
        title = "# patch overlaps ~ space")
 
-ggsave(filename = "figs/fig_overlaps_space.png",
+ggsave(filename = "figs/fig_overlaps_spacetime.png",
        dpi = 300)
 ```
 
 ## Association networks based on space-time overlap subsets
+
+### Prepare subsets of data
 
 Round each overlap's X, Y and waterlevel coordinates, and construct a network from all overlaps in the same subset of X, Y, time.
 
 ```{r}
 # make data here
 data_overlap <- data %>% 
-  mutate(x_round = plyr::round_any(x_start.x, 200),
-         y_round = plyr::round_any(y_start.x, 200),
+  left_join(overlaps, 
+            by = c("patch_i_unique_id" = "uid",
+                   "patch_j_unique_id" = "overlap_id")) %>% 
+  mutate(x_round = plyr::round_any(X, 100),
+         y_round = plyr::round_any(Y, 100),
          waterlevel_round = plyr::round_any(waterlevel_start.x, 30))
 
 # select columns
@@ -232,29 +273,59 @@ data_overlap <- group_by(data_overlap,
 data_overlap <- nest(data_overlap)
 
 # remove cases where there are fewer than 3 rows
-data_overlap <- filter(data_overlap,
+edge_df <- filter(data_overlap,
                        map_lgl(data, function(x) {
                          nrow(x) >= 3
                        }))
 ```
 
-Make networks using the edgelist.
+### Get node data
 
 ```{r}
+# expand nodes df to match edges data
+node_df <-  
+  summarise(edge_df, 
+            id = map(data, 
+                     function(df) {union(df$id.x, df$id.y)})) %>%
+  mutate(id = map(id, function(df){
+    
+    df <- tibble(id = as.character(df)) %>% 
+      left_join(data_id, by = "id")
+    
+    # remove nodes with no attributes
+    df <- drop_na(df, gizzard_mass)
+  }))
+```
+
+
+### Make networks using the edgelist and nodelist joined together.
+
+```{r}
+# make network df
+network_df <- left_join(edge_df, node_df)
+
+# remove edges with no node data
+network_df <- filter(network_df,
+                     map_lgl(id, function(df) {
+                       nrow(df) > 1
+                     }))
+
 # make networks for each of the many subsets
-data_overlap <- mutate(data_overlap,
-                       net = map(data, function(d) { 
-                         igraph::graph_from_data_frame(d = d, 
+network_df <- mutate(network_df,
+                       net = map2(data, id, function(e_df, n_df) { 
+                         # exclude edges with no vertex attributes
+                         e_df <- filter(e_df, 
+                                   id.x %in% n_df$id,
+                                   id.y %in% n_df$id)
+                         igraph::graph_from_data_frame(d = e_df,
+                                                       vertices = n_df,
                                                        directed = F)}
                          ))
 ```
 
-Remove networks with few edges.
+### Remove networks with few edges
 
 ```{r}
-# duplicate first
-network_df <- data_overlap
-
 # count edges
 network_df <- mutate(network_df, 
                      n_edges = map_int(net, function(n){
@@ -267,8 +338,54 @@ network_df <- mutate(network_df,
 # this is both for quality and practical reasons
 min_edges <- 1
 min_id <- 2
-network_df <- filter(network_df, n_edges > min_edges)
+network_df <- filter(network_df, n_edges >= min_edges)
 ```
 
-# TO DO IS TO ADD VERTEX ATTRIBUTES TO GET TO ASSORTATIVITY
+## Get assortativity
+
+### Get assortativity on node attributes
+
+```{r}
+# get weighred assortativity by gizzard mass
+network_df <- mutate(network_df,
+                     assort_g_mass = unlist(purrr::map(net, function(n){
+                       
+                       # adj <- igraph::as_adjacency_matrix(n,
+                       #                                    sparse = FALSE,
+                       #                                    attr = "n")
+                       
+                       assortativity.nominal(n, types = V(n)$gizzard_mass)
+                     })))
+```
+
+### Mean assortativity in space and time
+
+```{r}
+assort_df <- network_df %>% 
+  group_by(x_round, y_round,
+           waterlevel_round) %>% 
+  summarise(med_assort = median(assort_g_mass))
+```
+
+```{r}
+# plot
+ggplot(assort_df)+
+  geom_tile(aes(x = x_round, 
+                y = y_round,
+                fill = med_assort))+
+  geom_sf(data = griend,
+          fill = NA, size = 1,
+          col = "black")+
+  scale_fill_gradient2(low = "blue",
+                       high = "red",
+                       mid = "grey90",
+                       limits = c(-1,1))+
+  facet_wrap(~ waterlevel_round, labeller = label_both)+
+  theme_bw()+
+  labs(caption = "X and Y are coords_start.x rounded to 200m.",
+       title = "median assortativity in space and time")
+
+ggsave(filename = "figs/fig_overlaps_spacetime.png",
+       dpi = 300)
+```
 
