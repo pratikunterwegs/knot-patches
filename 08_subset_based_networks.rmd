@@ -39,7 +39,7 @@ library(scico)
 ```{r}
 # read in patch data
 data_patches <- read_csv("data/data2018/data_2018_patch_summary_has_patches.csv") %>% 
-  mutate(uid = as.character(1:nrow(.)))
+  mutate(uid = as.character(seq_len(nrow(.))))
 # read in overlap data
 data <- read_csv("data/data2018/data_spatio_temporal_overlap_2018.csv")
 ```
@@ -119,25 +119,22 @@ Count at rounded waterlevel, and tide number.
 ```{r}
 # round waterlevel start
 data_overlap_waterlevel <- data %>% 
-  mutate(waterlevel_round = plyr::round_any(waterlevel_start.x, 20),
-         tide_n_round = plyr::round_any(tide_number.x, 15)) %>% 
-  count(waterlevel_round, tide_n_round)
+  mutate(waterlevel_round = plyr::round_any(waterlevel_start.x, 20)) %>% 
+  count(waterlevel_round)
 
 # plot
 ggplot(data_overlap_waterlevel)+
   geom_col(aes(x = waterlevel_round, y = n),
            fill = "grey", col = "black", size = 0.2)+
   theme_bw()+
-  facet_grid(~tide_n_round,
-             labeller = label_both)+
   labs(x = "waterlevel (cm NAP)",
        y = "# overlaps",
        caption = "Waterlevel is waterlevel_start.x rounded to 20 cm.
        15 tidal cycles is approx. 1 week.",
        title = "# patch overlaps ~ waterlevel")
 
-ggsave(filename = "figs/fig_overlaps_waterlevel_tide.png",
-       dpi = 300)
+ggsave(filename = "figs/fig_overlaps_waterlevel.png",
+       dpi = 300, height = 4, width = 5)
 ```
 
 
@@ -162,6 +159,10 @@ overlaps <- select(overlaps,
 overlaps <- bind_cols(overlaps, 
                       as_tibble(sf::st_coordinates(overlaps$centroid))) %>% 
   select(-centroid)
+
+# type to character
+overlaps <- overlaps %>% 
+  mutate_at(vars(matches("id")), as.character)
 ```
 
 
@@ -179,8 +180,7 @@ data_overlap_space <- data %>%
             by = c("patch_i_unique_id" = "uid",
                    "patch_j_unique_id" = "overlap_id")) %>% 
   mutate(x_round = plyr::round_any(X, 100),
-         y_round = plyr::round_any(Y, 100),
-         tide_n_round = plyr::round_any(tide_number.x, 15)) %>% 
+         y_round = plyr::round_any(Y, 100)) %>% 
   count(x_round, y_round)
 
 # plot
@@ -196,7 +196,6 @@ ggplot(data_overlap_space)+
                    values=c(0, 1), 
                    direction = 1,
                    breaks = c(10^c(0:4)))+
-  theme_bw()+
   labs(caption = "X and Y are coords_start.x rounded to 200m.",
        title = "# patch overlaps ~ space")
 
@@ -207,10 +206,6 @@ ggsave(filename = "figs/fig_overlaps_space.png",
 ### Where AND when do overlaps happen?
 
 ```{r}
-# get data
-overlaps <- mutate_at(overlaps,
-                      vars(contains("id")),
-                      as.character)
 # count at x and y
 data_overlap_spacetime <- data %>% 
   left_join(overlaps, 
