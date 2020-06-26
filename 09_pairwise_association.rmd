@@ -246,7 +246,7 @@ ggsave(fig_observed_gm_diff,
 data_subsample <- data_summary %>% 
   filter(diff_gizzard_round <= 3) %>% 
   group_by(tide_stage, diff_gizzard_round) %>% 
-  sample_n(1000)
+  sample_n(1468)
 ```
 
 ## Statistical modelling
