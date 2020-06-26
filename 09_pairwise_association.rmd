@@ -78,6 +78,8 @@ data_id <- mutate(data_id,
   select(id, mass, gizzard_mass, behav)
 ```
 
+### What is the empirical distribution of differences in gizzard mass?
+
 ### Filter out small patches
 
 Each fix corresponds to 30s time.
@@ -130,6 +132,7 @@ data_summary <- left_join(data_summary,
 data_summary <- data_summary %>% 
   mutate(diff_gizzard = abs(gizzard_mass.x - gizzard_mass.y),
          diff_gizzard_round = plyr::round_any(diff_gizzard, 0.5),
+         diff_behav = abs(behav.x - behav.y),
          tide_stage = forcats::as_factor(tide_stage),
          tide_stage = fct_relevel(tide_stage,
                                   "low", "medium", "high")) %>% 
@@ -254,10 +257,14 @@ data_subsample <- data_summary %>%
 
 ### Fit a GLMM for number of associations
 
+Include difference in behaviour score as a predictor.
+
 ```{r}
 # run a single canonical model
 library(lmerTest)
-model_overlap <- glmer(n_associations ~ diff_gizzard * tide_stage +
+model_overlap <- glmer(n_associations ~ diff_gizzard +
+                       diff_behav +
+                         (1|tide_stage) +
                          (1|tide_number) +
                          (1|uid_pair),
                        data = data_subsample,
