@@ -1,0 +1,38 @@
+Generalized linear mixed model fit by maximum likelihood (Laplace
+  Approximation) [glmerMod]
+ Family: poisson  ( log )
+Formula: n_associations ~ diff_gizzard * tide_stage + (1 | tide_number) +  
+    (1 | uid_pair)
+   Data: data_subsample
+
+     AIC      BIC   logLik deviance df.resid 
+ 87591.9  87658.5 -43787.9  87575.9    30820 
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-1.2064 -0.4726 -0.3283  0.3318 12.8090 
+
+Random effects:
+ Groups      Name        Variance Std.Dev.
+ uid_pair    (Intercept) 0.002076 0.04556 
+ tide_number (Intercept) 0.021792 0.14762 
+Number of obs: 30828, groups:  uid_pair, 3821; tide_number, 114
+
+Fixed effects:
+                               Estimate Std. Error z value Pr(>|z|)    
+(Intercept)                    0.444070   0.020428  21.738  < 2e-16 ***
+diff_gizzard                   0.007630   0.007789   0.979   0.3274    
+tide_stagemedium              -0.089787   0.020367  -4.408 1.04e-05 ***
+tide_stagehigh                 0.042915   0.020140   2.131   0.0331 *  
+diff_gizzard:tide_stagemedium -0.006404   0.011183  -0.573   0.5669    
+diff_gizzard:tide_stagehigh   -0.004049   0.010961  -0.369   0.7118    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+                  (Intr) dff_gz td_stgm td_stgh dff_gzzrd:td_stgm
+diff_gizzrd       -0.575                                         
+tide_stgmdm       -0.475  0.570                                  
+tide_stghgh       -0.501  0.576  0.480                           
+dff_gzzrd:td_stgm  0.394 -0.682 -0.832  -0.400                   
+dff_gzzrd:td_stgh  0.403 -0.696 -0.405  -0.826   0.484           
