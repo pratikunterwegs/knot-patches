@@ -331,7 +331,6 @@ net_df <- mutate(net_df,
 
 ```{r}
 library(ggraph)
-
 # visualise a network
 ggraph(net_df$net[[1]], layout = "dh") + 
     geom_edge_fan(show.legend = FALSE,
@@ -366,18 +365,19 @@ Plot to see.
 ggplot(net_df)+
   geom_histogram(aes(assort_gm,
                      y = ..density..),
-                 fill = "grey", col = "black")+
-  geom_vline(xintercept = 0, lty = 2)+
-  geom_boxplot(aes(x = assort_gm, y = 10),
+                 fill = "steelblue")+
+  geom_boxplot(aes(x = assort_gm, y = -1),
                width = 1)+
+  geom_vline(xintercept = 0, lty = 2)+
   coord_flip()+
-  
+  theme_grey(base_size = 8,
+             base_family = "TT Arial") +
   facet_grid(~ tide_stage, 
              labeller = label_both)+
   labs(x = "assortativity of gizzard mass")
 
 ggsave(filename = "figs/fig_assort_tidestage.png",
-       dpi = 300)
+       dpi = 300, height = 4, width = 4)
 ```
 
 Plot assortativity over tide stages.

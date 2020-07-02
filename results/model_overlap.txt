@@ -1,34 +1,44 @@
-Generalized linear mixed model fit by maximum likelihood (Laplace Approximation) ['glmerMod']
+Generalized linear mixed model fit by
+  maximum likelihood (Laplace  Approximation)
+ [glmerMod]
  Family: poisson  ( log )
-Formula: n_associations ~ diff_gizzard + diff_behav + (1 | tide_stage) +      (1 | tide_number) + (1 | uid_pair)
+Formula: 
+n_associations ~ diff_gizzard + diff_behav + (1 | tide_stage) +  
+    (1 | tide_number) + (1 | uid_pair)
    Data: data_subsample
 
      AIC      BIC   logLik deviance df.resid 
- 32643.6  32687.6 -16315.8  32631.6    11379 
+ 33033.4  33077.5 -16510.7  33021.4    11514 
 
 Scaled residuals: 
     Min      1Q  Median      3Q     Max 
--1.2222 -0.4898 -0.3308  0.3166 10.7843 
+-1.3274 -0.4764 -0.3409  0.3367 10.1835 
 
 Random effects:
- Groups      Name        Variance  Std.Dev. 
- uid_pair    (Intercept) 2.979e-10 1.726e-05
- tide_number (Intercept) 2.659e-02 1.631e-01
- tide_stage  (Intercept) 5.742e-03 7.577e-02
-Number of obs: 11385, groups:  uid_pair, 1196; tide_number, 114; tide_stage, 3
+ Groups      Name        Variance Std.Dev.
+ uid_pair    (Intercept) 0.000000 0.00000 
+ tide_number (Intercept) 0.027811 0.16677 
+ tide_stage  (Intercept) 0.003785 0.06152 
+Number of obs: 11520, groups:  
+uid_pair, 1200; tide_number, 114; tide_stage, 3
 
 Fixed effects:
-              Estimate Std. Error z value Pr(>|z|)    
-(Intercept)  0.4153779  0.0488475   8.504   <2e-16 ***
-diff_gizzard 0.0191583  0.0075336   2.543    0.011 *  
-diff_behav   0.0006343  0.0026609   0.238    0.812    
+             Estimate Std. Error z value
+(Intercept)  0.420812   0.041671  10.098
+diff_gizzard 0.009119   0.007518   1.213
+diff_behav   0.004453   0.002606   1.709
+             Pr(>|z|)    
+(Intercept)    <2e-16 ***
+diff_gizzard   0.2251    
+diff_behav     0.0875 .  
 ---
-Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+Signif. codes:    0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1
+  ‘ ’ 1
 
 Correlation of Fixed Effects:
             (Intr) dff_gz
-diff_gizzrd -0.214       
-diff_behav  -0.123 -0.088
+diff_gizzrd -0.245       
+diff_behav  -0.139 -0.100
 convergence code: 0
 boundary (singular) fit: see ?isSingular
 
