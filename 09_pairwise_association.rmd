@@ -111,9 +111,9 @@ data <- left_join(data, data_patches,
 data_summary <- data %>%
   mutate(tide_number = tide_number.x,
          waterlevel = waterlevel_start.x,
-         tide_stage = case_when(waterlevel < 0 ~ "low",
-                                between(waterlevel, 0, 55) ~ "medium",
-                                waterlevel > 55 ~ "high",
+         tide_stage = case_when(waterlevel <= 0 ~ "low",
+                                # between(waterlevel, 0, 55) ~ "medium",
+                                waterlevel > 0 ~ "high",
                                 T ~ NA_character_)) %>% 
   count(id.x, id.y, tide_number, tide_stage,
         name = "n_associations")
@@ -135,7 +135,7 @@ data_summary <- data_summary %>%
          diff_behav = abs(behav.x - behav.y),
          tide_stage = forcats::as_factor(tide_stage),
          tide_stage = fct_relevel(tide_stage,
-                                  "low", "medium", "high")) %>% 
+                                  "low", "high")) %>% 
   drop_na(diff_gizzard)
 ```
 
@@ -212,7 +212,8 @@ data_summary %>%
 ```{r}
 # how many observations in the full data?
 # scales well with the true pairwise overlaps
-fig_observed_gm_diff <- data_summary %>% 
+#fig_observed_gm_diff <- 
+data_summary %>% 
   ggplot()+
   geom_bar(aes(x = diff_gizzard_round
                ),
@@ -250,7 +251,7 @@ ggsave(fig_observed_gm_diff,
 data_subsample <- data_summary %>% 
   filter(diff_gizzard_round <= 3) %>% 
   group_by(tide_stage, diff_gizzard_round) %>% 
-  sample_n(1468)
+  sample_n(1480)
 ```
 
 ## Statistical modelling
@@ -262,19 +263,46 @@ Include difference in behaviour score as a predictor.
 ```{r}
 # run a single canonical model
 library(lmerTest)
-model_overlap <- glmer(n_associations ~ diff_gizzard +
-                       diff_behav +
-                         (1|tide_stage) +
+model_overlap_full <- glmer(n_associations ~ diff_gizzard * tide_stage +
+                         diff_behav * tide_stage +
+                         (1|tide_number) +
+                         (1|uid_pair),
+                       data = data_subsample,
+                       family = "poisson")
+
+# run an alternative model with only behaviour
+model_overlap_reduced <- glmer(n_associations ~ 
+                         diff_behav * tide_stage +
                          (1|tide_number) +
                          (1|uid_pair),
                        data = data_subsample,
                        family = "poisson")
 ```
 
-Write model output to file.
+### AIC and R^2 comparison
+
+Compare the AIC weights after looking at the model summaries.
 
 ```{r}
-model_output = capture.output(summary(model_overlap))
+summary(model_overlap_full)
+
+summary(model_overlap_reduced)
+```
+
+It seems that differences in behaviour are sufficient to explain the observed number of overlaps. Is this borne out by the AIC scores of the two models?
+
+```{r}
+# get aic difference
+AIC(model_overlap_full) - AIC(model_overlap_reduced)
+
+# get R2
+MuMIn::r.squaredGLMM(model_overlap_reduced)
+```
+
+With similar AIC scores and R<sup>2</sup> values, we select the reduced model by the parsimony principle, and write the model output to file.
+
+```{r}
+model_output = capture.output(summary(model_overlap_reduced))
 
 # save it to file
 write_lines(x = model_output, path = "results/model_overlap.txt")
