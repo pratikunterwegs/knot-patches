@@ -118,7 +118,7 @@ data_summary <- data %>%
   
   # count as well as add strength in terms of space and time
   group_by(id.x, id.y, tide_number, tide_stage) %>% 
-  summarise(n_associations = length(.),
+  summarise(n_associations = length(spatial_overlap_area),
             tot_overlap_space = sum(spatial_overlap_area),
             tot_overlap_time = sum(temporal_overlap_seconds)) %>% 
   ungroup()
@@ -175,7 +175,11 @@ Small gizzard mass differences are over-represented as expected from a populatio
 data_subsample <- data_summary %>% 
   filter(diff_gizzard_round <= 3) %>% 
   group_by(tide_stage, diff_gizzard_round) %>% 
-  sample_n(1480)
+  nest() %>%
+  mutate(data = map(data, function(x) x[1:1480,])) # this is hardcoded
+
+# unnest
+data_subsample <- unnest(data_subsample, cols = "data")
 ```
 
 ## Statistical modelling of number of associations
@@ -195,42 +199,62 @@ model_n_assoc_full <- glmer(n_associations ~ diff_gizzard * tide_stage +
                        family = "poisson")
 
 # run an alternative model with only behaviour
-model_n_assoc_reduced <- glmer(n_associations ~ 
+model_n_assoc_behav_only <- glmer(n_associations ~ 
                                  diff_behav * tide_stage +
+                                 (1|tide_number) +
+                                 (1|uid_pair),
+                               data = data_subsample,
+                               family = "poisson")
+
+# an alternative model with only gizzard mass
+model_n_assoc_gizzard_only <- glmer(n_associations ~ 
+                                 diff_gizzard * tide_stage +
                                  (1|tide_number) +
                                  (1|uid_pair),
                                data = data_subsample,
                                family = "poisson")
 ```
 
-### AIC and R<sup>2</sup> comparison
+### AIC comparison
 
 Compare the AIC weights after looking at the model summaries.
 
 ```{r}
 summary(model_n_assoc_full)
 
-summary(model_n_assoc_reduced)
+summary(model_n_assoc_behav_only)
+
+summary(model_n_assoc_gizzard_only)
 ```
 
-It seems that differences in behaviour are sufficient to explain the observed number of overlaps. Examine the AIC scores.
+It seems that differences in behaviour as well as gizzard mass are each sufficient sufficient to explain the observed number of overlaps. Examine the AIC scores.
 
 ```{r}
 # get aic difference
-AIC(model_n_assoc_full) - AIC(model_n_assoc_reduced)
-
-# get R2
-MuMIn::r.squaredGLMM(model_n_assoc_reduced)
+map_dbl(list(behaviour_only = model_n_assoc_behav_only, 
+         gizzard_only = model_n_assoc_gizzard_only, 
+         gizzard_and_behav = model_n_assoc_full),
+    AIC)
 ```
 
 With similar AIC scores and R<sup>2</sup> values, we select the reduced model by the parsimony principle, and write the model output to file.
 
 ```{r}
-model_output = capture.output(summary(model_n_assoc_reduced))
+model_output = capture.output(map(list(behaviour_only = model_n_assoc_behav_only, 
+                                       gizzard_only = model_n_assoc_gizzard_only, 
+                                       gizzard_and_behav = model_n_assoc_full),
+                                  summary))
 
 # save it to file
 write_lines(x = model_output, path = "results/model_n_assoc.txt")
 ```
+
+Read in the model and print summary.
+
+```{r}
+cat(read_lines("results/model_n_assoc.txt"), sep = "\n")
+```
+
 
 ## Statistical modelling of spatial overlap
 
@@ -246,39 +270,58 @@ model_sp_overlap_full <- lmer(tot_overlap_space ~ diff_gizzard * tide_stage +
                        data = data_subsample)
 
 # run an alternative model with only behaviour
-model_sp_overlap_reduced <- lmer(tot_overlap_space ~ 
-                         diff_behav * tide_stage +
-                         (1|tide_number) +
-                         (1|uid_pair),
-                       data = data_subsample)
+model_sp_overlap_behav_only <- lmer(tot_overlap_space ~ 
+                                 diff_behav * tide_stage +
+                                 (1|tide_number) +
+                                 (1|uid_pair),
+                               data = data_subsample)
+
+# an alternative model with only gizzard mass
+model_sp_overlap_gizzard_only <- lmer(tot_overlap_space ~ 
+                                 diff_gizzard * tide_stage +
+                                 (1|tide_number) +
+                                 (1|uid_pair),
+                               data = data_subsample)
 ```
 
-### AIC and R<sup>2</sup> comparison
+### AIC comparison
 
 Compare the AIC weights after looking at the model summaries.
 
 ```{r}
 summary(model_sp_overlap_full)
 
-summary(model_sp_overlap_reduced)
+summary(model_sp_overlap_behav_only)
+
+summary(model_sp_overlap_gizzard_only)
 ```
 
-It seems that differences in behaviour are sufficient in this case also to explain the observed number of overlaps. Examine the AIC scores.
+It seems that differences in behaviour are sufficient in this case to explain the observed extent of overlaps. Examine the AIC scores.
 
 ```{r}
 # get aic difference
-AIC(model_sp_overlap_full) - AIC(model_sp_overlap_reduced)
-
-# get R2
-MuMIn::r.squaredGLMM(model_sp_overlap_reduced)
+map_dbl(list(behaviour_only = model_sp_overlap_behav_only, 
+         gizzard_only = model_sp_overlap_gizzard_only, 
+         gizzard_and_behav = model_sp_overlap_full),
+    AIC)
 ```
 
 ```{r}
-model_output = capture.output(summary(model_sp_overlap_reduced))
+model_output = capture.output(map(list(behaviour_only = model_sp_overlap_behav_only, 
+                                       gizzard_only = model_sp_overlap_gizzard_only, 
+                                       gizzard_and_behav = model_sp_overlap_full),
+                                  summary))
 
 # save it to file
 write_lines(x = model_output, path = "results/model_sp_overlap.txt")
 ```
+
+Read in the model summary and write.
+
+```{r}
+cat(read_lines("results/model_sp_overlap.txt"), sep = "\n")
+```
+
 
 ## Statistical modelling of temporal overlap
 
@@ -294,11 +337,18 @@ model_time_overlap_full <- lmer(tot_overlap_time ~ diff_gizzard * tide_stage +
                        data = data_subsample)
 
 # run an alternative model with only behaviour
-model_time_overlap_reduced <- lmer(tot_overlap_time ~ 
+model_time_overlap_behav_only <- lmer(tot_overlap_time ~ 
                          diff_behav * tide_stage +
                          (1|tide_number) +
                          (1|uid_pair),
                        data = data_subsample)
+
+# only gizzard
+model_time_overlap_gizzard_only <- lmer(tot_overlap_time ~ 
+                                          diff_gizzard * tide_stage +
+                                          (1|tide_number) +
+                                          (1|uid_pair),
+                                        data = data_subsample)
 ```
 
 ### AIC and R<sup>2</sup> comparison
@@ -321,104 +371,8 @@ AIC(model_time_overlap_full) - AIC(model_time_overlap_reduced)
 MuMIn::r.squaredGLMM(model_time_overlap_reduced)
 ```
 
-## Network modelling
-
-Make a population network from the subsetted edgelist. First prep the data.
-
-### Prepare the data
+## Save data to file for network analyses
 
 ```{r}
-# make an edges dataframe
-net_df <- data_summary %>% 
-  select(matches("id."),
-         matches("tide"),
-         n_associations,
-         -uid_pair) %>% 
-  group_by(tide_number, tide_stage) %>% 
-  nest()
-
-# make a node df
-net_df <- net_df %>% 
-  mutate(id = map(data, function(df) {
-    unique_ids <- union(df$id.x, df$id.y)
-    
-    df <- tibble(id = as.character(unique_ids)) %>% 
-      left_join(data_id, by = "id")
-    
-    # remove nodes with no attributes
-    df <- drop_na(df, gizzard_mass)
-    
-  }))
+write_csv(data_summary, path = "data/data_pairwise_comparisons.csv")
 ```
-
-### Make the networks
-
-```{r}
-net_df <- mutate(net_df,
-                 net = map2(data, id, function(e, n){
-                   
-                   # exclude edges with no vertex attributes
-                   e <- filter(e, 
-                               id.x %in% n$id,
-                               id.y %in% n$id) 
-                   
-                   tmp_net <- igraph::graph_from_data_frame(d = e,
-                                                            directed = FALSE,
-                                                            vertices = n)
-                 }))
-```
-
-### Visualise some networks
-
-```{r}
-library(ggraph)
-# visualise a network
-ggraph(net_df$net[[1]], layout = "dh") + 
-    geom_edge_fan(show.legend = FALSE,
-                  edge_colour = "grey",
-                  edge_alpha = 0.5,
-                  aes(edge_width = n_associations)) + 
-    geom_node_point(aes(size = gizzard_mass)) + 
-    theme_graph(foreground = 'steelblue', fg_text_colour = 'white')+
-    theme(legend.position = "none")
-```
-
-### Get network assortativity
-
-```{r}
-net_df <- mutate(net_df,
-                 assort_gm = purrr::map_dbl(net, function(n){
-                       
-  adj <- igraph::as_adjacency_matrix(n,
-                                     attr = "n_associations",
-                                     sparse = FALSE)
-  
-  assort_gizzard <- assortnet::assortment.continuous(adj,
-                                                     V(n)$gizzard_mass)
-  assort_gizzard <- unlist(assort_gizzard)
-                 }))
-```
-
-Plot to see.
-
-```{r}
-# plot figure
-ggplot(net_df)+
-  geom_histogram(aes(assort_gm,
-                     y = ..density..),
-                 fill = "steelblue")+
-  geom_boxplot(aes(x = assort_gm, y = -1),
-               width = 1)+
-  geom_vline(xintercept = 0, lty = 2)+
-  coord_flip()+
-  theme_grey(base_size = 8,
-             base_family = "TT Arial") +
-  facet_grid(~ tide_stage, 
-             labeller = label_both)+
-  labs(x = "assortativity of gizzard mass")
-
-ggsave(filename = "figs/fig_assort_tidestage.png",
-       dpi = 300, height = 4, width = 4)
-```
-
-Plot assortativity over tide stages.
