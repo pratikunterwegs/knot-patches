@@ -1,0 +1,188 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+# Pairwise associations in relation to traits
+
+## Prep libraries
+
+```{r}
+# to handle data
+library(readr)
+library(scales)
+library(tidyr); library(tibble)
+library(magrittr)
+library(dplyr)
+library(purrr)
+library(stringr)
+library(forcats)
+
+# to work with networks
+library(igraph)
+
+# to plot
+library(ggplot2)
+library(scico)
+
+# functions
+ci <- function(x){qnorm(0.975)*sd(x, na.rm = T)/sqrt((length(x)))}
+```
+
+## Read in trait data
+
+```{r}
+# make nodes data -- this the individual identities
+# add individual data to patch data
+data_id <- readxl::read_excel("data/data2018/Biometrics_2018-2019.xlsx") %>% 
+  filter(str_detect(`TAG NR`, "[a-zA-Z]+", negate = TRUE))
+
+# a function for gizzard mass
+get_gizzard_mass <- function(x, y) {-1.09 + (3.78*(x*y))}
+
+# add gizzard mass
+data_id <- mutate(data_id,
+                  gizzard_mass = get_gizzard_mass(SH1, SW1))
+
+# rename columns and drop ids without mass and gizzard mass
+data_id <- data_id %>% 
+  select(id = `TAG NR`, 
+         wing = WING, mass = MASS, 
+         gizzard_mass) %>% 
+  distinct(id, .keep_all = TRUE) %>% 
+  drop_na(gizzard_mass)
+
+# add some exploration scores and tag info
+data_behav <- read_csv("data/data2018/2018-19-all_exploration_scores.csv") %>% 
+  filter(Exp == "F01")
+data_tag <- read_csv("data/data2018/tag_info.csv") %>% 
+  mutate(id = as.character(Toa_Tag))
+
+# join all scores
+data_id <- left_join(data_id, data_tag,
+                     by = c("id")) %>% 
+  left_join(data_behav, by = "FB")
+
+# remove ids with no exploration
+data_id <- mutate(data_id,
+                  behav = Mean) %>% 
+  # drop_na(behav) %>% 
+  select(id, mass, gizzard_mass, behav)
+```
+
+## Prepare data
+
+Read in the saved pairwise association data and prepare for networks
+
+```{r}
+# read in the saved pairwise association data
+data <- read_csv("data/data_pairwise_comparisons.csv")
+
+# split by tide and make networks
+data <- group_by(data, 
+                 tide_number,
+                 tide_stage) %>% 
+  nest()
+
+# separate into edgelist with weights
+data <- mutate(data,
+               edge_df = map(data, 
+                             select, 
+                             id.x, id.y, tot_overlap_space))
+```
+
+## Make networks
+
+```{r}
+data <- mutate(data,
+               net = map(edge_df,
+                         igraph::graph_from_data_frame,
+                         directed = FALSE))
+```
+
+Plot an example.
+
+```{r}
+library(ggraph)
+
+ggraph(data$net[[1]],
+       layout = "kk") +
+  geom_edge_fan(edge_colour = "grey",
+                alpha = 0.5,
+                aes(width = tot_overlap_space))+
+  geom_node_point(size = 10,
+                  colour = "steelblue")+
+  theme_graph()
+```
+
+## Get some network metrics
+
+```{r}
+# get degree, strength, and centrality
+data <- mutate(data, 
+               node_pos = map(net, function(n) {
+                 evc = eigen_centrality(n)[["vector"]]
+                 bwc = betweenness(n)
+                 deg = degree(n)
+                 
+                 evc %>% 
+                   imap_dfr(function(.x, .y) {
+                     tibble(id = .y,
+                            evc = .x)
+                   }) %>% 
+                   mutate(deg = deg,
+                          bwc = bwc)
+                 
+               }))
+```
+
+## Link network positions with behaviour
+
+### Prepare data
+
+```{r}
+node_pos <- data %>% 
+  select(contains("tide"), node_pos) %>% 
+  unnest(cols = "node_pos")
+```
+
+### Plot data
+
+```{r}
+np_long <- node_pos %>% 
+  ungroup() %>% 
+  select(tide_stage, evc, deg, bwc) %>% 
+  pivot_longer(cols = c("evc", "deg", "bwc"))
+
+np_long %>% 
+  ggplot(aes(x = value))+
+  geom_histogram(fill = "steelblue",
+                 col = "black",
+                 size = 0.1)+
+  facet_grid(tide_stage ~ name,
+             scales = "free", 
+             switch = "x")+
+  theme_bw()
+```
+
+### Link data with behaviour and gizzard mass
+
+```{r}
+node_pos <- left_join(node_pos, data_id)
+
+# select bwc
+node_pos %>% 
+  ggplot(aes(behav, bwc))+
+  geom_point()+
+  scale_x_sqrt()
+```
+
+### Statistical model for behaviour and centrality
+
+```{r}
+library(lmerTest)
+model_bwc_behav <- lmer(bwc ~ behav * tide_stage +
+                          (1|tide_number),
+                        data = node_pos)
+```
+
