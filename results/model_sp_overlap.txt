@@ -1,0 +1,32 @@
+Linear mixed model fit by REML. t-tests use Satterthwaite's method ['lmerModLmerTest']
+Formula: tot_overlap_space ~ diff_behav * tide_stage + (1 | tide_number) +  
+    (1 | uid_pair)
+   Data: data_subsample
+
+REML criterion at convergence: 131697
+
+Scaled residuals: 
+    Min      1Q  Median      3Q     Max 
+-2.1717 -0.5897 -0.2472  0.3153 11.0717 
+
+Random effects:
+ Groups      Name        Variance Std.Dev.
+ uid_pair    (Intercept)   35481   188.4  
+ tide_number (Intercept)  191844   438.0  
+ Residual                1943605  1394.1  
+Number of obs: 7587, groups:  uid_pair, 1159; tide_number, 115
+
+Fixed effects:
+                          Estimate Std. Error       df t value Pr(>|t|)    
+(Intercept)               1034.078     54.367  245.215  19.020  < 2e-16 ***
+diff_behav                  34.479      8.748 1593.028   3.941 8.46e-05 ***
+tide_stagehigh             303.585     46.069 7564.281   6.590 4.70e-11 ***
+diff_behav:tide_stagehigh  -34.589     11.866 7488.191  -2.915  0.00357 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Correlation of Fixed Effects:
+            (Intr) dff_bh td_stg
+diff_behav  -0.424              
+tide_stghgh -0.441  0.452       
+dff_bhv:td_  0.282 -0.660 -0.680
