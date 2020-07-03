@@ -4,27 +4,27 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Individual consistency in space-use across scales</title>
-  <meta name="description" content="Individual consistency in space-use across scales" />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <title>Assortative association in a migratory Arctic wader</title>
+  <meta name="description" content="Assortative association in a migratory Arctic wader" />
+  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Individual consistency in space-use across scales" />
+  <meta property="og:title" content="Assortative association in a migratory Arctic wader" />
   <meta property="og:type" content="book" />
   
   
-  <meta property="og:description" content="Individual consistency in space-use across scales" />
-  <meta name="github-repo" content="pratikunterwegs/knotPatches" />
+  <meta property="og:description" content="Assortative association in a migratory Arctic wader" />
+  <meta name="github-repo" content="pratikunterwegs/knot-association" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Individual consistency in space-use across scales" />
+  <meta name="twitter:title" content="Assortative association in a migratory Arctic wader" />
   
-  <meta name="twitter:description" content="Individual consistency in space-use across scales" />
+  <meta name="twitter:description" content="Assortative association in a migratory Arctic wader" />
   
 
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2020-04-27" />
+<meta name="date" content="2020-07-03" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -53,25 +53,26 @@
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -80,9 +81,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -128,65 +129,138 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#attribution"><i class="fa fa-check"></i><b>1.1</b> Attribution</a></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#data-access"><i class="fa fa-check"></i><b>1.2</b> Data access</a></li>
 <li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#data-processing"><i class="fa fa-check"></i><b>1.3</b> Data processing</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="getting-data.html"><a href="getting-data.html"><i class="fa fa-check"></i><b>2</b> Getting data</a><ul>
+<li class="chapter" data-level="2" data-path="getting-data.html"><a href="getting-data.html"><i class="fa fa-check"></i><b>2</b> Getting data</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="getting-data.html"><a href="getting-data.html#prepare-watlastools-and-other-libraries"><i class="fa fa-check"></i><b>2.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
 <li class="chapter" data-level="2.2" data-path="getting-data.html"><a href="getting-data.html#read-in-tag-deployment-data"><i class="fa fa-check"></i><b>2.2</b> Read in tag deployment data</a></li>
 <li class="chapter" data-level="2.3" data-path="getting-data.html"><a href="getting-data.html#get-data-and-save-locally"><i class="fa fa-check"></i><b>2.3</b> Get data and save locally</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning data</a><ul>
+<li class="chapter" data-level="3" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning data</a>
+<ul>
 <li class="chapter" data-level="3.1" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-watlastools-and-other-libraries-1"><i class="fa fa-check"></i><b>3.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
 <li class="chapter" data-level="3.2" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-to-remove-attractor-points"><i class="fa fa-check"></i><b>3.2</b> Prepare to remove attractor points</a></li>
 <li class="chapter" data-level="3.3" data-path="cleaning-data.html"><a href="cleaning-data.html#read-clean-and-write-data"><i class="fa fa-check"></i><b>3.3</b> Read, clean, and write data</a></li>
+<li class="chapter" data-level="3.4" data-path="cleaning-data.html"><a href="cleaning-data.html#tracking-period-for-each-id"><i class="fa fa-check"></i><b>3.4</b> Tracking period for each id</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html"><i class="fa fa-check"></i><b>4</b> Adding tidal cycle data</a><ul>
+<li class="chapter" data-level="4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html"><i class="fa fa-check"></i><b>4</b> Adding tidal cycle data</a>
+<ul>
 <li class="chapter" data-level="4.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>4.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="4.2" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#read-water-level-data"><i class="fa fa-check"></i><b>4.2</b> Read water level data</a></li>
 <li class="chapter" data-level="4.3" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#calculate-high-tides"><i class="fa fa-check"></i><b>4.3</b> Calculate high tides</a></li>
 <li class="chapter" data-level="4.4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#add-time-since-high-tide"><i class="fa fa-check"></i><b>4.4</b> Add time since high tide</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="revisit-analysis.html"><a href="revisit-analysis.html"><i class="fa fa-check"></i><b>5</b> Revisit analysis</a><ul>
+<li class="chapter" data-level="5" data-path="revisit-analysis.html"><a href="revisit-analysis.html"><i class="fa fa-check"></i><b>5</b> Revisit analysis</a>
+<ul>
 <li class="chapter" data-level="5.1" data-path="revisit-analysis.html"><a href="revisit-analysis.html#prepare-libraries-1"><i class="fa fa-check"></i><b>5.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="5.2" data-path="revisit-analysis.html"><a href="revisit-analysis.html#read-data-split-recurse-write"><i class="fa fa-check"></i><b>5.2</b> Read data, split, recurse, write</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html"><i class="fa fa-check"></i><b>6</b> Residence patch construction</a><ul>
+<li class="chapter" data-level="6" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html"><i class="fa fa-check"></i><b>6</b> Residence patch construction</a>
+<ul>
 <li class="chapter" data-level="6.1" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#prepare-libraries-2"><i class="fa fa-check"></i><b>6.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="6.2" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#patch-construction"><i class="fa fa-check"></i><b>6.2</b> Patch construction</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html"><i class="fa fa-check"></i><b>7</b> Finding spatio-temporal patch clusters</a><ul>
-<li class="chapter" data-level="7.1" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#load-libs"><i class="fa fa-check"></i><b>7.1</b> Load libs</a></li>
-<li class="chapter" data-level="7.2" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#prepare-patch-data"><i class="fa fa-check"></i><b>7.2</b> Prepare patch data</a></li>
-<li class="chapter" data-level="7.3" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#prepare-python-libraries"><i class="fa fa-check"></i><b>7.3</b> Prepare Python libraries</a></li>
-<li class="chapter" data-level="7.4" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#find-patch-clusters"><i class="fa fa-check"></i><b>7.4</b> Find patch clusters</a></li>
+<li class="chapter" data-level="7" data-path="spatio-temporal-overlap-in-patches.html"><a href="spatio-temporal-overlap-in-patches.html"><i class="fa fa-check"></i><b>7</b> Spatio-temporal overlap in patches</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="spatio-temporal-overlap-in-patches.html"><a href="spatio-temporal-overlap-in-patches.html#do-patches-overlap-in-time"><i class="fa fa-check"></i><b>7.1</b> Do patches overlap in time</a></li>
+<li class="chapter" data-level="7.2" data-path="spatio-temporal-overlap-in-patches.html"><a href="spatio-temporal-overlap-in-patches.html#how-much-do-patches-overlap-in-time"><i class="fa fa-check"></i><b>7.2</b> How much do patches overlap in time?</a></li>
+<li class="chapter" data-level="7.3" data-path="spatio-temporal-overlap-in-patches.html"><a href="spatio-temporal-overlap-in-patches.html#which-patches-overlap-in-space-and-where"><i class="fa fa-check"></i><b>7.3</b> Which patches overlap in space, and where?</a></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html"><i class="fa fa-check"></i><b>8</b> Basic cluster description</a><ul>
-<li class="chapter" data-level="8.1" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#prepare-libraries-3"><i class="fa fa-check"></i><b>8.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="8.2" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#read-in-data"><i class="fa fa-check"></i><b>8.2</b> Read in data</a></li>
-<li class="chapter" data-level="8.3" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#summarise-patches-per-module"><i class="fa fa-check"></i><b>8.3</b> Summarise patches per module</a></li>
-<li class="chapter" data-level="8.4" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#summarise-birds-per-module"><i class="fa fa-check"></i><b>8.4</b> Summarise birds per module</a></li>
-<li class="chapter" data-level="8.5" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#does-number-of-patches-scale-with-individuals-in-module"><i class="fa fa-check"></i><b>8.5</b> Does number of patches scale with individuals in module?</a></li>
+<li class="chapter" data-level="8" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html"><i class="fa fa-check"></i><b>8</b> Finding networks from patch data</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#read-in-patch-data-and-overlaps"><i class="fa fa-check"></i><b>8.1</b> Read in patch data and overlaps</a></li>
+<li class="chapter" data-level="8.2" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#retain-extreme-individuals"><i class="fa fa-check"></i><b>8.2</b> Retain extreme individuals</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#read-in-trait-data"><i class="fa fa-check"></i><b>8.2.1</b> Read in trait data</a></li>
+<li class="chapter" data-level="8.2.2" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#plot-histogram-of-traits"><i class="fa fa-check"></i><b>8.2.2</b> Plot histogram of traits</a></li>
+<li class="chapter" data-level="8.2.3" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#keep-only-extreme-individuals"><i class="fa fa-check"></i><b>8.2.3</b> Keep only extreme individuals</a></li>
+<li class="chapter" data-level="8.2.4" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#keep-only-extreme-individuals-patches"><i class="fa fa-check"></i><b>8.2.4</b> Keep only extreme individuals’ patches</a></li>
+<li class="chapter" data-level="8.2.5" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#remove-patches-with-low-fixes"><i class="fa fa-check"></i><b>8.2.5</b> Remove patches with low fixes</a></li>
+<li class="chapter" data-level="8.2.6" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#keep-only-extreme-ids-edges"><i class="fa fa-check"></i><b>8.2.6</b> Keep only extreme ids’ edges</a></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html"><i class="fa fa-check"></i><b>9</b> Patch metrics in relation to module size</a><ul>
-<li class="chapter" data-level="9.1" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#prepare-libraries-4"><i class="fa fa-check"></i><b>9.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="9.2" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#read-in-module-data"><i class="fa fa-check"></i><b>9.2</b> Read in module data</a></li>
-<li class="chapter" data-level="9.3" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#add-patch-data"><i class="fa fa-check"></i><b>9.3</b> Add patch data</a></li>
-<li class="chapter" data-level="9.4" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#visualise-modules"><i class="fa fa-check"></i><b>9.4</b> Visualise modules</a></li>
-<li class="chapter" data-level="9.5" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#module-metrics-and-composition-waterlevel"><i class="fa fa-check"></i><b>9.5</b> Module metrics and composition ~ waterlevel</a></li>
-<li class="chapter" data-level="9.6" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#patch-size-number-of-patches-in-a-module"><i class="fa fa-check"></i><b>9.6</b> Patch size ~ number of patches in a module</a></li>
+<li class="chapter" data-level="8.3" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#network-construction"><i class="fa fa-check"></i><b>8.3</b> Network construction</a>
+<ul>
+<li class="chapter" data-level="8.3.1" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#make-unweighted-network-from-overlaps"><i class="fa fa-check"></i><b>8.3.1</b> Make <strong>unweighted</strong> network from overlaps</a></li>
+<li class="chapter" data-level="8.3.2" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#find-communities"><i class="fa fa-check"></i><b>8.3.2</b> Find communities</a></li>
+<li class="chapter" data-level="8.3.3" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#join-flock-data-to-edgelist"><i class="fa fa-check"></i><b>8.3.3</b> Join flock data to edgelist</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html"><i class="fa fa-check"></i><b>10</b> Modules and individual traits</a><ul>
-<li class="chapter" data-level="10.1" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#prepare-libraries-5"><i class="fa fa-check"></i><b>10.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="10.2" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#read-in-module-data-1"><i class="fa fa-check"></i><b>10.2</b> Read in module data</a></li>
-<li class="chapter" data-level="10.3" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#count-unique-modules-per-individual"><i class="fa fa-check"></i><b>10.3</b> Count unique modules per individual</a></li>
-<li class="chapter" data-level="10.4" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#link-modules-to-individual-data"><i class="fa fa-check"></i><b>10.4</b> Link modules to individual data</a></li>
-<li class="chapter" data-level="10.5" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#add-patch-data-1"><i class="fa fa-check"></i><b>10.5</b> Add patch data</a></li>
-<li class="chapter" data-level="10.6" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#link-independent-patches-to-traits"><i class="fa fa-check"></i><b>10.6</b> Link independent patches to traits</a></li>
+<li class="chapter" data-level="8.4" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#prepare-network-data"><i class="fa fa-check"></i><b>8.4</b> Prepare network data</a>
+<ul>
+<li class="chapter" data-level="8.4.1" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#prepare-subset-wise-edgelist"><i class="fa fa-check"></i><b>8.4.1</b> Prepare subset-wise edgelist</a></li>
+<li class="chapter" data-level="8.4.2" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#prepare-nodes-data"><i class="fa fa-check"></i><b>8.4.2</b> Prepare nodes data</a></li>
+<li class="chapter" data-level="8.4.3" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#prepare-flock-networks"><i class="fa fa-check"></i><b>8.4.3</b> Prepare flock networks</a></li>
+<li class="chapter" data-level="8.4.4" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#weigh-edges-by-number-of-overlaps"><i class="fa fa-check"></i><b>8.4.4</b> Weigh edges by number of overlaps</a></li>
+<li class="chapter" data-level="8.4.5" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#make-networks"><i class="fa fa-check"></i><b>8.4.5</b> Make networks</a></li>
+<li class="chapter" data-level="8.4.6" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#get-assortativity"><i class="fa fa-check"></i><b>8.4.6</b> Get assortativity</a></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html"><i class="fa fa-check"></i><b>11</b> Bathymetry of the Griend mudflats</a><ul>
+<li class="chapter" data-level="8.5" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#flock-attributes-and-assortativity"><i class="fa fa-check"></i><b>8.5</b> Flock attributes and assortativity</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#prepare-flock-data"><i class="fa fa-check"></i><b>8.5.1</b> Prepare flock data</a></li>
+<li class="chapter" data-level="8.5.2" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#assortativity-in-high-and-low-tide"><i class="fa fa-check"></i><b>8.5.2</b> Assortativity in high and low tide</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html"><i class="fa fa-check"></i><b>9</b> Finding networks from patch data</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#read-in-patch-data-and-overlaps-1"><i class="fa fa-check"></i><b>9.1</b> Read in patch data and overlaps</a>
+<ul>
+<li class="chapter" data-level="9.1.1" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#read-in-trait-data-1"><i class="fa fa-check"></i><b>9.1.1</b> Read in trait data</a></li>
+<li class="chapter" data-level="9.1.2" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#filter-out-small-patches"><i class="fa fa-check"></i><b>9.1.2</b> Filter out small patches</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#overlaps-in-time-and-space"><i class="fa fa-check"></i><b>9.2</b> Overlaps in time and space</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#when-do-overlaps-happen"><i class="fa fa-check"></i><b>9.2.1</b> When do overlaps happen?</a></li>
+<li class="chapter" data-level="9.2.2" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#where-do-overlaps-happen"><i class="fa fa-check"></i><b>9.2.2</b> Where do overlaps happen?</a></li>
+<li class="chapter" data-level="9.2.3" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#where-and-when-do-overlaps-happen"><i class="fa fa-check"></i><b>9.2.3</b> Where AND when do overlaps happen?</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#association-networks-based-on-space-time-overlap-subsets"><i class="fa fa-check"></i><b>9.3</b> Association networks based on space-time overlap subsets</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#prepare-subsets-of-data"><i class="fa fa-check"></i><b>9.3.1</b> Prepare subsets of data</a></li>
+<li class="chapter" data-level="9.3.2" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#get-node-data"><i class="fa fa-check"></i><b>9.3.2</b> Get node data</a></li>
+<li class="chapter" data-level="9.3.3" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#make-networks-using-the-edgelist-and-nodelist-joined-together."><i class="fa fa-check"></i><b>9.3.3</b> Make networks using the edgelist and nodelist joined together.</a></li>
+<li class="chapter" data-level="9.3.4" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#remove-networks-with-few-edges"><i class="fa fa-check"></i><b>9.3.4</b> Remove networks with few edges</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#get-assortativity-1"><i class="fa fa-check"></i><b>9.4</b> Get assortativity</a>
+<ul>
+<li class="chapter" data-level="9.4.1" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#get-assortativity-on-node-attributes"><i class="fa fa-check"></i><b>9.4.1</b> Get assortativity on node attributes</a></li>
+<li class="chapter" data-level="9.4.2" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#mean-assortativity-in-space-and-time"><i class="fa fa-check"></i><b>9.4.2</b> Mean assortativity in space and time</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html"><i class="fa fa-check"></i><b>10</b> Pairwise associations in relation to traits</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#read-in-patch-data-and-overlaps-2"><i class="fa fa-check"></i><b>10.1</b> Read in patch data and overlaps</a>
+<ul>
+<li class="chapter" data-level="10.1.1" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#read-in-trait-data-2"><i class="fa fa-check"></i><b>10.1.1</b> Read in trait data</a></li>
+<li class="chapter" data-level="10.1.2" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#what-is-the-empirical-distribution-of-differences-in-gizzard-mass"><i class="fa fa-check"></i><b>10.1.2</b> What is the empirical distribution of differences in gizzard mass?</a></li>
+<li class="chapter" data-level="10.1.3" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#filter-out-small-patches-1"><i class="fa fa-check"></i><b>10.1.3</b> Filter out small patches</a></li>
+<li class="chapter" data-level="10.1.4" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#link-patches-with-overlaps"><i class="fa fa-check"></i><b>10.1.4</b> Link patches with overlaps</a></li>
+<li class="chapter" data-level="10.1.5" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#count-pairwise-overlaps"><i class="fa fa-check"></i><b>10.1.5</b> Count pairwise overlaps</a></li>
+<li class="chapter" data-level="10.1.6" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#assign-unique-pair-ids"><i class="fa fa-check"></i><b>10.1.6</b> Assign unique pair ids</a></li>
+<li class="chapter" data-level="10.1.7" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#subsample-for-even-coverage"><i class="fa fa-check"></i><b>10.1.7</b> Subsample for even coverage</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#statistical-modelling-of-number-of-associations"><i class="fa fa-check"></i><b>10.2</b> Statistical modelling of number of associations</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#fit-a-glmm-for-number-of-associations"><i class="fa fa-check"></i><b>10.2.1</b> Fit a GLMM for number of associations</a></li>
+<li class="chapter" data-level="10.2.2" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#aic-comparison"><i class="fa fa-check"></i><b>10.2.2</b> AIC comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#statistical-modelling-of-spatial-overlap"><i class="fa fa-check"></i><b>10.3</b> Statistical modelling of spatial overlap</a>
+<ul>
+<li class="chapter" data-level="10.3.1" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#glmm-for-spatial-overlap"><i class="fa fa-check"></i><b>10.3.1</b> GLMM for spatial overlap</a></li>
+<li class="chapter" data-level="10.3.2" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#aic-comparison-1"><i class="fa fa-check"></i><b>10.3.2</b> AIC comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#statistical-modelling-of-temporal-overlap"><i class="fa fa-check"></i><b>10.4</b> Statistical modelling of temporal overlap</a>
+<ul>
+<li class="chapter" data-level="10.4.1" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#glmm-for-temporal-overlap"><i class="fa fa-check"></i><b>10.4.1</b> GLMM for temporal overlap</a></li>
+<li class="chapter" data-level="10.4.2" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#aic-and-r2-comparison"><i class="fa fa-check"></i><b>10.4.2</b> AIC and R<sup>2</sup> comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#save-data-to-file-for-network-analyses"><i class="fa fa-check"></i><b>10.5</b> Save data to file for network analyses</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html"><i class="fa fa-check"></i><b>11</b> Bathymetry of the Griend mudflats</a>
+<ul>
 <li class="chapter" data-level="11.1" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#get-data-and-plot-basic-trend"><i class="fa fa-check"></i><b>11.1</b> Get data and plot basic trend</a></li>
 <li class="chapter" data-level="11.2" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#plot-as-3d-maps"><i class="fa fa-check"></i><b>11.2</b> Plot as 3D maps</a></li>
 </ul></li>
@@ -199,7 +273,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Individual consistency in space-use across scales</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Assortative association in a migratory Arctic wader</a>
           </h1>
         </div>
 
@@ -208,13 +282,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="header">
-<h1 class="title">Individual consistency in space-use across scales</h1>
+<h1 class="title">Assortative association in a migratory Arctic wader</h1>
 <p class="author"><em>Pratik R Gupte</em></p>
-<p class="date"><em>2020-04-27</em></p>
+<p class="date"><em>2020-07-03</em></p>
 </div>
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">Section 1</span> Introduction</h1>
-<p>This is the <code>bookdown</code> version of a project in preparation that links high-resolution tracking data from individual red knots <em>Calidris canutus islandica</em> to fine-scale experimental behaviour measurements in captivity, and examines whether individuals are consistent across scales in their space-use.</p>
+<p>This repository is the source for a project to idenify residence patches from high-resolution tracking data from individual red knots <em>Calidris canutus islandica</em>, and study whether associations are assortative on individual traits.</p>
 <div id="attribution" class="section level2">
 <h2><span class="header-section-number">1.1</span> Attribution</h2>
 <p>Please contact the following before cloning or in case of interest in the project.</p>
@@ -262,7 +336,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/pratikunterwegs/knotPatches/edit/master/index.rmd",
+"link": "https://github.com/pratikunterwegs/knot-association/edit/master/index.rmd",
 "text": "Edit"
 },
 "history": {

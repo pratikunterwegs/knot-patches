@@ -4,27 +4,27 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Section 5 Revisit analysis | Individual consistency in space-use across scales</title>
-  <meta name="description" content="Section 5 Revisit analysis | Individual consistency in space-use across scales" />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <title>Section 5 Revisit analysis | Assortative association in a migratory Arctic wader</title>
+  <meta name="description" content="Section 5 Revisit analysis | Assortative association in a migratory Arctic wader" />
+  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Section 5 Revisit analysis | Individual consistency in space-use across scales" />
+  <meta property="og:title" content="Section 5 Revisit analysis | Assortative association in a migratory Arctic wader" />
   <meta property="og:type" content="book" />
   
   
-  <meta property="og:description" content="Section 5 Revisit analysis | Individual consistency in space-use across scales" />
-  <meta name="github-repo" content="pratikunterwegs/knotPatches" />
+  <meta property="og:description" content="Section 5 Revisit analysis | Assortative association in a migratory Arctic wader" />
+  <meta name="github-repo" content="pratikunterwegs/knot-association" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Section 5 Revisit analysis | Individual consistency in space-use across scales" />
+  <meta name="twitter:title" content="Section 5 Revisit analysis | Assortative association in a migratory Arctic wader" />
   
-  <meta name="twitter:description" content="Section 5 Revisit analysis | Individual consistency in space-use across scales" />
+  <meta name="twitter:description" content="Section 5 Revisit analysis | Assortative association in a migratory Arctic wader" />
   
 
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2020-04-27" />
+<meta name="date" content="2020-07-03" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -53,25 +53,26 @@
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -80,9 +81,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -128,65 +129,138 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#attribution"><i class="fa fa-check"></i><b>1.1</b> Attribution</a></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#data-access"><i class="fa fa-check"></i><b>1.2</b> Data access</a></li>
 <li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#data-processing"><i class="fa fa-check"></i><b>1.3</b> Data processing</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="getting-data.html"><a href="getting-data.html"><i class="fa fa-check"></i><b>2</b> Getting data</a><ul>
+<li class="chapter" data-level="2" data-path="getting-data.html"><a href="getting-data.html"><i class="fa fa-check"></i><b>2</b> Getting data</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="getting-data.html"><a href="getting-data.html#prepare-watlastools-and-other-libraries"><i class="fa fa-check"></i><b>2.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
 <li class="chapter" data-level="2.2" data-path="getting-data.html"><a href="getting-data.html#read-in-tag-deployment-data"><i class="fa fa-check"></i><b>2.2</b> Read in tag deployment data</a></li>
 <li class="chapter" data-level="2.3" data-path="getting-data.html"><a href="getting-data.html#get-data-and-save-locally"><i class="fa fa-check"></i><b>2.3</b> Get data and save locally</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning data</a><ul>
+<li class="chapter" data-level="3" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning data</a>
+<ul>
 <li class="chapter" data-level="3.1" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-watlastools-and-other-libraries-1"><i class="fa fa-check"></i><b>3.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
 <li class="chapter" data-level="3.2" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-to-remove-attractor-points"><i class="fa fa-check"></i><b>3.2</b> Prepare to remove attractor points</a></li>
 <li class="chapter" data-level="3.3" data-path="cleaning-data.html"><a href="cleaning-data.html#read-clean-and-write-data"><i class="fa fa-check"></i><b>3.3</b> Read, clean, and write data</a></li>
+<li class="chapter" data-level="3.4" data-path="cleaning-data.html"><a href="cleaning-data.html#tracking-period-for-each-id"><i class="fa fa-check"></i><b>3.4</b> Tracking period for each id</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html"><i class="fa fa-check"></i><b>4</b> Adding tidal cycle data</a><ul>
+<li class="chapter" data-level="4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html"><i class="fa fa-check"></i><b>4</b> Adding tidal cycle data</a>
+<ul>
 <li class="chapter" data-level="4.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>4.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="4.2" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#read-water-level-data"><i class="fa fa-check"></i><b>4.2</b> Read water level data</a></li>
 <li class="chapter" data-level="4.3" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#calculate-high-tides"><i class="fa fa-check"></i><b>4.3</b> Calculate high tides</a></li>
 <li class="chapter" data-level="4.4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#add-time-since-high-tide"><i class="fa fa-check"></i><b>4.4</b> Add time since high tide</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="revisit-analysis.html"><a href="revisit-analysis.html"><i class="fa fa-check"></i><b>5</b> Revisit analysis</a><ul>
+<li class="chapter" data-level="5" data-path="revisit-analysis.html"><a href="revisit-analysis.html"><i class="fa fa-check"></i><b>5</b> Revisit analysis</a>
+<ul>
 <li class="chapter" data-level="5.1" data-path="revisit-analysis.html"><a href="revisit-analysis.html#prepare-libraries-1"><i class="fa fa-check"></i><b>5.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="5.2" data-path="revisit-analysis.html"><a href="revisit-analysis.html#read-data-split-recurse-write"><i class="fa fa-check"></i><b>5.2</b> Read data, split, recurse, write</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html"><i class="fa fa-check"></i><b>6</b> Residence patch construction</a><ul>
+<li class="chapter" data-level="6" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html"><i class="fa fa-check"></i><b>6</b> Residence patch construction</a>
+<ul>
 <li class="chapter" data-level="6.1" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#prepare-libraries-2"><i class="fa fa-check"></i><b>6.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="6.2" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#patch-construction"><i class="fa fa-check"></i><b>6.2</b> Patch construction</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html"><i class="fa fa-check"></i><b>7</b> Finding spatio-temporal patch clusters</a><ul>
-<li class="chapter" data-level="7.1" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#load-libs"><i class="fa fa-check"></i><b>7.1</b> Load libs</a></li>
-<li class="chapter" data-level="7.2" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#prepare-patch-data"><i class="fa fa-check"></i><b>7.2</b> Prepare patch data</a></li>
-<li class="chapter" data-level="7.3" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#prepare-python-libraries"><i class="fa fa-check"></i><b>7.3</b> Prepare Python libraries</a></li>
-<li class="chapter" data-level="7.4" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#find-patch-clusters"><i class="fa fa-check"></i><b>7.4</b> Find patch clusters</a></li>
+<li class="chapter" data-level="7" data-path="spatio-temporal-overlap-in-patches.html"><a href="spatio-temporal-overlap-in-patches.html"><i class="fa fa-check"></i><b>7</b> Spatio-temporal overlap in patches</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="spatio-temporal-overlap-in-patches.html"><a href="spatio-temporal-overlap-in-patches.html#do-patches-overlap-in-time"><i class="fa fa-check"></i><b>7.1</b> Do patches overlap in time</a></li>
+<li class="chapter" data-level="7.2" data-path="spatio-temporal-overlap-in-patches.html"><a href="spatio-temporal-overlap-in-patches.html#how-much-do-patches-overlap-in-time"><i class="fa fa-check"></i><b>7.2</b> How much do patches overlap in time?</a></li>
+<li class="chapter" data-level="7.3" data-path="spatio-temporal-overlap-in-patches.html"><a href="spatio-temporal-overlap-in-patches.html#which-patches-overlap-in-space-and-where"><i class="fa fa-check"></i><b>7.3</b> Which patches overlap in space, and where?</a></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html"><i class="fa fa-check"></i><b>8</b> Basic cluster description</a><ul>
-<li class="chapter" data-level="8.1" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#prepare-libraries-3"><i class="fa fa-check"></i><b>8.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="8.2" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#read-in-data"><i class="fa fa-check"></i><b>8.2</b> Read in data</a></li>
-<li class="chapter" data-level="8.3" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#summarise-patches-per-module"><i class="fa fa-check"></i><b>8.3</b> Summarise patches per module</a></li>
-<li class="chapter" data-level="8.4" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#summarise-birds-per-module"><i class="fa fa-check"></i><b>8.4</b> Summarise birds per module</a></li>
-<li class="chapter" data-level="8.5" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#does-number-of-patches-scale-with-individuals-in-module"><i class="fa fa-check"></i><b>8.5</b> Does number of patches scale with individuals in module?</a></li>
+<li class="chapter" data-level="8" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html"><i class="fa fa-check"></i><b>8</b> Finding networks from patch data</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#read-in-patch-data-and-overlaps"><i class="fa fa-check"></i><b>8.1</b> Read in patch data and overlaps</a></li>
+<li class="chapter" data-level="8.2" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#retain-extreme-individuals"><i class="fa fa-check"></i><b>8.2</b> Retain extreme individuals</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#read-in-trait-data"><i class="fa fa-check"></i><b>8.2.1</b> Read in trait data</a></li>
+<li class="chapter" data-level="8.2.2" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#plot-histogram-of-traits"><i class="fa fa-check"></i><b>8.2.2</b> Plot histogram of traits</a></li>
+<li class="chapter" data-level="8.2.3" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#keep-only-extreme-individuals"><i class="fa fa-check"></i><b>8.2.3</b> Keep only extreme individuals</a></li>
+<li class="chapter" data-level="8.2.4" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#keep-only-extreme-individuals-patches"><i class="fa fa-check"></i><b>8.2.4</b> Keep only extreme individuals’ patches</a></li>
+<li class="chapter" data-level="8.2.5" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#remove-patches-with-low-fixes"><i class="fa fa-check"></i><b>8.2.5</b> Remove patches with low fixes</a></li>
+<li class="chapter" data-level="8.2.6" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#keep-only-extreme-ids-edges"><i class="fa fa-check"></i><b>8.2.6</b> Keep only extreme ids’ edges</a></li>
 </ul></li>
-<li class="chapter" data-level="9" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html"><i class="fa fa-check"></i><b>9</b> Patch metrics in relation to module size</a><ul>
-<li class="chapter" data-level="9.1" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#prepare-libraries-4"><i class="fa fa-check"></i><b>9.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="9.2" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#read-in-module-data"><i class="fa fa-check"></i><b>9.2</b> Read in module data</a></li>
-<li class="chapter" data-level="9.3" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#add-patch-data"><i class="fa fa-check"></i><b>9.3</b> Add patch data</a></li>
-<li class="chapter" data-level="9.4" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#visualise-modules"><i class="fa fa-check"></i><b>9.4</b> Visualise modules</a></li>
-<li class="chapter" data-level="9.5" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#module-metrics-and-composition-waterlevel"><i class="fa fa-check"></i><b>9.5</b> Module metrics and composition ~ waterlevel</a></li>
-<li class="chapter" data-level="9.6" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#patch-size-number-of-patches-in-a-module"><i class="fa fa-check"></i><b>9.6</b> Patch size ~ number of patches in a module</a></li>
+<li class="chapter" data-level="8.3" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#network-construction"><i class="fa fa-check"></i><b>8.3</b> Network construction</a>
+<ul>
+<li class="chapter" data-level="8.3.1" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#make-unweighted-network-from-overlaps"><i class="fa fa-check"></i><b>8.3.1</b> Make <strong>unweighted</strong> network from overlaps</a></li>
+<li class="chapter" data-level="8.3.2" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#find-communities"><i class="fa fa-check"></i><b>8.3.2</b> Find communities</a></li>
+<li class="chapter" data-level="8.3.3" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#join-flock-data-to-edgelist"><i class="fa fa-check"></i><b>8.3.3</b> Join flock data to edgelist</a></li>
 </ul></li>
-<li class="chapter" data-level="10" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html"><i class="fa fa-check"></i><b>10</b> Modules and individual traits</a><ul>
-<li class="chapter" data-level="10.1" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#prepare-libraries-5"><i class="fa fa-check"></i><b>10.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="10.2" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#read-in-module-data-1"><i class="fa fa-check"></i><b>10.2</b> Read in module data</a></li>
-<li class="chapter" data-level="10.3" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#count-unique-modules-per-individual"><i class="fa fa-check"></i><b>10.3</b> Count unique modules per individual</a></li>
-<li class="chapter" data-level="10.4" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#link-modules-to-individual-data"><i class="fa fa-check"></i><b>10.4</b> Link modules to individual data</a></li>
-<li class="chapter" data-level="10.5" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#add-patch-data-1"><i class="fa fa-check"></i><b>10.5</b> Add patch data</a></li>
-<li class="chapter" data-level="10.6" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#link-independent-patches-to-traits"><i class="fa fa-check"></i><b>10.6</b> Link independent patches to traits</a></li>
+<li class="chapter" data-level="8.4" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#prepare-network-data"><i class="fa fa-check"></i><b>8.4</b> Prepare network data</a>
+<ul>
+<li class="chapter" data-level="8.4.1" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#prepare-subset-wise-edgelist"><i class="fa fa-check"></i><b>8.4.1</b> Prepare subset-wise edgelist</a></li>
+<li class="chapter" data-level="8.4.2" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#prepare-nodes-data"><i class="fa fa-check"></i><b>8.4.2</b> Prepare nodes data</a></li>
+<li class="chapter" data-level="8.4.3" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#prepare-flock-networks"><i class="fa fa-check"></i><b>8.4.3</b> Prepare flock networks</a></li>
+<li class="chapter" data-level="8.4.4" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#weigh-edges-by-number-of-overlaps"><i class="fa fa-check"></i><b>8.4.4</b> Weigh edges by number of overlaps</a></li>
+<li class="chapter" data-level="8.4.5" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#make-networks"><i class="fa fa-check"></i><b>8.4.5</b> Make networks</a></li>
+<li class="chapter" data-level="8.4.6" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#get-assortativity"><i class="fa fa-check"></i><b>8.4.6</b> Get assortativity</a></li>
 </ul></li>
-<li class="chapter" data-level="11" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html"><i class="fa fa-check"></i><b>11</b> Bathymetry of the Griend mudflats</a><ul>
+<li class="chapter" data-level="8.5" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#flock-attributes-and-assortativity"><i class="fa fa-check"></i><b>8.5</b> Flock attributes and assortativity</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#prepare-flock-data"><i class="fa fa-check"></i><b>8.5.1</b> Prepare flock data</a></li>
+<li class="chapter" data-level="8.5.2" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#assortativity-in-high-and-low-tide"><i class="fa fa-check"></i><b>8.5.2</b> Assortativity in high and low tide</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html"><i class="fa fa-check"></i><b>9</b> Finding networks from patch data</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#read-in-patch-data-and-overlaps-1"><i class="fa fa-check"></i><b>9.1</b> Read in patch data and overlaps</a>
+<ul>
+<li class="chapter" data-level="9.1.1" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#read-in-trait-data-1"><i class="fa fa-check"></i><b>9.1.1</b> Read in trait data</a></li>
+<li class="chapter" data-level="9.1.2" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#filter-out-small-patches"><i class="fa fa-check"></i><b>9.1.2</b> Filter out small patches</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#overlaps-in-time-and-space"><i class="fa fa-check"></i><b>9.2</b> Overlaps in time and space</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#when-do-overlaps-happen"><i class="fa fa-check"></i><b>9.2.1</b> When do overlaps happen?</a></li>
+<li class="chapter" data-level="9.2.2" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#where-do-overlaps-happen"><i class="fa fa-check"></i><b>9.2.2</b> Where do overlaps happen?</a></li>
+<li class="chapter" data-level="9.2.3" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#where-and-when-do-overlaps-happen"><i class="fa fa-check"></i><b>9.2.3</b> Where AND when do overlaps happen?</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#association-networks-based-on-space-time-overlap-subsets"><i class="fa fa-check"></i><b>9.3</b> Association networks based on space-time overlap subsets</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#prepare-subsets-of-data"><i class="fa fa-check"></i><b>9.3.1</b> Prepare subsets of data</a></li>
+<li class="chapter" data-level="9.3.2" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#get-node-data"><i class="fa fa-check"></i><b>9.3.2</b> Get node data</a></li>
+<li class="chapter" data-level="9.3.3" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#make-networks-using-the-edgelist-and-nodelist-joined-together."><i class="fa fa-check"></i><b>9.3.3</b> Make networks using the edgelist and nodelist joined together.</a></li>
+<li class="chapter" data-level="9.3.4" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#remove-networks-with-few-edges"><i class="fa fa-check"></i><b>9.3.4</b> Remove networks with few edges</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#get-assortativity-1"><i class="fa fa-check"></i><b>9.4</b> Get assortativity</a>
+<ul>
+<li class="chapter" data-level="9.4.1" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#get-assortativity-on-node-attributes"><i class="fa fa-check"></i><b>9.4.1</b> Get assortativity on node attributes</a></li>
+<li class="chapter" data-level="9.4.2" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#mean-assortativity-in-space-and-time"><i class="fa fa-check"></i><b>9.4.2</b> Mean assortativity in space and time</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html"><i class="fa fa-check"></i><b>10</b> Pairwise associations in relation to traits</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#read-in-patch-data-and-overlaps-2"><i class="fa fa-check"></i><b>10.1</b> Read in patch data and overlaps</a>
+<ul>
+<li class="chapter" data-level="10.1.1" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#read-in-trait-data-2"><i class="fa fa-check"></i><b>10.1.1</b> Read in trait data</a></li>
+<li class="chapter" data-level="10.1.2" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#what-is-the-empirical-distribution-of-differences-in-gizzard-mass"><i class="fa fa-check"></i><b>10.1.2</b> What is the empirical distribution of differences in gizzard mass?</a></li>
+<li class="chapter" data-level="10.1.3" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#filter-out-small-patches-1"><i class="fa fa-check"></i><b>10.1.3</b> Filter out small patches</a></li>
+<li class="chapter" data-level="10.1.4" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#link-patches-with-overlaps"><i class="fa fa-check"></i><b>10.1.4</b> Link patches with overlaps</a></li>
+<li class="chapter" data-level="10.1.5" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#count-pairwise-overlaps"><i class="fa fa-check"></i><b>10.1.5</b> Count pairwise overlaps</a></li>
+<li class="chapter" data-level="10.1.6" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#assign-unique-pair-ids"><i class="fa fa-check"></i><b>10.1.6</b> Assign unique pair ids</a></li>
+<li class="chapter" data-level="10.1.7" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#subsample-for-even-coverage"><i class="fa fa-check"></i><b>10.1.7</b> Subsample for even coverage</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#statistical-modelling-of-number-of-associations"><i class="fa fa-check"></i><b>10.2</b> Statistical modelling of number of associations</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#fit-a-glmm-for-number-of-associations"><i class="fa fa-check"></i><b>10.2.1</b> Fit a GLMM for number of associations</a></li>
+<li class="chapter" data-level="10.2.2" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#aic-comparison"><i class="fa fa-check"></i><b>10.2.2</b> AIC comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#statistical-modelling-of-spatial-overlap"><i class="fa fa-check"></i><b>10.3</b> Statistical modelling of spatial overlap</a>
+<ul>
+<li class="chapter" data-level="10.3.1" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#glmm-for-spatial-overlap"><i class="fa fa-check"></i><b>10.3.1</b> GLMM for spatial overlap</a></li>
+<li class="chapter" data-level="10.3.2" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#aic-comparison-1"><i class="fa fa-check"></i><b>10.3.2</b> AIC comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#statistical-modelling-of-temporal-overlap"><i class="fa fa-check"></i><b>10.4</b> Statistical modelling of temporal overlap</a>
+<ul>
+<li class="chapter" data-level="10.4.1" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#glmm-for-temporal-overlap"><i class="fa fa-check"></i><b>10.4.1</b> GLMM for temporal overlap</a></li>
+<li class="chapter" data-level="10.4.2" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#aic-and-r2-comparison"><i class="fa fa-check"></i><b>10.4.2</b> AIC and R<sup>2</sup> comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#save-data-to-file-for-network-analyses"><i class="fa fa-check"></i><b>10.5</b> Save data to file for network analyses</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html"><i class="fa fa-check"></i><b>11</b> Bathymetry of the Griend mudflats</a>
+<ul>
 <li class="chapter" data-level="11.1" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#get-data-and-plot-basic-trend"><i class="fa fa-check"></i><b>11.1</b> Get data and plot basic trend</a></li>
 <li class="chapter" data-level="11.2" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#plot-as-3d-maps"><i class="fa fa-check"></i><b>11.2</b> Plot as 3D maps</a></li>
 </ul></li>
@@ -199,7 +273,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Individual consistency in space-use across scales</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Assortative association in a migratory Arctic wader</a>
           </h1>
         </div>
 
@@ -222,109 +296,109 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 <div id="prepare-libraries-1" class="section level2">
 <h2><span class="header-section-number">5.1</span> Prepare libraries</h2>
-<p>This section uses the recurse package <span class="citation">(Bracis, Bildstein, and Mueller <a href="#ref-bracis2018">2018</a>)</span>.</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="co"># load recurse or install if not available</span></a>
-<a class="sourceLine" id="cb14-2" title="2"><span class="cf">if</span>(<span class="st">&quot;recurse&quot;</span> <span class="op">%in%</span><span class="st"> </span><span class="kw">installed.packages</span>() <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>){</a>
-<a class="sourceLine" id="cb14-3" title="3">  <span class="kw">install.packages</span>(<span class="st">&quot;recurse&quot;</span>)</a>
-<a class="sourceLine" id="cb14-4" title="4">}</a>
-<a class="sourceLine" id="cb14-5" title="5"><span class="kw">library</span>(recurse)</a>
-<a class="sourceLine" id="cb14-6" title="6"></a>
-<a class="sourceLine" id="cb14-7" title="7"><span class="co"># libraries to process data</span></a>
-<a class="sourceLine" id="cb14-8" title="8"><span class="kw">library</span>(data.table)</a>
-<a class="sourceLine" id="cb14-9" title="9"><span class="kw">library</span>(purrr)</a>
-<a class="sourceLine" id="cb14-10" title="10"><span class="kw">library</span>(glue)</a>
-<a class="sourceLine" id="cb14-11" title="11"><span class="kw">library</span>(dplyr)</a>
-<a class="sourceLine" id="cb14-12" title="12"><span class="kw">library</span>(fasttime)</a>
-<a class="sourceLine" id="cb14-13" title="13"><span class="kw">library</span>(stringr)</a></code></pre></div>
+<p>This section uses the recurse package <span class="citation">(Bracis, Bildstein, and Mueller <a href="#ref-bracis2018" role="doc-biblioref">2018</a>)</span>.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="revisit-analysis.html#cb14-1"></a><span class="co"># load recurse or install if not available</span></span>
+<span id="cb14-2"><a href="revisit-analysis.html#cb14-2"></a><span class="cf">if</span>(<span class="st">&quot;recurse&quot;</span> <span class="op">%in%</span><span class="st"> </span><span class="kw">installed.packages</span>() <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>){</span>
+<span id="cb14-3"><a href="revisit-analysis.html#cb14-3"></a>  <span class="kw">install.packages</span>(<span class="st">&quot;recurse&quot;</span>)</span>
+<span id="cb14-4"><a href="revisit-analysis.html#cb14-4"></a>}</span>
+<span id="cb14-5"><a href="revisit-analysis.html#cb14-5"></a><span class="kw">library</span>(recurse)</span>
+<span id="cb14-6"><a href="revisit-analysis.html#cb14-6"></a></span>
+<span id="cb14-7"><a href="revisit-analysis.html#cb14-7"></a><span class="co"># libraries to process data</span></span>
+<span id="cb14-8"><a href="revisit-analysis.html#cb14-8"></a><span class="kw">library</span>(data.table)</span>
+<span id="cb14-9"><a href="revisit-analysis.html#cb14-9"></a><span class="kw">library</span>(purrr)</span>
+<span id="cb14-10"><a href="revisit-analysis.html#cb14-10"></a><span class="kw">library</span>(glue)</span>
+<span id="cb14-11"><a href="revisit-analysis.html#cb14-11"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb14-12"><a href="revisit-analysis.html#cb14-12"></a><span class="kw">library</span>(fasttime)</span>
+<span id="cb14-13"><a href="revisit-analysis.html#cb14-13"></a><span class="kw">library</span>(stringr)</span></code></pre></div>
 </div>
 <div id="read-data-split-recurse-write" class="section level2">
 <h2><span class="header-section-number">5.2</span> Read data, split, recurse, write</h2>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="co"># read in data</span></a>
-<a class="sourceLine" id="cb15-2" title="2">data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data/data2018/&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;id_&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb15-3" title="3"></a>
-<a class="sourceLine" id="cb15-4" title="4">data_ids &lt;-<span class="st"> </span><span class="kw">str_extract</span>(data_files, <span class="st">&quot;(id_</span><span class="ch">\\</span><span class="st">d+)&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_sub</span>(<span class="op">-</span><span class="dv">3</span>,<span class="op">-</span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb15-5" title="5"></a>
-<a class="sourceLine" id="cb15-6" title="6">{</a>
-<a class="sourceLine" id="cb15-7" title="7">  <span class="co"># read in release data and get first release - 24 hrs</span></a>
-<a class="sourceLine" id="cb15-8" title="8">  tag_info &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data2018/SelinDB.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb15-9" title="9">  tag_info &lt;-<span class="st"> </span>tag_info[<span class="op">!</span><span class="kw">is.na</span>(Release_Date) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(Release_Time),]</a>
-<a class="sourceLine" id="cb15-10" title="10">  tag_info[,Release_Date <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(Release_Date, Release_Time, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>), <span class="dt">format =</span> <span class="st">&quot;%d.%m.%y %H:%M&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span>)]</a>
-<a class="sourceLine" id="cb15-11" title="11">}</a>
-<a class="sourceLine" id="cb15-12" title="12"></a>
-<a class="sourceLine" id="cb15-13" title="13"><span class="co"># prepare recurse data folder</span></a>
-<a class="sourceLine" id="cb15-14" title="14"><span class="cf">if</span>(<span class="op">!</span><span class="kw">dir.exists</span>(<span class="st">&quot;data/data2018/revisitData&quot;</span>)){ <span class="kw">dir.create</span>(<span class="st">&quot;data/data2018/revisitData&quot;</span>) }</a>
-<a class="sourceLine" id="cb15-15" title="15"></a>
-<a class="sourceLine" id="cb15-16" title="16"></a>
-<a class="sourceLine" id="cb15-17" title="17"><span class="co"># prepare recurse in parameters</span></a>
-<a class="sourceLine" id="cb15-18" title="18"><span class="co"># radius (m), cutoff (mins)</span></a>
-<a class="sourceLine" id="cb15-19" title="19">{</a>
-<a class="sourceLine" id="cb15-20" title="20">  radius &lt;-<span class="st"> </span><span class="dv">50</span></a>
-<a class="sourceLine" id="cb15-21" title="21">  timeunits &lt;-<span class="st"> &quot;mins&quot;</span></a>
-<a class="sourceLine" id="cb15-22" title="22">  revisit_cutoff &lt;-<span class="st"> </span><span class="dv">60</span></a>
-<a class="sourceLine" id="cb15-23" title="23">}</a>
-<a class="sourceLine" id="cb15-24" title="24"></a>
-<a class="sourceLine" id="cb15-25" title="25"><span class="co"># map read in, splitting, and recurse over individual level data</span></a>
-<a class="sourceLine" id="cb15-26" title="26"><span class="co"># remove visits where the bird left for 60 mins, and then returned</span></a>
-<a class="sourceLine" id="cb15-27" title="27"><span class="co"># this is regardless of whether after its return it stayed there</span></a>
-<a class="sourceLine" id="cb15-28" title="28"><span class="co"># the removal counts the cumulative sum of all (timeSinceLastVisit &lt;= 60)</span></a>
-<a class="sourceLine" id="cb15-29" title="29"><span class="co"># thus after the first 60 minute absence, all points are assigned TRUE</span></a>
-<a class="sourceLine" id="cb15-30" title="30"><span class="co"># this must be grouped by the coordinate</span></a>
-<a class="sourceLine" id="cb15-31" title="31"><span class="kw">map</span>(data_files, <span class="cf">function</span>(df){</a>
-<a class="sourceLine" id="cb15-32" title="32">  </a>
-<a class="sourceLine" id="cb15-33" title="33">  <span class="co"># read in, fix data type, and split</span></a>
-<a class="sourceLine" id="cb15-34" title="34">  temp_data &lt;-<span class="st"> </span><span class="kw">fread</span>(df, <span class="dt">integer64 =</span> <span class="st">&quot;numeric&quot;</span>)</a>
-<a class="sourceLine" id="cb15-35" title="35">  temp_data[,ts<span class="op">:</span><span class="er">=</span><span class="kw">fastPOSIXct</span>(ts, <span class="dt">tz =</span> <span class="st">&#39;CET&#39;</span>)]</a>
-<a class="sourceLine" id="cb15-36" title="36">  <span class="kw">setDF</span>(temp_data)</a>
-<a class="sourceLine" id="cb15-37" title="37">  temp_data &lt;-<span class="st"> </span><span class="kw">split</span>(temp_data, temp_data<span class="op">$</span>tide_number)</a>
-<a class="sourceLine" id="cb15-38" title="38">  </a>
-<a class="sourceLine" id="cb15-39" title="39">  <span class="co"># map over the tidal cycle level data</span></a>
-<a class="sourceLine" id="cb15-40" title="40">  <span class="kw">map</span>(temp_data, <span class="cf">function</span>(tempdf){</a>
-<a class="sourceLine" id="cb15-41" title="41">    </a>
-<a class="sourceLine" id="cb15-42" title="42">    <span class="kw">tryCatch</span>({</a>
-<a class="sourceLine" id="cb15-43" title="43">    <span class="co"># perform the recursion analysis</span></a>
-<a class="sourceLine" id="cb15-44" title="44">    df_recurse &lt;-<span class="st"> </span><span class="kw">getRecursions</span>(<span class="dt">x =</span> tempdf[,<span class="kw">c</span>(<span class="st">&quot;x&quot;</span>,<span class="st">&quot;y&quot;</span>,<span class="st">&quot;ts&quot;</span>,<span class="st">&quot;id&quot;</span>)], </a>
-<a class="sourceLine" id="cb15-45" title="45">                                <span class="dt">radius =</span> radius, </a>
-<a class="sourceLine" id="cb15-46" title="46">                                <span class="dt">timeunits =</span> timeunits, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb15-47" title="47">    </a>
-<a class="sourceLine" id="cb15-48" title="48">    <span class="co"># extract revisit statistics and calculate residence time</span></a>
-<a class="sourceLine" id="cb15-49" title="49">    <span class="co"># and revisits with a 1 hour cutoff</span></a>
-<a class="sourceLine" id="cb15-50" title="50">    df_recurse &lt;-<span class="st"> </span><span class="kw">setDT</span>(df_recurse[[<span class="st">&quot;revisitStats&quot;</span>]])</a>
-<a class="sourceLine" id="cb15-51" title="51">    </a>
-<a class="sourceLine" id="cb15-52" title="52">    df_recurse[,timeSinceLastVisit<span class="op">:</span><span class="er">=</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb15-53" title="53"><span class="st">                 </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(timeSinceLastVisit), <span class="op">-</span><span class="ot">Inf</span>, timeSinceLastVisit)]</a>
-<a class="sourceLine" id="cb15-54" title="54">    </a>
-<a class="sourceLine" id="cb15-55" title="55">    df_recurse[,longAbsenceCounter<span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">cumsum</span>(timeSinceLastVisit <span class="op">&gt;</span><span class="st"> </span><span class="dv">60</span>), </a>
-<a class="sourceLine" id="cb15-56" title="56">               by=<span class="st"> </span>.(coordIdx)]</a>
-<a class="sourceLine" id="cb15-57" title="57">    </a>
-<a class="sourceLine" id="cb15-58" title="58">    df_recurse &lt;-<span class="st"> </span>df_recurse[longAbsenceCounter <span class="op">&lt;</span><span class="st"> </span><span class="dv">1</span>,]</a>
-<a class="sourceLine" id="cb15-59" title="59">    </a>
-<a class="sourceLine" id="cb15-60" title="60">    df_recurse &lt;-<span class="st"> </span>df_recurse[,.(<span class="dt">resTime =</span> <span class="kw">sum</span>(timeInside), </a>
-<a class="sourceLine" id="cb15-61" title="61">                                <span class="dt">fpt =</span> <span class="kw">first</span>(timeInside),</a>
-<a class="sourceLine" id="cb15-62" title="62">                                <span class="dt">revisits =</span> <span class="kw">max</span>(visitIdx)),</a>
-<a class="sourceLine" id="cb15-63" title="63">                             by=.(coordIdx,x,y)]</a>
-<a class="sourceLine" id="cb15-64" title="64">    </a>
-<a class="sourceLine" id="cb15-65" title="65">    <span class="co"># prepare and merge existing data with recursion data</span></a>
-<a class="sourceLine" id="cb15-66" title="66">    <span class="kw">setDT</span>(tempdf)[,coordIdx<span class="op">:</span><span class="er">=</span><span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(tempdf)]</a>
-<a class="sourceLine" id="cb15-67" title="67">    </a>
-<a class="sourceLine" id="cb15-68" title="68">    tempdf &lt;-<span class="st"> </span><span class="kw">merge</span>(tempdf, df_recurse, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="st">&quot;coordIdx&quot;</span>))</a>
-<a class="sourceLine" id="cb15-69" title="69">    </a>
-<a class="sourceLine" id="cb15-70" title="70">    <span class="kw">setorder</span>(tempdf, ts)</a>
-<a class="sourceLine" id="cb15-71" title="71">    </a>
-<a class="sourceLine" id="cb15-72" title="72">    <span class="co"># write each data frame to file</span></a>
-<a class="sourceLine" id="cb15-73" title="73">    <span class="kw">fwrite</span>(tempdf, </a>
-<a class="sourceLine" id="cb15-74" title="74">           <span class="dt">file =</span> <span class="kw">glue</span>(<span class="st">&#39;data/data2018/revisitData/{unique(tempdf$id)}_{str_pad(unique(tempdf$tide_number), width=3, pad=&quot;0&quot;)}_revisit.csv&#39;</span>))</a>
-<a class="sourceLine" id="cb15-75" title="75">    </a>
-<a class="sourceLine" id="cb15-76" title="76">    <span class="kw">message</span>(<span class="kw">glue</span>(<span class="st">&#39;recurse {unique(tempdf$id)}_{str_pad(unique(tempdf$tide_number), width=3, pad=&quot;0&quot;)} done&#39;</span>))</a>
-<a class="sourceLine" id="cb15-77" title="77">    </a>
-<a class="sourceLine" id="cb15-78" title="78">    <span class="kw">rm</span>(tempdf, df_recurse)</a>
-<a class="sourceLine" id="cb15-79" title="79">    },</a>
-<a class="sourceLine" id="cb15-80" title="80">    <span class="dt">error =</span> <span class="cf">function</span>(e){</a>
-<a class="sourceLine" id="cb15-81" title="81">      <span class="kw">message</span>(<span class="st">&quot;some recurses failed&quot;</span>)</a>
-<a class="sourceLine" id="cb15-82" title="82">    })</a>
-<a class="sourceLine" id="cb15-83" title="83">    </a>
-<a class="sourceLine" id="cb15-84" title="84">  })</a>
-<a class="sourceLine" id="cb15-85" title="85">  </a>
-<a class="sourceLine" id="cb15-86" title="86">})</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="revisit-analysis.html#cb15-1"></a><span class="co"># read in data</span></span>
+<span id="cb15-2"><a href="revisit-analysis.html#cb15-2"></a>data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data/data2018/&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;id_&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb15-3"><a href="revisit-analysis.html#cb15-3"></a></span>
+<span id="cb15-4"><a href="revisit-analysis.html#cb15-4"></a>data_ids &lt;-<span class="st"> </span><span class="kw">str_extract</span>(data_files, <span class="st">&quot;(id_</span><span class="ch">\\</span><span class="st">d+)&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_sub</span>(<span class="op">-</span><span class="dv">3</span>,<span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb15-5"><a href="revisit-analysis.html#cb15-5"></a></span>
+<span id="cb15-6"><a href="revisit-analysis.html#cb15-6"></a>{</span>
+<span id="cb15-7"><a href="revisit-analysis.html#cb15-7"></a>  <span class="co"># read in release data and get first release - 24 hrs</span></span>
+<span id="cb15-8"><a href="revisit-analysis.html#cb15-8"></a>  tag_info &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data2018/SelinDB.csv&quot;</span>)</span>
+<span id="cb15-9"><a href="revisit-analysis.html#cb15-9"></a>  tag_info &lt;-<span class="st"> </span>tag_info[<span class="op">!</span><span class="kw">is.na</span>(Release_Date) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(Release_Time),]</span>
+<span id="cb15-10"><a href="revisit-analysis.html#cb15-10"></a>  tag_info[,Release_Date <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(Release_Date, Release_Time, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>), <span class="dt">format =</span> <span class="st">&quot;%d.%m.%y %H:%M&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span>)]</span>
+<span id="cb15-11"><a href="revisit-analysis.html#cb15-11"></a>}</span>
+<span id="cb15-12"><a href="revisit-analysis.html#cb15-12"></a></span>
+<span id="cb15-13"><a href="revisit-analysis.html#cb15-13"></a><span class="co"># prepare recurse data folder</span></span>
+<span id="cb15-14"><a href="revisit-analysis.html#cb15-14"></a><span class="cf">if</span>(<span class="op">!</span><span class="kw">dir.exists</span>(<span class="st">&quot;data/data2018/revisitData&quot;</span>)){ <span class="kw">dir.create</span>(<span class="st">&quot;data/data2018/revisitData&quot;</span>) }</span>
+<span id="cb15-15"><a href="revisit-analysis.html#cb15-15"></a></span>
+<span id="cb15-16"><a href="revisit-analysis.html#cb15-16"></a></span>
+<span id="cb15-17"><a href="revisit-analysis.html#cb15-17"></a><span class="co"># prepare recurse in parameters</span></span>
+<span id="cb15-18"><a href="revisit-analysis.html#cb15-18"></a><span class="co"># radius (m), cutoff (mins)</span></span>
+<span id="cb15-19"><a href="revisit-analysis.html#cb15-19"></a>{</span>
+<span id="cb15-20"><a href="revisit-analysis.html#cb15-20"></a>  radius &lt;-<span class="st"> </span><span class="dv">50</span></span>
+<span id="cb15-21"><a href="revisit-analysis.html#cb15-21"></a>  timeunits &lt;-<span class="st"> &quot;mins&quot;</span></span>
+<span id="cb15-22"><a href="revisit-analysis.html#cb15-22"></a>  revisit_cutoff &lt;-<span class="st"> </span><span class="dv">60</span></span>
+<span id="cb15-23"><a href="revisit-analysis.html#cb15-23"></a>}</span>
+<span id="cb15-24"><a href="revisit-analysis.html#cb15-24"></a></span>
+<span id="cb15-25"><a href="revisit-analysis.html#cb15-25"></a><span class="co"># map read in, splitting, and recurse over individual level data</span></span>
+<span id="cb15-26"><a href="revisit-analysis.html#cb15-26"></a><span class="co"># remove visits where the bird left for 60 mins, and then returned</span></span>
+<span id="cb15-27"><a href="revisit-analysis.html#cb15-27"></a><span class="co"># this is regardless of whether after its return it stayed there</span></span>
+<span id="cb15-28"><a href="revisit-analysis.html#cb15-28"></a><span class="co"># the removal counts the cumulative sum of all (timeSinceLastVisit &lt;= 60)</span></span>
+<span id="cb15-29"><a href="revisit-analysis.html#cb15-29"></a><span class="co"># thus after the first 60 minute absence, all points are assigned TRUE</span></span>
+<span id="cb15-30"><a href="revisit-analysis.html#cb15-30"></a><span class="co"># this must be grouped by the coordinate</span></span>
+<span id="cb15-31"><a href="revisit-analysis.html#cb15-31"></a><span class="kw">map</span>(data_files, <span class="cf">function</span>(df){</span>
+<span id="cb15-32"><a href="revisit-analysis.html#cb15-32"></a>  </span>
+<span id="cb15-33"><a href="revisit-analysis.html#cb15-33"></a>  <span class="co"># read in, fix data type, and split</span></span>
+<span id="cb15-34"><a href="revisit-analysis.html#cb15-34"></a>  temp_data &lt;-<span class="st"> </span><span class="kw">fread</span>(df, <span class="dt">integer64 =</span> <span class="st">&quot;numeric&quot;</span>)</span>
+<span id="cb15-35"><a href="revisit-analysis.html#cb15-35"></a>  temp_data[,ts<span class="op">:</span><span class="er">=</span><span class="kw">fastPOSIXct</span>(ts, <span class="dt">tz =</span> <span class="st">&#39;CET&#39;</span>)]</span>
+<span id="cb15-36"><a href="revisit-analysis.html#cb15-36"></a>  <span class="kw">setDF</span>(temp_data)</span>
+<span id="cb15-37"><a href="revisit-analysis.html#cb15-37"></a>  temp_data &lt;-<span class="st"> </span><span class="kw">split</span>(temp_data, temp_data<span class="op">$</span>tide_number)</span>
+<span id="cb15-38"><a href="revisit-analysis.html#cb15-38"></a>  </span>
+<span id="cb15-39"><a href="revisit-analysis.html#cb15-39"></a>  <span class="co"># map over the tidal cycle level data</span></span>
+<span id="cb15-40"><a href="revisit-analysis.html#cb15-40"></a>  <span class="kw">map</span>(temp_data, <span class="cf">function</span>(tempdf){</span>
+<span id="cb15-41"><a href="revisit-analysis.html#cb15-41"></a>    </span>
+<span id="cb15-42"><a href="revisit-analysis.html#cb15-42"></a>    <span class="kw">tryCatch</span>({</span>
+<span id="cb15-43"><a href="revisit-analysis.html#cb15-43"></a>    <span class="co"># perform the recursion analysis</span></span>
+<span id="cb15-44"><a href="revisit-analysis.html#cb15-44"></a>    df_recurse &lt;-<span class="st"> </span><span class="kw">getRecursions</span>(<span class="dt">x =</span> tempdf[,<span class="kw">c</span>(<span class="st">&quot;x&quot;</span>,<span class="st">&quot;y&quot;</span>,<span class="st">&quot;ts&quot;</span>,<span class="st">&quot;id&quot;</span>)], </span>
+<span id="cb15-45"><a href="revisit-analysis.html#cb15-45"></a>                                <span class="dt">radius =</span> radius, </span>
+<span id="cb15-46"><a href="revisit-analysis.html#cb15-46"></a>                                <span class="dt">timeunits =</span> timeunits, <span class="dt">verbose =</span> <span class="ot">TRUE</span>)</span>
+<span id="cb15-47"><a href="revisit-analysis.html#cb15-47"></a>    </span>
+<span id="cb15-48"><a href="revisit-analysis.html#cb15-48"></a>    <span class="co"># extract revisit statistics and calculate residence time</span></span>
+<span id="cb15-49"><a href="revisit-analysis.html#cb15-49"></a>    <span class="co"># and revisits with a 1 hour cutoff</span></span>
+<span id="cb15-50"><a href="revisit-analysis.html#cb15-50"></a>    df_recurse &lt;-<span class="st"> </span><span class="kw">setDT</span>(df_recurse[[<span class="st">&quot;revisitStats&quot;</span>]])</span>
+<span id="cb15-51"><a href="revisit-analysis.html#cb15-51"></a>    </span>
+<span id="cb15-52"><a href="revisit-analysis.html#cb15-52"></a>    df_recurse[,timeSinceLastVisit<span class="op">:</span><span class="er">=</span><span class="st"> </span></span>
+<span id="cb15-53"><a href="revisit-analysis.html#cb15-53"></a><span class="st">                 </span><span class="kw">ifelse</span>(<span class="kw">is.na</span>(timeSinceLastVisit), <span class="op">-</span><span class="ot">Inf</span>, timeSinceLastVisit)]</span>
+<span id="cb15-54"><a href="revisit-analysis.html#cb15-54"></a>    </span>
+<span id="cb15-55"><a href="revisit-analysis.html#cb15-55"></a>    df_recurse[,longAbsenceCounter<span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">cumsum</span>(timeSinceLastVisit <span class="op">&gt;</span><span class="st"> </span><span class="dv">60</span>), </span>
+<span id="cb15-56"><a href="revisit-analysis.html#cb15-56"></a>               by=<span class="st"> </span>.(coordIdx)]</span>
+<span id="cb15-57"><a href="revisit-analysis.html#cb15-57"></a>    </span>
+<span id="cb15-58"><a href="revisit-analysis.html#cb15-58"></a>    df_recurse &lt;-<span class="st"> </span>df_recurse[longAbsenceCounter <span class="op">&lt;</span><span class="st"> </span><span class="dv">1</span>,]</span>
+<span id="cb15-59"><a href="revisit-analysis.html#cb15-59"></a>    </span>
+<span id="cb15-60"><a href="revisit-analysis.html#cb15-60"></a>    df_recurse &lt;-<span class="st"> </span>df_recurse[,.(<span class="dt">resTime =</span> <span class="kw">sum</span>(timeInside), </span>
+<span id="cb15-61"><a href="revisit-analysis.html#cb15-61"></a>                                <span class="dt">fpt =</span> <span class="kw">first</span>(timeInside),</span>
+<span id="cb15-62"><a href="revisit-analysis.html#cb15-62"></a>                                <span class="dt">revisits =</span> <span class="kw">max</span>(visitIdx)),</span>
+<span id="cb15-63"><a href="revisit-analysis.html#cb15-63"></a>                             by=.(coordIdx,x,y)]</span>
+<span id="cb15-64"><a href="revisit-analysis.html#cb15-64"></a>    </span>
+<span id="cb15-65"><a href="revisit-analysis.html#cb15-65"></a>    <span class="co"># prepare and merge existing data with recursion data</span></span>
+<span id="cb15-66"><a href="revisit-analysis.html#cb15-66"></a>    <span class="kw">setDT</span>(tempdf)[,coordIdx<span class="op">:</span><span class="er">=</span><span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(tempdf)]</span>
+<span id="cb15-67"><a href="revisit-analysis.html#cb15-67"></a>    </span>
+<span id="cb15-68"><a href="revisit-analysis.html#cb15-68"></a>    tempdf &lt;-<span class="st"> </span><span class="kw">merge</span>(tempdf, df_recurse, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="st">&quot;coordIdx&quot;</span>))</span>
+<span id="cb15-69"><a href="revisit-analysis.html#cb15-69"></a>    </span>
+<span id="cb15-70"><a href="revisit-analysis.html#cb15-70"></a>    <span class="kw">setorder</span>(tempdf, ts)</span>
+<span id="cb15-71"><a href="revisit-analysis.html#cb15-71"></a>    </span>
+<span id="cb15-72"><a href="revisit-analysis.html#cb15-72"></a>    <span class="co"># write each data frame to file</span></span>
+<span id="cb15-73"><a href="revisit-analysis.html#cb15-73"></a>    <span class="kw">fwrite</span>(tempdf, </span>
+<span id="cb15-74"><a href="revisit-analysis.html#cb15-74"></a>           <span class="dt">file =</span> <span class="kw">glue</span>(<span class="st">&#39;data/data2018/revisitData/{unique(tempdf$id)}_{str_pad(unique(tempdf$tide_number), width=3, pad=&quot;0&quot;)}_revisit.csv&#39;</span>))</span>
+<span id="cb15-75"><a href="revisit-analysis.html#cb15-75"></a>    </span>
+<span id="cb15-76"><a href="revisit-analysis.html#cb15-76"></a>    <span class="kw">message</span>(<span class="kw">glue</span>(<span class="st">&#39;recurse {unique(tempdf$id)}_{str_pad(unique(tempdf$tide_number), width=3, pad=&quot;0&quot;)} done&#39;</span>))</span>
+<span id="cb15-77"><a href="revisit-analysis.html#cb15-77"></a>    </span>
+<span id="cb15-78"><a href="revisit-analysis.html#cb15-78"></a>    <span class="kw">rm</span>(tempdf, df_recurse)</span>
+<span id="cb15-79"><a href="revisit-analysis.html#cb15-79"></a>    },</span>
+<span id="cb15-80"><a href="revisit-analysis.html#cb15-80"></a>    <span class="dt">error =</span> <span class="cf">function</span>(e){</span>
+<span id="cb15-81"><a href="revisit-analysis.html#cb15-81"></a>      <span class="kw">message</span>(<span class="st">&quot;some recurses failed&quot;</span>)</span>
+<span id="cb15-82"><a href="revisit-analysis.html#cb15-82"></a>    })</span>
+<span id="cb15-83"><a href="revisit-analysis.html#cb15-83"></a>    </span>
+<span id="cb15-84"><a href="revisit-analysis.html#cb15-84"></a>  })</span>
+<span id="cb15-85"><a href="revisit-analysis.html#cb15-85"></a>  </span>
+<span id="cb15-86"><a href="revisit-analysis.html#cb15-86"></a>})</span></code></pre></div>
 
 </div>
 </div>
@@ -362,7 +436,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/pratikunterwegs/knotPatches/edit/master/04_revisitAnalysis.rmd",
+"link": "https://github.com/pratikunterwegs/knot-association/edit/master/04_revisitAnalysis.rmd",
 "text": "Edit"
 },
 "history": {

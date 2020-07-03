@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Section 9 Finding networks from patch data | Assortative association in a migratory Arctic wader</title>
+  <meta name="description" content="Section 9 Finding networks from patch data | Assortative association in a migratory Arctic wader" />
+  <meta name="generator" content="bookdown 0.19 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Section 9 Finding networks from patch data | Assortative association in a migratory Arctic wader" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Section 9 Finding networks from patch data | Assortative association in a migratory Arctic wader" />
+  <meta name="github-repo" content="pratikunterwegs/knot-association" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Section 9 Finding networks from patch data | Assortative association in a migratory Arctic wader" />
+  
+  <meta name="twitter:description" content="Section 9 Finding networks from patch data | Assortative association in a migratory Arctic wader" />
+  
+
+<meta name="author" content="Pratik R Gupte" />
+
+
+<meta name="date" content="2020-07-03" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="finding-networks-from-patch-data.html"/>
+<link rel="next" href="pairwise-associations-in-relation-to-traits.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#attribution"><i class="fa fa-check"></i><b>1.1</b> Attribution</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#data-access"><i class="fa fa-check"></i><b>1.2</b> Data access</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#data-processing"><i class="fa fa-check"></i><b>1.3</b> Data processing</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="getting-data.html"><a href="getting-data.html"><i class="fa fa-check"></i><b>2</b> Getting data</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="getting-data.html"><a href="getting-data.html#prepare-watlastools-and-other-libraries"><i class="fa fa-check"></i><b>2.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
+<li class="chapter" data-level="2.2" data-path="getting-data.html"><a href="getting-data.html#read-in-tag-deployment-data"><i class="fa fa-check"></i><b>2.2</b> Read in tag deployment data</a></li>
+<li class="chapter" data-level="2.3" data-path="getting-data.html"><a href="getting-data.html#get-data-and-save-locally"><i class="fa fa-check"></i><b>2.3</b> Get data and save locally</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning data</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-watlastools-and-other-libraries-1"><i class="fa fa-check"></i><b>3.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
+<li class="chapter" data-level="3.2" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-to-remove-attractor-points"><i class="fa fa-check"></i><b>3.2</b> Prepare to remove attractor points</a></li>
+<li class="chapter" data-level="3.3" data-path="cleaning-data.html"><a href="cleaning-data.html#read-clean-and-write-data"><i class="fa fa-check"></i><b>3.3</b> Read, clean, and write data</a></li>
+<li class="chapter" data-level="3.4" data-path="cleaning-data.html"><a href="cleaning-data.html#tracking-period-for-each-id"><i class="fa fa-check"></i><b>3.4</b> Tracking period for each id</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html"><i class="fa fa-check"></i><b>4</b> Adding tidal cycle data</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>4.1</b> Prepare libraries</a></li>
+<li class="chapter" data-level="4.2" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#read-water-level-data"><i class="fa fa-check"></i><b>4.2</b> Read water level data</a></li>
+<li class="chapter" data-level="4.3" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#calculate-high-tides"><i class="fa fa-check"></i><b>4.3</b> Calculate high tides</a></li>
+<li class="chapter" data-level="4.4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#add-time-since-high-tide"><i class="fa fa-check"></i><b>4.4</b> Add time since high tide</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="revisit-analysis.html"><a href="revisit-analysis.html"><i class="fa fa-check"></i><b>5</b> Revisit analysis</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="revisit-analysis.html"><a href="revisit-analysis.html#prepare-libraries-1"><i class="fa fa-check"></i><b>5.1</b> Prepare libraries</a></li>
+<li class="chapter" data-level="5.2" data-path="revisit-analysis.html"><a href="revisit-analysis.html#read-data-split-recurse-write"><i class="fa fa-check"></i><b>5.2</b> Read data, split, recurse, write</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html"><i class="fa fa-check"></i><b>6</b> Residence patch construction</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#prepare-libraries-2"><i class="fa fa-check"></i><b>6.1</b> Prepare libraries</a></li>
+<li class="chapter" data-level="6.2" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#patch-construction"><i class="fa fa-check"></i><b>6.2</b> Patch construction</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="spatio-temporal-overlap-in-patches.html"><a href="spatio-temporal-overlap-in-patches.html"><i class="fa fa-check"></i><b>7</b> Spatio-temporal overlap in patches</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="spatio-temporal-overlap-in-patches.html"><a href="spatio-temporal-overlap-in-patches.html#do-patches-overlap-in-time"><i class="fa fa-check"></i><b>7.1</b> Do patches overlap in time</a></li>
+<li class="chapter" data-level="7.2" data-path="spatio-temporal-overlap-in-patches.html"><a href="spatio-temporal-overlap-in-patches.html#how-much-do-patches-overlap-in-time"><i class="fa fa-check"></i><b>7.2</b> How much do patches overlap in time?</a></li>
+<li class="chapter" data-level="7.3" data-path="spatio-temporal-overlap-in-patches.html"><a href="spatio-temporal-overlap-in-patches.html#which-patches-overlap-in-space-and-where"><i class="fa fa-check"></i><b>7.3</b> Which patches overlap in space, and where?</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html"><i class="fa fa-check"></i><b>8</b> Finding networks from patch data</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#read-in-patch-data-and-overlaps"><i class="fa fa-check"></i><b>8.1</b> Read in patch data and overlaps</a></li>
+<li class="chapter" data-level="8.2" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#retain-extreme-individuals"><i class="fa fa-check"></i><b>8.2</b> Retain extreme individuals</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#read-in-trait-data"><i class="fa fa-check"></i><b>8.2.1</b> Read in trait data</a></li>
+<li class="chapter" data-level="8.2.2" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#plot-histogram-of-traits"><i class="fa fa-check"></i><b>8.2.2</b> Plot histogram of traits</a></li>
+<li class="chapter" data-level="8.2.3" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#keep-only-extreme-individuals"><i class="fa fa-check"></i><b>8.2.3</b> Keep only extreme individuals</a></li>
+<li class="chapter" data-level="8.2.4" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#keep-only-extreme-individuals-patches"><i class="fa fa-check"></i><b>8.2.4</b> Keep only extreme individuals’ patches</a></li>
+<li class="chapter" data-level="8.2.5" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#remove-patches-with-low-fixes"><i class="fa fa-check"></i><b>8.2.5</b> Remove patches with low fixes</a></li>
+<li class="chapter" data-level="8.2.6" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#keep-only-extreme-ids-edges"><i class="fa fa-check"></i><b>8.2.6</b> Keep only extreme ids’ edges</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#network-construction"><i class="fa fa-check"></i><b>8.3</b> Network construction</a>
+<ul>
+<li class="chapter" data-level="8.3.1" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#make-unweighted-network-from-overlaps"><i class="fa fa-check"></i><b>8.3.1</b> Make <strong>unweighted</strong> network from overlaps</a></li>
+<li class="chapter" data-level="8.3.2" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#find-communities"><i class="fa fa-check"></i><b>8.3.2</b> Find communities</a></li>
+<li class="chapter" data-level="8.3.3" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#join-flock-data-to-edgelist"><i class="fa fa-check"></i><b>8.3.3</b> Join flock data to edgelist</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#prepare-network-data"><i class="fa fa-check"></i><b>8.4</b> Prepare network data</a>
+<ul>
+<li class="chapter" data-level="8.4.1" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#prepare-subset-wise-edgelist"><i class="fa fa-check"></i><b>8.4.1</b> Prepare subset-wise edgelist</a></li>
+<li class="chapter" data-level="8.4.2" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#prepare-nodes-data"><i class="fa fa-check"></i><b>8.4.2</b> Prepare nodes data</a></li>
+<li class="chapter" data-level="8.4.3" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#prepare-flock-networks"><i class="fa fa-check"></i><b>8.4.3</b> Prepare flock networks</a></li>
+<li class="chapter" data-level="8.4.4" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#weigh-edges-by-number-of-overlaps"><i class="fa fa-check"></i><b>8.4.4</b> Weigh edges by number of overlaps</a></li>
+<li class="chapter" data-level="8.4.5" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#make-networks"><i class="fa fa-check"></i><b>8.4.5</b> Make networks</a></li>
+<li class="chapter" data-level="8.4.6" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#get-assortativity"><i class="fa fa-check"></i><b>8.4.6</b> Get assortativity</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#flock-attributes-and-assortativity"><i class="fa fa-check"></i><b>8.5</b> Flock attributes and assortativity</a>
+<ul>
+<li class="chapter" data-level="8.5.1" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#prepare-flock-data"><i class="fa fa-check"></i><b>8.5.1</b> Prepare flock data</a></li>
+<li class="chapter" data-level="8.5.2" data-path="finding-networks-from-patch-data.html"><a href="finding-networks-from-patch-data.html#assortativity-in-high-and-low-tide"><i class="fa fa-check"></i><b>8.5.2</b> Assortativity in high and low tide</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html"><i class="fa fa-check"></i><b>9</b> Finding networks from patch data</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#read-in-patch-data-and-overlaps-1"><i class="fa fa-check"></i><b>9.1</b> Read in patch data and overlaps</a>
+<ul>
+<li class="chapter" data-level="9.1.1" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#read-in-trait-data-1"><i class="fa fa-check"></i><b>9.1.1</b> Read in trait data</a></li>
+<li class="chapter" data-level="9.1.2" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#filter-out-small-patches"><i class="fa fa-check"></i><b>9.1.2</b> Filter out small patches</a></li>
+</ul></li>
+<li class="chapter" data-level="9.2" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#overlaps-in-time-and-space"><i class="fa fa-check"></i><b>9.2</b> Overlaps in time and space</a>
+<ul>
+<li class="chapter" data-level="9.2.1" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#when-do-overlaps-happen"><i class="fa fa-check"></i><b>9.2.1</b> When do overlaps happen?</a></li>
+<li class="chapter" data-level="9.2.2" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#where-do-overlaps-happen"><i class="fa fa-check"></i><b>9.2.2</b> Where do overlaps happen?</a></li>
+<li class="chapter" data-level="9.2.3" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#where-and-when-do-overlaps-happen"><i class="fa fa-check"></i><b>9.2.3</b> Where AND when do overlaps happen?</a></li>
+</ul></li>
+<li class="chapter" data-level="9.3" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#association-networks-based-on-space-time-overlap-subsets"><i class="fa fa-check"></i><b>9.3</b> Association networks based on space-time overlap subsets</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#prepare-subsets-of-data"><i class="fa fa-check"></i><b>9.3.1</b> Prepare subsets of data</a></li>
+<li class="chapter" data-level="9.3.2" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#get-node-data"><i class="fa fa-check"></i><b>9.3.2</b> Get node data</a></li>
+<li class="chapter" data-level="9.3.3" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#make-networks-using-the-edgelist-and-nodelist-joined-together."><i class="fa fa-check"></i><b>9.3.3</b> Make networks using the edgelist and nodelist joined together.</a></li>
+<li class="chapter" data-level="9.3.4" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#remove-networks-with-few-edges"><i class="fa fa-check"></i><b>9.3.4</b> Remove networks with few edges</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#get-assortativity-1"><i class="fa fa-check"></i><b>9.4</b> Get assortativity</a>
+<ul>
+<li class="chapter" data-level="9.4.1" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#get-assortativity-on-node-attributes"><i class="fa fa-check"></i><b>9.4.1</b> Get assortativity on node attributes</a></li>
+<li class="chapter" data-level="9.4.2" data-path="finding-networks-from-patch-data-1.html"><a href="finding-networks-from-patch-data-1.html#mean-assortativity-in-space-and-time"><i class="fa fa-check"></i><b>9.4.2</b> Mean assortativity in space and time</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html"><i class="fa fa-check"></i><b>10</b> Pairwise associations in relation to traits</a>
+<ul>
+<li class="chapter" data-level="10.1" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#read-in-patch-data-and-overlaps-2"><i class="fa fa-check"></i><b>10.1</b> Read in patch data and overlaps</a>
+<ul>
+<li class="chapter" data-level="10.1.1" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#read-in-trait-data-2"><i class="fa fa-check"></i><b>10.1.1</b> Read in trait data</a></li>
+<li class="chapter" data-level="10.1.2" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#what-is-the-empirical-distribution-of-differences-in-gizzard-mass"><i class="fa fa-check"></i><b>10.1.2</b> What is the empirical distribution of differences in gizzard mass?</a></li>
+<li class="chapter" data-level="10.1.3" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#filter-out-small-patches-1"><i class="fa fa-check"></i><b>10.1.3</b> Filter out small patches</a></li>
+<li class="chapter" data-level="10.1.4" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#link-patches-with-overlaps"><i class="fa fa-check"></i><b>10.1.4</b> Link patches with overlaps</a></li>
+<li class="chapter" data-level="10.1.5" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#count-pairwise-overlaps"><i class="fa fa-check"></i><b>10.1.5</b> Count pairwise overlaps</a></li>
+<li class="chapter" data-level="10.1.6" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#assign-unique-pair-ids"><i class="fa fa-check"></i><b>10.1.6</b> Assign unique pair ids</a></li>
+<li class="chapter" data-level="10.1.7" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#subsample-for-even-coverage"><i class="fa fa-check"></i><b>10.1.7</b> Subsample for even coverage</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#statistical-modelling-of-number-of-associations"><i class="fa fa-check"></i><b>10.2</b> Statistical modelling of number of associations</a>
+<ul>
+<li class="chapter" data-level="10.2.1" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#fit-a-glmm-for-number-of-associations"><i class="fa fa-check"></i><b>10.2.1</b> Fit a GLMM for number of associations</a></li>
+<li class="chapter" data-level="10.2.2" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#aic-comparison"><i class="fa fa-check"></i><b>10.2.2</b> AIC comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="10.3" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#statistical-modelling-of-spatial-overlap"><i class="fa fa-check"></i><b>10.3</b> Statistical modelling of spatial overlap</a>
+<ul>
+<li class="chapter" data-level="10.3.1" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#glmm-for-spatial-overlap"><i class="fa fa-check"></i><b>10.3.1</b> GLMM for spatial overlap</a></li>
+<li class="chapter" data-level="10.3.2" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#aic-comparison-1"><i class="fa fa-check"></i><b>10.3.2</b> AIC comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#statistical-modelling-of-temporal-overlap"><i class="fa fa-check"></i><b>10.4</b> Statistical modelling of temporal overlap</a>
+<ul>
+<li class="chapter" data-level="10.4.1" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#glmm-for-temporal-overlap"><i class="fa fa-check"></i><b>10.4.1</b> GLMM for temporal overlap</a></li>
+<li class="chapter" data-level="10.4.2" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#aic-and-r2-comparison"><i class="fa fa-check"></i><b>10.4.2</b> AIC and R<sup>2</sup> comparison</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="pairwise-associations-in-relation-to-traits.html"><a href="pairwise-associations-in-relation-to-traits.html#save-data-to-file-for-network-analyses"><i class="fa fa-check"></i><b>10.5</b> Save data to file for network analyses</a></li>
+</ul></li>
+<li class="chapter" data-level="11" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html"><i class="fa fa-check"></i><b>11</b> Bathymetry of the Griend mudflats</a>
+<ul>
+<li class="chapter" data-level="11.1" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#get-data-and-plot-basic-trend"><i class="fa fa-check"></i><b>11.1</b> Get data and plot basic trend</a></li>
+<li class="chapter" data-level="11.2" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#plot-as-3d-maps"><i class="fa fa-check"></i><b>11.2</b> Plot as 3D maps</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Assortative association in a migratory Arctic wader</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="finding-networks-from-patch-data-1" class="section level1">
+<h1><span class="header-section-number">Section 9</span> Finding networks from patch data</h1>
+<p><strong>Workflow:</strong></p>
+<ol style="list-style-type: decimal">
+<li>Read in patch data, and link to individual trait data.</li>
+<li>Remove individuals with traits within 1 SD of the population mean,
+and their patches.</li>
+<li>Find communities in the remaining patches.</li>
+<li>Filter communities for data quality, and calculate assortativity.</li>
+<li>Relate assortativity to flock attributes:</li>
+</ol>
+<ul>
+<li>waterlevel start</li>
+<li>flock size</li>
+</ul>
+<div id="read-in-patch-data-and-overlaps-1" class="section level2">
+<h2><span class="header-section-number">9.1</span> Read in patch data and overlaps</h2>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="finding-networks-from-patch-data-1.html#cb46-1"></a><span class="co"># to handle data</span></span>
+<span id="cb46-2"><a href="finding-networks-from-patch-data-1.html#cb46-2"></a><span class="kw">library</span>(readr)</span>
+<span id="cb46-3"><a href="finding-networks-from-patch-data-1.html#cb46-3"></a><span class="kw">library</span>(scales)</span>
+<span id="cb46-4"><a href="finding-networks-from-patch-data-1.html#cb46-4"></a><span class="kw">library</span>(tidyr); <span class="kw">library</span>(tibble)</span>
+<span id="cb46-5"><a href="finding-networks-from-patch-data-1.html#cb46-5"></a><span class="kw">library</span>(magrittr)</span>
+<span id="cb46-6"><a href="finding-networks-from-patch-data-1.html#cb46-6"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb46-7"><a href="finding-networks-from-patch-data-1.html#cb46-7"></a><span class="kw">library</span>(purrr)</span>
+<span id="cb46-8"><a href="finding-networks-from-patch-data-1.html#cb46-8"></a><span class="kw">library</span>(stringr)</span>
+<span id="cb46-9"><a href="finding-networks-from-patch-data-1.html#cb46-9"></a></span>
+<span id="cb46-10"><a href="finding-networks-from-patch-data-1.html#cb46-10"></a><span class="co"># to work with networks</span></span>
+<span id="cb46-11"><a href="finding-networks-from-patch-data-1.html#cb46-11"></a><span class="kw">library</span>(igraph)</span>
+<span id="cb46-12"><a href="finding-networks-from-patch-data-1.html#cb46-12"></a></span>
+<span id="cb46-13"><a href="finding-networks-from-patch-data-1.html#cb46-13"></a><span class="co"># to plot</span></span>
+<span id="cb46-14"><a href="finding-networks-from-patch-data-1.html#cb46-14"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb46-15"><a href="finding-networks-from-patch-data-1.html#cb46-15"></a><span class="kw">library</span>(scico)</span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="finding-networks-from-patch-data-1.html#cb47-1"></a><span class="co"># read in patch data</span></span>
+<span id="cb47-2"><a href="finding-networks-from-patch-data-1.html#cb47-2"></a>data_patches &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/data2018/data_2018_patch_summary_has_patches.csv&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb47-3"><a href="finding-networks-from-patch-data-1.html#cb47-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">uid =</span> <span class="kw">as.character</span>(<span class="kw">seq_len</span>(<span class="kw">nrow</span>(.))))</span>
+<span id="cb47-4"><a href="finding-networks-from-patch-data-1.html#cb47-4"></a><span class="co"># read in overlap data</span></span>
+<span id="cb47-5"><a href="finding-networks-from-patch-data-1.html#cb47-5"></a>data &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/data2018/data_spatio_temporal_overlap_2018.csv&quot;</span>)</span></code></pre></div>
+<div id="read-in-trait-data-1" class="section level3">
+<h3><span class="header-section-number">9.1.1</span> Read in trait data</h3>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="finding-networks-from-patch-data-1.html#cb48-1"></a><span class="co"># make nodes data -- this the individual identities</span></span>
+<span id="cb48-2"><a href="finding-networks-from-patch-data-1.html#cb48-2"></a><span class="co"># add individual data to patch data</span></span>
+<span id="cb48-3"><a href="finding-networks-from-patch-data-1.html#cb48-3"></a>data_id &lt;-<span class="st"> </span>readxl<span class="op">::</span><span class="kw">read_excel</span>(<span class="st">&quot;data/data2018/Biometrics_2018-2019.xlsx&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb48-4"><a href="finding-networks-from-patch-data-1.html#cb48-4"></a><span class="st">  </span><span class="kw">filter</span>(<span class="kw">str_detect</span>(<span class="st">`</span><span class="dt">TAG NR</span><span class="st">`</span>, <span class="st">&quot;[a-zA-Z]+&quot;</span>, <span class="dt">negate =</span> <span class="ot">TRUE</span>))</span>
+<span id="cb48-5"><a href="finding-networks-from-patch-data-1.html#cb48-5"></a></span>
+<span id="cb48-6"><a href="finding-networks-from-patch-data-1.html#cb48-6"></a><span class="co"># a function for gizzard mass</span></span>
+<span id="cb48-7"><a href="finding-networks-from-patch-data-1.html#cb48-7"></a>get_gizzard_mass &lt;-<span class="st"> </span><span class="cf">function</span>(x, y) {<span class="op">-</span><span class="fl">1.09</span> <span class="op">+</span><span class="st"> </span>(<span class="fl">3.78</span><span class="op">*</span>(x<span class="op">*</span>y))}</span>
+<span id="cb48-8"><a href="finding-networks-from-patch-data-1.html#cb48-8"></a></span>
+<span id="cb48-9"><a href="finding-networks-from-patch-data-1.html#cb48-9"></a><span class="co"># add gizzard mass</span></span>
+<span id="cb48-10"><a href="finding-networks-from-patch-data-1.html#cb48-10"></a>data_id &lt;-<span class="st"> </span><span class="kw">mutate</span>(data_id,</span>
+<span id="cb48-11"><a href="finding-networks-from-patch-data-1.html#cb48-11"></a>                  <span class="dt">gizzard_mass =</span> <span class="kw">get_gizzard_mass</span>(SH1, SW1))</span>
+<span id="cb48-12"><a href="finding-networks-from-patch-data-1.html#cb48-12"></a></span>
+<span id="cb48-13"><a href="finding-networks-from-patch-data-1.html#cb48-13"></a><span class="co"># rename columns and drop ids without mass and gizzard mass</span></span>
+<span id="cb48-14"><a href="finding-networks-from-patch-data-1.html#cb48-14"></a>data_id &lt;-<span class="st"> </span>data_id <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb48-15"><a href="finding-networks-from-patch-data-1.html#cb48-15"></a><span class="st">  </span><span class="kw">select</span>(<span class="dt">id =</span> <span class="st">`</span><span class="dt">TAG NR</span><span class="st">`</span>, </span>
+<span id="cb48-16"><a href="finding-networks-from-patch-data-1.html#cb48-16"></a>         <span class="dt">wing =</span> WING, <span class="dt">mass =</span> MASS, </span>
+<span id="cb48-17"><a href="finding-networks-from-patch-data-1.html#cb48-17"></a>         gizzard_mass) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb48-18"><a href="finding-networks-from-patch-data-1.html#cb48-18"></a><span class="st">  </span><span class="kw">distinct</span>(id, <span class="dt">.keep_all =</span> <span class="ot">TRUE</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb48-19"><a href="finding-networks-from-patch-data-1.html#cb48-19"></a><span class="st">  </span><span class="kw">drop_na</span>(gizzard_mass)</span>
+<span id="cb48-20"><a href="finding-networks-from-patch-data-1.html#cb48-20"></a></span>
+<span id="cb48-21"><a href="finding-networks-from-patch-data-1.html#cb48-21"></a><span class="co"># add some exploration scores and tag info</span></span>
+<span id="cb48-22"><a href="finding-networks-from-patch-data-1.html#cb48-22"></a>data_behav &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/data2018/2018-19-all_exploration_scores.csv&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb48-23"><a href="finding-networks-from-patch-data-1.html#cb48-23"></a><span class="st">  </span><span class="kw">filter</span>(Exp <span class="op">==</span><span class="st"> &quot;F01&quot;</span>)</span>
+<span id="cb48-24"><a href="finding-networks-from-patch-data-1.html#cb48-24"></a>data_tag &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/data2018/tag_info.csv&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb48-25"><a href="finding-networks-from-patch-data-1.html#cb48-25"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">id =</span> <span class="kw">as.character</span>(Toa_Tag))</span>
+<span id="cb48-26"><a href="finding-networks-from-patch-data-1.html#cb48-26"></a></span>
+<span id="cb48-27"><a href="finding-networks-from-patch-data-1.html#cb48-27"></a><span class="co"># join all scores</span></span>
+<span id="cb48-28"><a href="finding-networks-from-patch-data-1.html#cb48-28"></a>data_id &lt;-<span class="st"> </span><span class="kw">left_join</span>(data_id, data_tag,</span>
+<span id="cb48-29"><a href="finding-networks-from-patch-data-1.html#cb48-29"></a>                     <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;id&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb48-30"><a href="finding-networks-from-patch-data-1.html#cb48-30"></a><span class="st">  </span><span class="kw">left_join</span>(data_behav, <span class="dt">by =</span> <span class="st">&quot;FB&quot;</span>)</span>
+<span id="cb48-31"><a href="finding-networks-from-patch-data-1.html#cb48-31"></a></span>
+<span id="cb48-32"><a href="finding-networks-from-patch-data-1.html#cb48-32"></a><span class="co"># remove ids with no exploration</span></span>
+<span id="cb48-33"><a href="finding-networks-from-patch-data-1.html#cb48-33"></a>data_id &lt;-<span class="st"> </span><span class="kw">mutate</span>(data_id,</span>
+<span id="cb48-34"><a href="finding-networks-from-patch-data-1.html#cb48-34"></a>                  <span class="dt">behav =</span> Mean) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb48-35"><a href="finding-networks-from-patch-data-1.html#cb48-35"></a><span class="st">  </span><span class="co"># drop_na(behav) %&gt;% </span></span>
+<span id="cb48-36"><a href="finding-networks-from-patch-data-1.html#cb48-36"></a><span class="st">  </span><span class="kw">select</span>(id, mass, gizzard_mass, behav)</span></code></pre></div>
+</div>
+<div id="filter-out-small-patches" class="section level3">
+<h3><span class="header-section-number">9.1.2</span> Filter out small patches</h3>
+<p>Each fix corresponds to 30s time.</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="finding-networks-from-patch-data-1.html#cb49-1"></a>data_patches &lt;-<span class="st"> </span><span class="kw">filter</span>(data_patches,</span>
+<span id="cb49-2"><a href="finding-networks-from-patch-data-1.html#cb49-2"></a>                       nfixes <span class="op">&gt;</span><span class="st"> </span><span class="dv">3</span>)</span>
+<span id="cb49-3"><a href="finding-networks-from-patch-data-1.html#cb49-3"></a></span>
+<span id="cb49-4"><a href="finding-networks-from-patch-data-1.html#cb49-4"></a>data &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb49-5"><a href="finding-networks-from-patch-data-1.html#cb49-5"></a><span class="st">  </span><span class="kw">filter</span>(patch_i_unique_id <span class="op">%in%</span><span class="st"> </span>data_patches<span class="op">$</span>uid,</span>
+<span id="cb49-6"><a href="finding-networks-from-patch-data-1.html#cb49-6"></a>         patch_j_unique_id <span class="op">%in%</span><span class="st"> </span>data_patches<span class="op">$</span>uid)</span></code></pre></div>
+</div>
+</div>
+<div id="overlaps-in-time-and-space" class="section level2">
+<h2><span class="header-section-number">9.2</span> Overlaps in time and space</h2>
+<div id="when-do-overlaps-happen" class="section level3">
+<h3><span class="header-section-number">9.2.1</span> When do overlaps happen?</h3>
+<p>When, in terms of waterlevel and season, do most overlaps occur?</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="finding-networks-from-patch-data-1.html#cb50-1"></a><span class="co"># convert to character</span></span>
+<span id="cb50-2"><a href="finding-networks-from-patch-data-1.html#cb50-2"></a>data &lt;-<span class="st"> </span><span class="kw">mutate_at</span>(data, <span class="kw">vars</span>(<span class="kw">contains</span>(<span class="st">&quot;patch&quot;</span>)), as.character)</span>
+<span id="cb50-3"><a href="finding-networks-from-patch-data-1.html#cb50-3"></a>data &lt;-<span class="st"> </span><span class="kw">left_join</span>(data, data_patches,</span>
+<span id="cb50-4"><a href="finding-networks-from-patch-data-1.html#cb50-4"></a>                  <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;patch_i_unique_id&quot;</span> =<span class="st"> &quot;uid&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb50-5"><a href="finding-networks-from-patch-data-1.html#cb50-5"></a><span class="st">  </span><span class="kw">left_join</span>(data_patches,</span>
+<span id="cb50-6"><a href="finding-networks-from-patch-data-1.html#cb50-6"></a>            <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;patch_j_unique_id&quot;</span> =<span class="st"> &quot;uid&quot;</span>))</span></code></pre></div>
+<p>Count at rounded waterlevel, and tide number.</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="finding-networks-from-patch-data-1.html#cb51-1"></a><span class="co"># round waterlevel start</span></span>
+<span id="cb51-2"><a href="finding-networks-from-patch-data-1.html#cb51-2"></a>data_overlap_waterlevel &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb51-3"><a href="finding-networks-from-patch-data-1.html#cb51-3"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">waterlevel_round =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(waterlevel_start.x, <span class="dv">20</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb51-4"><a href="finding-networks-from-patch-data-1.html#cb51-4"></a><span class="st">  </span><span class="kw">count</span>(waterlevel_round)</span>
+<span id="cb51-5"><a href="finding-networks-from-patch-data-1.html#cb51-5"></a></span>
+<span id="cb51-6"><a href="finding-networks-from-patch-data-1.html#cb51-6"></a><span class="co"># plot</span></span>
+<span id="cb51-7"><a href="finding-networks-from-patch-data-1.html#cb51-7"></a><span class="kw">ggplot</span>(data_overlap_waterlevel)<span class="op">+</span></span>
+<span id="cb51-8"><a href="finding-networks-from-patch-data-1.html#cb51-8"></a><span class="st">  </span><span class="kw">geom_col</span>(<span class="kw">aes</span>(<span class="dt">x =</span> waterlevel_round, <span class="dt">y =</span> n),</span>
+<span id="cb51-9"><a href="finding-networks-from-patch-data-1.html#cb51-9"></a>           <span class="dt">fill =</span> <span class="st">&quot;grey&quot;</span>, <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>, <span class="dt">size =</span> <span class="fl">0.2</span>)<span class="op">+</span></span>
+<span id="cb51-10"><a href="finding-networks-from-patch-data-1.html#cb51-10"></a><span class="st">  </span><span class="kw">theme_bw</span>()<span class="op">+</span></span>
+<span id="cb51-11"><a href="finding-networks-from-patch-data-1.html#cb51-11"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;waterlevel (cm NAP)&quot;</span>,</span>
+<span id="cb51-12"><a href="finding-networks-from-patch-data-1.html#cb51-12"></a>       <span class="dt">y =</span> <span class="st">&quot;# overlaps&quot;</span>,</span>
+<span id="cb51-13"><a href="finding-networks-from-patch-data-1.html#cb51-13"></a>       <span class="dt">caption =</span> <span class="st">&quot;Waterlevel is waterlevel_start.x rounded to 20 cm.</span></span>
+<span id="cb51-14"><a href="finding-networks-from-patch-data-1.html#cb51-14"></a><span class="st">       15 tidal cycles is approx. 1 week.&quot;</span>,</span>
+<span id="cb51-15"><a href="finding-networks-from-patch-data-1.html#cb51-15"></a>       <span class="dt">title =</span> <span class="st">&quot;# patch overlaps ~ waterlevel&quot;</span>)</span>
+<span id="cb51-16"><a href="finding-networks-from-patch-data-1.html#cb51-16"></a></span>
+<span id="cb51-17"><a href="finding-networks-from-patch-data-1.html#cb51-17"></a><span class="kw">ggsave</span>(<span class="dt">filename =</span> <span class="st">&quot;figs/fig_overlaps_waterlevel.png&quot;</span>,</span>
+<span id="cb51-18"><a href="finding-networks-from-patch-data-1.html#cb51-18"></a>       <span class="dt">dpi =</span> <span class="dv">300</span>, <span class="dt">height =</span> <span class="dv">4</span>, <span class="dt">width =</span> <span class="dv">5</span>)</span></code></pre></div>
+</div>
+<div id="where-do-overlaps-happen" class="section level3">
+<h3><span class="header-section-number">9.2.2</span> Where do overlaps happen?</h3>
+<p>Load the overlaps spatial object.</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="finding-networks-from-patch-data-1.html#cb52-1"></a>overlaps &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw">st_read</span>(<span class="st">&quot;data/data2018/spatials/patch_overlap_2018.gpkg&quot;</span>)</span>
+<span id="cb52-2"><a href="finding-networks-from-patch-data-1.html#cb52-2"></a>overlaps &lt;-<span class="st"> </span><span class="kw">filter</span>(overlaps, uid <span class="op">%in%</span><span class="st"> </span>data_patches<span class="op">$</span>uid)</span>
+<span id="cb52-3"><a href="finding-networks-from-patch-data-1.html#cb52-3"></a></span>
+<span id="cb52-4"><a href="finding-networks-from-patch-data-1.html#cb52-4"></a><span class="co"># get centroid of overlap</span></span>
+<span id="cb52-5"><a href="finding-networks-from-patch-data-1.html#cb52-5"></a>overlaps &lt;-<span class="st"> </span><span class="kw">mutate</span>(overlaps,</span>
+<span id="cb52-6"><a href="finding-networks-from-patch-data-1.html#cb52-6"></a>                   <span class="dt">centroid =</span> sf<span class="op">::</span><span class="kw">st_centroid</span>(geom))</span>
+<span id="cb52-7"><a href="finding-networks-from-patch-data-1.html#cb52-7"></a></span>
+<span id="cb52-8"><a href="finding-networks-from-patch-data-1.html#cb52-8"></a><span class="co"># get only uid - overlap id, and centroid</span></span>
+<span id="cb52-9"><a href="finding-networks-from-patch-data-1.html#cb52-9"></a>overlaps &lt;-<span class="st"> </span><span class="kw">select</span>(overlaps,</span>
+<span id="cb52-10"><a href="finding-networks-from-patch-data-1.html#cb52-10"></a>                   uid, overlap_id, centroid) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb52-11"><a href="finding-networks-from-patch-data-1.html#cb52-11"></a><span class="st">  </span>sf<span class="op">::</span><span class="kw">st_drop_geometry</span>()</span>
+<span id="cb52-12"><a href="finding-networks-from-patch-data-1.html#cb52-12"></a></span>
+<span id="cb52-13"><a href="finding-networks-from-patch-data-1.html#cb52-13"></a><span class="co"># get centroid as coords</span></span>
+<span id="cb52-14"><a href="finding-networks-from-patch-data-1.html#cb52-14"></a>overlaps &lt;-<span class="st"> </span><span class="kw">bind_cols</span>(overlaps, </span>
+<span id="cb52-15"><a href="finding-networks-from-patch-data-1.html#cb52-15"></a>                      <span class="kw">as_tibble</span>(sf<span class="op">::</span><span class="kw">st_coordinates</span>(overlaps<span class="op">$</span>centroid))) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb52-16"><a href="finding-networks-from-patch-data-1.html#cb52-16"></a><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>centroid)</span>
+<span id="cb52-17"><a href="finding-networks-from-patch-data-1.html#cb52-17"></a></span>
+<span id="cb52-18"><a href="finding-networks-from-patch-data-1.html#cb52-18"></a><span class="co"># type to character</span></span>
+<span id="cb52-19"><a href="finding-networks-from-patch-data-1.html#cb52-19"></a>overlaps &lt;-<span class="st"> </span>overlaps <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb52-20"><a href="finding-networks-from-patch-data-1.html#cb52-20"></a><span class="st">  </span><span class="kw">mutate_at</span>(<span class="kw">vars</span>(<span class="kw">matches</span>(<span class="st">&quot;id&quot;</span>)), as.character)</span></code></pre></div>
+<p>Where on the mudflats do overlaps happen?</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="finding-networks-from-patch-data-1.html#cb53-1"></a><span class="co"># read griend</span></span>
+<span id="cb53-2"><a href="finding-networks-from-patch-data-1.html#cb53-2"></a>griend &lt;-<span class="st"> </span>sf<span class="op">::</span><span class="kw">st_read</span>(<span class="st">&quot;map.osm&quot;</span>, <span class="dt">layer =</span> <span class="st">&quot;multipolygons&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb53-3"><a href="finding-networks-from-patch-data-1.html#cb53-3"></a><span class="st">  </span><span class="kw">filter</span>(name <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Richel&quot;</span>, <span class="st">&quot;Griend&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb53-4"><a href="finding-networks-from-patch-data-1.html#cb53-4"></a><span class="st">  </span>sf<span class="op">::</span><span class="kw">st_transform</span>(<span class="dv">32631</span>)</span>
+<span id="cb53-5"><a href="finding-networks-from-patch-data-1.html#cb53-5"></a></span>
+<span id="cb53-6"><a href="finding-networks-from-patch-data-1.html#cb53-6"></a><span class="co"># count at x and y</span></span>
+<span id="cb53-7"><a href="finding-networks-from-patch-data-1.html#cb53-7"></a>data_overlap_space &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb53-8"><a href="finding-networks-from-patch-data-1.html#cb53-8"></a><span class="st">  </span><span class="kw">left_join</span>(overlaps, </span>
+<span id="cb53-9"><a href="finding-networks-from-patch-data-1.html#cb53-9"></a>            <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;patch_i_unique_id&quot;</span> =<span class="st"> &quot;uid&quot;</span>,</span>
+<span id="cb53-10"><a href="finding-networks-from-patch-data-1.html#cb53-10"></a>                   <span class="st">&quot;patch_j_unique_id&quot;</span> =<span class="st"> &quot;overlap_id&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb53-11"><a href="finding-networks-from-patch-data-1.html#cb53-11"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">x_round =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(X, <span class="dv">100</span>),</span>
+<span id="cb53-12"><a href="finding-networks-from-patch-data-1.html#cb53-12"></a>         <span class="dt">y_round =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(Y, <span class="dv">100</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb53-13"><a href="finding-networks-from-patch-data-1.html#cb53-13"></a><span class="st">  </span><span class="kw">count</span>(x_round, y_round)</span>
+<span id="cb53-14"><a href="finding-networks-from-patch-data-1.html#cb53-14"></a></span>
+<span id="cb53-15"><a href="finding-networks-from-patch-data-1.html#cb53-15"></a><span class="co"># plot</span></span>
+<span id="cb53-16"><a href="finding-networks-from-patch-data-1.html#cb53-16"></a><span class="kw">ggplot</span>(data_overlap_space)<span class="op">+</span></span>
+<span id="cb53-17"><a href="finding-networks-from-patch-data-1.html#cb53-17"></a><span class="st">  </span><span class="kw">geom_tile</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x_round, </span>
+<span id="cb53-18"><a href="finding-networks-from-patch-data-1.html#cb53-18"></a>                <span class="dt">y =</span> y_round,</span>
+<span id="cb53-19"><a href="finding-networks-from-patch-data-1.html#cb53-19"></a>                <span class="dt">fill =</span> n))<span class="op">+</span></span>
+<span id="cb53-20"><a href="finding-networks-from-patch-data-1.html#cb53-20"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> griend,</span>
+<span id="cb53-21"><a href="finding-networks-from-patch-data-1.html#cb53-21"></a>          <span class="dt">fill =</span> <span class="ot">NA</span>, <span class="dt">size =</span> <span class="dv">1</span>,</span>
+<span id="cb53-22"><a href="finding-networks-from-patch-data-1.html#cb53-22"></a>          <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>)<span class="op">+</span></span>
+<span id="cb53-23"><a href="finding-networks-from-patch-data-1.html#cb53-23"></a><span class="st">  </span><span class="kw">scale_fill_scico</span>(<span class="dt">trans =</span> <span class="st">&quot;log10&quot;</span>, </span>
+<span id="cb53-24"><a href="finding-networks-from-patch-data-1.html#cb53-24"></a>                   <span class="dt">palette =</span> <span class="st">&quot;lajolla&quot;</span>, </span>
+<span id="cb53-25"><a href="finding-networks-from-patch-data-1.html#cb53-25"></a>                   <span class="dt">values=</span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), </span>
+<span id="cb53-26"><a href="finding-networks-from-patch-data-1.html#cb53-26"></a>                   <span class="dt">direction =</span> <span class="dv">1</span>,</span>
+<span id="cb53-27"><a href="finding-networks-from-patch-data-1.html#cb53-27"></a>                   <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">10</span><span class="op">^</span><span class="kw">c</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">4</span>)))<span class="op">+</span></span>
+<span id="cb53-28"><a href="finding-networks-from-patch-data-1.html#cb53-28"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">caption =</span> <span class="st">&quot;X and Y are coords_start.x rounded to 200m.&quot;</span>,</span>
+<span id="cb53-29"><a href="finding-networks-from-patch-data-1.html#cb53-29"></a>       <span class="dt">title =</span> <span class="st">&quot;# patch overlaps ~ space&quot;</span>)</span>
+<span id="cb53-30"><a href="finding-networks-from-patch-data-1.html#cb53-30"></a></span>
+<span id="cb53-31"><a href="finding-networks-from-patch-data-1.html#cb53-31"></a><span class="kw">ggsave</span>(<span class="dt">filename =</span> <span class="st">&quot;figs/fig_overlaps_space.png&quot;</span>,</span>
+<span id="cb53-32"><a href="finding-networks-from-patch-data-1.html#cb53-32"></a>       <span class="dt">dpi =</span> <span class="dv">300</span>)</span></code></pre></div>
+</div>
+<div id="where-and-when-do-overlaps-happen" class="section level3">
+<h3><span class="header-section-number">9.2.3</span> Where AND when do overlaps happen?</h3>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="finding-networks-from-patch-data-1.html#cb54-1"></a><span class="co"># count at x and y</span></span>
+<span id="cb54-2"><a href="finding-networks-from-patch-data-1.html#cb54-2"></a>data_overlap_spacetime &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb54-3"><a href="finding-networks-from-patch-data-1.html#cb54-3"></a><span class="st">  </span><span class="kw">left_join</span>(overlaps, </span>
+<span id="cb54-4"><a href="finding-networks-from-patch-data-1.html#cb54-4"></a>            <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;patch_i_unique_id&quot;</span> =<span class="st"> &quot;uid&quot;</span>,</span>
+<span id="cb54-5"><a href="finding-networks-from-patch-data-1.html#cb54-5"></a>                   <span class="st">&quot;patch_j_unique_id&quot;</span> =<span class="st"> &quot;overlap_id&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb54-6"><a href="finding-networks-from-patch-data-1.html#cb54-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">x_round =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(X, <span class="dv">200</span>),</span>
+<span id="cb54-7"><a href="finding-networks-from-patch-data-1.html#cb54-7"></a>         <span class="dt">y_round =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(Y, <span class="dv">200</span>),</span>
+<span id="cb54-8"><a href="finding-networks-from-patch-data-1.html#cb54-8"></a>         <span class="dt">waterlevel_round =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(waterlevel_start.x, <span class="dv">30</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb54-9"><a href="finding-networks-from-patch-data-1.html#cb54-9"></a><span class="st">  </span><span class="kw">count</span>(x_round, y_round, waterlevel_round)</span>
+<span id="cb54-10"><a href="finding-networks-from-patch-data-1.html#cb54-10"></a></span>
+<span id="cb54-11"><a href="finding-networks-from-patch-data-1.html#cb54-11"></a><span class="co"># plot</span></span>
+<span id="cb54-12"><a href="finding-networks-from-patch-data-1.html#cb54-12"></a><span class="kw">ggplot</span>(data_overlap_spacetime)<span class="op">+</span></span>
+<span id="cb54-13"><a href="finding-networks-from-patch-data-1.html#cb54-13"></a><span class="st">  </span><span class="kw">geom_tile</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x_round, </span>
+<span id="cb54-14"><a href="finding-networks-from-patch-data-1.html#cb54-14"></a>                <span class="dt">y =</span> y_round,</span>
+<span id="cb54-15"><a href="finding-networks-from-patch-data-1.html#cb54-15"></a>                <span class="dt">fill =</span> n))<span class="op">+</span></span>
+<span id="cb54-16"><a href="finding-networks-from-patch-data-1.html#cb54-16"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> griend,</span>
+<span id="cb54-17"><a href="finding-networks-from-patch-data-1.html#cb54-17"></a>          <span class="dt">fill =</span> <span class="ot">NA</span>, <span class="dt">size =</span> <span class="dv">1</span>,</span>
+<span id="cb54-18"><a href="finding-networks-from-patch-data-1.html#cb54-18"></a>          <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>)<span class="op">+</span></span>
+<span id="cb54-19"><a href="finding-networks-from-patch-data-1.html#cb54-19"></a><span class="st">  </span><span class="kw">scale_fill_scico</span>(<span class="dt">trans =</span> <span class="st">&quot;log10&quot;</span>, </span>
+<span id="cb54-20"><a href="finding-networks-from-patch-data-1.html#cb54-20"></a>                   <span class="dt">palette =</span> <span class="st">&quot;lajolla&quot;</span>, </span>
+<span id="cb54-21"><a href="finding-networks-from-patch-data-1.html#cb54-21"></a>                   <span class="dt">values=</span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), </span>
+<span id="cb54-22"><a href="finding-networks-from-patch-data-1.html#cb54-22"></a>                   <span class="dt">direction =</span> <span class="dv">1</span>,</span>
+<span id="cb54-23"><a href="finding-networks-from-patch-data-1.html#cb54-23"></a>                   <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">10</span><span class="op">^</span><span class="kw">c</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">4</span>)))<span class="op">+</span></span>
+<span id="cb54-24"><a href="finding-networks-from-patch-data-1.html#cb54-24"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>waterlevel_round, <span class="dt">labeller =</span> label_both)<span class="op">+</span></span>
+<span id="cb54-25"><a href="finding-networks-from-patch-data-1.html#cb54-25"></a><span class="st">  </span><span class="kw">theme_bw</span>()<span class="op">+</span></span>
+<span id="cb54-26"><a href="finding-networks-from-patch-data-1.html#cb54-26"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">caption =</span> <span class="st">&quot;X and Y are coords_start.x rounded to 200m.&quot;</span>,</span>
+<span id="cb54-27"><a href="finding-networks-from-patch-data-1.html#cb54-27"></a>       <span class="dt">title =</span> <span class="st">&quot;# patch overlaps ~ space&quot;</span>)</span>
+<span id="cb54-28"><a href="finding-networks-from-patch-data-1.html#cb54-28"></a></span>
+<span id="cb54-29"><a href="finding-networks-from-patch-data-1.html#cb54-29"></a><span class="kw">ggsave</span>(<span class="dt">filename =</span> <span class="st">&quot;figs/fig_overlaps_spacetime.png&quot;</span>,</span>
+<span id="cb54-30"><a href="finding-networks-from-patch-data-1.html#cb54-30"></a>       <span class="dt">dpi =</span> <span class="dv">300</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="association-networks-based-on-space-time-overlap-subsets" class="section level2">
+<h2><span class="header-section-number">9.3</span> Association networks based on space-time overlap subsets</h2>
+<div id="prepare-subsets-of-data" class="section level3">
+<h3><span class="header-section-number">9.3.1</span> Prepare subsets of data</h3>
+<p>Round each overlap’s X, Y and waterlevel coordinates, and construct a network from all overlaps in the same subset of X, Y, time.</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="finding-networks-from-patch-data-1.html#cb55-1"></a><span class="co"># make data here</span></span>
+<span id="cb55-2"><a href="finding-networks-from-patch-data-1.html#cb55-2"></a>data_overlap &lt;-<span class="st"> </span>data <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb55-3"><a href="finding-networks-from-patch-data-1.html#cb55-3"></a><span class="st">  </span><span class="kw">left_join</span>(overlaps, </span>
+<span id="cb55-4"><a href="finding-networks-from-patch-data-1.html#cb55-4"></a>            <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;patch_i_unique_id&quot;</span> =<span class="st"> &quot;uid&quot;</span>,</span>
+<span id="cb55-5"><a href="finding-networks-from-patch-data-1.html#cb55-5"></a>                   <span class="st">&quot;patch_j_unique_id&quot;</span> =<span class="st"> &quot;overlap_id&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb55-6"><a href="finding-networks-from-patch-data-1.html#cb55-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">x_round =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(X, <span class="dv">100</span>),</span>
+<span id="cb55-7"><a href="finding-networks-from-patch-data-1.html#cb55-7"></a>         <span class="dt">y_round =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(Y, <span class="dv">100</span>),</span>
+<span id="cb55-8"><a href="finding-networks-from-patch-data-1.html#cb55-8"></a>         <span class="dt">waterlevel_round =</span> plyr<span class="op">::</span><span class="kw">round_any</span>(waterlevel_start.x, <span class="dv">30</span>))</span>
+<span id="cb55-9"><a href="finding-networks-from-patch-data-1.html#cb55-9"></a></span>
+<span id="cb55-10"><a href="finding-networks-from-patch-data-1.html#cb55-10"></a><span class="co"># select columns</span></span>
+<span id="cb55-11"><a href="finding-networks-from-patch-data-1.html#cb55-11"></a>data_overlap &lt;-<span class="st"> </span><span class="kw">select</span>(data_overlap,</span>
+<span id="cb55-12"><a href="finding-networks-from-patch-data-1.html#cb55-12"></a>                       <span class="kw">contains</span>(<span class="st">&quot;round&quot;</span>),</span>
+<span id="cb55-13"><a href="finding-networks-from-patch-data-1.html#cb55-13"></a>                       id.x, id.y)</span>
+<span id="cb55-14"><a href="finding-networks-from-patch-data-1.html#cb55-14"></a></span>
+<span id="cb55-15"><a href="finding-networks-from-patch-data-1.html#cb55-15"></a><span class="co"># count interactions among unique pairs</span></span>
+<span id="cb55-16"><a href="finding-networks-from-patch-data-1.html#cb55-16"></a>data_overlap &lt;-<span class="st"> </span><span class="kw">group_by</span>(data_overlap,</span>
+<span id="cb55-17"><a href="finding-networks-from-patch-data-1.html#cb55-17"></a>                         x_round, y_round, waterlevel_round) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb55-18"><a href="finding-networks-from-patch-data-1.html#cb55-18"></a><span class="st">  </span><span class="kw">count</span>(id.x, id.y)</span>
+<span id="cb55-19"><a href="finding-networks-from-patch-data-1.html#cb55-19"></a></span>
+<span id="cb55-20"><a href="finding-networks-from-patch-data-1.html#cb55-20"></a><span class="co"># nest in prep for making a network</span></span>
+<span id="cb55-21"><a href="finding-networks-from-patch-data-1.html#cb55-21"></a>data_overlap &lt;-<span class="st"> </span><span class="kw">nest</span>(data_overlap)</span>
+<span id="cb55-22"><a href="finding-networks-from-patch-data-1.html#cb55-22"></a></span>
+<span id="cb55-23"><a href="finding-networks-from-patch-data-1.html#cb55-23"></a><span class="co"># remove cases where there are fewer than 3 rows</span></span>
+<span id="cb55-24"><a href="finding-networks-from-patch-data-1.html#cb55-24"></a>edge_df &lt;-<span class="st"> </span><span class="kw">filter</span>(data_overlap,</span>
+<span id="cb55-25"><a href="finding-networks-from-patch-data-1.html#cb55-25"></a>                       <span class="kw">map_lgl</span>(data, <span class="cf">function</span>(x) {</span>
+<span id="cb55-26"><a href="finding-networks-from-patch-data-1.html#cb55-26"></a>                         <span class="kw">nrow</span>(x) <span class="op">&gt;=</span><span class="st"> </span><span class="dv">3</span></span>
+<span id="cb55-27"><a href="finding-networks-from-patch-data-1.html#cb55-27"></a>                       }))</span></code></pre></div>
+</div>
+<div id="get-node-data" class="section level3">
+<h3><span class="header-section-number">9.3.2</span> Get node data</h3>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="finding-networks-from-patch-data-1.html#cb56-1"></a><span class="co"># expand nodes df to match edges data</span></span>
+<span id="cb56-2"><a href="finding-networks-from-patch-data-1.html#cb56-2"></a>node_df &lt;-<span class="st">  </span></span>
+<span id="cb56-3"><a href="finding-networks-from-patch-data-1.html#cb56-3"></a><span class="st">  </span><span class="kw">summarise</span>(edge_df, </span>
+<span id="cb56-4"><a href="finding-networks-from-patch-data-1.html#cb56-4"></a>            <span class="dt">id =</span> <span class="kw">map</span>(data, </span>
+<span id="cb56-5"><a href="finding-networks-from-patch-data-1.html#cb56-5"></a>                     <span class="cf">function</span>(df) {<span class="kw">union</span>(df<span class="op">$</span>id.x, df<span class="op">$</span>id.y)})) <span class="op">%&gt;%</span></span>
+<span id="cb56-6"><a href="finding-networks-from-patch-data-1.html#cb56-6"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">id =</span> <span class="kw">map</span>(id, <span class="cf">function</span>(df){</span>
+<span id="cb56-7"><a href="finding-networks-from-patch-data-1.html#cb56-7"></a>    </span>
+<span id="cb56-8"><a href="finding-networks-from-patch-data-1.html#cb56-8"></a>    df &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">id =</span> <span class="kw">as.character</span>(df)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb56-9"><a href="finding-networks-from-patch-data-1.html#cb56-9"></a><span class="st">      </span><span class="kw">left_join</span>(data_id, <span class="dt">by =</span> <span class="st">&quot;id&quot;</span>)</span>
+<span id="cb56-10"><a href="finding-networks-from-patch-data-1.html#cb56-10"></a>    </span>
+<span id="cb56-11"><a href="finding-networks-from-patch-data-1.html#cb56-11"></a>    <span class="co"># remove nodes with no attributes</span></span>
+<span id="cb56-12"><a href="finding-networks-from-patch-data-1.html#cb56-12"></a>    df &lt;-<span class="st"> </span><span class="kw">drop_na</span>(df, gizzard_mass)</span>
+<span id="cb56-13"><a href="finding-networks-from-patch-data-1.html#cb56-13"></a>  }))</span></code></pre></div>
+</div>
+<div id="make-networks-using-the-edgelist-and-nodelist-joined-together." class="section level3">
+<h3><span class="header-section-number">9.3.3</span> Make networks using the edgelist and nodelist joined together.</h3>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="finding-networks-from-patch-data-1.html#cb57-1"></a><span class="co"># make network df</span></span>
+<span id="cb57-2"><a href="finding-networks-from-patch-data-1.html#cb57-2"></a>network_df &lt;-<span class="st"> </span><span class="kw">left_join</span>(edge_df, node_df)</span>
+<span id="cb57-3"><a href="finding-networks-from-patch-data-1.html#cb57-3"></a></span>
+<span id="cb57-4"><a href="finding-networks-from-patch-data-1.html#cb57-4"></a><span class="co"># remove edges with no node data</span></span>
+<span id="cb57-5"><a href="finding-networks-from-patch-data-1.html#cb57-5"></a>network_df &lt;-<span class="st"> </span><span class="kw">filter</span>(network_df,</span>
+<span id="cb57-6"><a href="finding-networks-from-patch-data-1.html#cb57-6"></a>                     <span class="kw">map_lgl</span>(id, <span class="cf">function</span>(df) {</span>
+<span id="cb57-7"><a href="finding-networks-from-patch-data-1.html#cb57-7"></a>                       <span class="kw">nrow</span>(df) <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span></span>
+<span id="cb57-8"><a href="finding-networks-from-patch-data-1.html#cb57-8"></a>                     }))</span>
+<span id="cb57-9"><a href="finding-networks-from-patch-data-1.html#cb57-9"></a></span>
+<span id="cb57-10"><a href="finding-networks-from-patch-data-1.html#cb57-10"></a><span class="co"># make networks for each of the many subsets</span></span>
+<span id="cb57-11"><a href="finding-networks-from-patch-data-1.html#cb57-11"></a>network_df &lt;-<span class="st"> </span><span class="kw">mutate</span>(network_df,</span>
+<span id="cb57-12"><a href="finding-networks-from-patch-data-1.html#cb57-12"></a>                       <span class="dt">net =</span> <span class="kw">map2</span>(data, id, <span class="cf">function</span>(e_df, n_df) { </span>
+<span id="cb57-13"><a href="finding-networks-from-patch-data-1.html#cb57-13"></a>                         <span class="co"># exclude edges with no vertex attributes</span></span>
+<span id="cb57-14"><a href="finding-networks-from-patch-data-1.html#cb57-14"></a>                         e_df &lt;-<span class="st"> </span><span class="kw">filter</span>(e_df, </span>
+<span id="cb57-15"><a href="finding-networks-from-patch-data-1.html#cb57-15"></a>                                   id.x <span class="op">%in%</span><span class="st"> </span>n_df<span class="op">$</span>id,</span>
+<span id="cb57-16"><a href="finding-networks-from-patch-data-1.html#cb57-16"></a>                                   id.y <span class="op">%in%</span><span class="st"> </span>n_df<span class="op">$</span>id)</span>
+<span id="cb57-17"><a href="finding-networks-from-patch-data-1.html#cb57-17"></a>                         igraph<span class="op">::</span><span class="kw">graph_from_data_frame</span>(<span class="dt">d =</span> e_df,</span>
+<span id="cb57-18"><a href="finding-networks-from-patch-data-1.html#cb57-18"></a>                                                       <span class="dt">vertices =</span> n_df,</span>
+<span id="cb57-19"><a href="finding-networks-from-patch-data-1.html#cb57-19"></a>                                                       <span class="dt">directed =</span> F)}</span>
+<span id="cb57-20"><a href="finding-networks-from-patch-data-1.html#cb57-20"></a>                         ))</span></code></pre></div>
+</div>
+<div id="remove-networks-with-few-edges" class="section level3">
+<h3><span class="header-section-number">9.3.4</span> Remove networks with few edges</h3>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="finding-networks-from-patch-data-1.html#cb58-1"></a><span class="co"># count edges</span></span>
+<span id="cb58-2"><a href="finding-networks-from-patch-data-1.html#cb58-2"></a>network_df &lt;-<span class="st"> </span><span class="kw">mutate</span>(network_df, </span>
+<span id="cb58-3"><a href="finding-networks-from-patch-data-1.html#cb58-3"></a>                     <span class="dt">n_edges =</span> <span class="kw">map_int</span>(net, <span class="cf">function</span>(n){</span>
+<span id="cb58-4"><a href="finding-networks-from-patch-data-1.html#cb58-4"></a>                       <span class="kw">E</span>(n) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">length</span>()</span>
+<span id="cb58-5"><a href="finding-networks-from-patch-data-1.html#cb58-5"></a>                     })) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb58-6"><a href="finding-networks-from-patch-data-1.html#cb58-6"></a><span class="st">  </span><span class="kw">ungroup</span>()</span>
+<span id="cb58-7"><a href="finding-networks-from-patch-data-1.html#cb58-7"></a></span>
+<span id="cb58-8"><a href="finding-networks-from-patch-data-1.html#cb58-8"></a></span>
+<span id="cb58-9"><a href="finding-networks-from-patch-data-1.html#cb58-9"></a><span class="co"># remove bad graphs, ie, with fewer than 3 edges</span></span>
+<span id="cb58-10"><a href="finding-networks-from-patch-data-1.html#cb58-10"></a><span class="co"># this is both for quality and practical reasons</span></span>
+<span id="cb58-11"><a href="finding-networks-from-patch-data-1.html#cb58-11"></a>min_edges &lt;-<span class="st"> </span><span class="dv">1</span></span>
+<span id="cb58-12"><a href="finding-networks-from-patch-data-1.html#cb58-12"></a>min_id &lt;-<span class="st"> </span><span class="dv">2</span></span>
+<span id="cb58-13"><a href="finding-networks-from-patch-data-1.html#cb58-13"></a>network_df &lt;-<span class="st"> </span><span class="kw">filter</span>(network_df, n_edges <span class="op">&gt;=</span><span class="st"> </span>min_edges)</span></code></pre></div>
+</div>
+</div>
+<div id="get-assortativity-1" class="section level2">
+<h2><span class="header-section-number">9.4</span> Get assortativity</h2>
+<div id="get-assortativity-on-node-attributes" class="section level3">
+<h3><span class="header-section-number">9.4.1</span> Get assortativity on node attributes</h3>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="finding-networks-from-patch-data-1.html#cb59-1"></a><span class="co"># get weighred assortativity by gizzard mass</span></span>
+<span id="cb59-2"><a href="finding-networks-from-patch-data-1.html#cb59-2"></a>network_df &lt;-<span class="st"> </span><span class="kw">mutate</span>(network_df,</span>
+<span id="cb59-3"><a href="finding-networks-from-patch-data-1.html#cb59-3"></a>                     <span class="dt">assort_g_mass =</span> <span class="kw">unlist</span>(purrr<span class="op">::</span><span class="kw">map</span>(net, <span class="cf">function</span>(n){</span>
+<span id="cb59-4"><a href="finding-networks-from-patch-data-1.html#cb59-4"></a>                       </span>
+<span id="cb59-5"><a href="finding-networks-from-patch-data-1.html#cb59-5"></a>                       <span class="co"># adj &lt;- igraph::as_adjacency_matrix(n,</span></span>
+<span id="cb59-6"><a href="finding-networks-from-patch-data-1.html#cb59-6"></a>                       <span class="co">#                                    sparse = FALSE,</span></span>
+<span id="cb59-7"><a href="finding-networks-from-patch-data-1.html#cb59-7"></a>                       <span class="co">#                                    attr = &quot;n&quot;)</span></span>
+<span id="cb59-8"><a href="finding-networks-from-patch-data-1.html#cb59-8"></a>                       </span>
+<span id="cb59-9"><a href="finding-networks-from-patch-data-1.html#cb59-9"></a>                       <span class="kw">assortativity.nominal</span>(n, <span class="dt">types =</span> <span class="kw">V</span>(n)<span class="op">$</span>gizzard_mass)</span>
+<span id="cb59-10"><a href="finding-networks-from-patch-data-1.html#cb59-10"></a>                     })))</span></code></pre></div>
+</div>
+<div id="mean-assortativity-in-space-and-time" class="section level3">
+<h3><span class="header-section-number">9.4.2</span> Mean assortativity in space and time</h3>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="finding-networks-from-patch-data-1.html#cb60-1"></a>assort_df &lt;-<span class="st"> </span>network_df <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb60-2"><a href="finding-networks-from-patch-data-1.html#cb60-2"></a><span class="st">  </span><span class="kw">group_by</span>(x_round, y_round,</span>
+<span id="cb60-3"><a href="finding-networks-from-patch-data-1.html#cb60-3"></a>           waterlevel_round) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb60-4"><a href="finding-networks-from-patch-data-1.html#cb60-4"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">med_assort =</span> <span class="kw">median</span>(assort_g_mass))</span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="finding-networks-from-patch-data-1.html#cb61-1"></a><span class="co"># plot</span></span>
+<span id="cb61-2"><a href="finding-networks-from-patch-data-1.html#cb61-2"></a><span class="kw">ggplot</span>(assort_df)<span class="op">+</span></span>
+<span id="cb61-3"><a href="finding-networks-from-patch-data-1.html#cb61-3"></a><span class="st">  </span><span class="kw">geom_tile</span>(<span class="kw">aes</span>(<span class="dt">x =</span> x_round, </span>
+<span id="cb61-4"><a href="finding-networks-from-patch-data-1.html#cb61-4"></a>                <span class="dt">y =</span> y_round,</span>
+<span id="cb61-5"><a href="finding-networks-from-patch-data-1.html#cb61-5"></a>                <span class="dt">fill =</span> med_assort))<span class="op">+</span></span>
+<span id="cb61-6"><a href="finding-networks-from-patch-data-1.html#cb61-6"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data =</span> griend,</span>
+<span id="cb61-7"><a href="finding-networks-from-patch-data-1.html#cb61-7"></a>          <span class="dt">fill =</span> <span class="ot">NA</span>, <span class="dt">size =</span> <span class="dv">1</span>,</span>
+<span id="cb61-8"><a href="finding-networks-from-patch-data-1.html#cb61-8"></a>          <span class="dt">col =</span> <span class="st">&quot;black&quot;</span>)<span class="op">+</span></span>
+<span id="cb61-9"><a href="finding-networks-from-patch-data-1.html#cb61-9"></a><span class="st">  </span><span class="kw">scale_fill_gradient2</span>(<span class="dt">low =</span> <span class="st">&quot;blue&quot;</span>,</span>
+<span id="cb61-10"><a href="finding-networks-from-patch-data-1.html#cb61-10"></a>                       <span class="dt">high =</span> <span class="st">&quot;red&quot;</span>,</span>
+<span id="cb61-11"><a href="finding-networks-from-patch-data-1.html#cb61-11"></a>                       <span class="dt">mid =</span> <span class="st">&quot;grey90&quot;</span>,</span>
+<span id="cb61-12"><a href="finding-networks-from-patch-data-1.html#cb61-12"></a>                       <span class="dt">limits =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">1</span>,<span class="dv">1</span>))<span class="op">+</span></span>
+<span id="cb61-13"><a href="finding-networks-from-patch-data-1.html#cb61-13"></a><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span><span class="st"> </span>waterlevel_round, <span class="dt">labeller =</span> label_both)<span class="op">+</span></span>
+<span id="cb61-14"><a href="finding-networks-from-patch-data-1.html#cb61-14"></a><span class="st">  </span><span class="kw">theme_bw</span>()<span class="op">+</span></span>
+<span id="cb61-15"><a href="finding-networks-from-patch-data-1.html#cb61-15"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">caption =</span> <span class="st">&quot;X and Y are coords_start.x rounded to 200m.&quot;</span>,</span>
+<span id="cb61-16"><a href="finding-networks-from-patch-data-1.html#cb61-16"></a>       <span class="dt">title =</span> <span class="st">&quot;median assortativity in space and time&quot;</span>)</span>
+<span id="cb61-17"><a href="finding-networks-from-patch-data-1.html#cb61-17"></a></span>
+<span id="cb61-18"><a href="finding-networks-from-patch-data-1.html#cb61-18"></a><span class="kw">ggsave</span>(<span class="dt">filename =</span> <span class="st">&quot;figs/fig_overlaps_spacetime.png&quot;</span>,</span>
+<span id="cb61-19"><a href="finding-networks-from-patch-data-1.html#cb61-19"></a>       <span class="dt">dpi =</span> <span class="dv">300</span>)</span></code></pre></div>
+
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="finding-networks-from-patch-data.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="pairwise-associations-in-relation-to-traits.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": false,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/pratikunterwegs/knot-association/edit/master/08_subset_based_networks.rmd",
+"text": "Edit"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
