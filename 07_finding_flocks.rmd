@@ -192,7 +192,7 @@ ggplot(flock_covariates)+
 ```{r}
 # assign incoming or outgoing tide based on time since high tide
 flock_covariates <- flock_covariates %>% 
-  mutate(tide_stage = if_else(waterlevel_mean < 25, "low", "high"),
+  mutate(tide_stage = if_else(waterlevel_mean < 55, "low", "high"),
          tide_phase = if_else(tidaltime_mean < 360, "ebb", "flow"))
 ```
 
@@ -223,12 +223,15 @@ ggplot(flock_variances) +
 ```{r}
 ggplot(flock_variances %>% 
          drop_na(trait_variance))+
-  geom_point(aes(x_mean, y_mean,
-                 size = flock_size,
-                 col = trait_variance),
-             alpha = 0.5)+
-  scale_colour_viridis_c(option = "C",
-                         direction = -1)+
+  stat_summary_2d(aes(x_mean, y_mean,
+                     z = trait_variance),
+             alpha = 0.8,
+             binwidth = 200)+
+  scale_fill_viridis_c(option = "C",
+                       direction = -1,
+                       limits = c(0, 0.25),
+                       name = "mean variance",
+                       na.value = "blue")+
   facet_grid(tide_stage ~ trait) +
   coord_sf(crs = 32631) +
   ggthemes::theme_map() +
@@ -241,7 +244,6 @@ ggsave("figs/fig_within_flock_variance.png",
 ```{r eval=TRUE}
 knitr::include_graphics("figs/fig_within_flock_variance.png")
 ```
-
 
 ## Model within flock variance
 
