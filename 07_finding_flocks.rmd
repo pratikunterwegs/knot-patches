@@ -238,3 +238,9 @@ ggsave("figs/fig_within_flock_variance.png",
        dpi = 300)
 ```
 
+## Model within flock variance
+
+WIP
+
+---
+
