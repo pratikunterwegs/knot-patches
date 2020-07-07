@@ -33,6 +33,7 @@ ci <- function(x){qnorm(0.975)*sd(x, na.rm = T)/sqrt((length(x)))}
 # read in patch data
 data_patches <- read_csv("data/data2018/data_2018_patch_summary_has_patches.csv") %>% 
   mutate(uid = as.character(1:nrow(.)))
+
 # read in overlap data
 data <- read_csv("data/data2018/data_spatio_temporal_overlap_2018.csv")
 ```
