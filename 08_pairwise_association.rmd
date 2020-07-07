@@ -1,10 +1,11 @@
 ---
-output: html_document
 editor_options: 
   chunk_output_type: console
 ---
 
-# Statistical modelling
+# Pairwise associations in relation to traits
+
+## Read in patch data and overlaps
 
 ```{r}
 # to handle data
@@ -25,7 +26,150 @@ library(scico)
 ci <- function(x){qnorm(0.975)*sd(x, na.rm = T)/sqrt((length(x)))}
 ```
 
-## Read data
+```{r}
+# read in patch data
+data_patches <- read_csv("data/data2018/data_2018_patch_summary_has_patches.csv") %>% 
+  mutate(uid = as.character(1:nrow(.)))
+
+# read in overlap data
+data <- read_csv("data/data2018/data_spatio_temporal_overlap_2018.csv")
+```
+
+### Read in trait data
+
+```{r}
+# make nodes data -- this the individual identities
+# add individual data to patch data
+data_id <- readxl::read_excel("data/data2018/Biometrics_2018-2019.xlsx") %>% 
+  filter(str_detect(`TAG NR`, "[a-zA-Z]+", negate = TRUE))
+
+# a function for gizzard mass
+get_gizzard_mass <- function(x, y) {-1.09 + (3.78*(x*y))}
+
+# add gizzard mass
+data_id <- mutate(data_id,
+                  gizzard_mass = get_gizzard_mass(SH1, SW1))
+
+# rename columns and drop ids without mass and gizzard mass
+data_id <- data_id %>% 
+  select(id = `TAG NR`, 
+         wing = WING, mass = MASS, 
+         gizzard_mass) %>% 
+  distinct(id, .keep_all = TRUE) %>% 
+  drop_na(gizzard_mass)
+
+# add some exploration scores and tag info
+data_behav <- read_csv("data/data2018/2018-19-all_exploration_scores.csv") %>% 
+  filter(Exp == "F01")
+data_tag <- read_csv("data/data2018/tag_info.csv") %>% 
+  mutate(id = as.character(Toa_Tag))
+
+# join all scores
+data_id <- left_join(data_id, data_tag,
+                     by = c("id")) %>% 
+  left_join(data_behav, by = "FB")
+
+# remove ids with no exploration
+data_id <- mutate(data_id,
+                  behav = Mean) %>% 
+  # drop_na(behav) %>% 
+  select(id, mass, gizzard_mass, behav)
+```
+
+### What is the empirical distribution of differences in gizzard mass?
+
+### Filter out small patches
+
+Each fix corresponds to 30s time.
+
+```{r}
+data_patches <- filter(data_patches,
+                       nfixes > 3)
+
+data <- data %>% 
+  filter(patch_i_unique_id %in% data_patches$uid,
+         patch_j_unique_id %in% data_patches$uid)
+```
+
+### Link patches with overlaps
+
+```{r}
+# convert to character
+data <- mutate_at(data, vars(contains("patch")), as.character)
+data <- left_join(data, data_patches,
+                  by = c("patch_i_unique_id" = "uid")) %>% 
+  left_join(data_patches,
+            by = c("patch_j_unique_id" = "uid"))
+```
+
+### Count pairwise overlaps
+
+```{r}
+# first clip data into 3 sections with lims at 0, 55
+data_summary <- data %>%
+  mutate(tide_number = tide_number.x,
+         waterlevel = waterlevel_start.x,
+         tide_stage = case_when(waterlevel <= 0 ~ "low",
+                                # between(waterlevel, 0, 55) ~ "medium",
+                                waterlevel > 0 ~ "high",
+                                T ~ NA_character_)) %>% 
+  
+  # count as well as add strength in terms of space and time
+  group_by(id.x, id.y, tide_number, tide_stage) %>% 
+  summarise(n_associations = length(spatial_overlap_area),
+            tot_overlap_space = sum(spatial_overlap_area),
+            tot_overlap_time = sum(temporal_overlap_seconds)) %>% 
+  ungroup()
+```
+
+```{r}
+# link trait values
+data_summary <- mutate_at(data_summary,
+                          vars(matches("id")),
+                          as.character)
+data_summary <- left_join(data_summary,
+                          data_id,
+                          by = c("id.x" = "id")) %>% 
+  left_join(data_id,
+            by = c("id.y" = "id"))
+
+# get difference in traits
+data_summary <- data_summary %>% 
+  mutate(diff_gizzard = abs(gizzard_mass.x - gizzard_mass.y),
+         diff_gizzard_round = plyr::round_any(diff_gizzard, 0.5),
+         diff_behav = abs(behav.x - behav.y),
+         tide_stage = forcats::as_factor(tide_stage),
+         tide_stage = fct_relevel(tide_stage,
+                                  "low", "high")) %>% 
+  drop_na(diff_gizzard)
+```
+
+### Assign unique pair ids
+
+```{r}
+# count the number of data in each class
+data_summary %>% 
+  count(diff_gizzard_round)
+
+# count the difference in gizzards per pairwise association
+data_summary <- data_summary %>% 
+  group_by(id.x, id.y) %>% 
+  nest() %>% 
+  ungroup() %>% 
+  mutate(uid_pair = seq_len(nrow(.)))
+
+# then unnest
+data_summary <- unnest(data_summary,
+                       col = "data")
+```
+
+## Save data to file for analyses
+
+```{r}
+write_csv(data_summary, path = "data/data_pairwise_comparisons.csv")
+```
+
+## Read data for statistical analyses
 
 ```{r}
 read_csv(data_summary, path = "data/data_pairwise_comparisons.csv")
@@ -186,4 +330,3 @@ Read in the model summary and write.
 
 ```{r}
 cat(read_lines("results/model_sp_overlap.txt"), sep = "\n")
-```
