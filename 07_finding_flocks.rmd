@@ -238,6 +238,11 @@ ggsave("figs/fig_within_flock_variance.png",
        dpi = 300)
 ```
 
+```{r eval=TRUE}
+knitr::include_graphics("figs/fig_within_flock_variance.png")
+```
+
+
 ## Model within flock variance
 
 WIP
