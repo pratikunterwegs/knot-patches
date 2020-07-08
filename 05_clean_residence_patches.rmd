@@ -23,6 +23,9 @@ library(data.table)
 # load data
 patches <- fread("data/data2018/data_2018_patch_summary.csv")
 
+# add uid
+patches <- patches[, uid := seq_len(nrow(patches))]
+
 # remove few fixes patches
 patches <- patches[nfixes >= 10, ]
 ```
@@ -31,7 +34,7 @@ patches <- patches[nfixes >= 10, ]
 
 ```{r}
 # this is the speed in metres per second
-patches[, speed := distBwPatch / c(NA, time_start[-1] - time_end[seq_len(length(time_end) - 1)]),
+patches <- patches[, speed := distBwPatch / c(NA, time_start[-1] - time_end[seq_len(length(time_end) - 1)]),
         by = .(id, tide_number)]
 
 # what is 150 km/hr in m/s
@@ -46,6 +49,6 @@ The number of patches is down to 57,089.
 ## Export this 'good' patch data
 
 ```{r}
+# export the summary
 fwrite(patches, "data/data2018/data_2018_good_patches.csv")
 ```
-
