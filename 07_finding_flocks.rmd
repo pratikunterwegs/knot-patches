@@ -16,6 +16,8 @@ library(igraph)
 ```{r}
 # read in overlap data
 data <- read_csv("data/data2018/data_spatio_temporal_overlap_2018.csv")
+data_patches <- read_csv("data/data2018/data_2018_patch_summary_has_patches.csv") %>% 
+  mutate(uid = as.character(1:nrow(.)))
 ```
 
 ## Find flocks
@@ -92,7 +94,8 @@ data_id <- mutate(data_id,
 data_id <- data_id %>% 
   select(id = `TAG NR`, 
          month = CATCH_MONTH,
-         wing = WING, mass = MASS, 
+         wing = WING, mass = MASS,
+         bill_length = BILL,
          gizzard_mass) %>% 
   distinct(id, .keep_all = TRUE) %>% 
   drop_na(gizzard_mass)
@@ -112,7 +115,7 @@ data_id <- left_join(data_id, data_tag,
 data_id <- mutate(data_id,
                   behav = Mean) %>% 
   # drop_na(behav) %>% 
-  select(id, mass, gizzard_mass, behav, month)
+  select(id, mass, wing, bill_length, gizzard_mass, behav, month)
 ```
 
 ### Centre trait data on release month mean
@@ -120,7 +123,8 @@ data_id <- mutate(data_id,
 ```{r}
 # centre on release month mean, first pviot
 data_id <- data_id %>% 
-  pivot_longer(cols = c("mass", "gizzard_mass", "behav"),
+  pivot_longer(cols = c("mass", "gizzard_mass", "behav",
+                        "bill_length", "wing"),
                names_to = "trait",
                values_to = "trait_value")
   
@@ -138,12 +142,12 @@ data_id <- data_id %>%
 flocks <- left_join(flocks, data_id)
 
 # remove bad data
-flocks <- drop_na(flocks, month, trait)
+flocks <- drop_na(flocks)
 
 # get within flock variance in traits
 flock_variances <- flocks %>% 
   group_by(flock, trait) %>% 
-  summarise(trait_variance = var(trait_value, na.rm = TRUE))
+  summarise(trait_sd = sd(trait_value, na.rm = TRUE))
 ```
 
 ## Add fixed predictors
@@ -212,33 +216,35 @@ flock_variances <- flock_variances %>%
 
 ```{r}
 ggplot(flock_variances) +
-  stat_bin_2d(aes(tidaltime_mean, trait_variance),
-           geom = "tile") +
-  scale_fill_viridis_c(limits = c(0, 100),
-                       na.value = "yellow") +
-  coord_fixed(ratio = 1600)+
+  geom_histogram(aes(trait_sd)) +
   facet_grid( ~ trait, switch = "both")
+
+ggplot(data_id)+
+  geom_histogram(aes(sqrt(trait_value)))+
+  facet_grid(~ trait)
 ```
 
 ```{r}
 ggplot(flock_variances %>% 
-         drop_na(trait_variance))+
-  stat_summary_2d(aes(x_mean, y_mean,
-                     z = trait_variance),
-             alpha = 0.8,
-             binwidth = 200)+
-  scale_fill_viridis_c(option = "C",
+         drop_na(trait_sd))+
+  geom_point(aes(x_mean, y_mean,
+                col = trait_sd),
+             alpha = 0.2,
+             shape = 16)+
+  scale_colour_viridis_c(option = "C",
                        direction = -1,
-                       limits = c(0, 0.25),
-                       name = "mean variance",
+                       # limits = c(0, 0.25),
+                       name = "mean sd",
                        na.value = "blue")+
-  facet_grid(tide_stage ~ trait) +
-  coord_sf(crs = 32631) +
+  facet_grid(tide_stage ~ trait,
+             labeller = label_both) +
+  # coord_sf(crs = 32631) +
   ggthemes::theme_map() +
-  theme(panel.background = element_rect(fill = "grey"))
+  theme(panel.background = element_rect(fill = "white"))
 
-ggsave("figs/fig_within_flock_variance.png",
-       dpi = 300)
+ggsave("figs/fig_within_flock_sd.png",
+       dpi = 300,
+       width = 12, height = 5)
 ```
 
 ```{r eval=TRUE}

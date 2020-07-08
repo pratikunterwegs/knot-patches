@@ -1,0 +1,51 @@
+---
+editor_options: 
+  chunk_output_type: console
+---
+
+# Residence patch cleaning
+
+Residence patches must be cleaned to remove patches where the speed between patches is too high, or too low. We filter for $0 < v < 150$, where $v$ is the speed between patches.
+
+We also filter out patches that are too small, ie, fewer than 10 fixes (approx. 5 minutes).
+
+Once cleaned, these patches can be passed on to the overlap finding algorithm.
+
+## Prepare libraries
+
+```{r prep_libs, message=FALSE, warning=FALSE}
+library(data.table)
+```
+
+## Load patches
+
+```{r}
+# load data
+patches <- fread("data/data2018/data_2018_patch_summary.csv")
+
+# remove few fixes patches
+patches <- patches[nfixes >= 10, ]
+```
+
+## Calculate speed between patches
+
+```{r}
+# this is the speed in metres per second
+patches[, speed := distBwPatch / c(NA, time_start[-1] - time_end[seq_len(length(time_end) - 1)]),
+        by = .(id, tide_number)]
+
+# what is 150 km/hr in m/s
+cutoff_speed <- 150 / 3.6
+
+# filter ridiculous speeds
+patches <- patches[between(speed, 1e-4, cutoff_speed), ]
+```
+
+The number of patches is down to 57,089.
+
+## Export this 'good' patch data
+
+```{r}
+fwrite(patches, "data/data2018/data_2018_good_patches.csv")
+```
+
