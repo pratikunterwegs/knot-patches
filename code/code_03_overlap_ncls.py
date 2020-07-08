@@ -20,6 +20,20 @@ patches = gpd.read_file("data/data2018/spatials/patches_2018.gpkg")
 #             alpha=0.2,
 #             cmap='tab20b', edgecolor='black')
 
+# merge with identified good patches
+# a uid based approach wont work because some patches have no spatials
+good_patches = pd.read_csv("data/data2018/data_2018_good_patches.csv")
+
+# id tide and patch to keep
+good_patch_indicator = good_patches[['id', 'tide_number', 'patch', 'uid', 'speed']]
+
+patches = patches.merge(good_patch_indicator, on=['id', 'tide_number', 'patch'])
+patches = patches.dropna(subset=['uid'])
+
+# write to file
+patches.to_file("data/data2018/spatials/patches_2018_good.gpkg",
+                layer='residence_patches', driver="GPKG")
+
 # convert to dataframe, export, and read in again
 data = pd.DataFrame(patches.drop(columns='geometry'))
 
