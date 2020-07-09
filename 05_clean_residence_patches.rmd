@@ -25,9 +25,6 @@ patches <- fread("data/data2018/data_2018_patch_summary.csv")
 
 # add uid
 patches <- patches[, uid := seq_len(nrow(patches))]
-
-# remove few fixes patches
-patches <- patches[nfixes >= 10, ]
 ```
 
 ## Calculate speed between patches
@@ -38,7 +35,7 @@ patches <- patches[, speed := distBwPatch / c(NA, time_start[-1] - time_end[seq_
         by = .(id, tide_number)]
 
 # what is 150 km/hr in m/s
-cutoff_speed <- 150 / 3.6
+cutoff_speed <- 70 / 3.6
 
 # filter ridiculous speeds
 patches <- patches[between(speed, 1e-4, cutoff_speed), ]
