@@ -3,6 +3,8 @@ editor_options:
   chunk_output_type: console
 ---
 
+**OH BLOODY HELL THERE'S TIDYVERSE EVERYWHERE REMOVE IT ALL**
+
 # Getting data
 
 This section focusses on accessing and downloading WATLAS data. This is done using functions in the [WATLAS Utilities package](https://github.com/pratikunterwegs/watlastools). 
@@ -20,7 +22,7 @@ This section focusses on accessing and downloading WATLAS data. This is done usi
 # install.packages("devtools")
 library(devtools)
 
-# devtools::install_github("pratikunterwegs/watlastools")
+devtools::install_github("pratikunterwegs/watlastools")
 library(watlastools)
 
 # libraries to process data
@@ -41,7 +43,9 @@ tag_info <- fread("data/data2018/SelinDB.csv")
 tag_info <- tag_info[!is.na(Release_Date) & !is.na(Release_Time),]
 
 # make release date column as POSIXct
-tag_info[,Release_Date := as.POSIXct(paste(Release_Date, Release_Time, sep = " "), format = "%d.%m.%y %H:%M", tz = "CET")]
+tag_info[,Release_Date := as.POSIXct(paste(Release_Date, 
+                                           Release_Time, sep = " "), 
+                                     format = "%d.%m.%y %H:%M", tz = "CET")]
 
 # check new release date column
 head(tag_info$Release_Date)
@@ -55,7 +59,6 @@ ggplot(tag_info)+
   labs(x = "release week (2018)", y = "# knots released",
        caption = Sys.time())
 ```
-
 
 ## Get data and save locally
 
