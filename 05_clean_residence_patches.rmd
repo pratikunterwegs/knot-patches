@@ -15,6 +15,7 @@ Once cleaned, these patches can be passed on to the overlap finding algorithm.
 
 ```{r prep_libs, message=FALSE, warning=FALSE}
 library(data.table)
+library(purrr)
 ```
 
 ## Load patches
@@ -24,22 +25,62 @@ library(data.table)
 patches <- fread("data/data2018/data_2018_patch_summary.csv")
 
 # add uid
-patches <- patches[, uid := seq_len(nrow(patches))]
+patches[, uid := seq_len(nrow(patches))]
 ```
 
 ## Calculate speed between patches
 
 ```{r}
 # this is the speed in metres per second
-patches <- patches[, speed := distBwPatch / c(NA, time_start[-1] - time_end[seq_len(length(time_end) - 1)]),
+patches[, speed := distBwPatch / 
+          c(NA, time_start[-1] - 
+              time_end[seq_len(length(time_end) - 1)]),
         by = .(id, tide_number)]
 
 # what is 150 km/hr in m/s
-cutoff_speed <- 70 / 3.6
+cutoff_speed <- 15 # around 54 kmph
 
 # filter ridiculous speeds
 patches <- patches[between(speed, 1e-4, cutoff_speed), ]
 ```
+
+## Remove sequences of reflected patches
+
+```{r}
+# recalculate the distance b/w patches
+patches2 <- patches[id == "554", ]
+patches2 <- patches2[duration >= 10 * 60, ]
+
+patches2 <- split(patches2, by = c("id"))
+
+
+# this is the speed in metres per second
+patches2 <- map(patches2, function(df) {
+  
+  df <- df[speed < 15, ]
+  
+  df[, distBwPatch := watlastools::wat_bw_patch_dist(df)]
+  
+  # replace 
+  df[, distBwPatch := nafill(distBwPatch, type = "const", fill = Inf)]
+  
+  df[, speed := distBwPatch / 
+          c(1, time_start[-1] - 
+              time_end[seq_len(length(time_end) - 1)])]
+  
+  # where is the speed greater than a cutoff
+  df[, reflection := cumsum(speed > cutoff_speed)]
+  
+  return(df)
+})
+```
+
+```{r}
+# bind the rows
+patches2 <- rbindlist(patches2)
+patches2[tide_number == 96, ]
+```
+
 
 The number of patches is down to 57,089.
 
