@@ -11,9 +11,9 @@
 *.rdata
 
 # anything in the data folders
-data/
-# except model output
-!data2018/modOutput
+data2018
+!attractor_points.txt
+access_params.txt
 
 # any scripts that access data
 *data_func*
@@ -33,6 +33,9 @@ figs/*.html
 # any zip files
 *.zip
 *.osm
+
+# tif files
+*.tif
 
 # anything to do with visual studio
 .vscode/
