@@ -17,7 +17,7 @@ This section is about using the main `watlastools` functions to infer residence 
 ```{r prep_libs, message=FALSE, warning=FALSE}
 # load watlastools or install if not available
 if (!"watlastools" %in% installed.packages()) {
-  devtools::install_github("pratikunterwegs/watlastools")
+  devtools::install_github("pratikunterwegs/watlastools", ref = "develop")
 }
 library(watlastools)
 
@@ -97,10 +97,10 @@ walk(data, function(df_list) {
           lim_spat_indep = 100,
           lim_time_indep = 30,
           lim_rest_indep = 30,
-          minFixes = 3
+          min_fixes = 3
         )
         # print message
-        message(as.character(glue("patches {id}_{tide_number} done")))
+        message(glue("patches {id}_{tide_number} done"))
         return(patch_dt)
       },
       # null error function, with option to collect data on errors
@@ -111,7 +111,8 @@ walk(data, function(df_list) {
   })
 
   tryCatch(
-    { # repair high tide patches across an individual's tidal cycles
+    { 
+      # repair high tide patches across an individual's tidal cycles
       repaired_data <- wat_repair_ht_patches(patch_data_list = patch_data)
       # write patch summary data
 
@@ -119,7 +120,7 @@ walk(data, function(df_list) {
         # watlastools function to get patch data as summary
         patch_summary <- wat_get_patch_summary(
           res_patch_data = repaired_data,
-          whichData = "summary"
+          which_data = "summary"
         )
         fwrite(patch_summary,
           file = "data/data2018/data_2018_patch_summary.csv",
@@ -129,9 +130,9 @@ walk(data, function(df_list) {
         # we also want the spatial object
         patch_spatial <- wat_get_patch_summary(
           res_patch_data = repaired_data,
-          whichData = "spatial"
+          which_data = "spatial"
         )
-        sf::`st_crs<-`(patch_spatial, 32631)
+        sf::st_crs(patch_spatial) <- 32631
       }
       sf::st_write(patch_spatial,
         dsn = "data/data2018/spatials/patches_2018.gpkg",
