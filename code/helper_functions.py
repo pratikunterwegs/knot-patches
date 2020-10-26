@@ -1,8 +1,12 @@
-
-# network lib
-import networkx as nx
+# import classic python libs
 import numpy as np
+
+# libs for dataframes
 import pandas as pd
+
+# import ckdtree
+from scipy.spatial import cKDTree
+from shapely.geometry import Point, MultiPoint, LineString, MultiLineString, Polygon, MultiPolygon
 
 # import ckdtree
 from scipy.spatial import cKDTree
@@ -10,6 +14,33 @@ from scipy.spatial import cKDTree
 
 def round_any(value, limit):
     return round(value/limit)*limit
+
+
+# function to simplify multilinestrings and maybe multipolygons
+def simplify_geom(complex_geometry):
+    simple_geom = []
+    for i in range(len(complex_geometry.geometry)):
+        feature = complex_geometry.geometry.iloc[i]
+
+        if feature.geom_type == "Polygon":
+            simple_geom.append(feature)
+        elif feature.geom_type == "MultiPolygon":
+            for geom_level2 in feature:
+                simple_geom.append(geom_level2)
+    return simple_geom
+
+
+# function to use ckdtrees for nearest point finding
+def ckd_distance(gdf_a, gdf_b):
+    simplified_a = simplify_geom(gdf_a)
+    A = np.concatenate(
+        [np.array(geom.coords) for geom in simplified_a])
+    simplified_b = simplify_geom(gdf_b)
+
+    B = np.concatenate([np.array(geom.coords) for geom in simplified_b])
+    ckd_tree = cKDTree(A)
+    dist, idx = ckd_tree.query(B, k=1)
+    return dist
 
 
 # function to use ckdtrees for nearest point finding
