@@ -4,21 +4,21 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Residence patches for red knots</title>
-  <meta name="description" content="Residence patches for red knots in the Wadden Sea." />
+  <title>Section 7 In development: Residence patch cleaning | Residence patches for red knots</title>
+  <meta name="description" content="Section 7 In development: Residence patch cleaning | Residence patches for red knots in the Wadden Sea." />
   <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Residence patches for red knots" />
+  <meta property="og:title" content="Section 7 In development: Residence patch cleaning | Residence patches for red knots" />
   <meta property="og:type" content="book" />
   
   
-  <meta property="og:description" content="Residence patches for red knots in the Wadden Sea." />
+  <meta property="og:description" content="Section 7 In development: Residence patch cleaning | Residence patches for red knots in the Wadden Sea." />
   <meta name="github-repo" content="pratikunterwegs/knot-association" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Residence patches for red knots" />
+  <meta name="twitter:title" content="Section 7 In development: Residence patch cleaning | Residence patches for red knots" />
   
-  <meta name="twitter:description" content="Residence patches for red knots in the Wadden Sea." />
+  <meta name="twitter:description" content="Section 7 In development: Residence patch cleaning | Residence patches for red knots in the Wadden Sea." />
   
 
 <meta name="author" content="Pratik R Gupte" />
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-
-<link rel="next" href="getting-data.html"/>
+<link rel="prev" href="residence-patch-construction.html"/>
+<link rel="next" href="bathymetry-of-the-griend-mudflats.html"/>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -196,30 +196,75 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="header">
-<h1 class="title">Residence patches for red knots</h1>
-<p class="author"><em>Pratik R Gupte</em></p>
-<p class="date"><em>2020-10-26</em></p>
+<div id="in-development-residence-patch-cleaning" class="section level1">
+<h1><span class="header-section-number">Section 7</span> In development: Residence patch cleaning</h1>
+<p>Residence patches must be cleaned to remove patches where the speed between patches is too high, or too low. We filter for <span class="math inline">\(0 &lt; v &lt; 150\)</span>, where <span class="math inline">\(v\)</span> is the speed between patches.</p>
+<p>We also filter out patches that are too small, ie, fewer than 10 fixes (approx. 5 minutes).</p>
+<p>Once cleaned, these patches can be passed on to the overlap finding algorithm.</p>
+<div id="prepare-libraries" class="section level2">
+<h2><span class="header-section-number">7.1</span> Prepare libraries</h2>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="in-development-residence-patch-cleaning.html#cb22-1"></a><span class="kw">library</span>(data.table)</span>
+<span id="cb22-2"><a href="in-development-residence-patch-cleaning.html#cb22-2"></a><span class="kw">library</span>(purrr)</span></code></pre></div>
 </div>
-<div id="introduction" class="section level1">
-<h1><span class="header-section-number">Section 1</span> Introduction</h1>
-<p>This repository is the source for a project to idenify residence patches from high-resolution tracking data from individual red knots <em>Calidris canutus islandica</em> tracked using the WATLAS system.</p>
-<div id="attribution" class="section level2">
-<h2><span class="header-section-number">1.1</span> Attribution</h2>
-<p>Please contact the following before cloning or in case of interest in the project.</p>
-<p>Pratik Gupte (author and maintainer)<br />
-<a href="https://www.rug.nl/staff/p.r.gupte">PhD student, GELIFES – University of Groningen</a><br />
-Guest researcher, COS – NIOZ<br />
-<a href="mailto:p.r.gupte@rug.nl" class="email">p.r.gupte@rug.nl</a><br />
-Nijenborgh 7/5172.0583 9747AG Groningen</p>
+<div id="load-patches" class="section level2">
+<h2><span class="header-section-number">7.2</span> Load patches</h2>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="in-development-residence-patch-cleaning.html#cb23-1"></a><span class="co"># load data</span></span>
+<span id="cb23-2"><a href="in-development-residence-patch-cleaning.html#cb23-2"></a>patches &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data_2018/data_2018_patch_summary.csv&quot;</span>)</span>
+<span id="cb23-3"><a href="in-development-residence-patch-cleaning.html#cb23-3"></a></span>
+<span id="cb23-4"><a href="in-development-residence-patch-cleaning.html#cb23-4"></a><span class="co"># add uid</span></span>
+<span id="cb23-5"><a href="in-development-residence-patch-cleaning.html#cb23-5"></a>patches[, uid <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">seq_len</span>(<span class="kw">nrow</span>(patches))]</span></code></pre></div>
 </div>
-<div id="data-access" class="section level2">
-<h2><span class="header-section-number">1.2</span> Data access</h2>
-<p>The data used in this work are not publicly available. Contact PI <a href="allert.bijleveld@nioz.nl">Allert Bijleveld (COS-NIOZ)</a> for data access.</p>
+<div id="calculate-speed-between-patches" class="section level2">
+<h2><span class="header-section-number">7.3</span> Calculate speed between patches</h2>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="in-development-residence-patch-cleaning.html#cb24-1"></a><span class="co"># this is the speed in metres per second</span></span>
+<span id="cb24-2"><a href="in-development-residence-patch-cleaning.html#cb24-2"></a>patches[, speed <span class="op">:</span><span class="er">=</span><span class="st"> </span>distBwPatch <span class="op">/</span><span class="st"> </span></span>
+<span id="cb24-3"><a href="in-development-residence-patch-cleaning.html#cb24-3"></a><span class="st">          </span><span class="kw">c</span>(<span class="ot">NA</span>, time_start[<span class="op">-</span><span class="dv">1</span>] <span class="op">-</span><span class="st"> </span></span>
+<span id="cb24-4"><a href="in-development-residence-patch-cleaning.html#cb24-4"></a><span class="st">              </span>time_end[<span class="kw">seq_len</span>(<span class="kw">length</span>(time_end) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)]),</span>
+<span id="cb24-5"><a href="in-development-residence-patch-cleaning.html#cb24-5"></a>        by =<span class="st"> </span>.(id, tide_number)]</span>
+<span id="cb24-6"><a href="in-development-residence-patch-cleaning.html#cb24-6"></a></span>
+<span id="cb24-7"><a href="in-development-residence-patch-cleaning.html#cb24-7"></a><span class="co"># what is 150 km/hr in m/s</span></span>
+<span id="cb24-8"><a href="in-development-residence-patch-cleaning.html#cb24-8"></a>cutoff_speed &lt;-<span class="st"> </span><span class="dv">15</span> <span class="co"># around 54 kmph</span></span>
+<span id="cb24-9"><a href="in-development-residence-patch-cleaning.html#cb24-9"></a></span>
+<span id="cb24-10"><a href="in-development-residence-patch-cleaning.html#cb24-10"></a><span class="co"># filter ridiculous speeds</span></span>
+<span id="cb24-11"><a href="in-development-residence-patch-cleaning.html#cb24-11"></a>patches &lt;-<span class="st"> </span>patches[<span class="kw">between</span>(speed, <span class="fl">1e-4</span>, cutoff_speed), ]</span></code></pre></div>
 </div>
-<div id="data-processing" class="section level2">
-<h2><span class="header-section-number">1.3</span> Data processing</h2>
-<p>The data processing for this project is described in the following sections. Navigate through them using the links in the sidebar.</p>
+<div id="remove-sequences-of-reflected-patches" class="section level2">
+<h2><span class="header-section-number">7.4</span> Remove sequences of reflected patches</h2>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="in-development-residence-patch-cleaning.html#cb25-1"></a><span class="co"># recalculate the distance b/w patches</span></span>
+<span id="cb25-2"><a href="in-development-residence-patch-cleaning.html#cb25-2"></a>patches2 &lt;-<span class="st"> </span>patches[id <span class="op">==</span><span class="st"> &quot;554&quot;</span>, ]</span>
+<span id="cb25-3"><a href="in-development-residence-patch-cleaning.html#cb25-3"></a>patches2 &lt;-<span class="st"> </span>patches2[duration <span class="op">&gt;=</span><span class="st"> </span><span class="dv">10</span> <span class="op">*</span><span class="st"> </span><span class="dv">60</span>, ]</span>
+<span id="cb25-4"><a href="in-development-residence-patch-cleaning.html#cb25-4"></a></span>
+<span id="cb25-5"><a href="in-development-residence-patch-cleaning.html#cb25-5"></a>patches2 &lt;-<span class="st"> </span><span class="kw">split</span>(patches2, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;id&quot;</span>))</span>
+<span id="cb25-6"><a href="in-development-residence-patch-cleaning.html#cb25-6"></a></span>
+<span id="cb25-7"><a href="in-development-residence-patch-cleaning.html#cb25-7"></a></span>
+<span id="cb25-8"><a href="in-development-residence-patch-cleaning.html#cb25-8"></a><span class="co"># this is the speed in metres per second</span></span>
+<span id="cb25-9"><a href="in-development-residence-patch-cleaning.html#cb25-9"></a>patches2 &lt;-<span class="st"> </span><span class="kw">map</span>(patches2, <span class="cf">function</span>(df) {</span>
+<span id="cb25-10"><a href="in-development-residence-patch-cleaning.html#cb25-10"></a>  </span>
+<span id="cb25-11"><a href="in-development-residence-patch-cleaning.html#cb25-11"></a>  df &lt;-<span class="st"> </span>df[speed <span class="op">&lt;</span><span class="st"> </span><span class="dv">15</span>, ]</span>
+<span id="cb25-12"><a href="in-development-residence-patch-cleaning.html#cb25-12"></a>  </span>
+<span id="cb25-13"><a href="in-development-residence-patch-cleaning.html#cb25-13"></a>  df[, distBwPatch <span class="op">:</span><span class="er">=</span><span class="st"> </span>watlastools<span class="op">::</span><span class="kw">wat_bw_patch_dist</span>(df)]</span>
+<span id="cb25-14"><a href="in-development-residence-patch-cleaning.html#cb25-14"></a>  </span>
+<span id="cb25-15"><a href="in-development-residence-patch-cleaning.html#cb25-15"></a>  <span class="co"># replace </span></span>
+<span id="cb25-16"><a href="in-development-residence-patch-cleaning.html#cb25-16"></a>  df[, distBwPatch <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">nafill</span>(distBwPatch, <span class="dt">type =</span> <span class="st">&quot;const&quot;</span>, <span class="dt">fill =</span> <span class="ot">Inf</span>)]</span>
+<span id="cb25-17"><a href="in-development-residence-patch-cleaning.html#cb25-17"></a>  </span>
+<span id="cb25-18"><a href="in-development-residence-patch-cleaning.html#cb25-18"></a>  df[, speed <span class="op">:</span><span class="er">=</span><span class="st"> </span>distBwPatch <span class="op">/</span><span class="st"> </span></span>
+<span id="cb25-19"><a href="in-development-residence-patch-cleaning.html#cb25-19"></a><span class="st">          </span><span class="kw">c</span>(<span class="dv">1</span>, time_start[<span class="op">-</span><span class="dv">1</span>] <span class="op">-</span><span class="st"> </span></span>
+<span id="cb25-20"><a href="in-development-residence-patch-cleaning.html#cb25-20"></a><span class="st">              </span>time_end[<span class="kw">seq_len</span>(<span class="kw">length</span>(time_end) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)])]</span>
+<span id="cb25-21"><a href="in-development-residence-patch-cleaning.html#cb25-21"></a>  </span>
+<span id="cb25-22"><a href="in-development-residence-patch-cleaning.html#cb25-22"></a>  <span class="co"># where is the speed greater than a cutoff</span></span>
+<span id="cb25-23"><a href="in-development-residence-patch-cleaning.html#cb25-23"></a>  df[, reflection <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">cumsum</span>(speed <span class="op">&gt;</span><span class="st"> </span>cutoff_speed)]</span>
+<span id="cb25-24"><a href="in-development-residence-patch-cleaning.html#cb25-24"></a>  </span>
+<span id="cb25-25"><a href="in-development-residence-patch-cleaning.html#cb25-25"></a>  <span class="kw">return</span>(df)</span>
+<span id="cb25-26"><a href="in-development-residence-patch-cleaning.html#cb25-26"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="in-development-residence-patch-cleaning.html#cb26-1"></a><span class="co"># bind the rows</span></span>
+<span id="cb26-2"><a href="in-development-residence-patch-cleaning.html#cb26-2"></a>patches2 &lt;-<span class="st"> </span><span class="kw">rbindlist</span>(patches2)</span>
+<span id="cb26-3"><a href="in-development-residence-patch-cleaning.html#cb26-3"></a>patches2[tide_number <span class="op">==</span><span class="st"> </span><span class="dv">96</span>, ]</span></code></pre></div>
+<p>The number of patches is down to 57,089.</p>
+</div>
+<div id="export-this-good-patch-data" class="section level2">
+<h2><span class="header-section-number">7.5</span> Export this ‘good’ patch data</h2>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="in-development-residence-patch-cleaning.html#cb27-1"></a><span class="co"># export the summary</span></span>
+<span id="cb27-2"><a href="in-development-residence-patch-cleaning.html#cb27-2"></a><span class="kw">fwrite</span>(patches, <span class="st">&quot;data/data_2018/data_2018_good_patches.csv&quot;</span>)</span></code></pre></div>
 
 </div>
 </div>
@@ -228,8 +273,8 @@ Nijenborgh 7/5172.0583 9747AG Groningen</p>
           </div>
         </div>
       </div>
-
-<a href="getting-data.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="residence-patch-construction.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="bathymetry-of-the-griend-mudflats.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -251,7 +296,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/pratikunterwegs/knot-patches/edit/master/index.rmd",
+"link": "https://github.com/pratikunterwegs/knot-patches/edit/master/06_clean_residence_patches.rmd",
 "text": "Edit"
 },
 "history": {
