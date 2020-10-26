@@ -29,6 +29,7 @@ access_params.txt
 tide_rise/
 *.js
 figs/*.html
+*.xlsx
 
 # any zip files
 *.zip
@@ -36,6 +37,9 @@ figs/*.html
 
 # tif files
 *.tif
+
+# any geopackages
+*.gpkg
 
 # anything to do with visual studio
 .vscode/
