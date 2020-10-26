@@ -3,7 +3,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-# Residence patch cleaning
+# In development: Residence patch cleaning
 
 Residence patches must be cleaned to remove patches where the speed between patches is too high, or too low. We filter for $0 < v < 150$, where $v$ is the speed between patches.
 

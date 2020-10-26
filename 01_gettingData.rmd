@@ -3,8 +3,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-**OH BLOODY HELL THERE'S TIDYVERSE EVERYWHERE REMOVE IT ALL**
-
 # Getting data
 
 This section focusses on accessing and downloading WATLAS data. This is done using functions in the [WATLAS Utilities package](https://github.com/pratikunterwegs/watlastools). 
