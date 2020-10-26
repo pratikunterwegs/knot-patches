@@ -22,7 +22,7 @@ library(purrr)
 
 ```{r}
 # load data
-patches <- fread("data/data2018/data_2018_patch_summary.csv")
+patches <- fread("data/data_2018/data_2018_patch_summary.csv")
 
 # add uid
 patches[, uid := seq_len(nrow(patches))]
@@ -88,5 +88,5 @@ The number of patches is down to 57,089.
 
 ```{r}
 # export the summary
-fwrite(patches, "data/data2018/data_2018_good_patches.csv")
+fwrite(patches, "data/data_2018/data_2018_good_patches.csv")
 ```

@@ -43,7 +43,7 @@ data_q <- quantile(data_m, na.rm = T, probs = 1:1000/1000)
 
 ```{r load_waterlevel_s01}
 # read in waterlevel data
-waterlevel <- fread("data/data2018/waterlevelWestTerschelling.csv", sep = ";")
+waterlevel <- fread("data/data_2018/waterlevelWestTerschelling.csv", sep = ";")
 
 # select useful columns and rename
 waterlevel <- waterlevel[,.(WAARNEMINGDATUM, WAARNEMINGTIJD, NUMERIEKEWAARDE)]

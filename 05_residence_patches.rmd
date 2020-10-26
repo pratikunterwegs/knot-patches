@@ -39,8 +39,8 @@ ci <- function(x) {
 ## Patch construction
 
 ```{r remove_old_data}
-if (file.exists("data/data2018/data_2018_patch_summary.csv")) {
-  file.remove("data/data2018/data_2018_patch_summary.csv")
+if (file.exists("data/data_2018/data_2018_patch_summary.csv")) {
+  file.remove("data/data_2018/data_2018_patch_summary.csv")
 }
 ```
 
@@ -49,7 +49,7 @@ Process patches. Takes approx. 5 hours for 3 second data.
 ```{r make_patches, message=FALSE, warning=FALSE}
 # make a vector of data files to read
 data_files <- list.files(
-  path = "data/data2018/data_pre_patch",
+  path = "data/data_2018/data_pre_patch",
   pattern = "_revisit.csv", full.names = TRUE
 )
 
@@ -111,7 +111,7 @@ walk(data, function(df_list) {
   })
 
   tryCatch(
-    { 
+    {
       # repair high tide patches across an individual's tidal cycles
       repaired_data <- wat_repair_ht_patches(patch_data_list = patch_data)
       # write patch summary data
@@ -123,7 +123,7 @@ walk(data, function(df_list) {
           which_data = "summary"
         )
         fwrite(patch_summary,
-          file = "data/data2018/data_2018_patch_summary.csv",
+          file = "data/data_2018/data_2018_patch_summary.csv",
           append = TRUE
         )
 
@@ -135,7 +135,7 @@ walk(data, function(df_list) {
         sf::st_crs(patch_spatial) <- 32631
       }
       sf::st_write(patch_spatial,
-        dsn = "data/data2018/spatials/patches_2018.gpkg",
+        dsn = "data/data_2018/spatials/patches_2018.gpkg",
         append = TRUE
       )
     },

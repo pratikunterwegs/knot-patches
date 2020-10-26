@@ -5,15 +5,15 @@ options(digits = 3)
 knitr::opts_chunk$set(
   comment = "#>",
   collapse = TRUE,
-  eval  = FALSE,
+  eval = FALSE,
   cache = FALSE,
   warning = FALSE,
   error = FALSE,
   message = FALSE,
-  out.width = "\\textwidth", 
+  out.width = "\\textwidth",
   fig.align = "center",
   fig.width = 7,
-  fig.asp = 0.618,  # 1 / phi
+  fig.asp = 0.618, # 1 / phi
   fig.show = "hold"
 )
 options(knitr.kable.NA = "")

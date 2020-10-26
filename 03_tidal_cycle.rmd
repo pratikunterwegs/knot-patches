@@ -37,11 +37,11 @@ library(watlastools)
 
 ## Read water level data
 
-Water level data for [West Terschelling](https://waterinfo.rws.nl/#!/details/publiek/waterhoogte-t-o-v-nap/West-Terschelling(WTER)/Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm), a settlement approx. 10km from the field site are provided by Rijkswaterstaat's [Waterinfo](https://waterinfo.rws.nl/#!/nav/bulkdownload/parameters/Waterhoogten/), in cm above Amsterdam Ordnance Datum. These data are manually downloaded in the range July 1, 2018 -- October 31, 2018 and saved in `data/data2018`.
+Water level data for [West Terschelling](https://waterinfo.rws.nl/#!/details/publiek/waterhoogte-t-o-v-nap/West-Terschelling(WTER)/Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm), a settlement approx. 10km from the field site are provided by Rijkswaterstaat's [Waterinfo](https://waterinfo.rws.nl/#!/nav/bulkdownload/parameters/Waterhoogten/), in cm above Amsterdam Ordnance Datum. These data are manually downloaded in the range July 1, 2018 -- October 31, 2018 and saved in `data/data_2018`.
 
 ```{r read_waterlevel_data, message=FALSE, warning=FALSE}
 # read in waterlevel data
-waterlevel <- fread("data/data2018/waterlevelWestTerschelling.csv", sep = ";")
+waterlevel <- fread("data/data_2018/waterlevelWestTerschelling.csv", sep = ";")
 
 # select useful columns and rename
 waterlevel <- waterlevel[, .(WAARNEMINGDATUM, WAARNEMINGTIJD, NUMERIEKEWAARDE)]
@@ -69,7 +69,7 @@ tides <- VulnToolkit::HL(waterlevel$level,
 )
 
 # read in release data and get first release - 24 hrs
-tag_info <- fread("data/data2018/SelinDB.csv")
+tag_info <- fread("data/data_2018/SelinDB.csv")
 tag_info <- tag_info[!is.na(Release_Date) & !is.na(Release_Time), ]
 tag_info[, Release_Date := as.POSIXct(paste(Release_Date,
   Release_Time,
@@ -85,13 +85,13 @@ first_release <- min(tag_info$Release_Date, na.rm = TRUE) - (3600 * 24)
 
 # remove tides before first release
 tides <- setDT(tides)[time > first_release, ][, tide2 := NULL]
-tides[, tide_number := 1:nrow(tides)]
+tides[, tide_number := seq(nrow(tides))]
 ```
 
 ```{r write_tide_data, message=FALSE, warning=FALSE}
 # write to local file
 fwrite(tides,
-  file = "data/data2018/tides_2018.csv",
+  file = "data/data_2018/tides_2018.csv",
   dateTimeAs = "ISO"
 )
 ```
@@ -101,7 +101,7 @@ fwrite(tides,
 ```{r time_to_high_tide, message=FALSE, warning=FALSE}
 # read in data and add time since high tide
 data_files <- list.files(
-  path = "data/data2018/data_processed/",
+  path = "data/data_2018/data_processed/",
   pattern = "id_", full.names = TRUE
 )
 data_ids <- str_extract(data_files, "(id_\\d+)") %>% str_sub(-3, -1)
@@ -119,7 +119,7 @@ invisible(
     # merge with tides and order on time
     temp_data <- wat_add_tide(
       data = temp_data,
-      tide_data = "data/data2018/tides_2018.csv"
+      tide_data = "data/data_2018/tides_2018.csv"
     )
 
     # add waterlevel
