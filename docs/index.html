@@ -4,27 +4,27 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Individual consistency in space-use across scales</title>
-  <meta name="description" content="Individual consistency in space-use across scales" />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <title>Residence patches for red knots</title>
+  <meta name="description" content="Residence patches for red knots in the Wadden Sea." />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Individual consistency in space-use across scales" />
+  <meta property="og:title" content="Residence patches for red knots" />
   <meta property="og:type" content="book" />
   
   
-  <meta property="og:description" content="Individual consistency in space-use across scales" />
-  <meta name="github-repo" content="pratikunterwegs/knotPatches" />
+  <meta property="og:description" content="Residence patches for red knots in the Wadden Sea." />
+  <meta name="github-repo" content="pratikunterwegs/knot-association" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Individual consistency in space-use across scales" />
+  <meta name="twitter:title" content="Residence patches for red knots" />
   
-  <meta name="twitter:description" content="Individual consistency in space-use across scales" />
+  <meta name="twitter:description" content="Residence patches for red knots in the Wadden Sea." />
   
 
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2020-04-27" />
+<meta name="date" content="2020-10-26" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -50,28 +50,30 @@
 
 
 
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -80,9 +82,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -128,67 +130,54 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#attribution"><i class="fa fa-check"></i><b>1.1</b> Attribution</a></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#data-access"><i class="fa fa-check"></i><b>1.2</b> Data access</a></li>
 <li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#data-processing"><i class="fa fa-check"></i><b>1.3</b> Data processing</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="getting-data.html"><a href="getting-data.html"><i class="fa fa-check"></i><b>2</b> Getting data</a><ul>
+<li class="chapter" data-level="2" data-path="getting-data.html"><a href="getting-data.html"><i class="fa fa-check"></i><b>2</b> Getting data</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="getting-data.html"><a href="getting-data.html#prepare-watlastools-and-other-libraries"><i class="fa fa-check"></i><b>2.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
 <li class="chapter" data-level="2.2" data-path="getting-data.html"><a href="getting-data.html#read-in-tag-deployment-data"><i class="fa fa-check"></i><b>2.2</b> Read in tag deployment data</a></li>
 <li class="chapter" data-level="2.3" data-path="getting-data.html"><a href="getting-data.html#get-data-and-save-locally"><i class="fa fa-check"></i><b>2.3</b> Get data and save locally</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning data</a><ul>
-<li class="chapter" data-level="3.1" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-watlastools-and-other-libraries-1"><i class="fa fa-check"></i><b>3.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
+<li class="chapter" data-level="3" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning data</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="getting-data.html"><a href="getting-data.html#prepare-watlastools-and-other-libraries"><i class="fa fa-check"></i><b>3.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
 <li class="chapter" data-level="3.2" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-to-remove-attractor-points"><i class="fa fa-check"></i><b>3.2</b> Prepare to remove attractor points</a></li>
 <li class="chapter" data-level="3.3" data-path="cleaning-data.html"><a href="cleaning-data.html#read-clean-and-write-data"><i class="fa fa-check"></i><b>3.3</b> Read, clean, and write data</a></li>
+<li class="chapter" data-level="3.4" data-path="cleaning-data.html"><a href="cleaning-data.html#tracking-period-for-each-id"><i class="fa fa-check"></i><b>3.4</b> Tracking period for each id</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html"><i class="fa fa-check"></i><b>4</b> Adding tidal cycle data</a><ul>
+<li class="chapter" data-level="4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html"><i class="fa fa-check"></i><b>4</b> Adding tidal cycle data</a>
+<ul>
 <li class="chapter" data-level="4.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>4.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="4.2" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#read-water-level-data"><i class="fa fa-check"></i><b>4.2</b> Read water level data</a></li>
 <li class="chapter" data-level="4.3" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#calculate-high-tides"><i class="fa fa-check"></i><b>4.3</b> Calculate high tides</a></li>
 <li class="chapter" data-level="4.4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#add-time-since-high-tide"><i class="fa fa-check"></i><b>4.4</b> Add time since high tide</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="revisit-analysis.html"><a href="revisit-analysis.html"><i class="fa fa-check"></i><b>5</b> Revisit analysis</a><ul>
-<li class="chapter" data-level="5.1" data-path="revisit-analysis.html"><a href="revisit-analysis.html#prepare-libraries-1"><i class="fa fa-check"></i><b>5.1</b> Prepare libraries</a></li>
+<li class="chapter" data-level="5" data-path="revisit-analysis.html"><a href="revisit-analysis.html"><i class="fa fa-check"></i><b>5</b> Revisit analysis</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>5.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="5.2" data-path="revisit-analysis.html"><a href="revisit-analysis.html#read-data-split-recurse-write"><i class="fa fa-check"></i><b>5.2</b> Read data, split, recurse, write</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html"><i class="fa fa-check"></i><b>6</b> Residence patch construction</a><ul>
-<li class="chapter" data-level="6.1" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#prepare-libraries-2"><i class="fa fa-check"></i><b>6.1</b> Prepare libraries</a></li>
+<li class="chapter" data-level="6" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html"><i class="fa fa-check"></i><b>6</b> Residence patch construction</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>6.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="6.2" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#patch-construction"><i class="fa fa-check"></i><b>6.2</b> Patch construction</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html"><i class="fa fa-check"></i><b>7</b> Finding spatio-temporal patch clusters</a><ul>
-<li class="chapter" data-level="7.1" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#load-libs"><i class="fa fa-check"></i><b>7.1</b> Load libs</a></li>
-<li class="chapter" data-level="7.2" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#prepare-patch-data"><i class="fa fa-check"></i><b>7.2</b> Prepare patch data</a></li>
-<li class="chapter" data-level="7.3" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#prepare-python-libraries"><i class="fa fa-check"></i><b>7.3</b> Prepare Python libraries</a></li>
-<li class="chapter" data-level="7.4" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#find-patch-clusters"><i class="fa fa-check"></i><b>7.4</b> Find patch clusters</a></li>
+<li class="chapter" data-level="7" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html"><i class="fa fa-check"></i><b>7</b> Bathymetry of the Griend mudflats</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#get-data-and-plot-basic-trend"><i class="fa fa-check"></i><b>7.1</b> Get data and plot basic trend</a></li>
+<li class="chapter" data-level="7.2" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#plot-as-3d-maps"><i class="fa fa-check"></i><b>7.2</b> Plot as 3D maps</a></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html"><i class="fa fa-check"></i><b>8</b> Basic cluster description</a><ul>
-<li class="chapter" data-level="8.1" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#prepare-libraries-3"><i class="fa fa-check"></i><b>8.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="8.2" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#read-in-data"><i class="fa fa-check"></i><b>8.2</b> Read in data</a></li>
-<li class="chapter" data-level="8.3" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#summarise-patches-per-module"><i class="fa fa-check"></i><b>8.3</b> Summarise patches per module</a></li>
-<li class="chapter" data-level="8.4" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#summarise-birds-per-module"><i class="fa fa-check"></i><b>8.4</b> Summarise birds per module</a></li>
-<li class="chapter" data-level="8.5" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#does-number-of-patches-scale-with-individuals-in-module"><i class="fa fa-check"></i><b>8.5</b> Does number of patches scale with individuals in module?</a></li>
-</ul></li>
-<li class="chapter" data-level="9" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html"><i class="fa fa-check"></i><b>9</b> Patch metrics in relation to module size</a><ul>
-<li class="chapter" data-level="9.1" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#prepare-libraries-4"><i class="fa fa-check"></i><b>9.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="9.2" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#read-in-module-data"><i class="fa fa-check"></i><b>9.2</b> Read in module data</a></li>
-<li class="chapter" data-level="9.3" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#add-patch-data"><i class="fa fa-check"></i><b>9.3</b> Add patch data</a></li>
-<li class="chapter" data-level="9.4" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#visualise-modules"><i class="fa fa-check"></i><b>9.4</b> Visualise modules</a></li>
-<li class="chapter" data-level="9.5" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#module-metrics-and-composition-waterlevel"><i class="fa fa-check"></i><b>9.5</b> Module metrics and composition ~ waterlevel</a></li>
-<li class="chapter" data-level="9.6" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#patch-size-number-of-patches-in-a-module"><i class="fa fa-check"></i><b>9.6</b> Patch size ~ number of patches in a module</a></li>
-</ul></li>
-<li class="chapter" data-level="10" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html"><i class="fa fa-check"></i><b>10</b> Modules and individual traits</a><ul>
-<li class="chapter" data-level="10.1" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#prepare-libraries-5"><i class="fa fa-check"></i><b>10.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="10.2" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#read-in-module-data-1"><i class="fa fa-check"></i><b>10.2</b> Read in module data</a></li>
-<li class="chapter" data-level="10.3" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#count-unique-modules-per-individual"><i class="fa fa-check"></i><b>10.3</b> Count unique modules per individual</a></li>
-<li class="chapter" data-level="10.4" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#link-modules-to-individual-data"><i class="fa fa-check"></i><b>10.4</b> Link modules to individual data</a></li>
-<li class="chapter" data-level="10.5" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#add-patch-data-1"><i class="fa fa-check"></i><b>10.5</b> Add patch data</a></li>
-<li class="chapter" data-level="10.6" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#link-independent-patches-to-traits"><i class="fa fa-check"></i><b>10.6</b> Link independent patches to traits</a></li>
-</ul></li>
-<li class="chapter" data-level="11" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html"><i class="fa fa-check"></i><b>11</b> Bathymetry of the Griend mudflats</a><ul>
-<li class="chapter" data-level="11.1" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#get-data-and-plot-basic-trend"><i class="fa fa-check"></i><b>11.1</b> Get data and plot basic trend</a></li>
-<li class="chapter" data-level="11.2" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#plot-as-3d-maps"><i class="fa fa-check"></i><b>11.2</b> Plot as 3D maps</a></li>
+<li class="chapter" data-level="8" data-path="residence-patch-cleaning.html"><a href="residence-patch-cleaning.html"><i class="fa fa-check"></i><b>8</b> Residence patch cleaning</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>8.1</b> Prepare libraries</a></li>
+<li class="chapter" data-level="8.2" data-path="residence-patch-cleaning.html"><a href="residence-patch-cleaning.html#load-patches"><i class="fa fa-check"></i><b>8.2</b> Load patches</a></li>
+<li class="chapter" data-level="8.3" data-path="residence-patch-cleaning.html"><a href="residence-patch-cleaning.html#calculate-speed-between-patches"><i class="fa fa-check"></i><b>8.3</b> Calculate speed between patches</a></li>
+<li class="chapter" data-level="8.4" data-path="residence-patch-cleaning.html"><a href="residence-patch-cleaning.html#remove-sequences-of-reflected-patches"><i class="fa fa-check"></i><b>8.4</b> Remove sequences of reflected patches</a></li>
+<li class="chapter" data-level="8.5" data-path="residence-patch-cleaning.html"><a href="residence-patch-cleaning.html#export-this-good-patch-data"><i class="fa fa-check"></i><b>8.5</b> Export this ‘good’ patch data</a></li>
 </ul></li>
 </ul>
 
@@ -199,7 +188,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Individual consistency in space-use across scales</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Residence patches for red knots</a>
           </h1>
         </div>
 
@@ -208,13 +197,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="header">
-<h1 class="title">Individual consistency in space-use across scales</h1>
+<h1 class="title">Residence patches for red knots</h1>
 <p class="author"><em>Pratik R Gupte</em></p>
-<p class="date"><em>2020-04-27</em></p>
+<p class="date"><em>2020-10-26</em></p>
 </div>
 <div id="introduction" class="section level1">
 <h1><span class="header-section-number">Section 1</span> Introduction</h1>
-<p>This is the <code>bookdown</code> version of a project in preparation that links high-resolution tracking data from individual red knots <em>Calidris canutus islandica</em> to fine-scale experimental behaviour measurements in captivity, and examines whether individuals are consistent across scales in their space-use.</p>
+<p>This repository is the source for a project to idenify residence patches from high-resolution tracking data from individual red knots <em>Calidris canutus islandica</em> tracked using the WATLAS system.</p>
 <div id="attribution" class="section level2">
 <h2><span class="header-section-number">1.1</span> Attribution</h2>
 <p>Please contact the following before cloning or in case of interest in the project.</p>
@@ -232,6 +221,7 @@ Nijenborgh 7/5172.0583 9747AG Groningen</p>
 <h2><span class="header-section-number">1.3</span> Data processing</h2>
 <p>The data processing for this project is described in the following sections. Navigate through them using the links in the sidebar.</p>
 
+<p><strong>OH BLOODY HELL THERE’S TIDYVERSE EVERYWHERE REMOVE IT ALL</strong></p>
 </div>
 </div>
             </section>
@@ -262,7 +252,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/pratikunterwegs/knotPatches/edit/master/index.rmd",
+"link": "https://github.com/pratikunterwegs/knot-patches/edit/master/index.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -281,6 +271,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

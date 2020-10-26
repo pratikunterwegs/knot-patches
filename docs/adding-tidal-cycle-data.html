@@ -4,27 +4,27 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Section 4 Adding tidal cycle data | Individual consistency in space-use across scales</title>
-  <meta name="description" content="Section 4 Adding tidal cycle data | Individual consistency in space-use across scales" />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <title>Section 4 Adding tidal cycle data | Residence patches for red knots</title>
+  <meta name="description" content="Section 4 Adding tidal cycle data | Residence patches for red knots in the Wadden Sea." />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Section 4 Adding tidal cycle data | Individual consistency in space-use across scales" />
+  <meta property="og:title" content="Section 4 Adding tidal cycle data | Residence patches for red knots" />
   <meta property="og:type" content="book" />
   
   
-  <meta property="og:description" content="Section 4 Adding tidal cycle data | Individual consistency in space-use across scales" />
-  <meta name="github-repo" content="pratikunterwegs/knotPatches" />
+  <meta property="og:description" content="Section 4 Adding tidal cycle data | Residence patches for red knots in the Wadden Sea." />
+  <meta name="github-repo" content="pratikunterwegs/knot-association" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Section 4 Adding tidal cycle data | Individual consistency in space-use across scales" />
+  <meta name="twitter:title" content="Section 4 Adding tidal cycle data | Residence patches for red knots" />
   
-  <meta name="twitter:description" content="Section 4 Adding tidal cycle data | Individual consistency in space-use across scales" />
+  <meta name="twitter:description" content="Section 4 Adding tidal cycle data | Residence patches for red knots in the Wadden Sea." />
   
 
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2020-04-27" />
+<meta name="date" content="2020-10-26" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -50,28 +50,30 @@
 
 
 
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -80,9 +82,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -128,67 +130,54 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#attribution"><i class="fa fa-check"></i><b>1.1</b> Attribution</a></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#data-access"><i class="fa fa-check"></i><b>1.2</b> Data access</a></li>
 <li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#data-processing"><i class="fa fa-check"></i><b>1.3</b> Data processing</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="getting-data.html"><a href="getting-data.html"><i class="fa fa-check"></i><b>2</b> Getting data</a><ul>
+<li class="chapter" data-level="2" data-path="getting-data.html"><a href="getting-data.html"><i class="fa fa-check"></i><b>2</b> Getting data</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="getting-data.html"><a href="getting-data.html#prepare-watlastools-and-other-libraries"><i class="fa fa-check"></i><b>2.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
 <li class="chapter" data-level="2.2" data-path="getting-data.html"><a href="getting-data.html#read-in-tag-deployment-data"><i class="fa fa-check"></i><b>2.2</b> Read in tag deployment data</a></li>
 <li class="chapter" data-level="2.3" data-path="getting-data.html"><a href="getting-data.html#get-data-and-save-locally"><i class="fa fa-check"></i><b>2.3</b> Get data and save locally</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning data</a><ul>
-<li class="chapter" data-level="3.1" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-watlastools-and-other-libraries-1"><i class="fa fa-check"></i><b>3.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
+<li class="chapter" data-level="3" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning data</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="getting-data.html"><a href="getting-data.html#prepare-watlastools-and-other-libraries"><i class="fa fa-check"></i><b>3.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
 <li class="chapter" data-level="3.2" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-to-remove-attractor-points"><i class="fa fa-check"></i><b>3.2</b> Prepare to remove attractor points</a></li>
 <li class="chapter" data-level="3.3" data-path="cleaning-data.html"><a href="cleaning-data.html#read-clean-and-write-data"><i class="fa fa-check"></i><b>3.3</b> Read, clean, and write data</a></li>
+<li class="chapter" data-level="3.4" data-path="cleaning-data.html"><a href="cleaning-data.html#tracking-period-for-each-id"><i class="fa fa-check"></i><b>3.4</b> Tracking period for each id</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html"><i class="fa fa-check"></i><b>4</b> Adding tidal cycle data</a><ul>
+<li class="chapter" data-level="4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html"><i class="fa fa-check"></i><b>4</b> Adding tidal cycle data</a>
+<ul>
 <li class="chapter" data-level="4.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>4.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="4.2" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#read-water-level-data"><i class="fa fa-check"></i><b>4.2</b> Read water level data</a></li>
 <li class="chapter" data-level="4.3" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#calculate-high-tides"><i class="fa fa-check"></i><b>4.3</b> Calculate high tides</a></li>
 <li class="chapter" data-level="4.4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#add-time-since-high-tide"><i class="fa fa-check"></i><b>4.4</b> Add time since high tide</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="revisit-analysis.html"><a href="revisit-analysis.html"><i class="fa fa-check"></i><b>5</b> Revisit analysis</a><ul>
-<li class="chapter" data-level="5.1" data-path="revisit-analysis.html"><a href="revisit-analysis.html#prepare-libraries-1"><i class="fa fa-check"></i><b>5.1</b> Prepare libraries</a></li>
+<li class="chapter" data-level="5" data-path="revisit-analysis.html"><a href="revisit-analysis.html"><i class="fa fa-check"></i><b>5</b> Revisit analysis</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>5.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="5.2" data-path="revisit-analysis.html"><a href="revisit-analysis.html#read-data-split-recurse-write"><i class="fa fa-check"></i><b>5.2</b> Read data, split, recurse, write</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html"><i class="fa fa-check"></i><b>6</b> Residence patch construction</a><ul>
-<li class="chapter" data-level="6.1" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#prepare-libraries-2"><i class="fa fa-check"></i><b>6.1</b> Prepare libraries</a></li>
+<li class="chapter" data-level="6" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html"><i class="fa fa-check"></i><b>6</b> Residence patch construction</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>6.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="6.2" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#patch-construction"><i class="fa fa-check"></i><b>6.2</b> Patch construction</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html"><i class="fa fa-check"></i><b>7</b> Finding spatio-temporal patch clusters</a><ul>
-<li class="chapter" data-level="7.1" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#load-libs"><i class="fa fa-check"></i><b>7.1</b> Load libs</a></li>
-<li class="chapter" data-level="7.2" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#prepare-patch-data"><i class="fa fa-check"></i><b>7.2</b> Prepare patch data</a></li>
-<li class="chapter" data-level="7.3" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#prepare-python-libraries"><i class="fa fa-check"></i><b>7.3</b> Prepare Python libraries</a></li>
-<li class="chapter" data-level="7.4" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#find-patch-clusters"><i class="fa fa-check"></i><b>7.4</b> Find patch clusters</a></li>
+<li class="chapter" data-level="7" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html"><i class="fa fa-check"></i><b>7</b> Bathymetry of the Griend mudflats</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#get-data-and-plot-basic-trend"><i class="fa fa-check"></i><b>7.1</b> Get data and plot basic trend</a></li>
+<li class="chapter" data-level="7.2" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#plot-as-3d-maps"><i class="fa fa-check"></i><b>7.2</b> Plot as 3D maps</a></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html"><i class="fa fa-check"></i><b>8</b> Basic cluster description</a><ul>
-<li class="chapter" data-level="8.1" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#prepare-libraries-3"><i class="fa fa-check"></i><b>8.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="8.2" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#read-in-data"><i class="fa fa-check"></i><b>8.2</b> Read in data</a></li>
-<li class="chapter" data-level="8.3" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#summarise-patches-per-module"><i class="fa fa-check"></i><b>8.3</b> Summarise patches per module</a></li>
-<li class="chapter" data-level="8.4" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#summarise-birds-per-module"><i class="fa fa-check"></i><b>8.4</b> Summarise birds per module</a></li>
-<li class="chapter" data-level="8.5" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#does-number-of-patches-scale-with-individuals-in-module"><i class="fa fa-check"></i><b>8.5</b> Does number of patches scale with individuals in module?</a></li>
-</ul></li>
-<li class="chapter" data-level="9" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html"><i class="fa fa-check"></i><b>9</b> Patch metrics in relation to module size</a><ul>
-<li class="chapter" data-level="9.1" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#prepare-libraries-4"><i class="fa fa-check"></i><b>9.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="9.2" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#read-in-module-data"><i class="fa fa-check"></i><b>9.2</b> Read in module data</a></li>
-<li class="chapter" data-level="9.3" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#add-patch-data"><i class="fa fa-check"></i><b>9.3</b> Add patch data</a></li>
-<li class="chapter" data-level="9.4" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#visualise-modules"><i class="fa fa-check"></i><b>9.4</b> Visualise modules</a></li>
-<li class="chapter" data-level="9.5" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#module-metrics-and-composition-waterlevel"><i class="fa fa-check"></i><b>9.5</b> Module metrics and composition ~ waterlevel</a></li>
-<li class="chapter" data-level="9.6" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#patch-size-number-of-patches-in-a-module"><i class="fa fa-check"></i><b>9.6</b> Patch size ~ number of patches in a module</a></li>
-</ul></li>
-<li class="chapter" data-level="10" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html"><i class="fa fa-check"></i><b>10</b> Modules and individual traits</a><ul>
-<li class="chapter" data-level="10.1" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#prepare-libraries-5"><i class="fa fa-check"></i><b>10.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="10.2" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#read-in-module-data-1"><i class="fa fa-check"></i><b>10.2</b> Read in module data</a></li>
-<li class="chapter" data-level="10.3" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#count-unique-modules-per-individual"><i class="fa fa-check"></i><b>10.3</b> Count unique modules per individual</a></li>
-<li class="chapter" data-level="10.4" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#link-modules-to-individual-data"><i class="fa fa-check"></i><b>10.4</b> Link modules to individual data</a></li>
-<li class="chapter" data-level="10.5" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#add-patch-data-1"><i class="fa fa-check"></i><b>10.5</b> Add patch data</a></li>
-<li class="chapter" data-level="10.6" data-path="modules-and-individual-traits.html"><a href="modules-and-individual-traits.html#link-independent-patches-to-traits"><i class="fa fa-check"></i><b>10.6</b> Link independent patches to traits</a></li>
-</ul></li>
-<li class="chapter" data-level="11" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html"><i class="fa fa-check"></i><b>11</b> Bathymetry of the Griend mudflats</a><ul>
-<li class="chapter" data-level="11.1" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#get-data-and-plot-basic-trend"><i class="fa fa-check"></i><b>11.1</b> Get data and plot basic trend</a></li>
-<li class="chapter" data-level="11.2" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#plot-as-3d-maps"><i class="fa fa-check"></i><b>11.2</b> Plot as 3D maps</a></li>
+<li class="chapter" data-level="8" data-path="residence-patch-cleaning.html"><a href="residence-patch-cleaning.html"><i class="fa fa-check"></i><b>8</b> Residence patch cleaning</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>8.1</b> Prepare libraries</a></li>
+<li class="chapter" data-level="8.2" data-path="residence-patch-cleaning.html"><a href="residence-patch-cleaning.html#load-patches"><i class="fa fa-check"></i><b>8.2</b> Load patches</a></li>
+<li class="chapter" data-level="8.3" data-path="residence-patch-cleaning.html"><a href="residence-patch-cleaning.html#calculate-speed-between-patches"><i class="fa fa-check"></i><b>8.3</b> Calculate speed between patches</a></li>
+<li class="chapter" data-level="8.4" data-path="residence-patch-cleaning.html"><a href="residence-patch-cleaning.html#remove-sequences-of-reflected-patches"><i class="fa fa-check"></i><b>8.4</b> Remove sequences of reflected patches</a></li>
+<li class="chapter" data-level="8.5" data-path="residence-patch-cleaning.html"><a href="residence-patch-cleaning.html#export-this-good-patch-data"><i class="fa fa-check"></i><b>8.5</b> Export this ‘good’ patch data</a></li>
 </ul></li>
 </ul>
 
@@ -199,7 +188,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Individual consistency in space-use across scales</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Residence patches for red knots</a>
           </h1>
         </div>
 
@@ -209,7 +198,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="adding-tidal-cycle-data" class="section level1">
 <h1><span class="header-section-number">Section 4</span> Adding tidal cycle data</h1>
-<p>This section is about adding tidal cycle data to individual trajectories. This is done to split the data up into convenient, and biologically sensible units. This section uses the package <code>VulnToolkit</code> <span class="citation">(Troy D. Hill, Shimon C. Anisfeld <a href="#ref-VulnToolkit2014">2014</a>)</span> to identify high tide times from water-level data provided by Rijkswaterstaat for the measuring point at West Terschelling.</p>
+<p>This section is about adding tidal cycle data to individual trajectories. This is done to split the data up into convenient, and biologically sensible units. This section uses the package <code>VulnToolkit</code> <span class="citation">(Troy D. Hill, Shimon C. Anisfeld <a href="#ref-VulnToolkit2014" role="doc-biblioref">2014</a>)</span> to identify high tide times from water-level data provided by Rijkswaterstaat for the measuring point at West Terschelling.</p>
 <p><strong>Workflow</strong></p>
 <ol style="list-style-type: decimal">
 <li>Prepare required libraries,</li>
@@ -219,92 +208,113 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <div id="prepare-libraries" class="section level2">
 <h2><span class="header-section-number">4.1</span> Prepare libraries</h2>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="co"># load VulnToolkit or install if not available</span></a>
-<a class="sourceLine" id="cb9-2" title="2"><span class="cf">if</span>(<span class="st">&quot;VulnToolkit&quot;</span> <span class="op">%in%</span><span class="st"> </span><span class="kw">installed.packages</span>() <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>){</a>
-<a class="sourceLine" id="cb9-3" title="3">  devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;troyhill/VulnToolkit&quot;</span>)</a>
-<a class="sourceLine" id="cb9-4" title="4">}</a>
-<a class="sourceLine" id="cb9-5" title="5"><span class="kw">library</span>(VulnToolkit)</a>
-<a class="sourceLine" id="cb9-6" title="6"></a>
-<a class="sourceLine" id="cb9-7" title="7"><span class="co"># libraries to process data</span></a>
-<a class="sourceLine" id="cb9-8" title="8"><span class="kw">library</span>(data.table)</a>
-<a class="sourceLine" id="cb9-9" title="9"><span class="kw">library</span>(purrr)</a>
-<a class="sourceLine" id="cb9-10" title="10"><span class="kw">library</span>(glue)</a>
-<a class="sourceLine" id="cb9-11" title="11"><span class="kw">library</span>(dplyr)</a>
-<a class="sourceLine" id="cb9-12" title="12"><span class="kw">library</span>(stringr)</a>
-<a class="sourceLine" id="cb9-13" title="13"><span class="kw">library</span>(fasttime)</a>
-<a class="sourceLine" id="cb9-14" title="14"><span class="kw">library</span>(lubridate)</a>
-<a class="sourceLine" id="cb9-15" title="15"></a>
-<a class="sourceLine" id="cb9-16" title="16"><span class="kw">library</span>(watlastools)</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="adding-tidal-cycle-data.html#cb10-1"></a><span class="co"># load VulnToolkit or install if not available</span></span>
+<span id="cb10-2"><a href="adding-tidal-cycle-data.html#cb10-2"></a><span class="cf">if</span> (<span class="st">&quot;VulnToolkit&quot;</span> <span class="op">%in%</span><span class="st"> </span><span class="kw">installed.packages</span>() <span class="op">==</span><span class="st"> </span><span class="ot">FALSE</span>) {</span>
+<span id="cb10-3"><a href="adding-tidal-cycle-data.html#cb10-3"></a>  devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;troyhill/VulnToolkit&quot;</span>)</span>
+<span id="cb10-4"><a href="adding-tidal-cycle-data.html#cb10-4"></a>}</span>
+<span id="cb10-5"><a href="adding-tidal-cycle-data.html#cb10-5"></a><span class="kw">library</span>(VulnToolkit)</span>
+<span id="cb10-6"><a href="adding-tidal-cycle-data.html#cb10-6"></a></span>
+<span id="cb10-7"><a href="adding-tidal-cycle-data.html#cb10-7"></a><span class="co"># libraries to process data</span></span>
+<span id="cb10-8"><a href="adding-tidal-cycle-data.html#cb10-8"></a><span class="kw">library</span>(data.table)</span>
+<span id="cb10-9"><a href="adding-tidal-cycle-data.html#cb10-9"></a><span class="kw">library</span>(purrr)</span>
+<span id="cb10-10"><a href="adding-tidal-cycle-data.html#cb10-10"></a><span class="kw">library</span>(glue)</span>
+<span id="cb10-11"><a href="adding-tidal-cycle-data.html#cb10-11"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb10-12"><a href="adding-tidal-cycle-data.html#cb10-12"></a><span class="kw">library</span>(stringr)</span>
+<span id="cb10-13"><a href="adding-tidal-cycle-data.html#cb10-13"></a><span class="kw">library</span>(fasttime)</span>
+<span id="cb10-14"><a href="adding-tidal-cycle-data.html#cb10-14"></a><span class="kw">library</span>(lubridate)</span>
+<span id="cb10-15"><a href="adding-tidal-cycle-data.html#cb10-15"></a></span>
+<span id="cb10-16"><a href="adding-tidal-cycle-data.html#cb10-16"></a><span class="kw">library</span>(watlastools)</span></code></pre></div>
 </div>
 <div id="read-water-level-data" class="section level2">
 <h2><span class="header-section-number">4.2</span> Read water level data</h2>
-<p>Water level data for <a href="https://waterinfo.rws.nl/#!/details/publiek/waterhoogte-t-o-v-nap/West-Terschelling(WTER)/Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm">West Terschelling</a>, a settlement approx. 10km from the field site are provided by Rijkswaterstaat’s <a href="https://waterinfo.rws.nl/#!/nav/bulkdownload/parameters/Waterhoogten/">Waterinfo</a>, in cm above Amsterdam Ordnance Datum. These data are manually downloaded in the range July 1, 2018 – October 31, 2018 and saved in <code>data/data2018</code>.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="co"># read in waterlevel data</span></a>
-<a class="sourceLine" id="cb10-2" title="2">waterlevel &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data2018/waterlevelWestTerschelling.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>)</a>
-<a class="sourceLine" id="cb10-3" title="3"></a>
-<a class="sourceLine" id="cb10-4" title="4"><span class="co"># select useful columns and rename</span></a>
-<a class="sourceLine" id="cb10-5" title="5">waterlevel &lt;-<span class="st"> </span>waterlevel[,.(WAARNEMINGDATUM, WAARNEMINGTIJD, NUMERIEKEWAARDE)]</a>
-<a class="sourceLine" id="cb10-6" title="6"></a>
-<a class="sourceLine" id="cb10-7" title="7"><span class="kw">setnames</span>(waterlevel, <span class="kw">c</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;time&quot;</span>, <span class="st">&quot;level&quot;</span>))</a>
-<a class="sourceLine" id="cb10-8" title="8"></a>
-<a class="sourceLine" id="cb10-9" title="9"><span class="co"># make a single POSIXct column of datetime</span></a>
-<a class="sourceLine" id="cb10-10" title="10">waterlevel[,dateTime <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(date, time, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>), </a>
-<a class="sourceLine" id="cb10-11" title="11">                                   <span class="dt">format =</span> <span class="st">&quot;%d-%m-%Y %H:%M:%S&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span>)]</a>
-<a class="sourceLine" id="cb10-12" title="12"></a>
-<a class="sourceLine" id="cb10-13" title="13">waterlevel &lt;-<span class="st"> </span><span class="kw">setDT</span>(<span class="kw">distinct</span>(<span class="kw">setDF</span>(waterlevel), dateTime, <span class="dt">.keep_all =</span> <span class="ot">TRUE</span>))</a></code></pre></div>
+<p>Water level data for <a href="https://waterinfo.rws.nl/#!/details/publiek/waterhoogte-t-o-v-nap/West-Terschelling(WTER)/Waterhoogte___20Oppervlaktewater___20t.o.v.___20Normaal___20Amsterdams___20Peil___20in___20cm">West Terschelling</a>, a settlement approx. 10km from the field site are provided by Rijkswaterstaat’s <a href="https://waterinfo.rws.nl/#!/nav/bulkdownload/parameters/Waterhoogten/">Waterinfo</a>, in cm above Amsterdam Ordnance Datum. These data are manually downloaded in the range July 1, 2018 – October 31, 2018 and saved in <code>data/data_2018</code>.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="adding-tidal-cycle-data.html#cb11-1"></a><span class="co"># read in waterlevel data</span></span>
+<span id="cb11-2"><a href="adding-tidal-cycle-data.html#cb11-2"></a>waterlevel &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data_2018/waterlevelWestTerschelling.csv&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;;&quot;</span>)</span>
+<span id="cb11-3"><a href="adding-tidal-cycle-data.html#cb11-3"></a></span>
+<span id="cb11-4"><a href="adding-tidal-cycle-data.html#cb11-4"></a><span class="co"># select useful columns and rename</span></span>
+<span id="cb11-5"><a href="adding-tidal-cycle-data.html#cb11-5"></a>waterlevel &lt;-<span class="st"> </span>waterlevel[, .(WAARNEMINGDATUM, WAARNEMINGTIJD, NUMERIEKEWAARDE)]</span>
+<span id="cb11-6"><a href="adding-tidal-cycle-data.html#cb11-6"></a></span>
+<span id="cb11-7"><a href="adding-tidal-cycle-data.html#cb11-7"></a><span class="kw">setnames</span>(waterlevel, <span class="kw">c</span>(<span class="st">&quot;date&quot;</span>, <span class="st">&quot;time&quot;</span>, <span class="st">&quot;level&quot;</span>))</span>
+<span id="cb11-8"><a href="adding-tidal-cycle-data.html#cb11-8"></a></span>
+<span id="cb11-9"><a href="adding-tidal-cycle-data.html#cb11-9"></a><span class="co"># make a single POSIXct column of datetime</span></span>
+<span id="cb11-10"><a href="adding-tidal-cycle-data.html#cb11-10"></a>waterlevel[, dateTime <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(date, time, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>),</span>
+<span id="cb11-11"><a href="adding-tidal-cycle-data.html#cb11-11"></a>  <span class="dt">format =</span> <span class="st">&quot;%d-%m-%Y %H:%M:%S&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span></span>
+<span id="cb11-12"><a href="adding-tidal-cycle-data.html#cb11-12"></a>)]</span>
+<span id="cb11-13"><a href="adding-tidal-cycle-data.html#cb11-13"></a></span>
+<span id="cb11-14"><a href="adding-tidal-cycle-data.html#cb11-14"></a>waterlevel &lt;-<span class="st"> </span><span class="kw">setDT</span>(<span class="kw">distinct</span>(<span class="kw">setDF</span>(waterlevel), dateTime, <span class="dt">.keep_all =</span> <span class="ot">TRUE</span>))</span></code></pre></div>
 </div>
 <div id="calculate-high-tides" class="section level2">
 <h2><span class="header-section-number">4.3</span> Calculate high tides</h2>
 <p>A tidal period of 12 hours 25 minutes is taken from <a href="https://www.rijkswaterstaat.nl/water/waterdata-en-waterberichtgeving/waterdata/getij/index.aspx">Rijkswaterstaat</a>.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="co"># use the HL function from vulnToolkit to get high tides</span></a>
-<a class="sourceLine" id="cb11-2" title="2">tides &lt;-<span class="st"> </span>VulnToolkit<span class="op">::</span><span class="kw">HL</span>(waterlevel<span class="op">$</span>level,</a>
-<a class="sourceLine" id="cb11-3" title="3">                         waterlevel<span class="op">$</span>dateTime, <span class="dt">period =</span> <span class="fl">12.41</span>, </a>
-<a class="sourceLine" id="cb11-4" title="4">                         <span class="dt">tides =</span> <span class="st">&quot;H&quot;</span>, <span class="dt">semidiurnal =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb11-5" title="5"></a>
-<a class="sourceLine" id="cb11-6" title="6"><span class="co"># read in release data and get first release - 24 hrs</span></a>
-<a class="sourceLine" id="cb11-7" title="7">tag_info &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data2018/SelinDB.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb11-8" title="8">tag_info &lt;-<span class="st"> </span>tag_info[<span class="op">!</span><span class="kw">is.na</span>(Release_Date) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(Release_Time),]</a>
-<a class="sourceLine" id="cb11-9" title="9">tag_info[,Release_Date <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(Release_Date, Release_Time, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>), <span class="dt">format =</span> <span class="st">&quot;%d.%m.%y %H:%M&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span>)]</a>
-<a class="sourceLine" id="cb11-10" title="10"></a>
-<a class="sourceLine" id="cb11-11" title="11">first_release &lt;-<span class="st"> </span><span class="kw">min</span>(tag_info<span class="op">$</span>Release_Date) <span class="op">-</span><span class="st"> </span>(<span class="dv">3600</span><span class="op">*</span><span class="dv">24</span>)</a>
-<a class="sourceLine" id="cb11-12" title="12"></a>
-<a class="sourceLine" id="cb11-13" title="13"><span class="co"># remove tides before first release</span></a>
-<a class="sourceLine" id="cb11-14" title="14">tides &lt;-<span class="st"> </span><span class="kw">setDT</span>(tides)[time <span class="op">&gt;</span><span class="st"> </span>first_release, ][,tide2<span class="op">:</span><span class="er">=</span><span class="ot">NULL</span>]</a>
-<a class="sourceLine" id="cb11-15" title="15">tides[,tide_number<span class="op">:</span><span class="er">=</span><span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(tides)]</a></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1"><span class="co"># write to local file</span></a>
-<a class="sourceLine" id="cb12-2" title="2"><span class="kw">fwrite</span>(tides, <span class="dt">file =</span> <span class="st">&quot;data/data2018/tidesSummer2018.csv&quot;</span>, </a>
-<a class="sourceLine" id="cb12-3" title="3">       <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="adding-tidal-cycle-data.html#cb12-1"></a><span class="co"># use the HL function from vulnToolkit to get high tides</span></span>
+<span id="cb12-2"><a href="adding-tidal-cycle-data.html#cb12-2"></a>tides &lt;-<span class="st"> </span>VulnToolkit<span class="op">::</span><span class="kw">HL</span>(waterlevel<span class="op">$</span>level,</span>
+<span id="cb12-3"><a href="adding-tidal-cycle-data.html#cb12-3"></a>  waterlevel<span class="op">$</span>dateTime,</span>
+<span id="cb12-4"><a href="adding-tidal-cycle-data.html#cb12-4"></a>  <span class="dt">period =</span> <span class="fl">12.41</span>,</span>
+<span id="cb12-5"><a href="adding-tidal-cycle-data.html#cb12-5"></a>  <span class="dt">tides =</span> <span class="st">&quot;H&quot;</span>, <span class="dt">semidiurnal =</span> <span class="ot">TRUE</span></span>
+<span id="cb12-6"><a href="adding-tidal-cycle-data.html#cb12-6"></a>)</span>
+<span id="cb12-7"><a href="adding-tidal-cycle-data.html#cb12-7"></a></span>
+<span id="cb12-8"><a href="adding-tidal-cycle-data.html#cb12-8"></a><span class="co"># read in release data and get first release - 24 hrs</span></span>
+<span id="cb12-9"><a href="adding-tidal-cycle-data.html#cb12-9"></a>tag_info &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data_2018/SelinDB.csv&quot;</span>)</span>
+<span id="cb12-10"><a href="adding-tidal-cycle-data.html#cb12-10"></a>tag_info &lt;-<span class="st"> </span>tag_info[<span class="op">!</span><span class="kw">is.na</span>(Release_Date) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(Release_Time), ]</span>
+<span id="cb12-11"><a href="adding-tidal-cycle-data.html#cb12-11"></a>tag_info[, Release_Date <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(Release_Date,</span>
+<span id="cb12-12"><a href="adding-tidal-cycle-data.html#cb12-12"></a>  Release_Time,</span>
+<span id="cb12-13"><a href="adding-tidal-cycle-data.html#cb12-13"></a>  <span class="dt">sep =</span> <span class="st">&quot; &quot;</span></span>
+<span id="cb12-14"><a href="adding-tidal-cycle-data.html#cb12-14"></a>),</span>
+<span id="cb12-15"><a href="adding-tidal-cycle-data.html#cb12-15"></a><span class="dt">format =</span> <span class="st">&quot;%d.%m.%y %H:%M&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span></span>
+<span id="cb12-16"><a href="adding-tidal-cycle-data.html#cb12-16"></a>)]</span>
+<span id="cb12-17"><a href="adding-tidal-cycle-data.html#cb12-17"></a></span>
+<span id="cb12-18"><a href="adding-tidal-cycle-data.html#cb12-18"></a><span class="co"># remove NAs</span></span>
+<span id="cb12-19"><a href="adding-tidal-cycle-data.html#cb12-19"></a>tag_info &lt;-<span class="st"> </span><span class="kw">na.omit</span>(tag_info, <span class="dt">cols =</span> <span class="st">&quot;Release_Date&quot;</span>)</span>
+<span id="cb12-20"><a href="adding-tidal-cycle-data.html#cb12-20"></a></span>
+<span id="cb12-21"><a href="adding-tidal-cycle-data.html#cb12-21"></a>first_release &lt;-<span class="st"> </span><span class="kw">min</span>(tag_info<span class="op">$</span>Release_Date, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) <span class="op">-</span><span class="st"> </span>(<span class="dv">3600</span> <span class="op">*</span><span class="st"> </span><span class="dv">24</span>)</span>
+<span id="cb12-22"><a href="adding-tidal-cycle-data.html#cb12-22"></a></span>
+<span id="cb12-23"><a href="adding-tidal-cycle-data.html#cb12-23"></a><span class="co"># remove tides before first release</span></span>
+<span id="cb12-24"><a href="adding-tidal-cycle-data.html#cb12-24"></a>tides &lt;-<span class="st"> </span><span class="kw">setDT</span>(tides)[time <span class="op">&gt;</span><span class="st"> </span>first_release, ][, tide2 <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="ot">NULL</span>]</span>
+<span id="cb12-25"><a href="adding-tidal-cycle-data.html#cb12-25"></a>tides[, tide_number <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">seq</span>(<span class="kw">nrow</span>(tides))]</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="adding-tidal-cycle-data.html#cb13-1"></a><span class="co"># write to local file</span></span>
+<span id="cb13-2"><a href="adding-tidal-cycle-data.html#cb13-2"></a><span class="kw">fwrite</span>(tides,</span>
+<span id="cb13-3"><a href="adding-tidal-cycle-data.html#cb13-3"></a>  <span class="dt">file =</span> <span class="st">&quot;data/data_2018/tides_2018.csv&quot;</span>,</span>
+<span id="cb13-4"><a href="adding-tidal-cycle-data.html#cb13-4"></a>  <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span></span>
+<span id="cb13-5"><a href="adding-tidal-cycle-data.html#cb13-5"></a>)</span></code></pre></div>
 </div>
 <div id="add-time-since-high-tide" class="section level2">
 <h2><span class="header-section-number">4.4</span> Add time since high tide</h2>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="co"># read in data and add time since high tide</span></a>
-<a class="sourceLine" id="cb13-2" title="2">data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data/data2018/locs_proc&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;id_&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb13-3" title="3">data_ids &lt;-<span class="st"> </span><span class="kw">str_extract</span>(data_files, <span class="st">&quot;(id_</span><span class="ch">\\</span><span class="st">d+)&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_sub</span>(<span class="op">-</span><span class="dv">3</span>,<span class="op">-</span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb13-4" title="4"></a>
-<a class="sourceLine" id="cb13-5" title="5"><span class="co"># map read in and tidal time calculation over data</span></a>
-<a class="sourceLine" id="cb13-6" title="6"><span class="co"># merge data to insert high tides within movement data</span></a>
-<a class="sourceLine" id="cb13-7" title="7"><span class="co"># arrange by time to position high tides correctly</span></a>
-<a class="sourceLine" id="cb13-8" title="8"><span class="kw">map</span>(data_files, <span class="cf">function</span>(df){</a>
-<a class="sourceLine" id="cb13-9" title="9">  </a>
-<a class="sourceLine" id="cb13-10" title="10">  <span class="co"># read and fix data types</span></a>
-<a class="sourceLine" id="cb13-11" title="11">  temp_data &lt;-<span class="st"> </span><span class="kw">fread</span>(df, <span class="dt">integer64 =</span> <span class="st">&quot;numeric&quot;</span>)</a>
-<a class="sourceLine" id="cb13-12" title="12">  temp_data[,ts<span class="op">:</span><span class="er">=</span><span class="kw">fastPOSIXct</span>(ts, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span>)]</a>
-<a class="sourceLine" id="cb13-13" title="13">  </a>
-<a class="sourceLine" id="cb13-14" title="14">  <span class="co"># merge with tides and order on time</span></a>
-<a class="sourceLine" id="cb13-15" title="15">  temp_data &lt;-<span class="st"> </span><span class="kw">wat_add_tide</span>(<span class="dt">df =</span> temp_data,</a>
-<a class="sourceLine" id="cb13-16" title="16">               <span class="dt">tide_data =</span> <span class="st">&quot;data/data2018/tidesSummer2018.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb13-17" title="17"></a>
-<a class="sourceLine" id="cb13-18" title="18">  <span class="co"># add waterlevel</span></a>
-<a class="sourceLine" id="cb13-19" title="19">  temp_data[,temp_time <span class="op">:</span><span class="er">=</span><span class="st"> </span>lubridate<span class="op">::</span><span class="kw">round_date</span>(ts, <span class="dt">unit =</span> <span class="st">&quot;10 minute&quot;</span>)]</a>
-<a class="sourceLine" id="cb13-20" title="20">  temp_data &lt;-<span class="st"> </span><span class="kw">merge</span>(temp_data, waterlevel[,.(dateTime, level)], </a>
-<a class="sourceLine" id="cb13-21" title="21">                     <span class="dt">by.x =</span> <span class="st">&quot;temp_time&quot;</span>, <span class="dt">by.y =</span> <span class="st">&quot;dateTime&quot;</span>)</a>
-<a class="sourceLine" id="cb13-22" title="22">  <span class="kw">setnames</span>(temp_data, <span class="dt">old =</span> <span class="st">&quot;level&quot;</span>, <span class="dt">new =</span> <span class="st">&quot;waterlevel&quot;</span>)</a>
-<a class="sourceLine" id="cb13-23" title="23">  </a>
-<a class="sourceLine" id="cb13-24" title="24">  <span class="co"># export data, print msg, remove data</span></a>
-<a class="sourceLine" id="cb13-25" title="25">  <span class="kw">fwrite</span>(temp_data, <span class="dt">file =</span> df, <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</a>
-<a class="sourceLine" id="cb13-26" title="26">  <span class="kw">message</span>(<span class="kw">glue</span>(<span class="st">&#39;tag {unique(temp_data$id)} added time since high tide&#39;</span>))</a>
-<a class="sourceLine" id="cb13-27" title="27">  <span class="kw">rm</span>(temp_data)</a>
-<a class="sourceLine" id="cb13-28" title="28">})</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="adding-tidal-cycle-data.html#cb14-1"></a><span class="co"># read in data and add time since high tide</span></span>
+<span id="cb14-2"><a href="adding-tidal-cycle-data.html#cb14-2"></a>data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(</span>
+<span id="cb14-3"><a href="adding-tidal-cycle-data.html#cb14-3"></a>  <span class="dt">path =</span> <span class="st">&quot;data/data_2018/data_processed/&quot;</span>,</span>
+<span id="cb14-4"><a href="adding-tidal-cycle-data.html#cb14-4"></a>  <span class="dt">pattern =</span> <span class="st">&quot;id_&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span></span>
+<span id="cb14-5"><a href="adding-tidal-cycle-data.html#cb14-5"></a>)</span>
+<span id="cb14-6"><a href="adding-tidal-cycle-data.html#cb14-6"></a>data_ids &lt;-<span class="st"> </span><span class="kw">str_extract</span>(data_files, <span class="st">&quot;(id_</span><span class="ch">\\</span><span class="st">d+)&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_sub</span>(<span class="op">-</span><span class="dv">3</span>, <span class="dv">-1</span>)</span>
+<span id="cb14-7"><a href="adding-tidal-cycle-data.html#cb14-7"></a></span>
+<span id="cb14-8"><a href="adding-tidal-cycle-data.html#cb14-8"></a><span class="co"># map read in and tidal time calculation over data</span></span>
+<span id="cb14-9"><a href="adding-tidal-cycle-data.html#cb14-9"></a><span class="co"># merge data to insert high tides within movement data</span></span>
+<span id="cb14-10"><a href="adding-tidal-cycle-data.html#cb14-10"></a><span class="co"># arrange by time to position high tides correctly</span></span>
+<span id="cb14-11"><a href="adding-tidal-cycle-data.html#cb14-11"></a><span class="kw">invisible</span>(</span>
+<span id="cb14-12"><a href="adding-tidal-cycle-data.html#cb14-12"></a>  <span class="kw">lapply</span>(data_files, <span class="cf">function</span>(df) {</span>
+<span id="cb14-13"><a href="adding-tidal-cycle-data.html#cb14-13"></a></span>
+<span id="cb14-14"><a href="adding-tidal-cycle-data.html#cb14-14"></a>    <span class="co"># read and fix data types</span></span>
+<span id="cb14-15"><a href="adding-tidal-cycle-data.html#cb14-15"></a>    temp_data &lt;-<span class="st"> </span><span class="kw">fread</span>(df, <span class="dt">integer64 =</span> <span class="st">&quot;numeric&quot;</span>)</span>
+<span id="cb14-16"><a href="adding-tidal-cycle-data.html#cb14-16"></a>    temp_data[, ts <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">fastPOSIXct</span>(ts, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span>)]</span>
+<span id="cb14-17"><a href="adding-tidal-cycle-data.html#cb14-17"></a></span>
+<span id="cb14-18"><a href="adding-tidal-cycle-data.html#cb14-18"></a>    <span class="co"># merge with tides and order on time</span></span>
+<span id="cb14-19"><a href="adding-tidal-cycle-data.html#cb14-19"></a>    temp_data &lt;-<span class="st"> </span><span class="kw">wat_add_tide</span>(</span>
+<span id="cb14-20"><a href="adding-tidal-cycle-data.html#cb14-20"></a>      <span class="dt">data =</span> temp_data,</span>
+<span id="cb14-21"><a href="adding-tidal-cycle-data.html#cb14-21"></a>      <span class="dt">tide_data =</span> <span class="st">&quot;data/data_2018/tides_2018.csv&quot;</span></span>
+<span id="cb14-22"><a href="adding-tidal-cycle-data.html#cb14-22"></a>    )</span>
+<span id="cb14-23"><a href="adding-tidal-cycle-data.html#cb14-23"></a></span>
+<span id="cb14-24"><a href="adding-tidal-cycle-data.html#cb14-24"></a>    <span class="co"># add waterlevel</span></span>
+<span id="cb14-25"><a href="adding-tidal-cycle-data.html#cb14-25"></a>    temp_data[, temp_time <span class="op">:</span><span class="er">=</span><span class="st"> </span>lubridate<span class="op">::</span><span class="kw">round_date</span>(ts, <span class="dt">unit =</span> <span class="st">&quot;10 minute&quot;</span>)]</span>
+<span id="cb14-26"><a href="adding-tidal-cycle-data.html#cb14-26"></a>    temp_data &lt;-<span class="st"> </span><span class="kw">merge</span>(temp_data, waterlevel[, .(dateTime, level)],</span>
+<span id="cb14-27"><a href="adding-tidal-cycle-data.html#cb14-27"></a>      <span class="dt">by.x =</span> <span class="st">&quot;temp_time&quot;</span>, <span class="dt">by.y =</span> <span class="st">&quot;dateTime&quot;</span></span>
+<span id="cb14-28"><a href="adding-tidal-cycle-data.html#cb14-28"></a>    )</span>
+<span id="cb14-29"><a href="adding-tidal-cycle-data.html#cb14-29"></a>    <span class="kw">setnames</span>(temp_data, <span class="dt">old =</span> <span class="st">&quot;level&quot;</span>, <span class="dt">new =</span> <span class="st">&quot;waterlevel&quot;</span>)</span>
+<span id="cb14-30"><a href="adding-tidal-cycle-data.html#cb14-30"></a></span>
+<span id="cb14-31"><a href="adding-tidal-cycle-data.html#cb14-31"></a>    <span class="co"># export data, print msg, remove data</span></span>
+<span id="cb14-32"><a href="adding-tidal-cycle-data.html#cb14-32"></a>    <span class="kw">fwrite</span>(temp_data, <span class="dt">file =</span> df, <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</span>
+<span id="cb14-33"><a href="adding-tidal-cycle-data.html#cb14-33"></a>    <span class="kw">message</span>(<span class="kw">glue</span>(<span class="st">&quot;tag {unique(temp_data$id)} added time since high tide&quot;</span>))</span>
+<span id="cb14-34"><a href="adding-tidal-cycle-data.html#cb14-34"></a>    <span class="kw">rm</span>(temp_data)</span>
+<span id="cb14-35"><a href="adding-tidal-cycle-data.html#cb14-35"></a>  })</span>
+<span id="cb14-36"><a href="adding-tidal-cycle-data.html#cb14-36"></a>)</span></code></pre></div>
 
 </div>
 </div>
@@ -342,7 +352,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/pratikunterwegs/knotPatches/edit/master/03_addingTides.rmd",
+"link": "https://github.com/pratikunterwegs/knot-patches/edit/master/03_tidal_cycle.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -361,6 +371,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>
