@@ -26,19 +26,20 @@ library(ggthemes)
 ```{r load_data_s01}
 # load bathymetry and subset
 data <- raster("data/bathymetry_waddenSea_2015.tif")
-griend <- st_read("griend_polygon/griend_polygon.shp") %>% 
+griend <- st_read("data/griend_polygon/griend_polygon.shp") %>% 
   st_buffer(10.5e3)
 
 # assign utm 31 crs and subset
-crs(data) <- unlist(st_crs(griend)[2])
+crs(data) <- st_crs(griend)$proj4string
 data <- crop(data, as(griend, "Spatial"))
 data <- aggregate(data, fact = 2)
+
 # remove 20m outliers
 #data[data > 500] <- NA
 data_m <- raster_to_matrix(data)
 
 # get quantiles of the matrix
-data_q <- quantile(data_m, na.rm = T, probs = 1:1000/1000)
+data_q <- quantile(data_m, na.rm = T, probs = seq(1000) / 1000)
 ```
 
 ```{r load_waterlevel_s01}
@@ -61,7 +62,8 @@ waterlevel <- setDT(distinct(setDF(waterlevel), dateTime, .keep_all = TRUE))
 # plot waterlevel quantiles with data from west terschelling
 waterlimits <- range(waterlevel$level)
 
-fig_waterlevel_area <- ggplot()+
+fig_waterlevel_area <- 
+  ggplot()+
   geom_line(aes(x = 1:1000/1000, y = data_q))+
   geom_hline(yintercept = waterlimits, col = "blue", lty = 2)+
   geom_hline(yintercept = 0, lty = 2, col = "red")+
@@ -71,7 +73,7 @@ fig_waterlevel_area <- ggplot()+
   labs(x = "% area covered", y = "waterlevel (cm over NAP)")
 
 ggsave(fig_waterlevel_area, filename = "figs/fig_waterlevel_area.png",
-       dpi = 300, height = 4, width = 6); dev.off()
+       dpi = 300, height = 4, width = 6)
 ```
 
 ## Plot as 3D maps

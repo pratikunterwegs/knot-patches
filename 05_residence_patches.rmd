@@ -14,7 +14,7 @@ This section is about using the main `watlastools` functions to infer residence 
 
 ## Prepare libraries
 
-```{r prep_libs, message=FALSE, warning=FALSE}
+```{r prep_libs_2, message=FALSE, warning=FALSE}
 # load watlastools or install if not available
 if (!"watlastools" %in% installed.packages()) {
   devtools::install_github("pratikunterwegs/watlastools", ref = "develop")
