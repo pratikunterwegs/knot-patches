@@ -11,9 +11,9 @@
 *.rdata
 
 # anything in the data folders
-data/
-# except model output
-!data2018/modOutput
+data2018
+!attractor_points.txt
+access_params.txt
 
 # any scripts that access data
 *data_func*
@@ -29,9 +29,17 @@ data/
 tide_rise/
 *.js
 figs/*.html
+*.xlsx
 
 # any zip files
 *.zip
+*.osm
+
+# tif files
+*.tif
+
+# any geopackages
+*.gpkg
 
 # anything to do with visual studio
 .vscode/

@@ -4,27 +4,27 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Section 3 Cleaning data | Individual space-use in relation to the social environment and resource landscape</title>
-  <meta name="description" content="Section 3 Cleaning data | Individual space-use in relation to the social environment and resource landscape" />
-  <meta name="generator" content="bookdown 0.18 and GitBook 2.6.7" />
+  <title>Section 3 Cleaning data | Residence patches for red knots</title>
+  <meta name="description" content="Section 3 Cleaning data | Residence patches for red knots in the Wadden Sea." />
+  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Section 3 Cleaning data | Individual space-use in relation to the social environment and resource landscape" />
+  <meta property="og:title" content="Section 3 Cleaning data | Residence patches for red knots" />
   <meta property="og:type" content="book" />
   
   
-  <meta property="og:description" content="Section 3 Cleaning data | Individual space-use in relation to the social environment and resource landscape" />
-  <meta name="github-repo" content="pratikunterwegs/knotPatches" />
+  <meta property="og:description" content="Section 3 Cleaning data | Residence patches for red knots in the Wadden Sea." />
+  <meta name="github-repo" content="pratikunterwegs/knot-association" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Section 3 Cleaning data | Individual space-use in relation to the social environment and resource landscape" />
+  <meta name="twitter:title" content="Section 3 Cleaning data | Residence patches for red knots" />
   
-  <meta name="twitter:description" content="Section 3 Cleaning data | Individual space-use in relation to the social environment and resource landscape" />
+  <meta name="twitter:description" content="Section 3 Cleaning data | Residence patches for red knots in the Wadden Sea." />
   
 
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2020-05-04" />
+<meta name="date" content="2020-10-26" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -50,28 +50,30 @@
 
 
 
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -80,9 +82,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -128,69 +130,54 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
+<ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#attribution"><i class="fa fa-check"></i><b>1.1</b> Attribution</a></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#data-access"><i class="fa fa-check"></i><b>1.2</b> Data access</a></li>
 <li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#data-processing"><i class="fa fa-check"></i><b>1.3</b> Data processing</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="getting-data.html"><a href="getting-data.html"><i class="fa fa-check"></i><b>2</b> Getting data</a><ul>
+<li class="chapter" data-level="2" data-path="getting-data.html"><a href="getting-data.html"><i class="fa fa-check"></i><b>2</b> Getting data</a>
+<ul>
 <li class="chapter" data-level="2.1" data-path="getting-data.html"><a href="getting-data.html#prepare-watlastools-and-other-libraries"><i class="fa fa-check"></i><b>2.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
 <li class="chapter" data-level="2.2" data-path="getting-data.html"><a href="getting-data.html#read-in-tag-deployment-data"><i class="fa fa-check"></i><b>2.2</b> Read in tag deployment data</a></li>
 <li class="chapter" data-level="2.3" data-path="getting-data.html"><a href="getting-data.html#get-data-and-save-locally"><i class="fa fa-check"></i><b>2.3</b> Get data and save locally</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning data</a><ul>
-<li class="chapter" data-level="3.1" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-watlastools-and-other-libraries-1"><i class="fa fa-check"></i><b>3.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
+<li class="chapter" data-level="3" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning data</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="getting-data.html"><a href="getting-data.html#prepare-watlastools-and-other-libraries"><i class="fa fa-check"></i><b>3.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
 <li class="chapter" data-level="3.2" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-to-remove-attractor-points"><i class="fa fa-check"></i><b>3.2</b> Prepare to remove attractor points</a></li>
 <li class="chapter" data-level="3.3" data-path="cleaning-data.html"><a href="cleaning-data.html#read-clean-and-write-data"><i class="fa fa-check"></i><b>3.3</b> Read, clean, and write data</a></li>
+<li class="chapter" data-level="3.4" data-path="cleaning-data.html"><a href="cleaning-data.html#tracking-period-for-each-id"><i class="fa fa-check"></i><b>3.4</b> Tracking period for each id</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html"><i class="fa fa-check"></i><b>4</b> Adding tidal cycle data</a><ul>
+<li class="chapter" data-level="4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html"><i class="fa fa-check"></i><b>4</b> Adding tidal cycle data</a>
+<ul>
 <li class="chapter" data-level="4.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>4.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="4.2" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#read-water-level-data"><i class="fa fa-check"></i><b>4.2</b> Read water level data</a></li>
 <li class="chapter" data-level="4.3" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#calculate-high-tides"><i class="fa fa-check"></i><b>4.3</b> Calculate high tides</a></li>
 <li class="chapter" data-level="4.4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#add-time-since-high-tide"><i class="fa fa-check"></i><b>4.4</b> Add time since high tide</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="revisit-analysis.html"><a href="revisit-analysis.html"><i class="fa fa-check"></i><b>5</b> Revisit analysis</a><ul>
-<li class="chapter" data-level="5.1" data-path="revisit-analysis.html"><a href="revisit-analysis.html#prepare-libraries-1"><i class="fa fa-check"></i><b>5.1</b> Prepare libraries</a></li>
+<li class="chapter" data-level="5" data-path="revisit-analysis.html"><a href="revisit-analysis.html"><i class="fa fa-check"></i><b>5</b> Revisit analysis</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>5.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="5.2" data-path="revisit-analysis.html"><a href="revisit-analysis.html#read-data-split-recurse-write"><i class="fa fa-check"></i><b>5.2</b> Read data, split, recurse, write</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html"><i class="fa fa-check"></i><b>6</b> Residence patch construction</a><ul>
-<li class="chapter" data-level="6.1" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#prepare-libraries-2"><i class="fa fa-check"></i><b>6.1</b> Prepare libraries</a></li>
+<li class="chapter" data-level="6" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html"><i class="fa fa-check"></i><b>6</b> Residence patch construction</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>6.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="6.2" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#patch-construction"><i class="fa fa-check"></i><b>6.2</b> Patch construction</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html"><i class="fa fa-check"></i><b>7</b> Finding spatio-temporal patch clusters</a><ul>
-<li class="chapter" data-level="7.1" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#load-libs"><i class="fa fa-check"></i><b>7.1</b> Load libs</a></li>
-<li class="chapter" data-level="7.2" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#prepare-patch-data"><i class="fa fa-check"></i><b>7.2</b> Prepare patch data</a></li>
-<li class="chapter" data-level="7.3" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#prepare-python-libraries"><i class="fa fa-check"></i><b>7.3</b> Prepare Python libraries</a></li>
-<li class="chapter" data-level="7.4" data-path="finding-spatio-temporal-patch-clusters.html"><a href="finding-spatio-temporal-patch-clusters.html#find-patch-clusters"><i class="fa fa-check"></i><b>7.4</b> Find patch clusters</a></li>
+<li class="chapter" data-level="7" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html"><i class="fa fa-check"></i><b>7</b> Bathymetry of the Griend mudflats</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#get-data-and-plot-basic-trend"><i class="fa fa-check"></i><b>7.1</b> Get data and plot basic trend</a></li>
+<li class="chapter" data-level="7.2" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#plot-as-3d-maps"><i class="fa fa-check"></i><b>7.2</b> Plot as 3D maps</a></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html"><i class="fa fa-check"></i><b>8</b> Basic cluster description</a><ul>
-<li class="chapter" data-level="8.1" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#prepare-libraries-3"><i class="fa fa-check"></i><b>8.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="8.2" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#read-in-data"><i class="fa fa-check"></i><b>8.2</b> Read in data</a></li>
-<li class="chapter" data-level="8.3" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#summarise-patches-per-module"><i class="fa fa-check"></i><b>8.3</b> Summarise patches per module</a></li>
-<li class="chapter" data-level="8.4" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#summarise-birds-per-module"><i class="fa fa-check"></i><b>8.4</b> Summarise birds per module</a></li>
-<li class="chapter" data-level="8.5" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#does-number-of-patches-scale-with-individuals-in-module"><i class="fa fa-check"></i><b>8.5</b> Does number of patches scale with individuals in module?</a></li>
-<li class="chapter" data-level="8.6" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#module-metrics-and-composition-waterlevel"><i class="fa fa-check"></i><b>8.6</b> Module metrics and composition ~ waterlevel</a></li>
-<li class="chapter" data-level="8.7" data-path="basic-cluster-description.html"><a href="basic-cluster-description.html#visualise-modules"><i class="fa fa-check"></i><b>8.7</b> Visualise modules</a></li>
-</ul></li>
-<li class="chapter" data-level="9" data-path="individual-traits-and-presence-in-modules.html"><a href="individual-traits-and-presence-in-modules.html"><i class="fa fa-check"></i><b>9</b> Individual traits and presence in modules</a><ul>
-<li class="chapter" data-level="9.1" data-path="individual-traits-and-presence-in-modules.html"><a href="individual-traits-and-presence-in-modules.html#prepare-libraries-4"><i class="fa fa-check"></i><b>9.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="9.2" data-path="individual-traits-and-presence-in-modules.html"><a href="individual-traits-and-presence-in-modules.html#read-in-module-data"><i class="fa fa-check"></i><b>9.2</b> Read in module data</a></li>
-<li class="chapter" data-level="9.3" data-path="individual-traits-and-presence-in-modules.html"><a href="individual-traits-and-presence-in-modules.html#count-unique-modules-per-individual"><i class="fa fa-check"></i><b>9.3</b> Count unique modules per individual</a></li>
-<li class="chapter" data-level="9.4" data-path="individual-traits-and-presence-in-modules.html"><a href="individual-traits-and-presence-in-modules.html#link-modules-to-individual-data"><i class="fa fa-check"></i><b>9.4</b> Link modules to individual data</a></li>
-<li class="chapter" data-level="9.5" data-path="individual-traits-and-presence-in-modules.html"><a href="individual-traits-and-presence-in-modules.html#add-patch-data"><i class="fa fa-check"></i><b>9.5</b> Add patch data</a></li>
-<li class="chapter" data-level="9.6" data-path="individual-traits-and-presence-in-modules.html"><a href="individual-traits-and-presence-in-modules.html#link-independent-patches-to-traits"><i class="fa fa-check"></i><b>9.6</b> Link independent patches to traits</a></li>
-</ul></li>
-<li class="chapter" data-level="10" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html"><i class="fa fa-check"></i><b>10</b> Patch metrics in relation to module size</a><ul>
-<li class="chapter" data-level="10.1" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#prepare-libraries-5"><i class="fa fa-check"></i><b>10.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="10.2" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#read-in-module-data-1"><i class="fa fa-check"></i><b>10.2</b> Read in module data</a></li>
-<li class="chapter" data-level="10.3" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#add-patch-data-1"><i class="fa fa-check"></i><b>10.3</b> Add patch data</a></li>
-<li class="chapter" data-level="10.4" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#patch-size-number-of-patches-in-a-module"><i class="fa fa-check"></i><b>10.4</b> Patch size ~ number of patches in a module</a></li>
-<li class="chapter" data-level="10.5" data-path="patch-metrics-in-relation-to-module-size.html"><a href="patch-metrics-in-relation-to-module-size.html#get-patches-not-in-modules"><i class="fa fa-check"></i><b>10.5</b> Get patches not in modules</a></li>
-</ul></li>
-<li class="chapter" data-level="11" data-path="patch-metrics-inside-and-outside-modules.html"><a href="patch-metrics-inside-and-outside-modules.html"><i class="fa fa-check"></i><b>11</b> Patch metrics inside and outside modules</a></li>
-<li class="chapter" data-level="12" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html"><i class="fa fa-check"></i><b>12</b> Bathymetry of the Griend mudflats</a><ul>
-<li class="chapter" data-level="12.1" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#get-data-and-plot-basic-trend"><i class="fa fa-check"></i><b>12.1</b> Get data and plot basic trend</a></li>
-<li class="chapter" data-level="12.2" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#plot-as-3d-maps"><i class="fa fa-check"></i><b>12.2</b> Plot as 3D maps</a></li>
+<li class="chapter" data-level="8" data-path="residence-patch-cleaning.html"><a href="residence-patch-cleaning.html"><i class="fa fa-check"></i><b>8</b> Residence patch cleaning</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>8.1</b> Prepare libraries</a></li>
+<li class="chapter" data-level="8.2" data-path="residence-patch-cleaning.html"><a href="residence-patch-cleaning.html#load-patches"><i class="fa fa-check"></i><b>8.2</b> Load patches</a></li>
+<li class="chapter" data-level="8.3" data-path="residence-patch-cleaning.html"><a href="residence-patch-cleaning.html#calculate-speed-between-patches"><i class="fa fa-check"></i><b>8.3</b> Calculate speed between patches</a></li>
+<li class="chapter" data-level="8.4" data-path="residence-patch-cleaning.html"><a href="residence-patch-cleaning.html#remove-sequences-of-reflected-patches"><i class="fa fa-check"></i><b>8.4</b> Remove sequences of reflected patches</a></li>
+<li class="chapter" data-level="8.5" data-path="residence-patch-cleaning.html"><a href="residence-patch-cleaning.html#export-this-good-patch-data"><i class="fa fa-check"></i><b>8.5</b> Export this ‘good’ patch data</a></li>
 </ul></li>
 </ul>
 
@@ -201,7 +188,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Individual space-use in relation to the social environment and resource landscape</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Residence patches for red knots</a>
           </h1>
         </div>
 
@@ -217,86 +204,129 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Prepare required libraries.</li>
 <li>Read in data, apply the cleaning function, and overwrite local data.</li>
 </ol>
-<div id="prepare-watlastools-and-other-libraries-1" class="section level2">
+<div id="prepare-watlastools-and-other-libraries" class="section level2">
 <h2><span class="header-section-number">3.1</span> Prepare <code>watlastools</code> and other libraries</h2>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="co"># watlastools assumed installed from the previous step</span></a>
-<a class="sourceLine" id="cb6-2" title="2"><span class="co"># if not, install from the github repo as shown below</span></a>
-<a class="sourceLine" id="cb6-3" title="3"></a>
-<a class="sourceLine" id="cb6-4" title="4">devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;pratikunterwegs/watlastools&quot;</span>)</a>
-<a class="sourceLine" id="cb6-5" title="5"><span class="kw">library</span>(watlastools)</a>
-<a class="sourceLine" id="cb6-6" title="6"></a>
-<a class="sourceLine" id="cb6-7" title="7"><span class="co"># libraries to process data</span></a>
-<a class="sourceLine" id="cb6-8" title="8"><span class="kw">library</span>(data.table)</a>
-<a class="sourceLine" id="cb6-9" title="9"><span class="kw">library</span>(purrr)</a>
-<a class="sourceLine" id="cb6-10" title="10"><span class="kw">library</span>(glue)</a>
-<a class="sourceLine" id="cb6-11" title="11"><span class="kw">library</span>(fasttime)</a>
-<a class="sourceLine" id="cb6-12" title="12"><span class="kw">library</span>(bit64)</a>
-<a class="sourceLine" id="cb6-13" title="13"><span class="kw">library</span>(stringr)</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="cleaning-data.html#cb5-1"></a><span class="co"># watlastools assumed installed from the previous step</span></span>
+<span id="cb5-2"><a href="cleaning-data.html#cb5-2"></a><span class="co"># if not, install from the github repo as shown below</span></span>
+<span id="cb5-3"><a href="cleaning-data.html#cb5-3"></a></span>
+<span id="cb5-4"><a href="cleaning-data.html#cb5-4"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;pratikunterwegs/watlastools&quot;</span>)</span>
+<span id="cb5-5"><a href="cleaning-data.html#cb5-5"></a><span class="kw">library</span>(watlastools)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="cleaning-data.html#cb6-1"></a><span class="co"># libraries to process data</span></span>
+<span id="cb6-2"><a href="cleaning-data.html#cb6-2"></a><span class="kw">library</span>(data.table)</span>
+<span id="cb6-3"><a href="cleaning-data.html#cb6-3"></a><span class="kw">library</span>(glue)</span>
+<span id="cb6-4"><a href="cleaning-data.html#cb6-4"></a><span class="kw">library</span>(fasttime)</span>
+<span id="cb6-5"><a href="cleaning-data.html#cb6-5"></a><span class="kw">library</span>(stringr)</span></code></pre></div>
 </div>
 <div id="prepare-to-remove-attractor-points" class="section level2">
 <h2><span class="header-section-number">3.2</span> Prepare to remove attractor points</h2>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="co"># read in identified attractor points</span></a>
-<a class="sourceLine" id="cb7-2" title="2">atp &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data2018/attractor_points.txt&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="cleaning-data.html#cb7-1"></a><span class="co"># read in identified attractor points</span></span>
+<span id="cb7-2"><a href="cleaning-data.html#cb7-2"></a>atp &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/attractor_points.txt&quot;</span>)</span></code></pre></div>
 </div>
 <div id="read-clean-and-write-data" class="section level2">
 <h2><span class="header-section-number">3.3</span> Read, clean, and write data</h2>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="co"># make a list of data files to read</span></a>
-<a class="sourceLine" id="cb8-2" title="2">data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="dt">path =</span> <span class="st">&quot;data/data2018/locs_raw&quot;</span>, <span class="dt">pattern =</span> <span class="st">&quot;whole_season*&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</a>
-<a class="sourceLine" id="cb8-3" title="3"></a>
-<a class="sourceLine" id="cb8-4" title="4">data_ids &lt;-<span class="st"> </span><span class="kw">str_extract</span>(data_files, <span class="st">&quot;(tx_</span><span class="ch">\\</span><span class="st">d+)&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_sub</span>(<span class="op">-</span><span class="dv">3</span>,<span class="op">-</span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb8-5" title="5"></a>
-<a class="sourceLine" id="cb8-6" title="6"><span class="co"># read deployment data from local file in data folder</span></a>
-<a class="sourceLine" id="cb8-7" title="7">tag_info &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data2018/SelinDB.csv&quot;</span>)</a>
-<a class="sourceLine" id="cb8-8" title="8"></a>
-<a class="sourceLine" id="cb8-9" title="9"><span class="co"># filter out NAs in release date and time</span></a>
-<a class="sourceLine" id="cb8-10" title="10">tag_info &lt;-<span class="st"> </span>tag_info[<span class="op">!</span><span class="kw">is.na</span>(Release_Date) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(Release_Time),]</a>
-<a class="sourceLine" id="cb8-11" title="11"></a>
-<a class="sourceLine" id="cb8-12" title="12"><span class="co"># make release date column as POSIXct</span></a>
-<a class="sourceLine" id="cb8-13" title="13">tag_info[,Release_Date <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(Release_Date, Release_Time, <span class="dt">sep =</span> <span class="st">&quot; &quot;</span>), <span class="dt">format =</span> <span class="st">&quot;%d.%m.%y %H:%M&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span>)]</a>
-<a class="sourceLine" id="cb8-14" title="14"></a>
-<a class="sourceLine" id="cb8-15" title="15"><span class="co"># sub for knots in data</span></a>
-<a class="sourceLine" id="cb8-16" title="16">data_files &lt;-<span class="st"> </span>data_files[<span class="kw">as.integer</span>(data_ids) <span class="op">%in%</span><span class="st"> </span>tag_info<span class="op">$</span>Toa_Tag]</a>
-<a class="sourceLine" id="cb8-17" title="17"></a>
-<a class="sourceLine" id="cb8-18" title="18"><span class="co"># map read in, cleaning, and write out function over vector of filenames</span></a>
-<a class="sourceLine" id="cb8-19" title="19"><span class="kw">map</span>(data_files, <span class="cf">function</span>(df){</a>
-<a class="sourceLine" id="cb8-20" title="20">  </a>
-<a class="sourceLine" id="cb8-21" title="21">  temp_data &lt;-<span class="st"> </span><span class="kw">fread</span>(df, <span class="dt">integer64 =</span> <span class="st">&quot;numeric&quot;</span>)</a>
-<a class="sourceLine" id="cb8-22" title="22">  </a>
-<a class="sourceLine" id="cb8-23" title="23">  <span class="co"># filter for release date + 24 hrs</span></a>
-<a class="sourceLine" id="cb8-24" title="24">  {</a>
-<a class="sourceLine" id="cb8-25" title="25">    temp_id &lt;-<span class="st"> </span><span class="kw">str_sub</span>(temp_data[<span class="dv">1</span>, TAG], <span class="dv">-3</span>, <span class="dv">-1</span>)</a>
-<a class="sourceLine" id="cb8-26" title="26">    </a>
-<a class="sourceLine" id="cb8-27" title="27">    rel_date &lt;-<span class="st"> </span>tag_info[Toa_Tag <span class="op">==</span><span class="st"> </span>temp_id, Release_Date]</a>
-<a class="sourceLine" id="cb8-28" title="28">    </a>
-<a class="sourceLine" id="cb8-29" title="29">    temp_data &lt;-<span class="st"> </span>temp_data[TIME<span class="op">/</span><span class="fl">1e3</span> <span class="op">&gt;</span><span class="st"> </span><span class="kw">as.numeric</span>(rel_date <span class="op">+</span><span class="st"> </span>(<span class="dv">24</span><span class="op">*</span><span class="dv">3600</span>)),]</a>
-<a class="sourceLine" id="cb8-30" title="30">  }</a>
-<a class="sourceLine" id="cb8-31" title="31">  <span class="kw">tryCatch</span>(</a>
-<a class="sourceLine" id="cb8-32" title="32">    {</a>
-<a class="sourceLine" id="cb8-33" title="33">      temp_data &lt;-<span class="st"> </span><span class="kw">wat_rm_attractor</span>(<span class="dt">df =</span> temp_data,</a>
-<a class="sourceLine" id="cb8-34" title="34">                                    <span class="dt">atp_xmin =</span> atp<span class="op">$</span>xmin,</a>
-<a class="sourceLine" id="cb8-35" title="35">                                    <span class="dt">atp_xmax =</span> atp<span class="op">$</span>xmax,</a>
-<a class="sourceLine" id="cb8-36" title="36">                                    <span class="dt">atp_ymin =</span> atp<span class="op">$</span>ymin,</a>
-<a class="sourceLine" id="cb8-37" title="37">                                    <span class="dt">atp_ymax =</span> atp<span class="op">$</span>ymax)</a>
-<a class="sourceLine" id="cb8-38" title="38">      </a>
-<a class="sourceLine" id="cb8-39" title="39">      clean_data &lt;-<span class="st"> </span><span class="kw">wat_clean_data</span>(<span class="dt">somedata =</span> temp_data,</a>
-<a class="sourceLine" id="cb8-40" title="40">                                   <span class="dt">moving_window =</span> <span class="dv">3</span>,</a>
-<a class="sourceLine" id="cb8-41" title="41">                                   <span class="dt">nbs_min =</span> <span class="dv">0</span>,</a>
-<a class="sourceLine" id="cb8-42" title="42">                                   <span class="dt">sd_threshold =</span> <span class="dv">100</span>,</a>
-<a class="sourceLine" id="cb8-43" title="43">                                   <span class="dt">filter_speed =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb8-44" title="44">                                   <span class="dt">speed_cutoff =</span> <span class="dv">150</span>)</a>
-<a class="sourceLine" id="cb8-45" title="45">      </a>
-<a class="sourceLine" id="cb8-46" title="46">      agg_data &lt;-<span class="st"> </span><span class="kw">wat_agg_data</span>(<span class="dt">df =</span> clean_data,</a>
-<a class="sourceLine" id="cb8-47" title="47">                               <span class="dt">interval =</span> <span class="dv">30</span>)</a>
-<a class="sourceLine" id="cb8-48" title="48">      </a>
-<a class="sourceLine" id="cb8-49" title="49">      <span class="kw">message</span>(<span class="kw">glue</span>(<span class="st">&#39;tag {unique(agg_data$id)} cleaned with {nrow(agg_data)} fixes&#39;</span>))</a>
-<a class="sourceLine" id="cb8-50" title="50">      </a>
-<a class="sourceLine" id="cb8-51" title="51">      <span class="kw">fwrite</span>(<span class="dt">x =</span> agg_data, <span class="dt">file =</span> <span class="kw">glue</span>(<span class="st">&#39;data/data2018/locs_proc/id_{temp_id}.csv&#39;</span>), <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span>)</a>
-<a class="sourceLine" id="cb8-52" title="52">      <span class="kw">rm</span>(temp_data, clean_data, agg_data)</a>
-<a class="sourceLine" id="cb8-53" title="53">      },</a>
-<a class="sourceLine" id="cb8-54" title="54">    <span class="dt">error =</span> <span class="cf">function</span>(e){</a>
-<a class="sourceLine" id="cb8-55" title="55">      <span class="kw">message</span>(<span class="kw">glue</span>(<span class="st">&#39;tag {unique(temp_id)} failed&#39;</span>))</a>
-<a class="sourceLine" id="cb8-56" title="56">    })</a>
-<a class="sourceLine" id="cb8-57" title="57">})</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="cleaning-data.html#cb8-1"></a><span class="co"># make a list of data files to read</span></span>
+<span id="cb8-2"><a href="cleaning-data.html#cb8-2"></a>data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(</span>
+<span id="cb8-3"><a href="cleaning-data.html#cb8-3"></a>  <span class="dt">path =</span> <span class="st">&quot;data/data_2018/data_tracks/&quot;</span>,</span>
+<span id="cb8-4"><a href="cleaning-data.html#cb8-4"></a>  <span class="dt">pattern =</span> <span class="st">&quot;whole_season*&quot;</span>, <span class="dt">full.names =</span> <span class="ot">TRUE</span></span>
+<span id="cb8-5"><a href="cleaning-data.html#cb8-5"></a>)</span>
+<span id="cb8-6"><a href="cleaning-data.html#cb8-6"></a></span>
+<span id="cb8-7"><a href="cleaning-data.html#cb8-7"></a>data_ids &lt;-<span class="st"> </span><span class="kw">str_extract</span>(data_files, <span class="st">&quot;(tx_</span><span class="ch">\\</span><span class="st">d+)&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">str_sub</span>(<span class="op">-</span><span class="dv">3</span>, <span class="dv">-1</span>)</span>
+<span id="cb8-8"><a href="cleaning-data.html#cb8-8"></a></span>
+<span id="cb8-9"><a href="cleaning-data.html#cb8-9"></a><span class="co"># read deployment data from local file in data folder</span></span>
+<span id="cb8-10"><a href="cleaning-data.html#cb8-10"></a>tag_info &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data_2018/SelinDB.csv&quot;</span>)</span>
+<span id="cb8-11"><a href="cleaning-data.html#cb8-11"></a></span>
+<span id="cb8-12"><a href="cleaning-data.html#cb8-12"></a><span class="co"># filter out NAs in release date and time</span></span>
+<span id="cb8-13"><a href="cleaning-data.html#cb8-13"></a>tag_info &lt;-<span class="st"> </span>tag_info[<span class="op">!</span><span class="kw">is.na</span>(Release_Date) <span class="op">&amp;</span><span class="st"> </span><span class="op">!</span><span class="kw">is.na</span>(Release_Time), ]</span>
+<span id="cb8-14"><a href="cleaning-data.html#cb8-14"></a></span>
+<span id="cb8-15"><a href="cleaning-data.html#cb8-15"></a><span class="co"># make release date column as POSIXct</span></span>
+<span id="cb8-16"><a href="cleaning-data.html#cb8-16"></a>tag_info[, Release_Date <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">as.POSIXct</span>(<span class="kw">paste</span>(Release_Date,</span>
+<span id="cb8-17"><a href="cleaning-data.html#cb8-17"></a>  Release_Time,</span>
+<span id="cb8-18"><a href="cleaning-data.html#cb8-18"></a>  <span class="dt">sep =</span> <span class="st">&quot; &quot;</span></span>
+<span id="cb8-19"><a href="cleaning-data.html#cb8-19"></a>),</span>
+<span id="cb8-20"><a href="cleaning-data.html#cb8-20"></a><span class="dt">format =</span> <span class="st">&quot;%d.%m.%y %H:%M&quot;</span>, <span class="dt">tz =</span> <span class="st">&quot;CET&quot;</span></span>
+<span id="cb8-21"><a href="cleaning-data.html#cb8-21"></a>)]</span>
+<span id="cb8-22"><a href="cleaning-data.html#cb8-22"></a></span>
+<span id="cb8-23"><a href="cleaning-data.html#cb8-23"></a><span class="co"># sub for knots in data</span></span>
+<span id="cb8-24"><a href="cleaning-data.html#cb8-24"></a>data_files &lt;-<span class="st"> </span>data_files[<span class="kw">as.integer</span>(data_ids) <span class="op">%in%</span><span class="st"> </span>tag_info<span class="op">$</span>Toa_Tag]</span>
+<span id="cb8-25"><a href="cleaning-data.html#cb8-25"></a></span>
+<span id="cb8-26"><a href="cleaning-data.html#cb8-26"></a><span class="co"># map read in, cleaning, and write out function over vector of filenames</span></span>
+<span id="cb8-27"><a href="cleaning-data.html#cb8-27"></a><span class="kw">invisible</span>(</span>
+<span id="cb8-28"><a href="cleaning-data.html#cb8-28"></a>  <span class="kw">lapply</span>(data_files, <span class="cf">function</span>(df) {</span>
+<span id="cb8-29"><a href="cleaning-data.html#cb8-29"></a></span>
+<span id="cb8-30"><a href="cleaning-data.html#cb8-30"></a>    <span class="co"># read in the data</span></span>
+<span id="cb8-31"><a href="cleaning-data.html#cb8-31"></a>    temp_data &lt;-<span class="st"> </span><span class="kw">fread</span>(df, <span class="dt">integer64 =</span> <span class="st">&quot;numeric&quot;</span>)</span>
+<span id="cb8-32"><a href="cleaning-data.html#cb8-32"></a></span>
+<span id="cb8-33"><a href="cleaning-data.html#cb8-33"></a>    <span class="co"># filter for release date + 24 hrs</span></span>
+<span id="cb8-34"><a href="cleaning-data.html#cb8-34"></a>    temp_id &lt;-<span class="st"> </span><span class="kw">str_sub</span>(temp_data[<span class="dv">1</span>, TAG], <span class="dv">-3</span>, <span class="dv">-1</span>)</span>
+<span id="cb8-35"><a href="cleaning-data.html#cb8-35"></a></span>
+<span id="cb8-36"><a href="cleaning-data.html#cb8-36"></a>    rel_date &lt;-<span class="st"> </span>tag_info[Toa_Tag <span class="op">==</span><span class="st"> </span>temp_id, Release_Date]</span>
+<span id="cb8-37"><a href="cleaning-data.html#cb8-37"></a></span>
+<span id="cb8-38"><a href="cleaning-data.html#cb8-38"></a>    temp_data &lt;-<span class="st"> </span>temp_data[TIME <span class="op">/</span><span class="st"> </span><span class="fl">1e3</span> <span class="op">&gt;</span><span class="st"> </span><span class="kw">as.numeric</span>(rel_date <span class="op">+</span><span class="st"> </span>(<span class="dv">24</span> <span class="op">*</span><span class="st"> </span><span class="dv">3600</span>)), ]</span>
+<span id="cb8-39"><a href="cleaning-data.html#cb8-39"></a>    <span class="co"># do a try catch so as not to break the process</span></span>
+<span id="cb8-40"><a href="cleaning-data.html#cb8-40"></a>    <span class="kw">tryCatch</span>(</span>
+<span id="cb8-41"><a href="cleaning-data.html#cb8-41"></a>      {</span>
+<span id="cb8-42"><a href="cleaning-data.html#cb8-42"></a>        temp_data &lt;-<span class="st"> </span><span class="kw">wat_rm_attractor</span>(</span>
+<span id="cb8-43"><a href="cleaning-data.html#cb8-43"></a>          <span class="dt">df =</span> temp_data,</span>
+<span id="cb8-44"><a href="cleaning-data.html#cb8-44"></a>          <span class="dt">atp_xmin =</span> atp<span class="op">$</span>xmin,</span>
+<span id="cb8-45"><a href="cleaning-data.html#cb8-45"></a>          <span class="dt">atp_xmax =</span> atp<span class="op">$</span>xmax,</span>
+<span id="cb8-46"><a href="cleaning-data.html#cb8-46"></a>          <span class="dt">atp_ymin =</span> atp<span class="op">$</span>ymin,</span>
+<span id="cb8-47"><a href="cleaning-data.html#cb8-47"></a>          <span class="dt">atp_ymax =</span> atp<span class="op">$</span>ymax</span>
+<span id="cb8-48"><a href="cleaning-data.html#cb8-48"></a>        )</span>
+<span id="cb8-49"><a href="cleaning-data.html#cb8-49"></a></span>
+<span id="cb8-50"><a href="cleaning-data.html#cb8-50"></a>        clean_data &lt;-<span class="st"> </span><span class="kw">wat_clean_data</span>(</span>
+<span id="cb8-51"><a href="cleaning-data.html#cb8-51"></a>          <span class="dt">data =</span> temp_data,</span>
+<span id="cb8-52"><a href="cleaning-data.html#cb8-52"></a>          <span class="dt">moving_window =</span> <span class="dv">3</span>,</span>
+<span id="cb8-53"><a href="cleaning-data.html#cb8-53"></a>          <span class="dt">nbs_min =</span> <span class="dv">0</span>,</span>
+<span id="cb8-54"><a href="cleaning-data.html#cb8-54"></a>          <span class="dt">sd_threshold =</span> <span class="dv">100</span>,</span>
+<span id="cb8-55"><a href="cleaning-data.html#cb8-55"></a>          <span class="dt">filter_speed =</span> <span class="ot">TRUE</span>,</span>
+<span id="cb8-56"><a href="cleaning-data.html#cb8-56"></a>          <span class="dt">speed_cutoff =</span> <span class="dv">150</span></span>
+<span id="cb8-57"><a href="cleaning-data.html#cb8-57"></a>        )</span>
+<span id="cb8-58"><a href="cleaning-data.html#cb8-58"></a></span>
+<span id="cb8-59"><a href="cleaning-data.html#cb8-59"></a>        agg_data &lt;-<span class="st"> </span><span class="kw">wat_agg_data</span>(</span>
+<span id="cb8-60"><a href="cleaning-data.html#cb8-60"></a>          <span class="dt">data =</span> clean_data,</span>
+<span id="cb8-61"><a href="cleaning-data.html#cb8-61"></a>          <span class="dt">interval =</span> <span class="dv">30</span></span>
+<span id="cb8-62"><a href="cleaning-data.html#cb8-62"></a>        )</span>
+<span id="cb8-63"><a href="cleaning-data.html#cb8-63"></a></span>
+<span id="cb8-64"><a href="cleaning-data.html#cb8-64"></a>        <span class="kw">message</span>(<span class="kw">glue</span>(<span class="st">&quot;tag {unique(agg_data$id)} </span><span class="ch">\\</span></span>
+<span id="cb8-65"><a href="cleaning-data.html#cb8-65"></a><span class="st">                     cleaned with {nrow(agg_data)} fixes&quot;</span>))</span>
+<span id="cb8-66"><a href="cleaning-data.html#cb8-66"></a></span>
+<span id="cb8-67"><a href="cleaning-data.html#cb8-67"></a>        <span class="kw">fwrite</span>(</span>
+<span id="cb8-68"><a href="cleaning-data.html#cb8-68"></a>          <span class="dt">x =</span> agg_data,</span>
+<span id="cb8-69"><a href="cleaning-data.html#cb8-69"></a>          <span class="dt">file =</span> <span class="kw">glue</span>(<span class="st">&quot;data/data_2018/data_processed/id_{temp_id}.csv&quot;</span>),</span>
+<span id="cb8-70"><a href="cleaning-data.html#cb8-70"></a>          <span class="dt">dateTimeAs =</span> <span class="st">&quot;ISO&quot;</span></span>
+<span id="cb8-71"><a href="cleaning-data.html#cb8-71"></a>        )</span>
+<span id="cb8-72"><a href="cleaning-data.html#cb8-72"></a>        <span class="kw">rm</span>(temp_data, clean_data, agg_data)</span>
+<span id="cb8-73"><a href="cleaning-data.html#cb8-73"></a>      },</span>
+<span id="cb8-74"><a href="cleaning-data.html#cb8-74"></a>      <span class="dt">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb8-75"><a href="cleaning-data.html#cb8-75"></a>        <span class="kw">message</span>(<span class="kw">glue</span>(<span class="st">&quot;tag {unique(temp_id)} failed&quot;</span>))</span>
+<span id="cb8-76"><a href="cleaning-data.html#cb8-76"></a>      }</span>
+<span id="cb8-77"><a href="cleaning-data.html#cb8-77"></a>    )</span>
+<span id="cb8-78"><a href="cleaning-data.html#cb8-78"></a>  })</span>
+<span id="cb8-79"><a href="cleaning-data.html#cb8-79"></a>)</span></code></pre></div>
+</div>
+<div id="tracking-period-for-each-id" class="section level2">
+<h2><span class="header-section-number">3.4</span> Tracking period for each id</h2>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="cleaning-data.html#cb9-1"></a>data_files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="st">&quot;data/data_2018/data_processed&quot;</span>,</span>
+<span id="cb9-2"><a href="cleaning-data.html#cb9-2"></a>  <span class="dt">full.names =</span> <span class="ot">TRUE</span></span>
+<span id="cb9-3"><a href="cleaning-data.html#cb9-3"></a>)</span>
+<span id="cb9-4"><a href="cleaning-data.html#cb9-4"></a></span>
+<span id="cb9-5"><a href="cleaning-data.html#cb9-5"></a>total_tracking &lt;-<span class="st"> </span><span class="kw">lapply</span>(data_files, <span class="cf">function</span>(x) {</span>
+<span id="cb9-6"><a href="cleaning-data.html#cb9-6"></a>  a &lt;-<span class="st"> </span><span class="kw">fread</span>(x)</span>
+<span id="cb9-7"><a href="cleaning-data.html#cb9-7"></a>  a &lt;-<span class="st"> </span>a[<span class="kw">c</span>(<span class="dv">1</span>, <span class="kw">nrow</span>(a)), <span class="kw">list</span>(id, time)]</span>
+<span id="cb9-8"><a href="cleaning-data.html#cb9-8"></a>  a[, event <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;time_start&quot;</span>, <span class="st">&quot;time_end&quot;</span>)]</span>
+<span id="cb9-9"><a href="cleaning-data.html#cb9-9"></a>})</span>
+<span id="cb9-10"><a href="cleaning-data.html#cb9-10"></a></span>
+<span id="cb9-11"><a href="cleaning-data.html#cb9-11"></a><span class="co"># bind data tables</span></span>
+<span id="cb9-12"><a href="cleaning-data.html#cb9-12"></a>total_tracking &lt;-<span class="st"> </span><span class="kw">rbindlist</span>(total_tracking)</span>
+<span id="cb9-13"><a href="cleaning-data.html#cb9-13"></a></span>
+<span id="cb9-14"><a href="cleaning-data.html#cb9-14"></a><span class="co"># get tracking interval for each</span></span>
+<span id="cb9-15"><a href="cleaning-data.html#cb9-15"></a>total_tracking &lt;-<span class="st"> </span><span class="kw">dcast</span>(total_tracking,</span>
+<span id="cb9-16"><a href="cleaning-data.html#cb9-16"></a>  id <span class="op">~</span><span class="st"> </span>event,</span>
+<span id="cb9-17"><a href="cleaning-data.html#cb9-17"></a>  <span class="dt">value.var =</span> <span class="st">&quot;time&quot;</span></span>
+<span id="cb9-18"><a href="cleaning-data.html#cb9-18"></a>)</span>
+<span id="cb9-19"><a href="cleaning-data.html#cb9-19"></a></span>
+<span id="cb9-20"><a href="cleaning-data.html#cb9-20"></a><span class="co"># write to file</span></span>
+<span id="cb9-21"><a href="cleaning-data.html#cb9-21"></a><span class="kw">fwrite</span>(total_tracking, <span class="dt">file =</span> <span class="st">&quot;data/data_2018/data_2018_id_tracking_interval.csv&quot;</span>)</span></code></pre></div>
 
 </div>
 </div>
@@ -328,7 +358,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/pratikunterwegs/knotPatches/edit/master/02_cleaningData.rmd",
+"link": "https://github.com/pratikunterwegs/knot-patches/edit/master/02_cleaningData.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -347,6 +377,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

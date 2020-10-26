@@ -1,6 +1,6 @@
 --- 
 knit: "bookdown::render_book"
-title: "Individual space-use in relation to the social environment and resource landscape"
+title: "Residence patches for red knots"
 author: "Pratik R Gupte"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -9,13 +9,13 @@ documentclass: book
 bibliography: [refs.bib]
 biblio-style: apalike
 link-citations: yes
-github-repo: pratikunterwegs/knotPatches
-description: "Individual space-use in relation to the social environment and resource landscape"
+github-repo: pratikunterwegs/knot-association
+description: "Residence patches for red knots in the Wadden Sea."
 ---
 
 # Introduction
 
-This is the `bookdown` version of a project in preparation that identifies residence patches from high-resolution tracking data from individual red knots _Calidris canutus_ and examines the modulation of individual behaviour by the social environment and the resource landscape.
+This repository is the source for a project to idenify residence patches from high-resolution tracking data from individual red knots _Calidris canutus islandica_ tracked using the WATLAS system.
 
 ## Attribution
 
