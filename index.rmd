@@ -1,6 +1,6 @@
 --- 
 knit: "bookdown::render_book"
-title: "Assortative association in a migratory Arctic wader"
+title: "Residence patches for red knots"
 author: "Pratik R Gupte"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -10,12 +10,12 @@ bibliography: [refs.bib]
 biblio-style: apalike
 link-citations: yes
 github-repo: pratikunterwegs/knot-association
-description: "Assortative association in a migratory Arctic wader"
+description: "Residence patches for red knots in the Wadden Sea."
 ---
 
 # Introduction
 
-This repository is the source for a project to idenify residence patches from high-resolution tracking data from individual red knots _Calidris canutus islandica_, and study whether associations are assortative on individual traits.
+This repository is the source for a project to idenify residence patches from high-resolution tracking data from individual red knots _Calidris canutus islandica_ tracked using the WATLAS system.
 
 ## Attribution
 
