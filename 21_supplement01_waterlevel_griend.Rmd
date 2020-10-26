@@ -78,6 +78,10 @@ ggsave(fig_waterlevel_area, filename = "figs/fig_waterlevel_area.png",
 
 ## Plot as 3D maps
 
+NB: This section not currently working.
+
+We attempt to make an animation of the tidal cycle around Griend.
+
 ```{r make_water_seq}
 # make sequence
 waterdepth <- seq(waterlimits[1], waterlimits[2], length.out = 30)
@@ -120,8 +124,7 @@ list.files(path = "figs/tide_rise/", pattern = "*.png", full.names = T) %>%
   image_write("figs/fig_tide_rise_anim.gif") # write to current dir
 ```
 
-
-```{r include_gif, eval=TRUE, fig.cap="Waterlevel at West Terschelling and effect on coverage of mudflats around Griend."}
+```{r include_gif, eval=FALSE, fig.cap="Waterlevel at West Terschelling and effect on coverage of mudflats around Griend."}
 if (knitr:::is_latex_output()) {
   
 } else {
