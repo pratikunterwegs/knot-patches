@@ -1,8 +1,8 @@
-# Identifying residence patches from ATLAS data
+# Residence patches for red knots
 
 This repository is the source for a project to idenify residence patches from high-resolution tracking data from individual red knots _Calidris canutus islandica_.
 
-## [Readable version](https://pratikunterwegs.github.io/knotPatches/)
+## [Readable version](https://pratikunterwegs.github.io/knot-patches/)
 
 A human-readable version of this code is available in bookdown format by clicking on the heading.
 
