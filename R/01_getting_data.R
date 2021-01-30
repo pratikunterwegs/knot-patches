@@ -1,0 +1,79 @@
+## ----install_watlastools, message=FALSE, warning=FALSE------------------------
+# install the package watlastools from master branch using the following
+# install.packages("devtools")
+library(devtools)
+
+devtools::install_github("pratikunterwegs/watlastools")
+library(watlastools)
+
+# libraries to process data
+library(data.table)
+library(ggplot2)
+library(ggthemes)
+library(purrr)
+library(glue)
+
+
+## ----get_deployment_data, message=FALSE, warning=FALSE------------------------
+# read deployment data from local file in data folder
+tag_info <- fread("data/data2018/SelinDB.csv")
+
+# filter out NAs in release date and time
+tag_info <- tag_info[!is.na(Release_Date) & !is.na(Release_Time), ]
+
+# make release date column as POSIXct
+tag_info[, Release_Date := as.POSIXct(paste(Release_Date,
+  Release_Time,
+  sep = " "
+),
+format = "%d.%m.%y %H:%M", tz = "CET"
+)]
+
+# check new release date column
+head(tag_info$Release_Date)
+
+
+## ----plot_release_schedule, echo=FALSE, fig.cap="Knots released per week of 2018.", message=FALSE, warning=FALSE----
+# check release cohort
+ggplot(tag_info) +
+  geom_bar(aes(x = week(Release_Date)), col = 1, fill = "grey") +
+  theme_test() +
+  labs(
+    x = "release week (2018)", y = "# knots released",
+    caption = Sys.time()
+  )
+
+
+## ----get_acess, warning=FALSE, message=FALSE----------------------------------
+# read in database access parameters from a local file
+data_access <- fread("data/access_params.txt")
+
+
+## ----get_data, message=FALSE, warning=FALSE-----------------------------------
+# create a data storage file if not present
+# use the getData function from watlastools on the tag_info data frame
+# this is placed inside a pmap wrapper to automate access for all birds
+
+if (!dir.exists("data/data2018")) {
+  dir.create("data/data2018")
+}
+
+pmap(tag_info[, .(Toa_Tag, Release_Date)], function(Toa_Tag, Release_Date) {
+  prelim_data <- watlastools::wat_get_data(
+    tag = Toa_Tag,
+    tracking_time_start = as.character(Release_Date),
+    tracking_time_end = "2018-10-31",
+    username = data_access$username,
+    password = data_access$password
+  )
+
+  setDT(prelim_data)
+  # prelim_data[,TAG:= = as.numeric(TAG) - prefix_num]
+
+  message(glue("tag {Toa_Tag} accessed with {nrow(prelim_data)} fixes"))
+
+  fwrite(prelim_data,
+    file = glue("data/data2018/{Toa_Tag}_data.csv"),
+    dateTimeAs = "ISO"
+  )
+})
