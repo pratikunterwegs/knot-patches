@@ -19,7 +19,6 @@ This section is about cleaning downloaded data using the `cleanData` function in
 # if not, install from the github repo as shown below
 
 devtools::install_github("pratikunterwegs/watlastools")
-library(watlastools)
 ```
 
 ```{r}
@@ -28,6 +27,7 @@ library(data.table)
 library(glue)
 library(fasttime)
 library(stringr)
+library(watlastools)
 ```
 
 ## Prepare to remove attractor points
@@ -92,7 +92,7 @@ invisible(
         clean_data <- wat_clean_data(
           data = temp_data,
           moving_window = 3,
-          nbs_min = 0,
+          nbs_min = 3,
           sd_threshold = 100,
           filter_speed = TRUE,
           speed_cutoff = 150
@@ -108,7 +108,7 @@ invisible(
 
         fwrite(
           x = agg_data,
-          file = glue("data/data_2018/data_processed/id_{temp_id}.csv"),
+          file = glue("data/data_2018/data_processed/whole_season_preproc_{temp_id}.csv"),
           dateTimeAs = "ISO"
         )
         rm(temp_data, clean_data, agg_data)
