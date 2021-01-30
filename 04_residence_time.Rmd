@@ -41,10 +41,10 @@ library(stringr)
 # read in data
 data_files <- list.files(
   path = "data/data_2018/data_processed/",
-  pattern = "id_", full.names = TRUE
+  pattern = "whole_season_", full.names = TRUE
 )
 
-data_ids <- str_extract(data_files, "(id_\\d+)") %>% str_sub(-3, -1)
+data_ids <- str_extract(data_files, "(whole_season_preproc_\\d+)") %>% str_sub(-3, -1)
 # read in release data and get first release - 24 hrs
 tag_info <- fread("data/data_2018/SelinDB.csv")
 tag_info <- tag_info[!is.na(Release_Date) & !is.na(Release_Time), ]
