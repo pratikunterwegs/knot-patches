@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Section 7 In development: Residence patch cleaning | Residence patches for red knots</title>
   <meta name="description" content="Section 7 In development: Residence patch cleaning | Residence patches for red knots in the Wadden Sea." />
-  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Section 7 In development: Residence patch cleaning | Residence patches for red knots" />
   <meta property="og:type" content="book" />
@@ -24,7 +24,7 @@
 <meta name="author" content="Pratik R Gupte" />
 
 
-<meta name="date" content="2020-10-26" />
+<meta name="date" content="2021-01-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -50,30 +50,28 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
 
 
 <style type="text/css">
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
 }
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
+    border: none; pointer-events: all; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -82,9 +80,9 @@ pre.numberSource code > span > a:first-child::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {   }
+  {  }
 @media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+a.sourceLine::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -130,52 +128,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a>
-<ul>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introduction</a><ul>
 <li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#attribution"><i class="fa fa-check"></i><b>1.1</b> Attribution</a></li>
 <li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#data-access"><i class="fa fa-check"></i><b>1.2</b> Data access</a></li>
 <li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#data-processing"><i class="fa fa-check"></i><b>1.3</b> Data processing</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="getting-data.html"><a href="getting-data.html"><i class="fa fa-check"></i><b>2</b> Getting data</a>
-<ul>
+<li class="chapter" data-level="2" data-path="getting-data.html"><a href="getting-data.html"><i class="fa fa-check"></i><b>2</b> Getting data</a><ul>
 <li class="chapter" data-level="2.1" data-path="getting-data.html"><a href="getting-data.html#prepare-watlastools-and-other-libraries"><i class="fa fa-check"></i><b>2.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
 <li class="chapter" data-level="2.2" data-path="getting-data.html"><a href="getting-data.html#read-in-tag-deployment-data"><i class="fa fa-check"></i><b>2.2</b> Read in tag deployment data</a></li>
 <li class="chapter" data-level="2.3" data-path="getting-data.html"><a href="getting-data.html#get-data-and-save-locally"><i class="fa fa-check"></i><b>2.3</b> Get data and save locally</a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning data</a>
-<ul>
-<li class="chapter" data-level="3.1" data-path="getting-data.html"><a href="getting-data.html#prepare-watlastools-and-other-libraries"><i class="fa fa-check"></i><b>3.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
+<li class="chapter" data-level="3" data-path="cleaning-data.html"><a href="cleaning-data.html"><i class="fa fa-check"></i><b>3</b> Cleaning data</a><ul>
+<li class="chapter" data-level="3.1" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-watlastools-and-other-libraries-1"><i class="fa fa-check"></i><b>3.1</b> Prepare <code>watlastools</code> and other libraries</a></li>
 <li class="chapter" data-level="3.2" data-path="cleaning-data.html"><a href="cleaning-data.html#prepare-to-remove-attractor-points"><i class="fa fa-check"></i><b>3.2</b> Prepare to remove attractor points</a></li>
 <li class="chapter" data-level="3.3" data-path="cleaning-data.html"><a href="cleaning-data.html#read-clean-and-write-data"><i class="fa fa-check"></i><b>3.3</b> Read, clean, and write data</a></li>
 <li class="chapter" data-level="3.4" data-path="cleaning-data.html"><a href="cleaning-data.html#tracking-period-for-each-id"><i class="fa fa-check"></i><b>3.4</b> Tracking period for each id</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html"><i class="fa fa-check"></i><b>4</b> Adding tidal cycle data</a>
-<ul>
+<li class="chapter" data-level="4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html"><i class="fa fa-check"></i><b>4</b> Adding tidal cycle data</a><ul>
 <li class="chapter" data-level="4.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>4.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="4.2" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#read-water-level-data"><i class="fa fa-check"></i><b>4.2</b> Read water level data</a></li>
 <li class="chapter" data-level="4.3" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#calculate-high-tides"><i class="fa fa-check"></i><b>4.3</b> Calculate high tides</a></li>
 <li class="chapter" data-level="4.4" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#add-time-since-high-tide"><i class="fa fa-check"></i><b>4.4</b> Add time since high tide</a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="revisit-analysis.html"><a href="revisit-analysis.html"><i class="fa fa-check"></i><b>5</b> Revisit analysis</a>
-<ul>
-<li class="chapter" data-level="5.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>5.1</b> Prepare libraries</a></li>
+<li class="chapter" data-level="5" data-path="revisit-analysis.html"><a href="revisit-analysis.html"><i class="fa fa-check"></i><b>5</b> Revisit analysis</a><ul>
+<li class="chapter" data-level="5.1" data-path="revisit-analysis.html"><a href="revisit-analysis.html#prepare-libraries-1"><i class="fa fa-check"></i><b>5.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="5.2" data-path="revisit-analysis.html"><a href="revisit-analysis.html#read-data-split-recurse-write"><i class="fa fa-check"></i><b>5.2</b> Read data, split, recurse, write</a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html"><i class="fa fa-check"></i><b>6</b> Residence patch construction</a>
-<ul>
-<li class="chapter" data-level="6.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>6.1</b> Prepare libraries</a></li>
+<li class="chapter" data-level="6" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html"><i class="fa fa-check"></i><b>6</b> Residence patch construction</a><ul>
+<li class="chapter" data-level="6.1" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#prepare-libraries-2"><i class="fa fa-check"></i><b>6.1</b> Prepare libraries</a></li>
 <li class="chapter" data-level="6.2" data-path="residence-patch-construction.html"><a href="residence-patch-construction.html#patch-construction"><i class="fa fa-check"></i><b>6.2</b> Patch construction</a></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="in-development-residence-patch-cleaning.html"><a href="in-development-residence-patch-cleaning.html"><i class="fa fa-check"></i><b>7</b> In development: Residence patch cleaning</a>
-<ul>
-<li class="chapter" data-level="7.1" data-path="adding-tidal-cycle-data.html"><a href="adding-tidal-cycle-data.html#prepare-libraries"><i class="fa fa-check"></i><b>7.1</b> Prepare libraries</a></li>
-<li class="chapter" data-level="7.2" data-path="in-development-residence-patch-cleaning.html"><a href="in-development-residence-patch-cleaning.html#load-patches"><i class="fa fa-check"></i><b>7.2</b> Load patches</a></li>
-<li class="chapter" data-level="7.3" data-path="in-development-residence-patch-cleaning.html"><a href="in-development-residence-patch-cleaning.html#calculate-speed-between-patches"><i class="fa fa-check"></i><b>7.3</b> Calculate speed between patches</a></li>
-<li class="chapter" data-level="7.4" data-path="in-development-residence-patch-cleaning.html"><a href="in-development-residence-patch-cleaning.html#remove-sequences-of-reflected-patches"><i class="fa fa-check"></i><b>7.4</b> Remove sequences of reflected patches</a></li>
-<li class="chapter" data-level="7.5" data-path="in-development-residence-patch-cleaning.html"><a href="in-development-residence-patch-cleaning.html#export-this-good-patch-data"><i class="fa fa-check"></i><b>7.5</b> Export this ‘good’ patch data</a></li>
+<li class="chapter" data-level="7" data-path="in-development-residence-patch-cleaning.html"><a href="in-development-residence-patch-cleaning.html"><i class="fa fa-check"></i><b>7</b> In development: Residence patch cleaning</a><ul>
+<li class="chapter" data-level="7.1" data-path="in-development-residence-patch-cleaning.html"><a href="in-development-residence-patch-cleaning.html#prepare-libraries-3"><i class="fa fa-check"></i><b>7.1</b> Prepare libraries</a></li>
+<li class="chapter" data-level="7.2" data-path="in-development-residence-patch-cleaning.html"><a href="in-development-residence-patch-cleaning.html#load-patches"><i class="fa fa-check"></i><b>7.2</b> Load patches</a><ul>
+<li class="chapter" data-level="7.2.1" data-path="in-development-residence-patch-cleaning.html"><a href="in-development-residence-patch-cleaning.html#examine-for-anomalies"><i class="fa fa-check"></i><b>7.2.1</b> Examine for anomalies</a></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html"><i class="fa fa-check"></i><b>8</b> Bathymetry of the Griend mudflats</a>
-<ul>
+<li class="chapter" data-level="7.3" data-path="in-development-residence-patch-cleaning.html"><a href="in-development-residence-patch-cleaning.html#patches-per-id-per-day"><i class="fa fa-check"></i><b>7.3</b> Patches per id per day</a></li>
+<li class="chapter" data-level="7.4" data-path="in-development-residence-patch-cleaning.html"><a href="in-development-residence-patch-cleaning.html#calculate-speed-between-patches"><i class="fa fa-check"></i><b>7.4</b> Calculate speed between patches</a></li>
+<li class="chapter" data-level="7.5" data-path="in-development-residence-patch-cleaning.html"><a href="in-development-residence-patch-cleaning.html#check-some-individuals"><i class="fa fa-check"></i><b>7.5</b> Check some individuals</a></li>
+<li class="chapter" data-level="7.6" data-path="in-development-residence-patch-cleaning.html"><a href="in-development-residence-patch-cleaning.html#export-this-good-patch-data"><i class="fa fa-check"></i><b>7.6</b> Export this ‘good’ patch data</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html"><i class="fa fa-check"></i><b>8</b> Bathymetry of the Griend mudflats</a><ul>
 <li class="chapter" data-level="8.1" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#get-data-and-plot-basic-trend"><i class="fa fa-check"></i><b>8.1</b> Get data and plot basic trend</a></li>
 <li class="chapter" data-level="8.2" data-path="bathymetry-of-the-griend-mudflats.html"><a href="bathymetry-of-the-griend-mudflats.html#plot-as-3d-maps"><i class="fa fa-check"></i><b>8.2</b> Plot as 3D maps</a></li>
 </ul></li>
@@ -201,70 +194,125 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Residence patches must be cleaned to remove patches where the speed between patches is too high, or too low. We filter for <span class="math inline">\(0 &lt; v &lt; 150\)</span>, where <span class="math inline">\(v\)</span> is the speed between patches.</p>
 <p>We also filter out patches that are too small, ie, fewer than 10 fixes (approx. 5 minutes).</p>
 <p>Once cleaned, these patches can be passed on to the overlap finding algorithm.</p>
-<div id="prepare-libraries" class="section level2">
+<div id="prepare-libraries-3" class="section level2">
 <h2><span class="header-section-number">7.1</span> Prepare libraries</h2>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="in-development-residence-patch-cleaning.html#cb22-1"></a><span class="kw">library</span>(data.table)</span>
-<span id="cb22-2"><a href="in-development-residence-patch-cleaning.html#cb22-2"></a><span class="kw">library</span>(purrr)</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1"><span class="kw">library</span>(data.table)</a>
+<a class="sourceLine" id="cb22-2" title="2"><span class="kw">library</span>(purrr)</a>
+<a class="sourceLine" id="cb22-3" title="3"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb22-4" title="4"><span class="kw">library</span>(colorspace)</a></code></pre></div>
 </div>
 <div id="load-patches" class="section level2">
 <h2><span class="header-section-number">7.2</span> Load patches</h2>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="in-development-residence-patch-cleaning.html#cb23-1"></a><span class="co"># load data</span></span>
-<span id="cb23-2"><a href="in-development-residence-patch-cleaning.html#cb23-2"></a>patches &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data_2018/data_2018_patch_summary.csv&quot;</span>)</span>
-<span id="cb23-3"><a href="in-development-residence-patch-cleaning.html#cb23-3"></a></span>
-<span id="cb23-4"><a href="in-development-residence-patch-cleaning.html#cb23-4"></a><span class="co"># add uid</span></span>
-<span id="cb23-5"><a href="in-development-residence-patch-cleaning.html#cb23-5"></a>patches[, uid <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">seq_len</span>(<span class="kw">nrow</span>(patches))]</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1"><span class="co"># load data</span></a>
+<a class="sourceLine" id="cb23-2" title="2">patches &lt;-<span class="st"> </span><span class="kw">fread</span>(<span class="st">&quot;data/data_2018/data_2018_patch_summary.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb23-3" title="3"></a>
+<a class="sourceLine" id="cb23-4" title="4"><span class="co"># add uid</span></a>
+<a class="sourceLine" id="cb23-5" title="5">patches[, uid <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">seq_len</span>(<span class="kw">nrow</span>(patches))]</a></code></pre></div>
+<div id="examine-for-anomalies" class="section level3">
+<h3><span class="header-section-number">7.2.1</span> Examine for anomalies</h3>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1"><span class="co"># histogram of durations (in s converted to mins)</span></a>
+<a class="sourceLine" id="cb24-2" title="2"><span class="kw">hist</span>(patches<span class="op">$</span>duration <span class="op">/</span><span class="st"> </span>(<span class="dv">3600</span>))</a></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1"><span class="co"># hour of day</span></a>
+<a class="sourceLine" id="cb25-2" title="2">patch_times &lt;-<span class="st"> </span>patches<span class="op">$</span>time_mean</a>
+<a class="sourceLine" id="cb25-3" title="3"><span class="co"># convert to posixct</span></a>
+<a class="sourceLine" id="cb25-4" title="4">patch_times &lt;-<span class="st"> </span><span class="kw">as.POSIXct</span>(patch_times, <span class="dt">tz =</span> <span class="st">&quot;Berlin&quot;</span>, <span class="dt">origin =</span> <span class="st">&quot;1970-01-01&quot;</span>)</a>
+<a class="sourceLine" id="cb25-5" title="5"></a>
+<a class="sourceLine" id="cb25-6" title="6"><span class="co"># hour day</span></a>
+<a class="sourceLine" id="cb25-7" title="7">hour_day &lt;-<span class="st"> </span><span class="kw">hour</span>(patch_times)</a>
+<a class="sourceLine" id="cb25-8" title="8"><span class="kw">hist</span>(hour_day)</a>
+<a class="sourceLine" id="cb25-9" title="9"></a>
+<a class="sourceLine" id="cb25-10" title="10"><span class="co"># looks okay</span></a>
+<a class="sourceLine" id="cb25-11" title="11"></a>
+<a class="sourceLine" id="cb25-12" title="12"><span class="co"># get julian day</span></a>
+<a class="sourceLine" id="cb25-13" title="13">julian_day &lt;-<span class="st"> </span><span class="kw">as.numeric</span>(<span class="kw">julian</span>(patch_times, <span class="dt">origin =</span> <span class="st">&quot;2018-01-01&quot;</span>))</a>
+<a class="sourceLine" id="cb25-14" title="14"><span class="kw">hist</span>(julian_day)</a>
+<a class="sourceLine" id="cb25-15" title="15"><span class="co"># looks okay as there are more patches as more birds are tagged in september</span></a></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb26-1" title="1"><span class="co"># check max times</span></a>
+<a class="sourceLine" id="cb26-2" title="2"><span class="kw">range</span>(patch_times)</a>
+<a class="sourceLine" id="cb26-3" title="3"><span class="co"># looks okay</span></a></code></pre></div>
+</div>
+</div>
+<div id="patches-per-id-per-day" class="section level2">
+<h2><span class="header-section-number">7.3</span> Patches per id per day</h2>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1"><span class="co"># add date</span></a>
+<a class="sourceLine" id="cb27-2" title="2">patch_summary &lt;-<span class="st"> </span><span class="kw">copy</span>(patches[, <span class="kw">c</span>(<span class="st">&quot;id&quot;</span>, <span class="st">&quot;time_mean&quot;</span>, <span class="st">&quot;tide_number&quot;</span>)])</a>
+<a class="sourceLine" id="cb27-3" title="3">patch_summary[, day <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">round</span>(<span class="kw">as.numeric</span>(<span class="kw">julian</span>(</a>
+<a class="sourceLine" id="cb27-4" title="4">  <span class="kw">as.POSIXct</span>(patch_times,</a>
+<a class="sourceLine" id="cb27-5" title="5">    <span class="dt">tz =</span> <span class="st">&quot;Berlin&quot;</span>, <span class="dt">origin =</span> <span class="st">&quot;1970-01-01&quot;</span></a>
+<a class="sourceLine" id="cb27-6" title="6">  ),</a>
+<a class="sourceLine" id="cb27-7" title="7">  <span class="dt">origin =</span> <span class="st">&quot;2018-01-01&quot;</span></a>
+<a class="sourceLine" id="cb27-8" title="8">)))]</a>
+<a class="sourceLine" id="cb27-9" title="9"></a>
+<a class="sourceLine" id="cb27-10" title="10"><span class="co"># count per tide and or day</span></a>
+<a class="sourceLine" id="cb27-11" title="11">patch_count &lt;-<span class="st"> </span>patches[, .N,</a>
+<a class="sourceLine" id="cb27-12" title="12">  by =<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;id&quot;</span>, <span class="st">&quot;tide_number&quot;</span>)</a>
+<a class="sourceLine" id="cb27-13" title="13">]</a></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb28-1" title="1"><span class="kw">ggplot</span>(patch_count) <span class="op">+</span></a>
+<a class="sourceLine" id="cb28-2" title="2"><span class="st">  </span><span class="kw">geom_tile</span>(<span class="kw">aes</span>(tide_number, id,</a>
+<a class="sourceLine" id="cb28-3" title="3">    <span class="dt">fill =</span> N</a>
+<a class="sourceLine" id="cb28-4" title="4">  )) <span class="op">+</span></a>
+<a class="sourceLine" id="cb28-5" title="5"><span class="st">  </span><span class="kw">scale_fill_continuous_sequential</span>(</a>
+<a class="sourceLine" id="cb28-6" title="6">    <span class="dt">palette =</span> <span class="st">&quot;Sunset&quot;</span></a>
+<a class="sourceLine" id="cb28-7" title="7">  ) <span class="op">+</span></a>
+<a class="sourceLine" id="cb28-8" title="8"><span class="st">  </span><span class="kw">coord_cartesian</span>(<span class="dt">expand =</span> F)</a></code></pre></div>
 </div>
 <div id="calculate-speed-between-patches" class="section level2">
-<h2><span class="header-section-number">7.3</span> Calculate speed between patches</h2>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="in-development-residence-patch-cleaning.html#cb24-1"></a><span class="co"># this is the speed in metres per second</span></span>
-<span id="cb24-2"><a href="in-development-residence-patch-cleaning.html#cb24-2"></a>patches[, speed <span class="op">:</span><span class="er">=</span><span class="st"> </span>distBwPatch <span class="op">/</span><span class="st"> </span></span>
-<span id="cb24-3"><a href="in-development-residence-patch-cleaning.html#cb24-3"></a><span class="st">          </span><span class="kw">c</span>(<span class="ot">NA</span>, time_start[<span class="op">-</span><span class="dv">1</span>] <span class="op">-</span><span class="st"> </span></span>
-<span id="cb24-4"><a href="in-development-residence-patch-cleaning.html#cb24-4"></a><span class="st">              </span>time_end[<span class="kw">seq_len</span>(<span class="kw">length</span>(time_end) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)]),</span>
-<span id="cb24-5"><a href="in-development-residence-patch-cleaning.html#cb24-5"></a>        by =<span class="st"> </span>.(id, tide_number)]</span>
-<span id="cb24-6"><a href="in-development-residence-patch-cleaning.html#cb24-6"></a></span>
-<span id="cb24-7"><a href="in-development-residence-patch-cleaning.html#cb24-7"></a><span class="co"># what is 150 km/hr in m/s</span></span>
-<span id="cb24-8"><a href="in-development-residence-patch-cleaning.html#cb24-8"></a>cutoff_speed &lt;-<span class="st"> </span><span class="dv">15</span> <span class="co"># around 54 kmph</span></span>
-<span id="cb24-9"><a href="in-development-residence-patch-cleaning.html#cb24-9"></a></span>
-<span id="cb24-10"><a href="in-development-residence-patch-cleaning.html#cb24-10"></a><span class="co"># filter ridiculous speeds</span></span>
-<span id="cb24-11"><a href="in-development-residence-patch-cleaning.html#cb24-11"></a>patches &lt;-<span class="st"> </span>patches[<span class="kw">between</span>(speed, <span class="fl">1e-4</span>, cutoff_speed), ]</span></code></pre></div>
+<h2><span class="header-section-number">7.4</span> Calculate speed between patches</h2>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1"><span class="co"># this is the speed in metres per second</span></a>
+<a class="sourceLine" id="cb29-2" title="2">patches[, <span class="kw">c</span>(<span class="st">&quot;speed_in&quot;</span>, <span class="st">&quot;speed_out&quot;</span>) <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">list</span>(</a>
+<a class="sourceLine" id="cb29-3" title="3">  distBwPatch <span class="op">/</span><span class="st"> </span>(<span class="kw">shift</span>(time_start, <span class="dt">type =</span> <span class="st">&quot;lead&quot;</span>) <span class="op">-</span><span class="st"> </span><span class="kw">shift</span>(time_end)),</a>
+<a class="sourceLine" id="cb29-4" title="4">  <span class="kw">shift</span>(distBwPatch, <span class="dt">type =</span> <span class="st">&quot;lead&quot;</span>) <span class="op">/</span><span class="st"> </span>(<span class="kw">shift</span>(time_end, <span class="dt">type =</span> <span class="st">&quot;lead&quot;</span>) <span class="op">-</span></a>
+<a class="sourceLine" id="cb29-5" title="5"><span class="st">    </span><span class="kw">shift</span>(time_start))</a>
+<a class="sourceLine" id="cb29-6" title="6">),</a>
+<a class="sourceLine" id="cb29-7" title="7">by =<span class="st"> </span>.(id, tide_number)</a>
+<a class="sourceLine" id="cb29-8" title="8">]</a>
+<a class="sourceLine" id="cb29-9" title="9"></a>
+<a class="sourceLine" id="cb29-10" title="10"><span class="co"># histogram of speeds</span></a>
+<a class="sourceLine" id="cb29-11" title="11"><span class="kw">hist</span>(patches<span class="op">$</span>speed_in)</a>
+<a class="sourceLine" id="cb29-12" title="12"></a>
+<a class="sourceLine" id="cb29-13" title="13"></a>
+<a class="sourceLine" id="cb29-14" title="14"><span class="kw">range</span>(patches<span class="op">$</span>speed_in, <span class="dt">na.rm =</span> T)</a>
+<a class="sourceLine" id="cb29-15" title="15"><span class="kw">range</span>(patches<span class="op">$</span>speed_out, <span class="dt">na.rm =</span> T)</a>
+<a class="sourceLine" id="cb29-16" title="16"></a>
+<a class="sourceLine" id="cb29-17" title="17"><span class="co"># quantiles</span></a>
+<a class="sourceLine" id="cb29-18" title="18"><span class="kw">quantile</span>(patches<span class="op">$</span>speed_in, <span class="dt">probs =</span> <span class="kw">seq</span>(<span class="fl">0.9</span>, <span class="dv">1</span>, <span class="fl">0.01</span>), <span class="dt">na.rm =</span> T)</a>
+<a class="sourceLine" id="cb29-19" title="19"><span class="kw">quantile</span>(patches<span class="op">$</span>speed_out, <span class="dt">probs =</span> <span class="kw">seq</span>(<span class="fl">0.9</span>, <span class="dv">1</span>, <span class="fl">0.01</span>), <span class="dt">na.rm =</span> T)</a>
+<a class="sourceLine" id="cb29-20" title="20"></a>
+<a class="sourceLine" id="cb29-21" title="21"><span class="co"># what is 150 km/hr in m/s</span></a>
+<a class="sourceLine" id="cb29-22" title="22">cutoff_speed &lt;-<span class="st"> </span><span class="dv">15</span> <span class="co"># around 70 kmph</span></a>
+<a class="sourceLine" id="cb29-23" title="23"></a>
+<a class="sourceLine" id="cb29-24" title="24"><span class="co"># filter ridiculous speeds</span></a>
+<a class="sourceLine" id="cb29-25" title="25">patches &lt;-<span class="st"> </span>patches[<span class="kw">between</span>(speed_in, <span class="dv">0</span>, cutoff_speed) <span class="op">&amp;</span></a>
+<a class="sourceLine" id="cb29-26" title="26"><span class="st">  </span><span class="kw">between</span>(speed_out, <span class="dv">0</span>, cutoff_speed), ]</a>
+<a class="sourceLine" id="cb29-27" title="27"><span class="co"># goes from 90k to 78k</span></a></code></pre></div>
 </div>
-<div id="remove-sequences-of-reflected-patches" class="section level2">
-<h2><span class="header-section-number">7.4</span> Remove sequences of reflected patches</h2>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="in-development-residence-patch-cleaning.html#cb25-1"></a><span class="co"># recalculate the distance b/w patches</span></span>
-<span id="cb25-2"><a href="in-development-residence-patch-cleaning.html#cb25-2"></a>patches2 &lt;-<span class="st"> </span>patches[id <span class="op">==</span><span class="st"> &quot;554&quot;</span>, ]</span>
-<span id="cb25-3"><a href="in-development-residence-patch-cleaning.html#cb25-3"></a>patches2 &lt;-<span class="st"> </span>patches2[duration <span class="op">&gt;=</span><span class="st"> </span><span class="dv">10</span> <span class="op">*</span><span class="st"> </span><span class="dv">60</span>, ]</span>
-<span id="cb25-4"><a href="in-development-residence-patch-cleaning.html#cb25-4"></a></span>
-<span id="cb25-5"><a href="in-development-residence-patch-cleaning.html#cb25-5"></a>patches2 &lt;-<span class="st"> </span><span class="kw">split</span>(patches2, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;id&quot;</span>))</span>
-<span id="cb25-6"><a href="in-development-residence-patch-cleaning.html#cb25-6"></a></span>
-<span id="cb25-7"><a href="in-development-residence-patch-cleaning.html#cb25-7"></a></span>
-<span id="cb25-8"><a href="in-development-residence-patch-cleaning.html#cb25-8"></a><span class="co"># this is the speed in metres per second</span></span>
-<span id="cb25-9"><a href="in-development-residence-patch-cleaning.html#cb25-9"></a>patches2 &lt;-<span class="st"> </span><span class="kw">map</span>(patches2, <span class="cf">function</span>(df) {</span>
-<span id="cb25-10"><a href="in-development-residence-patch-cleaning.html#cb25-10"></a>  </span>
-<span id="cb25-11"><a href="in-development-residence-patch-cleaning.html#cb25-11"></a>  df &lt;-<span class="st"> </span>df[speed <span class="op">&lt;</span><span class="st"> </span><span class="dv">15</span>, ]</span>
-<span id="cb25-12"><a href="in-development-residence-patch-cleaning.html#cb25-12"></a>  </span>
-<span id="cb25-13"><a href="in-development-residence-patch-cleaning.html#cb25-13"></a>  df[, distBwPatch <span class="op">:</span><span class="er">=</span><span class="st"> </span>watlastools<span class="op">::</span><span class="kw">wat_bw_patch_dist</span>(df)]</span>
-<span id="cb25-14"><a href="in-development-residence-patch-cleaning.html#cb25-14"></a>  </span>
-<span id="cb25-15"><a href="in-development-residence-patch-cleaning.html#cb25-15"></a>  <span class="co"># replace </span></span>
-<span id="cb25-16"><a href="in-development-residence-patch-cleaning.html#cb25-16"></a>  df[, distBwPatch <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">nafill</span>(distBwPatch, <span class="dt">type =</span> <span class="st">&quot;const&quot;</span>, <span class="dt">fill =</span> <span class="ot">Inf</span>)]</span>
-<span id="cb25-17"><a href="in-development-residence-patch-cleaning.html#cb25-17"></a>  </span>
-<span id="cb25-18"><a href="in-development-residence-patch-cleaning.html#cb25-18"></a>  df[, speed <span class="op">:</span><span class="er">=</span><span class="st"> </span>distBwPatch <span class="op">/</span><span class="st"> </span></span>
-<span id="cb25-19"><a href="in-development-residence-patch-cleaning.html#cb25-19"></a><span class="st">          </span><span class="kw">c</span>(<span class="dv">1</span>, time_start[<span class="op">-</span><span class="dv">1</span>] <span class="op">-</span><span class="st"> </span></span>
-<span id="cb25-20"><a href="in-development-residence-patch-cleaning.html#cb25-20"></a><span class="st">              </span>time_end[<span class="kw">seq_len</span>(<span class="kw">length</span>(time_end) <span class="op">-</span><span class="st"> </span><span class="dv">1</span>)])]</span>
-<span id="cb25-21"><a href="in-development-residence-patch-cleaning.html#cb25-21"></a>  </span>
-<span id="cb25-22"><a href="in-development-residence-patch-cleaning.html#cb25-22"></a>  <span class="co"># where is the speed greater than a cutoff</span></span>
-<span id="cb25-23"><a href="in-development-residence-patch-cleaning.html#cb25-23"></a>  df[, reflection <span class="op">:</span><span class="er">=</span><span class="st"> </span><span class="kw">cumsum</span>(speed <span class="op">&gt;</span><span class="st"> </span>cutoff_speed)]</span>
-<span id="cb25-24"><a href="in-development-residence-patch-cleaning.html#cb25-24"></a>  </span>
-<span id="cb25-25"><a href="in-development-residence-patch-cleaning.html#cb25-25"></a>  <span class="kw">return</span>(df)</span>
-<span id="cb25-26"><a href="in-development-residence-patch-cleaning.html#cb25-26"></a>})</span></code></pre></div>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="in-development-residence-patch-cleaning.html#cb26-1"></a><span class="co"># bind the rows</span></span>
-<span id="cb26-2"><a href="in-development-residence-patch-cleaning.html#cb26-2"></a>patches2 &lt;-<span class="st"> </span><span class="kw">rbindlist</span>(patches2)</span>
-<span id="cb26-3"><a href="in-development-residence-patch-cleaning.html#cb26-3"></a>patches2[tide_number <span class="op">==</span><span class="st"> </span><span class="dv">96</span>, ]</span></code></pre></div>
-<p>The number of patches is down to 57,089.</p>
+<div id="check-some-individuals" class="section level2">
+<h2><span class="header-section-number">7.5</span> Check some individuals</h2>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1"><span class="kw">ggplot</span>(patches) <span class="op">+</span></a>
+<a class="sourceLine" id="cb30-2" title="2"><span class="st">  </span><span class="kw">geom_path</span>(<span class="kw">aes</span>(x_mean, y_mean,</a>
+<a class="sourceLine" id="cb30-3" title="3">    <span class="dt">group =</span> <span class="kw">interaction</span>(id, tide_number)</a>
+<a class="sourceLine" id="cb30-4" title="4">  ),</a>
+<a class="sourceLine" id="cb30-5" title="5">  <span class="dt">size =</span> <span class="fl">0.1</span>,</a>
+<a class="sourceLine" id="cb30-6" title="6">  <span class="dt">alpha =</span> <span class="fl">0.2</span></a>
+<a class="sourceLine" id="cb30-7" title="7">  )</a></code></pre></div>
+<p>weird patches at y &lt; 5890000</p>
+<p>must remove patches with single point area (314.0157), choose points above area 600</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1"><span class="co"># above 600, which means at least two points</span></a>
+<a class="sourceLine" id="cb31-2" title="2">patches &lt;-<span class="st"> </span>patches[area <span class="op">&gt;</span><span class="st"> </span><span class="dv">600</span>, ]</a>
+<a class="sourceLine" id="cb31-3" title="3"></a>
+<a class="sourceLine" id="cb31-4" title="4"><span class="co"># now 71k</span></a></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1"><span class="kw">ggplot</span>(patches) <span class="op">+</span></a>
+<a class="sourceLine" id="cb32-2" title="2"><span class="st">  </span><span class="kw">geom_path</span>(<span class="kw">aes</span>(x_mean, y_mean,</a>
+<a class="sourceLine" id="cb32-3" title="3">    <span class="dt">group =</span> <span class="kw">interaction</span>(id, tide_number)</a>
+<a class="sourceLine" id="cb32-4" title="4">  ),</a>
+<a class="sourceLine" id="cb32-5" title="5">  <span class="dt">size =</span> <span class="fl">0.1</span>,</a>
+<a class="sourceLine" id="cb32-6" title="6">  <span class="dt">alpha =</span> <span class="fl">0.2</span></a>
+<a class="sourceLine" id="cb32-7" title="7">  )</a></code></pre></div>
 </div>
 <div id="export-this-good-patch-data" class="section level2">
-<h2><span class="header-section-number">7.5</span> Export this ‘good’ patch data</h2>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="in-development-residence-patch-cleaning.html#cb27-1"></a><span class="co"># export the summary</span></span>
-<span id="cb27-2"><a href="in-development-residence-patch-cleaning.html#cb27-2"></a><span class="kw">fwrite</span>(patches, <span class="st">&quot;data/data_2018/data_2018_good_patches.csv&quot;</span>)</span></code></pre></div>
+<h2><span class="header-section-number">7.6</span> Export this ‘good’ patch data</h2>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1"><span class="co"># export the summary</span></a>
+<a class="sourceLine" id="cb33-2" title="2"><span class="kw">fwrite</span>(patches, <span class="st">&quot;data/data_2018/data_2018_good_patches.csv&quot;</span>)</a></code></pre></div>
 
 </div>
 </div>
@@ -296,7 +344,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/pratikunterwegs/knot-patches/edit/master/06_clean_residence_patches.rmd",
+"link": "https://github.com/pratikunterwegs/knot-patches/edit/master/06_clean_residence_patches.Rmd",
 "text": "Edit"
 },
 "history": {
